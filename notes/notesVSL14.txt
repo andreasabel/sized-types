@@ -1,0 +1,48 @@
+2014-07-17
+
+Notes on sized dependent types
+(after discussing with Henning Basold at VSL 2014)
+
+i,j ∈ SizeVar            Countable set of size variables
+O = Ω + ω                Initial set of ordinal numbers
+σ ∈ SizeEnv
+  = List (SizeVar × O)   Size environment
+σ' < σ;  σ' ≤ σ          List-lexicographic ordering
+
+  []           ≤ []
+  (σ', i ↦ α)  R σ           if  σ' ≤ σ
+  (σ', i ↦ α') R (σ, i ↦ α)  if  σ' ≤ σ  and  α' R α
+                             of  σ' < σ
+
+  σ,i↦α₁,σ₁ <ⁱ σ,i↦α₂,σ₂       if  α₁ < α₂
+
+A,B,F,a,b,c,d,e,f ∈ D    Partial applicative structure
+Fun, Set, μ, in ∈ D      Constants
+SizeVar ⊆ D
+
+𝓐,𝓑 ∈ TY = 𝓟(D)             Semantic type
+Π : (𝓐 ∈ TY) × Fam(𝓐) → TY  Semantic function type
+
+  Π 𝓐 𝓕 = { f ∈ D | ∀ a ∈ 𝓐, f a ∈ 𝓕(a) }
+
+SET  : SizeEnv → TY    Semantical universe of small types
+σ[_] : SET σ] → TY     Extension
+
+  * outer recursion on σ
+  * then, SET(σ) and σ[_] defined inductive-recursively
+
+  Fun A F ∈ SET σ
+    if  A ∈ SET σ
+    and ∀ σ' ≤ σ, a ∈ σ'[A].  F a ∈ SET σ'
+
+  σ[Fun A F] = ⋂ σ' ≤ σ. Π σ'[A] σ'[F]  where  σ'[F](a ∈ σ'[A]) = σ'[F a]
+
+  μⁱ F ∈ SET σ
+    if ∀ σ' <ⁱ σ.  F (μⁱ F) ∈ SET σ'
+
+  σ[μⁱ F] = ⋃ σ' <ⁱ σ.  σ'[F (μⁱ F)]
+
+-- NOT TRUE:
+-- Thm (Monotonicity)  Let σ' ≤ σ
+--   If  A ∈ SET σ'  then  A ∈ SET σ  and  σ'[A] ⊆ σ[A].
+
