@@ -1,1 +1,8 @@
 *.agdai
+*~
+*.aux
+*.log
+*.out
+*.snm
+*.toc
+old
