@@ -1,0 +1,146 @@
+\RequirePackage{ifthen}
+\RequirePackage{amsmath} % for \dfrac
+%\RequirePackage{harpoons} % for \overrightharpoon
+\RequirePackage{stmaryrd} % for \llparenthesis
+\RequirePackage{amssymb} % for \upharpoonright (restrict)
+%\RequirePackage{graphicx}
+%\RequirePackage{fleqn} % does not work too well
+
+\nonstopmode
+
+\documentclass{article}
+
+\usepackage{bm}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=Red, citecolor=ForestGreen,
+  urlcolor=RoyalBlue}
+
+\newcommand{\qed}{\hfill \ensuremath{\Box}}
+
+\newtheorem{theorem}{Theorem}
+%\newtheorem*{theorem*}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\input{macros}
+
+\title{A Dependently Typed Language with Sized Simple Data Types}
+\author{Andreas Abel}
+\date{July 2014}
+
+\begin{document}
+\maketitle
+
+\section{Syntax}
+
+Datatypes.
+\[
+\begin{array}{l@{~}l@{~}l@{~}r@{~}ll}
+\DataType & \ni & D & ::= &      & \mbox{Data type}
+  \\ &&& \mid & X                & \mbox{variable}
+  % \\ &&& \mid & D_1 \times D_2   & \mbox{product type}
+  \\ &&& \mid & D_1 \to D_2      & \mbox{function type}
+  \\ &&& \mid & S                & \mbox{labelled sum}
+  \\ &&& \mid & R                & \mbox{labelled product}
+  \\ &&& \mid & \smu \infty X S  & \mbox{inductive type}
+  \\ &&& \mid & \snu \infty X R  & \mbox{coinductive type}
+\\
+  \Variant & \ni & S      & ::= & \langle c_1 \of D_1 ; \dots ;
+    c_n \of D_n \rangle
+    & \mbox{variant row} \ (n \geq 0)
+\\
+  \Record  & \ni & R      & ::= & \{ d_1 \of D_1 ;\dots ;
+    d_n \of D_n \}
+    & \mbox{record row} \ (n \geq 0)
+\end{array}
+\]
+
+Types and expressions.
+\[
+\begin{array}{lllrll}
+\SizeExp  & \ni & a,b & ::= & i + n \mid \infty + n
+  & \mbox{size expression} \\
+\Exp & \ni & t,u,T,U & ::= & D
+  \mid \smu a X S
+  \mid \snu a X R
+  \mid \funT x U T
+  \mid \forall i T
+  \mid \Type_k
+\end{array}
+\]
+
+\section{Subset Semantics}
+
+We assume a partial applicative structure $\D$ of values, with
+constants $\Fun$ etc.
+
+Let $\TT = \P(\D)$ be the set of semantic type candidates.
+
+\[
+\begin{array}{lll}
+  \A \TO \B & = & \{ f \in \D \mid \forall a \in \A.\ f\,a \in \B \}
+\\
+  \PIAF & = & \{ f \in \D \mid \forall a \in \A.\ f\,a \in \F(a) \}
+\end{array}
+\]
+
+Denotation of simple data types.
+\[
+\begin{array}{lll}
+  \Den{X}{\A}
+    & = & \A \\
+  % \DenA{D_1 \times D_2}
+  %   & = & \DenA{D_1} \TIMES \DenA{D_2} \\
+  \Den{D_1 \to D_2}{\A?}
+    & = & \den{D_1} \TO \DenA{D_2} \\
+  \DenA{S}
+    & = & \{ c\,a \mid (c{:}D) \in S, a \in \DenA D \} \\
+  \DenA{R}
+    & = & \{ a \in \D \mid a.d \in \DenA D \mforall (d{:}D) \in R \}
+    \\
+  \DenA{\muinf S} & = & \MUINF (\X \mapsto \Den{S}{\X}) \\
+  \DenA{\nuinf S} & = & \NUINF (\X \mapsto \Den{S}{\X}) \\
+\end{array}
+\]
+
+Let $\sigma$ be a size substitution.
+
+Semantic universes.
+\begin{gather*}
+  \ru{
+    }{\tyint D {\den D} k {\sigma}}
+\\
+  \ru{
+    }{\tyint {\mu^a X S} {\MU^{\sigma(a)} (\X \mapsto \Den S \X)} k
+      \sigma}
+\\
+  \ru{
+    }{\tyint {\nu^a X R} {\NU^{\sigma(a)} (\X \mapsto \Den R \X)} k
+      \sigma}
+\\
+  \ru{\tyint A \A k \sigma \qquad
+      \forall a \in \A.\ \tyint {F\,a} {\F(a)} k \sigma
+    }{\tyint{\Fun\,A\,F}{\PIAF} k \sigma}
+\\
+  \ru{\forall \alpha.\ \tyint A {\A(\alpha)} k {(\update \sigma i
+      \alpha)}
+    }{\tyint {\forall i A} {\bigcap_{\alpha} \A(\alpha)} k \sigma}
+\\
+   \ru{
+     }{\tyint {\Type_{k'}} {|\TYPE_{k'}()|} {k} \sigma
+     }{k' < k}
+\end{gather*}
+$|\T| = \{ A \mid (A,\A) \in \T \mforsome \A \}$.
+
+We write $A \in \TYPE_k$ if $(A,\A) \in \TYPE_k\sigma$ for some
+$\sigma$ and $\A$.
+Each $\TYPE_k\sigma$ is a functional relation.
+We define $[A]\sigma = \A$ iff $\tyint A \A k \sigma$ for some $k$.
+
+\end{document}
