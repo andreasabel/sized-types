@@ -64,11 +64,11 @@ Datatypes.
 Types and expressions.
 \[
 \begin{array}{lllrll}
-\SizeExp  & \ni & a,b & ::= & i + n \mid \infty + n
+\SizeExp  & \ni & q & ::= & i + n \mid \infty + n
   & \mbox{size expression} \\
 \Exp & \ni & t,u,T,U & ::= & D
-  \mid \smu a X S
-  \mid \snu a X R
+  \mid \smu q X S
+  \mid \snu q X R
   \mid \funT x U T
   \mid \forall i T
   \mid \Type_k
@@ -105,7 +105,7 @@ Denotation of simple data types.
     & = & \{ a \in \D \mid a.d \in \DenA D \mforall (d{:}D) \in R \}
     \\
   \DenA{\muinf S} & = & \MUINF (\X \mapsto \Den{S}{\X}) \\
-  \DenA{\nuinf S} & = & \NUINF (\X \mapsto \Den{S}{\X}) \\
+  \DenA{\nuinf R} & = & \NUINF (\X \mapsto \Den{R}{\X}) \\
 \end{array}
 \]
 
@@ -117,20 +117,20 @@ Semantic universes.
     }{\tyint D {\den D} k {\sigma}}
 \\
   \ru{
-    }{\tyint {\mu^a X S} {\MU^{\sigma(a)} (\X \mapsto \Den S \X)} k
+    }{\tyint {\mu^q X S} {\MU^{\sigma(q)} (\X \mapsto \Den S \X)} k
       \sigma}
 \\
   \ru{
-    }{\tyint {\nu^a X R} {\NU^{\sigma(a)} (\X \mapsto \Den R \X)} k
+    }{\tyint {\nu^q X R} {\NU^{\sigma(q)} (\X \mapsto \Den R \X)} k
       \sigma}
 \\
   \ru{\tyint A \A k \sigma \qquad
       \forall a \in \A.\ \tyint {F\,a} {\F(a)} k \sigma
     }{\tyint{\Fun\,A\,F}{\PIAF} k \sigma}
 \\
-  \ru{\forall \alpha.\ \tyint A {\A(\alpha)} k {(\update \sigma i
+  \ru{\forall i\#\sigma. \forall \alpha.\ \tyint {F\,i} {\A(\alpha)} k {(\update \sigma i
       \alpha)}
-    }{\tyint {\forall i A} {\bigcap_{\alpha} \A(\alpha)} k \sigma}
+    }{\tyint {\All\,F} {\bigcap_{\alpha} \A(\alpha)} k \sigma}
 \\
    \ru{
      }{\tyint {\Type_{k'}} {|\TYPE_{k'}()|} {k} \sigma
