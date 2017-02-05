@@ -1,0 +1,745 @@
+%% For double-blind review submission
+\documentclass[acmlarge,review,anonymous]{acmart}\settopmatter{printfolios=true}
+%% For single-blind review submission
+%\documentclass[acmlarge,review]{acmart}\settopmatter{printfolios=true}
+%% For final camera-ready submission
+%\documentclass[acmlarge]{acmart}\settopmatter{}
+
+%% Note: Authors migrating a paper from PACMPL format to traditional
+%% SIGPLAN proceedings format should change 'acmlarge' to
+%% 'sigplan,10pt'.
+
+
+%% Some recommended packages.
+\usepackage{booktabs}   %% For formal tables:
+                        %% http://ctan.org/pkg/booktabs
+\usepackage{subcaption} %% For complex figures with subfigures/subcaptions
+                        %% http://ctan.org/pkg/subcaption
+
+
+\makeatletter\if@ACM@journal\makeatother
+%% Journal information (used by PACMPL format)
+%% Supplied to authors by publisher for camera-ready submission
+\acmJournal{PACMPL}
+\acmVolume{1}
+\acmNumber{1}
+\acmArticle{1}
+\acmYear{2017}
+\acmMonth{1}
+\acmDOI{10.1145/nnnnnnn.nnnnnnn}
+\startPage{1}
+\else\makeatother
+%% Conference information (used by SIGPLAN proceedings format)
+%% Supplied to authors by publisher for camera-ready submission
+\acmConference[PL'17]{ACM SIGPLAN Conference on Programming Languages}{January 01--03, 2017}{New York, NY, USA}
+\acmYear{2017}
+\acmISBN{978-x-xxxx-xxxx-x/YY/MM}
+\acmDOI{10.1145/nnnnnnn.nnnnnnn}
+\startPage{1}
+\fi
+
+
+%% Copyright information
+%% Supplied to authors (based on authors' rights management selection;
+%% see authors.acm.org) by publisher for camera-ready submission
+\setcopyright{none}             %% For review submission
+%\setcopyright{acmcopyright}
+%\setcopyright{acmlicensed}
+%\setcopyright{rightsretained}
+%\copyrightyear{2017}           %% If different from \acmYear
+
+
+%% Bibliography style
+\bibliographystyle{ACM-Reference-Format}
+%% Citation style
+%% Note: author/year citations are required for papers published as an
+%% issue of PACMPL.
+\citestyle{acmauthoryear}   %% For author/year citations
+
+\input{macros}
+
+
+\begin{document}
+
+%% Title information
+\title[NbE for Sized Types]{Normalization by Evaluation for Sized Dependent Types}
+%\titlenote{with title note}             %% \titlenote is optional;
+                                        %% can be repeated if necessary;
+                                        %% contents suppressed with 'anonymous'
+%\subtitle{Subtitle}                     %% \subtitle is optional
+%\subtitlenote{with subtitle note}       %% \subtitlenote is optional;
+                                        %% can be repeated if necessary;
+                                        %% contents suppressed with 'anonymous'
+
+
+%% Author information
+%% Contents and number of authors suppressed with 'anonymous'.
+%% Each author should be introduced by \author, followed by
+%% \authornote (optional), \orcid (optional), \affiliation, and
+%% \email.
+%% An author may have multiple affiliations and/or emails; repeat the
+%% appropriate command.
+%% Many elements are not rendered, but should be provided for metadata
+%% extraction tools.
+
+%% Author with single affiliation.
+\author{Andreas Abel}
+\authornote{with author1 note}          %% \authornote is optional;
+                                        %% can be repeated if necessary
+\orcid{nnnn-nnnn-nnnn-nnnn}             %% \orcid is optional
+\affiliation{
+  \department{Department of Computer Science and Engineering}
+  \institution{Gothenburg University}
+  \streetaddress{Rännvägen 6b}
+  \city{Göteborg}
+%  \state{State1}
+  \postcode{41296}
+  \country{Sweden}
+}
+\email{andreas.abel@gu.se}          %% \email is recommended
+
+%% Author with two affiliations and emails.
+\author{First2 Last2}
+\authornote{with author2 note}          %% \authornote is optional;
+                                        %% can be repeated if necessary
+\orcid{nnnn-nnnn-nnnn-nnnn}             %% \orcid is optional
+\affiliation{
+  \position{Position2a}
+  \department{Department2a}             %% \department is recommended
+  \institution{Institution2a}           %% \institution is required
+  \streetaddress{Street2a Address2a}
+  \city{City2a}
+  \state{State2a}
+  \postcode{Post-Code2a}
+  \country{Country2a}
+}
+\email{first2.last2@inst2a.com}         %% \email is recommended
+\affiliation{
+  \position{Position2b}
+  \department{Department2b}             %% \department is recommended
+  \institution{Institution2b}           %% \institution is required
+  \streetaddress{Street3b Address2b}
+  \city{City2b}
+  \state{State2b}
+  \postcode{Post-Code2b}
+  \country{Country2b}
+}
+\email{first2.last2@inst2b.org}         %% \email is recommended
+
+
+%% Paper note
+%% The \thanks command may be used to create a "paper note" ---
+%% similar to a title note or an author note, but not explicitly
+%% associated with a particular element.  It will appear immediately
+%% above the permission/copyright statement.
+\thanks{with paper note}                %% \thanks is optional
+                                        %% can be repeated if necesary
+                                        %% contents suppressed with 'anonymous'
+
+
+%% Abstract
+%% Note: \begin{abstract}...\end{abstract} environment must come
+%% before \maketitle command
+\begin{abstract}
+Text of abstract \ldots.
+\end{abstract}
+
+
+%% 2012 ACM Computing Classification System (CSS) concepts
+%% Generate at 'http://dl.acm.org/ccs/ccs.cfm'.
+\begin{CCSXML}
+<ccs2012>
+<concept>
+<concept_id>10011007.10011006.10011008</concept_id>
+<concept_desc>Software and its engineering~General programming languages</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10003456.10003457.10003521.10003525</concept_id>
+<concept_desc>Social and professional topics~History of programming languages</concept_desc>
+<concept_significance>300</concept_significance>
+</concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Software and its engineering~General programming languages}
+\ccsdesc[300]{Social and professional topics~History of programming languages}
+%% End of generated code
+
+
+%% Keywords
+%% comma separated list
+\keywords{keyword1, keyword2, keyword3}  %% \keywords is optional
+
+
+%% \maketitle
+%% Note: \maketitle command must come after title commands, author
+%% commands, abstract environment, Computing Classification System
+%% environment and commands, and keywords command.
+\maketitle
+
+
+\section{Introduction}
+\label{sec:intro}
+
+\newpage
+
+\section{Syntax}
+
+Syntax (de Bruijn terms).
+\[
+\begin{array}{lllrl@{\qquad}l}
+\Sort & \ni & s
+    & ::= & \Set[\ell] ~(\ell \in \NN)& \mbox{sort (universe)} \\
+% \Ann & \ni & \star & ::= & \erased \mid \nonstrict \mid \noterased & \mbox{annotation (irrelevant, shape-irrelevant, relevant)}\\
+\Ann & \ni & \star & ::= & \erased \mid \noterased & \mbox{annotation (irrelevant, relevant)}\\
+\Exp & \ni & t,u,T,U
+    & ::= & w \mid t\,e & \mbox{expressions} \\
+\Whnf & \ni & w, W
+    & ::= & n \mid s \mid \Size \mid \epiT U T % \mid \piSizeT T
+    % \mid \forallT T
+    \mid \lambda t% & \mbox{functions} \\ &&
+    \mid \Nat a \mid \tzero \mid \suc a t & \mbox{weak head normal forms} \\ % \mbox{natural numbers} \\
+\Ne & \ni & n
+    & ::= & \ind i \mid n \, e & \mbox{neutral expressions} \\
+\Elim & \ni & e
+    & ::= & t \mid a \mid \ann a \mid \case[\ell] T {t_1} t_2 \mid \fix[\ell] T t & \mbox{eliminations} \\
+\SizeExp & \ni & a,b,c & ::= & \infty \mid \ind i + o ~(o \in \NN) & \mbox{size expressions} \\
+\Cxt & \ni & \Gamma, \Delta & ::= & \cempty \mid \erext[\noterased] \Gamma T \mid \erext \Gamma \Size \\
+\end{array}
+\]
+We omit the ``$\noterased$''-markers from $\Gamma$ and $\Pi$ by default.  We write $\forallT T$ for $\erpiT \Size T$.
+For concrete function types, we may use a (named dependent) function type notation as syntactic sugar for the corresponding de Bruijn representation.  For instance, $\funT i \Size \Nat i \to \Set[\ell]$ is sugar for $\piT \Size \piT {(\Nat\,\ind 0)} \Set[\ell]$.  Similar, we use named lambda abstraction as sugar for de Bruijn.  Named abstract takes care of proper lifting of de Bruijn indices.
+
+Resurrection\cite{pfenning:lics01} \fbox{$\resurrect\Gamma$} removes
+the ``$\erased$''-markers from all bindings in $\Gamma$ (\ie, replaces
+them by ``$\noterased$''-markers).  Note that, trivially, resurrection is idempotent: $\resurrecttwice\Gamma = \resurrect{\Gamma}$.
+
+We write $\sigma$ and $\tau$ for substitutions, which are lists of terms, and $t \sigma$ for the application of substitution $\sigma$ to term $t$.  We write $\slift^n_m$ for the substitution $(v_{n+m-1},\dots,v_{n+1},v_n)$ which applies to a term with $m$ free indices and increases all of them by $n$.  We write $\slift_m$ for the lifting $\slift^1_m$ and $\sid_m$ for the identity substitution $ \slift^0_m$. The substitution $[u]_m = (\sid_m, u)$ replaces free index $\ind 0$ by term $u$ and decrements all other free indices by $1$. We drop subscript $m$ when clear from the context.
+
+Size increment \fbox{$a + k$} for $k \in \NN$ is defined by $\infty + k = \infty$ and $(\ind i + o) + k = \ind i + (o + k)$.  Size comparison \fbox{$a \leq b$} holds if either $b = \infty$ or $a = \ind i + o$ and $b = \ind i + o'$ with $o \leq o'$.
+
+Judgements.
+\[
+\begin{array}{l@{\qquad}l}
+  \der \Gamma & \mbox{context $\Gamma$ is well-formed} \\
+  \Gamma(i) = \eann T & \mbox{in context $\Gamma$, de Bruijn index $i$ has type $T$ and annotation $\evar$} \\
+  \Gamma \der a : \Size & \mbox{in context $\Gamma$, size expression $a$ is well-formed} \\
+  \Gamma \der t : T & \mbox{in context $\Gamma$, term $t$ has type $T$} \\
+  \Gamma \der t = t' : T & \mbox{in context $\Gamma$, terms $t$ and $t'$ are equal of type $T$} \\
+%  \Gamma \mid U \der e : T & \mbox{in context $\Gamma$, elimination $e$ goes from $U$ to $T$} \\
+%  \Gamma \mid U \der e = e' : T & \mbox{in context $\Gamma$, eliminations $e$ and $e'$ are equal} \\
+  \Gamma \der T \leq T' & \mbox{in context $\Gamma$, type $T$ is a subtype of $T'$} \\
+  \suty \Gamma \sigma \tau \Delta & \mbox{$\sigma$/$\tau$ is a valid term/type-level substitution for $\Delta$} \\
+  \sueq \Gamma \sigma {\sigma'} \tau \Delta & \mbox{$\sigma$/$\sigma'$/$\tau$ are a equal term/term/type-level substitutions for $\Delta$} \\
+\end{array}
+\]
+Derived judgements.
+\[
+\begin{array}{lll@{~}l@{\qquad}l}
+  \Gamma \der T & \defas & \Gamma \der T : s & \mforsome s
+    & \mbox{in context $\Gamma$, type $T$ is well-formed} \\
+  \Gamma \der T = T' & \defas & \Gamma \der T = T' : s & \mforsome s
+    & \mbox{in context $\Gamma$, types $T$ and $T'$ are equal} \\
+  \Gamma \der a \leq b : \Size & \defas & \multicolumn 2 {l@{\qquad}} {\Gamma \der a : \Size \mand \Gamma \der b : \Size \mand a \leq b}
+    & \mbox{sizes $a$ and $b$ are well-formed and comparable} \\
+%    & \mbox{in context $\Gamma$, well-formed size $a$ is less or equal than well-formed size $b$} \\
+\end{array}
+\]
+Inference rules.
+
+\fbox{$\der \Gamma$} (implies $\der \resurrect \Gamma$).
+\[
+  \ru{}{\der \cempty}
+\qquad
+  \ru{\der \Gamma \qquad
+      \resurrect \Gamma \der T
+    }{\der \cext \Gamma T}
+\qquad
+  \ru{\der \Gamma
+    }{\der \cext \Gamma \Size}
+\qquad
+  \ru{\der \Gamma
+    }{\der \erext \Gamma \Size}
+\]
+
+\fbox{$\Gamma(i) = \eann T$} (implies $\Gamma \der T$).
+\[
+  \ru{}{(\eext \Gamma T)(0) = \eann T \slift}
+\qquad
+  \ru{\Gamma(i) = \eann T
+    }{(\cext \Gamma \_)(i+1) = \eann T \slift}
+\]
+
+\fbox{$\Gamma \der a : \Size$}  (implies $\der \Gamma$ and $\resurrect \Gamma \der a : \Size$).
+\[
+  \ru{\der \Gamma}{\Gamma \der \infty : \Size}
+\qquad
+  \ru{\der \Gamma \qquad \Gamma(i) = \erann[\noterased]\Size
+    }{\Gamma \der \ind i + o : \Size
+    }
+\]
+
+\fbox{$\Gamma \der t : T$}  (implies $\der \Gamma$ and $\resurrect \Gamma \der T$ [and $\resurrect \Gamma \der t : T$]. Note: no rule for $\Gamma \der \Size : s$.)
+\begin{gather*}
+  \ru{\der \Gamma
+    }{\Gamma \der \Set[\ell] : \Set[\ell']
+    }{\ell {<} \ell'}
+\qquad
+  \ru{\Gamma \der U : s \qquad
+      \cext \Gamma U \der T : s
+    }{\Gamma \der \piT U T : s}
+\qquad
+  \ru{\cext \Gamma \Size \der T : s
+    }{\Gamma \der \epiT \Size T : s}
+\qquad
+  \ru{%\der \Gamma \qquad
+      \Gamma \der a : \Size
+    }{\Gamma \der \Nat a : s}
+\\[2ex]
+  \rux{\der \Gamma \qquad \Gamma(i) = \erann[\noterased] T
+    }{\Gamma \der \ind i : T
+    }{T \not= \Size}
+\qquad
+  \ru{\eext \Gamma U \der t : T
+    }{\Gamma \der \lambda t : \epiT U T}
+\qquad
+  \ru{\Gamma \der t : \piT U T \qquad
+      \Gamma \der u : U
+    }{\Gamma \der t\,u : T[u]}
+% \qquad
+%   \ru{\Gamma \der t : T \qquad
+%       \Gamma \mid T \der e : T'
+%     }{\Gamma \der t\,e : T'}
+\qquad
+  \ru{\Gamma \der t : \piT \Size T \qquad
+      \Gamma \der a : \Size
+    }{\Gamma \der t\,a : T[a]}
+\\[2ex] % \qquad
+  \ru{\resurrect\Gamma \der b : \Size
+    }{\Gamma \der \tzero : \Nat (b + 1)}
+\qquad
+  \ru{\Gamma \der a : \Size \qquad
+      \Gamma \der t : \Nat b
+    }{\Gamma \der \suc a t : \Nat (b + 1)}
+\qquad
+  \ru{\Gamma \der t : \forallT T \qquad
+      \Gamma \der a : \Size \qquad
+      \resurrect\Gamma \der b : \Size
+    }{\Gamma \der t \ann a : T[b]}
+\\[2ex]
+  \ru{\Gamma \der u : \Nat b \qquad
+      \Gamma \der T : \funT i \Size \Nat i \to \Set[\ell] \\
+      \Gamma \der t : \allT i \Size (\funT x {\Nat i} T\, i\, x) \to \funT x {\Nat (i + 1)} T \,(i+1)\, x
+     }{\Gamma \der u\,\fix[\ell] T t : T \,b \, u}
+\\[2ex]
+  \ru{\Gamma \der u : \Nat (b + 1) \qquad
+      \Gamma \der T : \Nat (b + 1) \to \Set[\ell] \qquad
+      \Gamma \der t_z : T \, \tzero \qquad
+      \Gamma \der a : \Size \qquad
+      \Gamma \der t_s : (n : \Nat b) \to T \, (\suc a n)
+    }{\Gamma \der u\,\case[\ell] T {t_z} t_s : T \, u}
+\end{gather*}
+Note: Size is relevant in $T$ as we would like for instance $T\,i\,x = \Nat i$.
+% \fbox{$\Gamma \mid U \der e : T$}
+% \begin{gather*}
+%   \ru{\cext \Gamma U \der T \qquad \Gamma \der u : U
+%     }{\Gamma \mid \piT U T \der u : T[u]}
+% \qquad
+%   \ru{\cext \Gamma \Size \der T \qquad \Gamma \der a : \Size
+%     }{\Gamma \mid \piT \Size T \der a : T[a]}
+% \qquad
+%   \ru{\cext \Gamma \Size \der T \qquad \Gamma \der a : \Size
+%     }{\Gamma \mid \forallT T \der \ann a : T[a]}
+% \\
+%   \ru{
+%     }{\Gamma \mid \Nat a \der \fix T t : T \ann a n}
+% \end{gather*}
+
+
+\fbox{$\Gamma \der t = t' : T$} (implies $\resurrect \Gamma \der T$ and $\Gamma \der t,t' : T$ [and $\resurrect\Gamma \der t = t' : T$].)
+
+Computation rules.
+\begin{gather*}
+  \ru{\cext \Gamma U \der t : T \qquad
+      \Gamma \der u : U
+    }{\Gamma \der (\lambda t)\,u = t[u] : T[u]}
+\qquad
+  \ru{\cext \Gamma \Size \der t : T \qquad
+      \Gamma \der a : \Size
+    }{\Gamma \der (\lambda t)\,a = t[a] : T[a]}
+\qquad
+  \ru{\erext \Gamma \Size \der t : T \qquad
+      \Gamma \der a : \Size \qquad
+      \resurrect \Gamma \der b : \Size
+    }{\Gamma \der (\lambda t)\,\ann a = t[a] : T[b]}
+\\[2ex]
+  \rux{\Gamma \der u : \Nat b \qquad
+      \Gamma \der a : \Size \qquad
+      \Gamma \der T : \funT i \Size \Nat i \to \Set[\ell] \\
+      \Gamma \der t : \allT i \Size (\funT x {\Nat i} T\, i\, x) \to \funT x {\Nat (i + 1)} T \,(i+1)\, x
+     }{\Gamma \der u\,\fix[\ell] T t = t\ann a (\lambda x. x\,\fix[\ell] T t)\, u : T \,b \, u
+     }{u \in \{\tzero, \suc a t'\}}
+\\[2ex]
+  \ru{\resurrect\Gamma \der b : \Size \qquad
+      \Gamma \der T : \Nat (b + 1) \to \Set[\ell] \qquad
+      \Gamma \der t_z : T\,\tzero \qquad
+      \Gamma \der a : \Size \qquad
+      \Gamma \der t_s : (n : \Nat b) \to T\,(\suc a n)
+    }{\Gamma \der \tzero\,\case[\ell] T {t_z} {t_s} = t_z : T\,\tzero}
+\\[2ex]
+  \ru{\Gamma \der t : \Nat b \qquad
+      \Gamma \der T : \Nat (b + 1) \to \Set[\ell] \qquad
+      \Gamma \der t_z : T\,\tzero \qquad
+      \Gamma \der a : \Size \qquad
+      \Gamma \der t_s : (n : \Nat b) \to T\,(\suc a n)
+    }{\Gamma \der \suc a t\,\case[\ell] T {t_z} {t_s} = t_s\,t : T\,\suc a t}
+\end{gather*}
+Extensionality rules.
+\begin{gather*}
+  \ru{\Gamma \der t : \piT U T
+    }{\Gamma \der t = \lambda x. t\,x : \piT U T}
+\qquad
+  \ru{\Gamma \der t : \forallT T \qquad \erext \Gamma \Size \der a : \Size
+    }{\Gamma \der t = \lambda i. t \ann a : \forallT T}
+\end{gather*}
+Congruence rules.
+\begin{gather*}
+  \ru{\der \Gamma
+    }{\Gamma \der \Set[\ell] = \Set[\ell]: \Set[\ell']
+    }{\ell {<} \ell'}
+\qquad
+  \ru{\Gamma \der U = U' : s \qquad
+      \cext \Gamma U \der T = T' : s
+    }{\Gamma \der \piT U T = \piT{U'}T': s}
+\qquad
+  \ru{\cext \Gamma \Size \der T = T' : s
+    }{\Gamma \der \epiT \Size T = \epiT \Size T' : s}
+\qquad
+  \ru{%\der \Gamma \qquad
+      \Gamma \der a : \Size
+    }{\Gamma \der \Nat a = \Nat a : s}
+\\[2ex]
+  \rux{\der \Gamma \qquad \Gamma(i) = \erann[\noterased] T
+    }{\Gamma \der \ind i = \ind i : T
+    }{T \not= \Size}
+\qquad
+  \ru{\eext \Gamma U \der t = t' : T
+    }{\Gamma \der \lambda t = \lambda t' : \epiT U T}
+\qquad
+  \ru{\Gamma \der t = t' : \piT U T \qquad
+      \Gamma \der u = u' : U
+    }{\Gamma \der t\,u = t'\,u' : T[u]}
+% \qquad
+%   \ru{\Gamma \der t : T \qquad
+%       \Gamma \mid T \der e : T'
+%     }{\Gamma \der t\,e : T'}
+\qquad
+  \ru{\Gamma \der t = t' : \piT \Size T \qquad
+      \Gamma \der a : \Size
+    }{\Gamma \der t\,a = t'\,a : T[a]}
+\\[2ex] % \qquad
+  \ru{\resurrect\Gamma \der b : \Size
+    }{\Gamma \der \tzero = \tzero : \Nat (b + 1)}
+\qquad
+  \ru{\Gamma \der a, a' : \Size \qquad
+      \Gamma \der t = t' : \Nat b
+    }{\Gamma \der \suc a t = \suc {a'} t' : \Nat (b + 1)}
+\qquad
+  \ru{\Gamma \der t = t' : \forallT T \qquad
+      \Gamma \der a, a' : \Size \qquad
+      \resurrect\Gamma \der b : \Size
+    }{\Gamma \der t \ann a = t' \ann{a'} : T[b]}
+\\[2ex]
+  \ru{\Gamma \der u = u' : \Nat a \qquad
+      \Gamma \der T = T' : \funT i \Size \Nat i \to \Set[\ell] \\
+      \Gamma \der t = t' : \allT i \Size (\funT x {\Nat i} T \ann i x) \to \funT x {\Nat (i + 1)} T \ann{i+1} x
+     }{\Gamma \der u\,\fix[\ell] T t = u'\,\fix[\ell] {T'} t' : T \ann a u}
+\\[2ex]
+  \ru{\Gamma \der u = u' : \Nat (a + 1) \qquad
+      \Gamma \der T = T' : Nat (a + 1) \to \Set[\ell] \qquad
+      \Gamma \der t_z = t_z' : T \, \tzero \qquad
+      \Gamma \der t_s = t_s' : (n : \Nat a) \to T \, (\suc a n)
+    }{\Gamma \der u\,\case[\ell] T {t_z} t_s = u'\,\case[\ell] {T'} {t_z'} t_s' : T \, u}
+\end{gather*}
+Equivalence rules.  (Reflexivity is admissible.)
+\begin{gather*}
+  \ru{\Gamma \der t = t' : T
+    }{\Gamma \der t' = t : T}
+\qquad
+  \ru{\Gamma \der t_1 = t_2 : T \qquad
+      \Gamma \der t_2 = t_3 : T
+    }{\Gamma \der t_1 = t_3 : T}
+\end{gather*}
+
+
+\fbox{$\Gamma \der T \leq T'$} (implies $\resurrect \Gamma \der T,T'$)
+\begin{gather*}
+  \ru{\der \Gamma \qquad \ell {\leq} \ell'
+    }{\Gamma \der \Set[\ell] \leq \Set[\ell']}
+\qquad
+  \ru{\Gamma \der a \leq b : \Size
+    }{\Gamma \der \Nat a \leq \Nat b}
+\qquad
+  \ru{\Gamma \der T = T'
+    }{\Gamma \der T \leq T'}
+\\[2ex]
+  \ru{\Gamma \der U' \leq U \qquad
+      \cext \Gamma {U'} \der T \leq T'
+    }{\Gamma \der \piT U T \leq \piT {U'} {T'}}
+\qquad
+  \ru{\Gamma \der T_1 \leq T_2 \qquad
+      \Gamma \der T_2 \leq T_3
+    }{\Gamma \der T_1 \leq T_3}
+\qquad
+\end{gather*}
+
+Substitution typing. % and equality.
+\fbox{$\Gamma \der \tau : \Delta$}
+(implies $\der \Gamma$ and $\der \Delta$
+ [and $\resurrect\Gamma \der \tau : \Delta$]
+ and $\resurrect\Gamma \der \tau : \resurrect \Delta$).
+
+\begin{gather*}
+  \ru{\der \Gamma \qquad
+    }{\Gamma \der \sempty : \cempty}
+\qquad
+  \ru{\Gamma \der \tau : \Delta \qquad
+      \resurrect \Delta \der T \qquad
+      \Gamma \der t : T \tau
+    }{\Gamma \der \sext \tau t : \cext \Delta T}
+\qquad
+  \ru{\Gamma \der \tau : \Delta \qquad
+      \Gamma \der a : \Size
+    }{\Gamma \der \sext \tau a : \eext \Delta \Size}
+\end{gather*}
+
+% Substitution typing. % and equality.
+% \fbox{$\Gamma \der \sigma : \Delta$}
+% (implies $\der \Gamma$ and $\der \Delta$
+%  and $\resurrect\Gamma \der \sigma : \Delta$
+%  and $\resurrect\Gamma \der \sigma : \resurrect \Delta$).
+% % and
+% % \fbox{$\Gamma \der \sigma = \sigma' : \Delta$}.
+
+% \begin{gather*}
+%   \ru{\der \Gamma \qquad
+%     }{\Gamma \der \sempty : \cempty}
+% \qquad
+%   \ru{\Gamma \der \sigma : \Delta \qquad
+%       \resurrect \Delta \der T \qquad
+%       \Gamma \der t : T \sigma
+%     }{\Gamma \der \sext \sigma t : \cext \Delta T}
+% \qquad
+%   \ru{\Gamma \der \sigma : \Delta \qquad
+%       \Gamma \der a : \Size
+%     }{\Gamma \der \sext \sigma a : \eext \Delta \Size}
+% \end{gather*}
+
+% \begin{gather*}
+%   \ru{\der \Gamma \qquad
+%     }{\Gamma \der \sempty = \sempty : \cempty}
+% \qquad
+%   \ru{\Gamma \der \sigma = \sigma': \Delta \qquad
+%       \resurrect \Delta \der T \qquad
+%       \Gamma \der t = t' : T \sigma
+%     }{\Gamma \der \sext \sigma t = \sext {\sigma'} t': \cext \Delta T}
+% \end{gather*}
+
+% Substitution typing and equality.
+% \fbox{$\suty \Gamma \sigma \tau \Delta$} and
+
+Substitution equality
+\fbox{$\sueq \Gamma \sigma {\sigma'} \tau \Delta$}
+(implies $\der \Gamma$ and $\der \Delta$ and $\Gamma \der \tau : \Delta$ and $\sueq \Gamma {\sigma'} {\sigma} \tau \Delta$).
+
+% \begin{gather*}
+%   \ru{\der \Gamma \qquad
+%     }{\suty \Gamma \sempty \sempty \cempty}
+% \qquad
+%   \ru{\suty \Gamma \sigma \tau \Delta \qquad
+%       \resurrect \Delta \der T \qquad
+%       \Gamma \der u = t : T \tau
+%     }{\suty \Gamma {\sext \sigma u} {\sext \tau t} \cext \Delta T}
+% \\[2ex]
+%   \ru{\suty \Gamma \sigma \tau \Delta \qquad
+%       \Gamma \der a = b : \Size
+%     }{\suty \Gamma {\sext \sigma a} {\sext \tau b} \cext \Delta \Size}
+% \qquad
+%   \ru{\suty \Gamma \sigma \tau \Delta \qquad
+%       \Gamma \der a, b : \Size
+%     }{\suty \Gamma {\sext \sigma a} {\sext \tau b} \erext \Delta \Size}
+% \end{gather*}
+
+\begin{gather*}
+  \ru{\der \Gamma \qquad
+    }{\sueq \Gamma \sempty \sempty \sempty \cempty}
+\qquad
+  \ru{\sueq \Gamma \sigma {\sigma'} \tau \Delta \qquad
+      \resurrect \Delta \der T \qquad
+      \Gamma \der u = u' = t : T \tau
+    }{\sueq \Gamma {\sext \sigma u } {\sext {\sigma'} {u'}} {\sext \tau t} {\cext \Delta T}}
+\\[2ex]
+  \ru{\sueq \Gamma \sigma {\sigma'} \tau \Delta \qquad
+      \Gamma \der a = a' = b : T \tau
+    }{\sueq \Gamma {\sext \sigma a } {\sext {\sigma'} {a'}} {\sext \tau b} {\cext \Delta \Size}}
+\qquad
+  \ru{\sueq \Gamma \sigma {\sigma'} \tau \Delta \qquad
+      \Gamma \der a, a', b : T \tau
+    }{\sueq \Gamma {\sext \sigma a } {\sext {\sigma'} {a'}} {\sext \tau b} {\erext \Delta \Size}}
+\end{gather*}
+
+\begin{lemma}[Reflexivity]
+  If\/ $\Gamma \der t : T$ then $\Gamma \der t = t : T$.
+\end{lemma}
+
+In the following, let $J$ %, $L$, and $R$
+match a part of a judgement.
+
+\begin{lemma}[Context well-formedness]
+\label{lem:cxtwf}\bla
+  \begin{enumerate}
+  \item If $\der \cext \Gamma \Delta$ then $\der \Gamma$
+  \item If\/ $\Gamma \der J$ then $\der \Gamma$.
+  \end{enumerate}
+\end{lemma}
+
+\begin{lemma}[Resurrection]
+\label{lem:res} \bla
+\begin{enumerate}
+\item If\/ $\der \Gamma$ then $\der \resurrect\Gamma$ and $\resurrect \Gamma \der \sid : \Gamma$.
+  % Consequently, if\/ $\Gamma \der J$ then $\resurrect \Gamma \der J$.
+  % Further, if $\Gamma \der J : \resurrect\Delta$ then $\Gamma \der J : \Delta$.
+\item If\/ $\Gamma \der J$ then $\resurrect \Gamma \der J$.
+\item If\/ $\Gamma \der J : \resurrect \Delta$ and $\der \Delta$ then $\Gamma \der J : \Delta$.
+\item If\/ $\Gamma \der \sigma : \Delta$ then $\resurrect\Gamma \der \sigma : \resurrect\Delta$.
+\end{enumerate}
+\end{lemma}
+
+\begin{lemma}[Substitution]
+\label{lem:sub}\bla
+  If\/ $\Gamma \der \sigma : \Delta$ and $\Delta \der J$ then $\Gamma \der J\sigma$.
+\end{lemma}
+
+\begin{lemma}[Specific substitutions]
+\label{lem:specsub}\bla
+\begin{enumerate}
+\item If $\der \cext \Gamma \Delta$ then $\cext \Gamma \Delta \der \slift_{|\Gamma|}^{|\Delta|} : \Gamma$.
+      If $\der \cext \Gamma T$ then $\cext \Gamma T \der \slift : \Gamma$.
+\item If $\der \Gamma$ then $\Gamma \der \sid : \Gamma$.
+\item If $\Gamma \der u : U$ then $\Gamma \der \sg u : \cext \Gamma U$.
+\end{enumerate}
+\end{lemma}
+
+\begin{lemma}[Substitution equality]
+\label{lem:subeq}\bla
+\begin{enumerate}
+\item Conversion: If\/ $\sueq \Gamma \sigma {\sigma'} {\tau_1} \Delta$ and $\sueq {\resurrect\Gamma} {\tau_1} {\tau_2} {\tau} {\resurrect\Delta}$ then $\sueq \Gamma \sigma {\sigma'} {\tau_2} \Delta$.
+\item Reflexivity: If\/ $\Gamma \der \sigma : \Delta$ then $\sueq \Gamma \sigma \sigma \sigma \Delta$.
+\item Symmetry:  If\/ $\sueq \Gamma \sigma {\sigma'} {\tau} \Delta$ then $\sueq \Gamma {\sigma'} {\sigma} {\tau} \Delta$.
+\item Transitivity:  If\/ $\sueq \Gamma {\sigma_1} {\sigma_2} {\tau} \Delta$ and $\sueq \Gamma {\sigma_2} {\sigma_3} {\tau} \Delta$ then $\sueq \Gamma {\sigma_1} {\sigma-3} {\tau} \Delta$.
+\item Functionality: Let $\sueq \Gamma \sigma {\sigma'} \tau \Delta$.
+  \begin{enumerate}
+  \item
+  If $\Delta \der t : T$ then $\Gamma \der t\sigma = t\sigma' : T\tau$.
+  \item
+  If $\Delta \der t = t' : T$ then $\Gamma \der t\sigma = t'\sigma' : T\tau$.
+  \item
+  Corollary: If $\Delta \der T \leq T'$ then $\Gamma \der T\sigma \leq T\sigma'$.
+  \end{enumerate}
+\end{enumerate}
+\end{lemma}
+
+
+
+
+
+\section{Semantics}
+\label{sec:sem}
+
+
+Judgements.
+\[
+\begin{array}{l@{\qquad}l}
+  t \evalsto w & \mbox{term $t$ evaluates to weak head normal form $w$} \\
+  w @ e \evalsto w' & \mbox{eliminating $w$ with $e$ evaluates to $w'$} \\
+%  w @ \vec e \evalsto w' & \mbox{applying $w$ to eliminations $\vec e$ evaluates to $w'$} \\
+\end{array}
+\]
+
+\fbox{$t \evalsto w$}
+\begin{gather*}
+  \ru{}{w \evalsto w}
+\qquad
+  \ru{t \evalsto w \qquad w @ e \evalsto w'}{t\,e \evalsto w'}
+\end{gather*}
+
+% \fbox{$w @ \vec e \evalsto w'$}
+% \begin{gather*}
+%   \ru{}{w @ () \evalsto w}
+% \qquad
+%   \ru{w @ e \evalsto w' \qquad
+%       w' @ \vec e \evalsto w''
+%     }{w @ (e, \vec e) \evalsto w''}
+% \end{gather*}
+
+\fbox{$w @ e \evalsto w'$}
+\begin{gather*}
+  \ru{t[u] \evalsto w
+    }{(\lambda t) @ u \evalsto w}
+\qquad
+  \ru{t[a] \evalsto w
+    }{(\lambda t) @ a \evalsto w}
+\qquad
+  \ru{t[a] \evalsto w
+    }{(\lambda t) @ \ann a \evalsto w}
+\\[2ex]
+  \ru{t_z \evalsto w
+    }{\tzero @ \casett \evalsto w}
+\qquad
+  \ru{t_s\, t \evalsto w
+    }{(\suc a t) @ \casett \evalsto w}
+\qquad
+  \rux{t\,(\lambda x.\, x@ \fixtt)\,w \evalsto w'
+     }{w @ \fixtt \evalsto w'
+     }{w \in \{ \tzero, \suc a u \}}
+\end{gather*}
+
+
+
+
+
+\newpage
+
+\section{Conclusions}
+\label{sec:concl}
+
+%% Acknowledgments
+\begin{acks}                            %% acks environment is optional
+                                        %% contents suppressed with 'anonymous'
+  %% Commands \grantsponsor{<sponsorID>}{<name>}{<url>} and
+  %% \grantnum[<url>]{<sponsorID>}{<number>} should be used to
+  %% acknowledge financial support and will be used by metadata
+  %% extraction tools.
+  This material is based upon work supported by the
+  \grantsponsor{GS100000001}{National Science
+    Foundation}{http://dx.doi.org/10.13039/100000001} under Grant
+  No.~\grantnum{GS100000001}{nnnnnnn} and Grant
+  No.~\grantnum{GS100000001}{mmmmmmm}.  Any opinions, findings, and
+  conclusions or recommendations expressed in this material are those
+  of the author and do not necessarily reflect the views of the
+  National Science Foundation.
+\end{acks}
+
+
+%% Bibliography
+\bibliography{medium}
+
+
+%% Appendix
+\appendix
+\section{Appendix}
+
+Text of appendix \ldots
+
+\end{document}
