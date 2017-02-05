@@ -199,17 +199,19 @@ Syntax (de Bruijn terms).
     & ::= & n \mid s \mid \Size \mid \epiT U T % \mid \piSizeT T
     % \mid \forallT T
     \mid \lambda t% & \mbox{functions} \\ &&
-    \mid \Nat a \mid \tzero \mid \suc a t & \mbox{weak head normal forms} \\ % \mbox{natural numbers} \\
+    \mid \Nat a \mid c & \mbox{weak head normal forms} \\ % \mbox{natural numbers} \\
+\Data & \ni & c
+   & ::= & \tzero \mid \suc a t & \mbox{constructed data} \\
 \Ne & \ni & n
     & ::= & \ind i \mid n \, e & \mbox{neutral expressions} \\
 \Elim & \ni & e
     & ::= & t \mid a \mid \ann a \mid \case[\ell] T {t_1} t_2 \mid \fix[\ell] T t & \mbox{eliminations} \\
-\SizeExp & \ni & a,b,c & ::= & \infty \mid \ind i + o ~(o \in \NN) & \mbox{size expressions} \\
+\SizeExp & \ni & a,b & ::= & \infty \mid \ind i + o ~(o \in \NN) & \mbox{size expressions} \\
 \Cxt & \ni & \Gamma, \Delta & ::= & \cempty \mid \erext[\noterased] \Gamma T \mid \erext \Gamma \Size \\
 \end{array}
 \]
 We omit the ``$\noterased$''-markers from $\Gamma$ and $\Pi$ by default.  We write $\forallT T$ for $\erpiT \Size T$.
-For concrete function types, we may use a (named dependent) function type notation as syntactic sugar for the corresponding de Bruijn representation.  For instance, $\funT i \Size \Nat i \to \Set[\ell]$ is sugar for $\piT \Size \piT {(\Nat\,\ind 0)} \Set[\ell]$.  Similar, we use named lambda abstraction as sugar for de Bruijn.  Named abstract takes care of proper lifting of de Bruijn indices.
+For concrete function types, we may use a (named dependent) function type notation as syntactic sugar for the corresponding de Bruijn representation.  For instance, $\funT i \Size \Nat i \to \Set[\ell]$ is sugar for $\piT \Size \piT {(\Nat\,\ind 0)} \Set[\ell]$.  We abbreviate this type by \fbox{$\FixK\,\ell$}, and let \fbox{$\FixT\,T$} stand for $\allT i \Size (\funT x {\Nat i} T\, i\, x) \to \funT x {\Nat (i + 1)} T \,(i+1)\, x$. Similar as for $\Pi$, we use named lambda abstraction as sugar for de Bruijn abstraction.  Named abstract takes care of proper lifting of de Bruijn indices.
 
 Resurrection\cite{pfenning:lics01} \fbox{$\resurrect\Gamma$} removes
 the ``$\erased$''-markers from all bindings in $\Gamma$ (\ie, replaces
@@ -328,17 +330,17 @@ Inference rules.
       \resurrect\Gamma \der b : \Size
     }{\Gamma \der t \ann a : T[b]}
 \\[2ex]
-  \ru{\Gamma \der u : \Nat b \qquad
-      \Gamma \der T : \funT i \Size \Nat i \to \Set[\ell] \\
-      \Gamma \der t : \allT i \Size (\funT x {\Nat i} T\, i\, x) \to \funT x {\Nat (i + 1)} T \,(i+1)\, x
-     }{\Gamma \der u\,\fix[\ell] T t : T \,b \, u}
-\\[2ex]
   \ru{\Gamma \der u : \Nat (b + 1) \qquad
       \Gamma \der T : \Nat (b + 1) \to \Set[\ell] \qquad
       \Gamma \der t_z : T \, \tzero \qquad
       \Gamma \der a : \Size \qquad
       \Gamma \der t_s : (n : \Nat b) \to T \, (\suc a n)
     }{\Gamma \der u\,\case[\ell] T {t_z} t_s : T \, u}
+\\[2ex]
+  \ru{\Gamma \der u : \Nat b \qquad
+      \Gamma \der T : \FixK\,\ell \qquad %% \funT i \Size \Nat i \to \Set[\ell] \\
+      \Gamma \der t : \FixT\, T
+     }{\Gamma \der u\,\fix[\ell] T t : T \,b \, u}
 \end{gather*}
 Note: Size is relevant in $T$ as we would like for instance $T\,i\,x = \Nat i$.
 % \fbox{$\Gamma \mid U \der e : T$}
@@ -374,13 +376,6 @@ Computation rules.
       \resurrect \Gamma \der b : \Size
     }{\Gamma \der (\lambda t)\,\ann a = t[a] : T[b]}
 \\[2ex]
-  \rux{\Gamma \der u : \Nat b \qquad
-      \Gamma \der a : \Size \qquad
-      \Gamma \der T : \funT i \Size \Nat i \to \Set[\ell] \\
-      \Gamma \der t : \allT i \Size (\funT x {\Nat i} T\, i\, x) \to \funT x {\Nat (i + 1)} T \,(i+1)\, x
-     }{\Gamma \der u\,\fix[\ell] T t = t\ann a (\lambda x. x\,\fix[\ell] T t)\, u : T \,b \, u
-     }{u \in \{\tzero, \suc a t'\}}
-\\[2ex]
   \ru{\resurrect\Gamma \der b : \Size \qquad
       \Gamma \der T : \Nat (b + 1) \to \Set[\ell] \qquad
       \Gamma \der t_z : T\,\tzero \qquad
@@ -393,7 +388,14 @@ Computation rules.
       \Gamma \der t_z : T\,\tzero \qquad
       \Gamma \der a : \Size \qquad
       \Gamma \der t_s : (n : \Nat b) \to T\,(\suc a n)
-    }{\Gamma \der \suc a t\,\case[\ell] T {t_z} {t_s} = t_s\,t : T\,\suc a t}
+    }{\Gamma \der (\suc a t)\,\case[\ell] T {t_z} {t_s} = t_s\,t : T\,(\suc a t)}
+\\[2ex]
+  \ru{\Gamma \der c : \Nat b \qquad
+      \Gamma \der a : \Size \qquad
+      \Gamma \der T : \FixK\,\ell \qquad %% \funT i \Size \Nat i \to \Set[\ell] \\
+      \Gamma \der t : \FixT\,T %% \allT i \Size (\funT x {\Nat i} T\, i\, x) \to \funT x {\Nat (i + 1)} T \,(i+1)\, x
+     }{\Gamma \der c\,\fix[\ell] T t = t\ann a (\lambda x. x\,\fix[\ell] T t)\, c : T \,b \, c
+     }%{u \in \{\tzero, \suc a t'\}}
 \end{gather*}
 Extensionality rules.
 \begin{gather*}
@@ -451,16 +453,16 @@ Congruence rules.
       \resurrect\Gamma \der b : \Size
     }{\Gamma \der t \ann a = t' \ann{a'} : T[b]}
 \\[2ex]
-  \ru{\Gamma \der u = u' : \Nat a \qquad
-      \Gamma \der T = T' : \funT i \Size \Nat i \to \Set[\ell] \\
-      \Gamma \der t = t' : \allT i \Size (\funT x {\Nat i} T \ann i x) \to \funT x {\Nat (i + 1)} T \ann{i+1} x
-     }{\Gamma \der u\,\fix[\ell] T t = u'\,\fix[\ell] {T'} t' : T \ann a u}
-\\[2ex]
   \ru{\Gamma \der u = u' : \Nat (a + 1) \qquad
-      \Gamma \der T = T' : Nat (a + 1) \to \Set[\ell] \qquad
+      \Gamma \der T = T' : \Nat (a + 1) \to \Set[\ell] \qquad
       \Gamma \der t_z = t_z' : T \, \tzero \qquad
       \Gamma \der t_s = t_s' : (n : \Nat a) \to T \, (\suc a n)
     }{\Gamma \der u\,\case[\ell] T {t_z} t_s = u'\,\case[\ell] {T'} {t_z'} t_s' : T \, u}
+\\[2ex]
+  \ru{\Gamma \der u = u' : \Nat a \qquad
+      \Gamma \der T = T' : \FixK\,\ell \qquad %% \funT i \Size \Nat i \to \Set[\ell] \\
+      \Gamma \der t = t' : \FixT\,T \qquad %% \allT i \Size (\funT x {\Nat i} T \,i\, x) \to \funT x {\Nat (i + 1)} T \,{i+1}\, x
+     }{\Gamma \der u\,\fix[\ell] T t = u'\,\fix[\ell] {T'} t' : T \, a \, u}
 \end{gather*}
 Equivalence rules.  (Reflexivity is admissible.)
 \begin{gather*}
@@ -700,9 +702,9 @@ Judgements.
   \ru{t_s\, t \evalsto w
     }{(\suc a t) @ \casett \evalsto w}
 \qquad
-  \rux{t\,(\lambda x.\, x@ \fixtt)\,w \evalsto w'
-     }{w @ \fixtt \evalsto w'
-     }{w \in \{ \tzero, \suc a u \}}
+  \ru{t\,\ann\infty\,(\lambda x.\, x@ \fixtt)\,c \evalsto w
+     }{c @ \fixtt \evalsto w
+     }%{w \in \{ \tzero, \suc a u \}}
 \end{gather*}
 
 
