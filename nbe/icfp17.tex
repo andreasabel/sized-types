@@ -5,6 +5,8 @@
 %% For final camera-ready submission
 %\documentclass[acmlarge]{acmart}\settopmatter{}
 
+\usepackage[cal=boondoxo]{mathalfa}
+
 %% Note: Authors migrating a paper from PACMPL format to traditional
 %% SIGPLAN proceedings format should change 'acmlarge' to
 %% 'sigplan,10pt'.
@@ -206,20 +208,20 @@ Syntax (de Bruijn terms).
     & ::= & \ind i \mid n \, e & \mbox{neutral expressions} \\
 \Elim & \ni & e
     & ::= & t \mid a \mid \ann a \mid \case[\ell] T {t_1} t_2 \mid \fix[\ell] T t & \mbox{eliminations} \\
-\SizeExp & \ni & a,b & ::= & \infty \mid \ind i + o ~(o \in \NN) & \mbox{size expressions} \\
+\SizeExp & \ni & a,b & ::= & \infty \mid k \mid \ind i + k ~(k \in \NN) & \mbox{size expressions} \\
 \Cxt & \ni & \Gamma, \Delta & ::= & \cempty \mid \erext[\noterased] \Gamma T \mid \erext \Gamma \Size \\
 \end{array}
 \]
 We omit the ``$\noterased$''-markers from $\Gamma$ and $\Pi$ by default.  We write $\forallT T$ for $\erpiT \Size T$.
-For concrete function types, we may use a (named dependent) function type notation as syntactic sugar for the corresponding de Bruijn representation.  For instance, $\funT i \Size \Nat i \to \Set[\ell]$ is sugar for $\piT \Size \piT {(\Nat\,\ind 0)} \Set[\ell]$.  We abbreviate this type by \fbox{$\FixK\,\ell$}, and let \fbox{$\FixT\,T$} stand for $\allT i \Size (\funT x {\Nat i} T\, i\, x) \to \funT x {\Nat (i + 1)} T \,(i+1)\, x$. Similar as for $\Pi$, we use named lambda abstraction as sugar for de Bruijn abstraction.  Named abstract takes care of proper lifting of de Bruijn indices.
+For concrete function types, we may use a (named dependent) function type notation as syntactic sugar for the corresponding de Bruijn representation.  For instance, $\funT i \Size \Nat i \to \Set[\ell]$ is sugar for $\piT \Size \piT {(\Nat\,\ind 0)} \Set[\ell]$.  We abbreviate this type by \fbox{$\FixK\,\ell$}, and let \fbox{$\FixT\,T$} stand for $\allT i \Size (\funT x {\Nat i} T\, i\, x) \to \funT x {\Nat (i + 1)} T \,(i+1)\, x$. Similar as for $\Pi$, we use named lambda abstraction as sugar for de Bruijn abstraction.  Named abstract takes care of proper lifting of de Bruijn indices, for instance, $\lambda x.\, t x = \lambda. (t \slift)\,\ind 0$ if $t$ is outside the scope of $x$.
 
 Resurrection\cite{pfenning:lics01} \fbox{$\resurrect\Gamma$} removes
 the ``$\erased$''-markers from all bindings in $\Gamma$ (\ie, replaces
 them by ``$\noterased$''-markers).  Note that, trivially, resurrection is idempotent: $\resurrecttwice\Gamma = \resurrect{\Gamma}$.
 
-We write $\sigma$ and $\tau$ for substitutions, which are lists of terms, and $t \sigma$ for the application of substitution $\sigma$ to term $t$.  We write $\slift^n_m$ for the substitution $(v_{n+m-1},\dots,v_{n+1},v_n)$ which applies to a term with $m$ free indices and increases all of them by $n$.  We write $\slift_m$ for the lifting $\slift^1_m$ and $\sid_m$ for the identity substitution $ \slift^0_m$. The substitution $[u]_m = (\sid_m, u)$ replaces free index $\ind 0$ by term $u$ and decrements all other free indices by $1$. We drop subscript $m$ when clear from the context.
+We write $\sigma$ and $\tau$ for substitutions, which are lists of terms, and $t \sigma$ for the application of substitution $\sigma$ to term $t$.  We write $\slift^k_m$ for the substitution $(v_{k+m-1},\dots,v_{k+1},v_k)$ which applies to a term with $m$ free indices and increases all of them by $k$.  We write $\slift_m$ for the lifting $\slift^1_m$ and $\sid_m$ for the identity substitution $ \slift^0_m$. The substitution $[u]_m = (\sid_m, u)$ replaces free index $\ind 0$ by term $u$ and decrements all other free indices by $1$. We drop subscript $m$ when clear from the context.
 
-Size increment \fbox{$a + k$} for $k \in \NN$ is defined by $\infty + k = \infty$ and $(\ind i + o) + k = \ind i + (o + k)$.  Size comparison \fbox{$a \leq b$} holds if either $b = \infty$ or $a = \ind i + o$ and $b = \ind i + o'$ with $o \leq o'$.
+Size increment \fbox{$a + k$} for $k \in \NN$ extends addition by $\infty + k = \infty$ and $(\ind i + k') + k = \ind i + (k' + k)$.  Size comparison \fbox{$a \leq b$} holds if either $b = \infty$ or  $k \leq k'$ where either $a = k$ and $b = k'$ or $a \in \{ k, \ind i + k \}$ and $b = \ind i + k'$.
 
 Judgements.
 \[
@@ -265,7 +267,7 @@ Inference rules.
     }{\der \erext \Gamma \Size}
 \]
 
-\fbox{$\Gamma(i) = \eann T$} (implies $\Gamma \der T$).
+\fbox{$\Gamma(i) = \eann T$} (implies $\resurrect\Gamma \der T$).
 \[
   \ru{}{(\eext \Gamma T)(0) = \eann T \slift}
 \qquad
@@ -334,7 +336,7 @@ Inference rules.
       \Gamma \der T : \Nat (b + 1) \to \Set[\ell] \qquad
       \Gamma \der t_z : T \, \tzero \qquad
       \Gamma \der a : \Size \qquad
-      \Gamma \der t_s : (n : \Nat b) \to T \, (\suc a n)
+      \Gamma \der t_s : (t : \Nat b) \to T \, (\suc a t)
     }{\Gamma \der u\,\case[\ell] T {t_z} t_s : T \, u}
 \\[2ex]
   \ru{\Gamma \der u : \Nat b \qquad
@@ -380,7 +382,7 @@ Computation rules.
       \Gamma \der T : \Nat (b + 1) \to \Set[\ell] \qquad
       \Gamma \der t_z : T\,\tzero \qquad
       \Gamma \der a : \Size \qquad
-      \Gamma \der t_s : (n : \Nat b) \to T\,(\suc a n)
+      \Gamma \der t_s : (t : \Nat b) \to T\,(\suc a t)
     }{\Gamma \der \tzero\,\case[\ell] T {t_z} {t_s} = t_z : T\,\tzero}
 \\[2ex]
   \ru{\Gamma \der t : \Nat b \qquad
@@ -652,6 +654,12 @@ match a part of a judgement.
 \end{enumerate}
 \end{lemma}
 
+\begin{lemma}[Inversion of typing]
+\label{lem:invty} \bla
+\begin{enumerate}
+\item TODO
+\end{enumerate}
+\end{lemma}
 
 
 
@@ -659,6 +667,7 @@ match a part of a judgement.
 \section{Semantics}
 \label{sec:sem}
 
+\subsection{Operational semantics}
 
 Judgements.
 \[
@@ -707,11 +716,306 @@ Judgements.
      }%{w \in \{ \tzero, \suc a u \}}
 \end{gather*}
 
+We write \fbox{$t \approx t'$} iff $t$ and $t'$ are syntactically equal if we ignore sizes $\ann a$ in irrelevant positions.  For example, $\suc a \tzero \approx \suc 0 \tzero$, but $\Nat a \not\approx \Nat 0$.
 
 
+\subsection{Logical predicates}
 
+We write $\forall \rho : \Gamma \leq \Delta.~ P(\Gamma,\rho)$ short for
+$\forall \Gamma, \rho.~ \Gamma \der \rho : \Delta \implies P(\Gamma,\rho)$.
+We apply implicit binding (like $\Gamma$ here) in other, analogous cases as well.
+
+We write \fbox{$\Gamma \der t :=: t' : T$} for the conjunction of $\Gamma \der t,t' : T$ and $\Gamma \der t = t' : T$.  We write \fbox{$\Gamma \der t \evalsto w : T$} if additionally $t \evalsto w$.
+
+We define a family of PERs \fbox{$\sneq \Delta \_ \_ T$} that characterize the neutrals of type $T$.
+\[
+  \sneq \Delta t {t'} T \miff \Delta \der t \evalsto n : T \mand \Delta \der t' \evalsto n' : T
+\]
+
+Assuming $\Delta \der b : \Size$, we define inductively a family \fbox{$\snateq \Delta \_ \_ b$} of relations that characterize the semantic natural numbers.
+\begin{gather*}
+  \ru{\sneq \Delta t {t'} {\Nat b}
+    }{\snateq \Delta t {t'} b
+    }
+\\[2ex]
+  \rux{\Delta \der t \evalsto \tzero : \Nat b \qquad
+      \Delta \der t' \evalsto \tzero : \Nat b
+    }{\snateq \Delta t {t'} b
+    }{b > 0}
+\\[2ex]
+  \rux{\Delta \der t \evalsto \suc a u : \Nat b \qquad
+      \Delta \der t' \evalsto \suc{a'}{u'} : \Nat b \qquad
+      \snateq \Delta u {u'} {b'}
+    }{\snateq \Delta t {t'} b
+    }{b = b' + 1}
+\end{gather*}
+Note that in the last rule $b$ and $b'$ could be both $\infty$.
+We write \fbox{$\snat \Delta t b$} iff $\snateq \Delta t t b$.
+
+By recursion on level $\ell \in \NN$ we define inductively what it means to be a semantic type, \fbox{$\sty \Delta T \ell$}, and simultaneously
+\begin{enumerate}
+\item what it means for semantic types to be equal, \fbox{$\steqd \Delta T {T'} \ell {\T}$},
+\item what it means for a term to have a semantic type, \fbox{$\tcal :: \sttmd \Delta t T {\T}$}, and
+\item what it means for two such terms to be equal, \fbox{$\sttmeqd \Delta t {t'} T {\T} {\tcal}$},
+\end{enumerate}
+all three by recursion on a derivation $\T :: \sty \Delta T \ell$.
+For each $\ell$, this is an instance of an inductive-recursive definition \cite{dybjer:jsl00}.
+
+We first list the rules for \fbox{$\sty \Delta T \ell$}:
+\begin{gather*}
+  \rux{\Delta \der T \evalsto \Set[\ell'] : \Set[\ell]
+     }{\sty \Delta T \ell
+     }{\ell' {<} \ell}
+\qquad
+  \ru{\Delta \der T \evalsto N : \Set[\ell]
+    }{\sty \Delta T \ell}
+\qquad
+  \ru{\Delta \der T \evalsto \Nat a : \Set[\ell]
+    }{\sty \Delta T \ell}
+\\[2ex]
+  \rul{\Delta \der T' \evalsto \epiT \Size T : \Set[\ell] \qquad
+       \eext \Delta \Size \der T : \Set[\ell] \qquad
+      \forall \rho : \Gamma \leq \Delta,~\Gamma \der a : \Size.~
+        \sty \Gamma {T(\rho,a)} \ell \\
+    }{\sty \Delta {T'} \ell}
+\\[2ex]
+  \rul{\Delta \der T' \evalsto \piT U T : \Set[\ell] \qquad \cext \Delta U \der T : \Set[\ell] \\ \relax
+      \U :: \forall \rho : \Gamma \leq \Delta.~ \sty{\Gamma}{U\rho} {\ell} \\ \relax
+      \T :: \forall \rho : \Gamma \leq \Delta,~\sttmd \Gamma u {U\rho} {\U(\rho)}.~
+        \sty \Gamma {T(\rho,u)} \ell \\
+      \forall \rho : \Gamma \leq \Delta,~ \uu :: \sttmd \Gamma u {U\rho} {\U(\rho)}.~
+        \sttmeqd \Gamma u {u'} {U\rho} {\U(\rho)} {\uu} \implies
+        \steqd \Gamma {T(\rho,u)} {T(\rho,u')} \ell {\T(\rho,\uu)}
+    }{\sty \Delta {T'} \ell}
+\end{gather*}
+Then, we give the cases for \fbox{$\steqd \Delta T {T'} \ell {\T}$}.
+\begin{caselist}
+
+\nextcase Universes:
+\[
+  \rux{\Delta \der T \evalsto \Set[\ell'] : \Set[\ell]
+     }{\sty \Delta T \ell
+     }{\ell' {<} \ell}
+\]
+Then $\steqd \Delta T {T'} \ell {\T}$ iff $\Delta \der T' \evalsto \Set[\ell'] : \Set[\ell]$.
+
+\nextcase Neutrals:
+\[
+  \ru{\Delta \der T \evalsto N : \Set[\ell]
+    }{\sty \Delta T \ell}
+\]
+Then $\steqd \Delta T {T'} \ell {\T}$ iff $\Delta \der T' \evalsto N' : \Set[\ell]$ and
+$\Delta \der N = N' : \Set[\ell]$.
+
+\nextcase Natural number type:
+\[
+  \ru{\Delta \der T \evalsto \Nat a : \Set[\ell]
+    }{\sty \Delta T \ell}
+\]
+Then $\steqd \Delta T {T'} \ell {\T}$ iff $\Delta \der T' \evalsto \Nat a : \Set[\ell]$.
+
+\nextcase Size quantification:
+\[
+  \rul{\Delta \der T \evalsto \epiT \Size U : \Set[\ell] \qquad
+       \eext \Delta \Size \der U : \Set[\ell] \qquad
+      \U :: \forall \rho : \Gamma \leq \Delta,~\Gamma \der a : \Size.~
+        \sty \Gamma {U(\rho,a)} \ell \\
+    }{\sty \Delta {T} \ell}
+\]
+Then $\steqd \Delta T {T'} \ell {\T}$ iff $\Delta \der T' \evalsto \epiT \Size {U'} : \Set[\ell]$
+and $\eext \Delta \Size \der U' : \Set[\ell]$ and forall $\rho : \Gamma \leq \Delta$ and $\Gamma \der a : \Size$ we have $\steqd \Gamma {U(\rho,a)} {U'(\rho,a)} \ell {\U(\rho,a)}$.
+
+\nextcase Function spaces:
+\[
+  \rul{\Delta \der T_1' \evalsto \piT {U_1} {T_1} : \Set[\ell] \qquad \cext \Delta U_1 \der T_1 : \Set[\ell] \\ \relax
+      \U :: \forall \rho : \Gamma \leq \Delta.~ \sty{\Gamma}{U_1\rho} {\ell} \\ \relax
+      \T :: \forall \rho : \Gamma \leq \Delta,~\sttmd \Gamma u {U_1\rho} {\U(\rho)}.~
+        \sty \Gamma {T_1(\rho,u)} \ell \\
+      \forall \rho : \Gamma \leq \Delta,~ \uu :: \sttmd \Gamma u {U_1\rho} {\U(\rho)}.~
+        \sttmeqd \Gamma u {u'} {U_1\rho} {\U(\rho)} {\uu} \implies
+        \steqd \Gamma {T_1(\rho,u)} {T_1(\rho,u')} \ell {\T(\rho,\uu)}
+    }{\sty \Delta {T_1'} \ell}
+\]
+Then $\steqd \Delta {T_1'} {T_2'} \ell {\T}$ iff $\Delta \der T_2' \evalsto \piT{U_2}{T_2} : \Set[\ell]$ and
+$\cext \Delta{U_2} \der T_2 : \Set[\ell]$ and
+forall $\rho : \Gamma \leq \Delta$ we have $\steqd \Gamma {U_1\rho} {U_2\rho} \ell {\U(\rho)}$
+and forall $\uu :: \sttmd \Gamma u {U_1\rho} {\U(\rho)}$ finally
+$\steqd \Gamma {T_1(\rho,u)} {T_2(\rho,u)} \ell {\T(\rho,\uu)}$.
+
+\end{caselist}
+
+Next, we define semantic membership \fbox{$\sttmd \Delta t T {\T}$}.
+\begin{caselist}
+
+\nextcase
+\[
+  \rux{\Delta \der T \evalsto \Set[\ell'] : \Set[\ell]
+     }{\sty \Delta T \ell
+     }{\ell' {<} \ell}
+\]
+Then $\sttmd \Delta t T {\T}$ iff $\sty \Delta t {\ell'}$.
+
+\nextcase
+\[
+  \ru{\Delta \der T \evalsto N : \Set[\ell]
+    }{\sty \Delta T \ell}
+\]
+Then $\sttmd \Delta t T {\T}$ iff $\Delta \der t \evalsto n : N$.
+
+\nextcase
+\[
+  \ru{\Delta \der T \evalsto \Nat a : \Set[\ell]
+    }{\sty \Delta T \ell}
+\]
+Then $\sttmd \Delta t T {\T}$ iff $\snat \Delta t a$.
+
+\nextcase %  Let $\T' :: \sty \Delta {T'} \ell$ be derived by
+\[
+  \T' ::
+  \rul{\Delta \der T' \evalsto \piT \Size T : \Set[\ell] \qquad
+       \cext \Delta \Size \der T : \Set[\ell] \qquad
+      \T :: \forall \rho : \Gamma \leq \Delta,~\Gamma \der a : \Size.~
+        \sty \Gamma {T(\rho,a)} \ell \\
+    }{\sty \Delta {T'} \ell}
+\]
+Then $\sttmd \Delta t {T'} {\T'}$ iff $\Delta \der t : T'$ and
+forall $\rho : \Gamma \leq \Delta$ and $\acal :: \Gamma \der a : \Size$
+we have $\sttmd \Gamma {t\,a} {T(\rho,a)} {\T(\rho,\acal)}$.
+
+\nextcase % Let $\T' :: \sty \Delta {T'} \ell$ be derived by
+\[
+  \T' ::
+  \rul{\Delta \der T' \evalsto \erpiT \Size T : \Set[\ell] \qquad
+       \erext \Delta \Size \der T : \Set[\ell] \qquad
+      \T :: \forall \rho : \Gamma \leq \Delta,~\Gamma \der b : \Size.~
+        \sty \Gamma {T(\rho,b)} \ell \\
+    }{\sty \Delta {T'} \ell}
+\]
+Then $\sttmd \Delta t {T'} {\T'}$ iff $\Delta \der t : T'$ and
+forall $\rho : \Gamma \leq \Delta$ and $\bb :: \Gamma \der b : \Size$ and  $\resurrect\Gamma \der a : \Size$,
+\begin{enumerate}
+\item $\tcal :: \sttmd \Gamma {t \ann a} {T(\rho,b)} {\T(\rho,\bb)}$, and
+\item $\sttmeqd \Gamma {t \ann a} {t \ann {a'}} {T(\rho,b)} {\T(\rho,\bb)} {\tcal}$ for all $\resurrect\Gamma \der a' : \Size$.
+\end{enumerate}
+
+
+\nextcase
+\[
+  \T' ::
+  \rul{\Delta \der T' \evalsto \piT U T : \Set[\ell] \qquad \cext \Delta U \der T : \Set[\ell] \\ \relax
+      \U :: \forall \rho : \Gamma \leq \Delta.~ \sty{\Gamma}{U\rho} {\ell} \\ \relax
+      \T :: \forall \rho : \Gamma \leq \Delta,~\sttmd \Gamma u {U\rho} {\U(\rho)}.~
+        \sty \Gamma {T(\rho,u)} \ell \\
+      \forall \rho : \Gamma \leq \Delta,~ \uu :: \sttmd \Gamma u {U\rho} {\U(\rho)}.~
+        \sttmeqd \Gamma u {u'} {U\rho} {\U(\rho)} {\uu} \implies
+        \steqd \Gamma {T(\rho,u)} {T(\rho,u')} \ell {\T(\rho,\uu)}
+    }{\sty \Delta {T'} \ell}
+\]
+Then $\sttmd \Delta t {T'} {\T'}$ iff $\Delta \der t : T'$ and
+forall $\rho : \Gamma \leq \Delta$ and $\uu :: \sttmd \Gamma u {U\rho} {\U(\rho)}$,
+\begin{enumerate}
+\item $\tcal :: \sttmd \Gamma {t\rho\,u} {T(\rho,u)} {\T(\rho,\uu)}$, and
+\item $\sttmeqd \Gamma {t\rho\,u} {t\rho\,u'} {T(\rho,u)} {\T(\rho,\uu)} {\tcal}$ for all
+  $\sttmeqd \Gamma u {u'} {U\rho} {\U(\rho)} {\uu}$.
+\end{enumerate}
+
+\end{caselist}
+
+
+Finally, we define \fbox{$\sttmeqd \Delta t {t'} T {\T} {\tcal}$}
+where $\tcal :: \sttmd \Delta t T {\T}$.
+\begin{caselist}
+
+
+\nextcase
+\[
+  \T ::
+  \rux{\Delta \der T \evalsto \Set[\ell'] : \Set[\ell]
+     }{\sty \Delta T \ell
+     }{\ell' {<} \ell}
+\]
+Then $\sttmeqd \Delta t {t'} T {\T} {\tcal}$ iff
+% $\T' : \sty \Delta {t} \ell$ and
+$\steqd \Delta t {t'} {\ell'} {\tcal}$.
+
+\nextcase
+\[
+  \ru{\Delta \der T \evalsto N : \Set[\ell]
+    }{\sty \Delta T \ell}
+\]
+Then $\sttmeqd \Delta t {t'}T {\T}$ iff $\Delta \der t \evalsto n : N$.
+
+\nextcase
+\[
+  \ru{\Delta \der T \evalsto \Nat a : \Set[\ell]
+    }{\sty \Delta T \ell}
+\]
+Then $\sttmd \Delta t T {\T}$ iff $\snat \Delta t a$.
+
+\nextcase %  Let $\T' :: \sty \Delta {T'} \ell$ be derived by
+\[
+  \T' ::
+  \rul{\Delta \der T' \evalsto \piT \Size T : \Set[\ell] \qquad
+       \cext \Delta \Size \der T : \Set[\ell] \qquad
+      \T :: \forall \rho : \Gamma \leq \Delta,~\Gamma \der a : \Size.~
+        \sty \Gamma {T(\rho,a)} \ell \\
+    }{\sty \Delta {T'} \ell}
+\]
+Then $\sttmd \Delta t {T'} {\T'}$ iff $\Delta \der t : T'$ and
+forall $\rho : \Gamma \leq \Delta$ and $\acal :: \Gamma \der a : \Size$
+we have $\sttmd \Gamma {t\,a} {T(\rho,a)} {\T(\rho,\acal)}$.
+
+\nextcase % Let $\T' :: \sty \Delta {T'} \ell$ be derived by
+\[
+  \T' ::
+  \rul{\Delta \der T' \evalsto \erpiT \Size T : \Set[\ell] \qquad
+       \erext \Delta \Size \der T : \Set[\ell] \qquad
+      \T :: \forall \rho : \Gamma \leq \Delta,~\Gamma \der b : \Size.~
+        \sty \Gamma {T(\rho,b)} \ell \\
+    }{\sty \Delta {T'} \ell}
+\]
+Then $\sttmd \Delta t {T'} {\T'}$ iff $\Delta \der t : T'$ and
+forall $\rho : \Gamma \leq \Delta$ and $\bb :: \Gamma \der b : \Size$ and  $\resurrect\Gamma \der a : \Size$,
+\begin{enumerate}
+\item $\tcal :: \sttmd \Gamma {t \ann a} {T(\rho,b)} {\T(\rho,\bb)}$, and
+\item $\sttmeqd \Gamma {t \ann a} {t \ann {a'}} {T(\rho,b)} {\T(\rho,\bb)} {\tcal}$ for all $\resurrect\Gamma \der a' : \Size$.
+\end{enumerate}
+
+
+\nextcase
+\[
+  \T' ::
+  \rul{\Delta \der T' \evalsto \piT U T : \Set[\ell] \qquad \cext \Delta U \der T : \Set[\ell] \\ \relax
+      \U :: \forall \rho : \Gamma \leq \Delta.~ \sty{\Gamma}{U\rho} {\ell} \\ \relax
+      \T :: \forall \rho : \Gamma \leq \Delta,~\sttmd \Gamma u {U\rho} {\U(\rho)}.~
+        \sty \Gamma {T(\rho,u)} \ell \\
+      \forall \rho : \Gamma \leq \Delta,~ \uu :: \sttmd \Gamma u {U\rho} {\U(\rho)}.~
+        \sttmeqd \Gamma u {u'} {U\rho} {\U(\rho)} {\uu} \implies
+        \steqd \Gamma {T(\rho,u)} {T(\rho,u')} \ell {\T(\rho,\uu)}
+    }{\sty \Delta {T'} \ell}
+\]
+Then $\sttmd \Delta t {T'} {\T'}$ iff $\Delta \der t : T'$ and
+forall $\rho : \Gamma \leq \Delta$ and $\uu :: \sttmd \Gamma u {U\rho} {\U(\rho)}$,
+\begin{enumerate}
+\item $\tcal :: \sttmd \Gamma {t\rho\,u} {T(\rho,u)} {\T(\rho,\uu)}$, and
+\item $\sttmeqd \Gamma {t\rho\,u} {t\rho\,u'} {T(\rho,u)} {\T(\rho,\uu)} {\tcal}$ for all
+  $\sttmeqd \Gamma u {u'} {U\rho} {\U(\rho)} {\uu}$.
+\end{enumerate}
+
+
+\end{caselist}
 
 \newpage
+
+\section{Metatheory}
+\label{sec:meta}
+
+
+\begin{lemma}[Typing of constructed data]
+\label{lem:invdata} \bla
+If\/ $\Gamma \der c : \Nat b$ then $\resurrect\Gamma \der b : \Size$ and $b > 0$.
+\end{lemma}
+
 
 \section{Conclusions}
 \label{sec:concl}

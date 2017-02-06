@@ -163,6 +163,7 @@
 
 % Inference rules
 \newcommand{\rulename}[1]{\ensuremath{\mbox{\sc#1}}}
+\newcommand{\rul}[2]{\dfrac{\begin{array}[b]{@{}l@{}} #1 \end{array}}{#2}}
 \newcommand{\ru}[2]{\dfrac{\begin{array}[b]{@{}c@{}} #1 \end{array}}{#2}}
 \newcommand{\rux}[3]{\ru{#1}{#2}\ #3}
 \newcommand{\nru}[3]{#1\ \ru{#2}{#3}}
@@ -493,7 +494,7 @@
 \newcommand{\derc}{\der^\tc}
 \newcommand{\dera}{\der^\ta}
 \newcommand{\deri}{\der^\ti}
-\newcommand{\tc}{\mathsf{c}}
+%\newcommand{\tc}{\mathsf{c}}
 \newcommand{\ta}{\mathsf{a}}
 \newcommand{\ti}{\mathsf{i}}
 \newcommand{\bracket}[2][]{[#2]^{#1}}
@@ -620,6 +621,10 @@
 \newcommand{\FunKhat}[1]{\dot{\mathsf{\lambda}}^{#1}\,}
 \newcommand{\Funhat}[1]{\hat{\mathsf{\lambda}}^{#1}}
 \newcommand{\U}{\mathcal{U}}
+\newcommand{\uu}{\mathcal{u}}
+\newcommand{\acal}{\mathcal{a}}
+\newcommand{\bb}{\mathcal{b}}
+\newcommand{\tcal}{\mathcal{t}}
 
 %\newcommand{\Bot}[1]{\bot^{#1}}
 %\newcommand{\Top}[1]{\top^{#1}}
@@ -1367,6 +1372,16 @@
 \newcommand{\stwf}[2]{#1 \dersem #2}
 \newcommand{\sceq}[2]{\dersem #1 = #2}
 \newcommand{\scwf}[1]{\dersem #1}
+
+% logical relation
+\newcommand{\sty}[3]{#1 \valid #2 : \SET[#3]}
+\newcommand{\steqd}[5]{#1 \valid #2 = #3 : \SET[#4] /_{#5}}
+\newcommand{\sttmd}[4]{#1 \valid #2 : #3 /_{#4}}
+\newcommand{\sttmeqd}[6]{#1 \valid #2 = #3 : #4 /_{#5,#6}}
+\newcommand{\snat}[3]{#1 \valid #2 : \NAT(#3)}
+\newcommand{\snateq}[4]{#1 \valid #2 = #3 : \NAT(#4)}
+\newcommand{\sneq}[4]{#1 \valid #2 = #3 : \NE(#4)}
+\newcommand{\cevalsto}{\mathrel{{}_{:}\!\!\!\evalsto\!\!\!^{:}}}
 
 % lambda model
 \newcommand{\eid}{\eta_{\tid}}
