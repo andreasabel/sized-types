@@ -11,32 +11,14 @@ import Internal
 import Impossible
 #include "undefined.h"
 
--- | Substitutions are lists of terms or size expressions
---   or variables that can denote either.
+-- | Substitutions are lists of terms.
 
-type Subst = [SubstEntry]
-
-data SubstEntry
-  = STerm  Term
-  | SSize  Size
-  | SIndex Index
-
-sizeEntry :: SubstEntry -> Size
-sizeEntry = \case
-  SSize a  -> a
-  SIndex i -> SVar i 0
-  STerm{}  -> __IMPOSSIBLE__
-
-termEntry :: SubstEntry -> Term
-termEntry = \case
-  STerm t  -> t
-  SIndex i -> Var i []
-  SSize{}  -> __IMPOSSIBLE__
+type Subst = [Term]
 
 -- | Weakening substitution @Γ.Δ ⊢ wkS |Δ| : Γ@
 
 wkS :: Int -> Subst
-wkS n = map (SIndex . Index) [n,n+1..]
+wkS n = map (var . Index) [n,n+1..]
 
 -- | Identity substitution @Γ ⊢ idS : Γ@.
 
@@ -60,7 +42,7 @@ compS = subst
 --      Γ ⊢ consS t σ : Δ.T
 --   @
 
-consS :: SubstEntry -> Subst -> Subst
+consS :: Term -> Subst -> Subst
 consS = (:)
 
 -- | Lifting a substitution under a binder.
@@ -71,7 +53,7 @@ consS = (:)
 --   @
 
 liftS :: Subst -> Subst
-liftS s = consS (SIndex 0) $ weakS s
+liftS s = consS (var 0) $ weakS s
 
 -- | Weakening a substitution.
 --
@@ -86,7 +68,7 @@ weakS = compS (wkS 1)
 
 -- | Looking up an entry in a substitution.
 
-lookupS :: Subst -> Index -> SubstEntry
+lookupS :: Subst -> Index -> Term
 lookupS s i =  s !! dbIndex i
 
 -- | Substitution for various syntactic categories.
@@ -102,28 +84,25 @@ class Substitute a where
   substApply :: a -> Subst -> Elims -> a
   substApply t s es = subst s t `applyE` es
 
-instance Substitute SubstEntry where
-  subst s = \case
-    STerm  t -> STerm $ subst s t
-    SSize  t -> SSize $ subst s t
-    SIndex i -> lookupS s i
-
-  applyE t [] = t
-  applyE t es = __IMPOSSIBLE__
-
 instance Substitute a => Substitute [a] where
   subst s            = map (subst s)
   applyE ts es       = map (`applyE` es) ts
   substApply ts s es = map (\ t -> substApply t s es) ts
 
-instance Substitute Size where
-  subst s = \case
-    SInfty   -> SInfty
-    SConst k -> SConst k
-    SVar i k -> sizeEntry (lookupS s i) `splus` k
+instance Substitute a => Substitute (Dom a) where
+  subst s            = fmap (subst s)
+  applyE ts es       = fmap (`applyE` es) ts
+  substApply ts s es = fmap (\ t -> substApply t s es) ts
 
-  applyE t [] = t
-  applyE t es = __IMPOSSIBLE__
+instance Substitute a => Substitute (Arg a) where
+  subst s            = fmap (subst s)
+  applyE ts es       = fmap (`applyE` es) ts
+  substApply ts s es = fmap (\ t -> substApply t s es) ts
+
+instance Substitute a => Substitute (Elim' a) where
+  subst s            = fmap (subst s)
+  applyE ts es       = fmap (`applyE` es) ts
+  substApply ts s es = fmap (\ t -> substApply t s es) ts
 
 instance Substitute Term where
   substApply t s es = case t of
@@ -142,16 +121,12 @@ instance Substitute Term where
     Suc t
       | null es   -> Suc $ subst s t
       | otherwise -> __IMPOSSIBLE__
+    Infty
+      | null es   -> Infty
+      | otherwise -> __IMPOSSIBLE__
     Pi u t
       | null es   -> Pi (subst s u) $ subst s t
       | otherwise -> __IMPOSSIBLE__
     Var i es -> lookupS s i `applyE` subst s es
 
-
--- | Size increment by a constant.
-
-splus :: Size -> Integer -> Size
-splus a k = case a of
-  SInfty    -> SInfty
-  SConst k' -> SConst $ k' + k
-  SVar i k' -> SVar i $ k' + k
+instance Substitute (Abs Term) where

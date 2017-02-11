@@ -19,16 +19,7 @@ newtype Index = Index { dbIndex :: Int }
 
 -- | Size expressions.
 
-data Size' a
-  = SVar a Integer
-    -- ^ @i + k@: Size variable plus offset.
-  | SConst Integer
-    -- ^ @k@:     Constant finite size.
-  | SInfty
-    -- ^ @oo@:    Infinity size.
-  deriving (Eq, Ord, Show, Functor, Foldable, Traversable)
-
-type Size = Size' Index
+type Size  = Term
 type Level = Size
 
 -- | Terms/types
@@ -42,10 +33,12 @@ data Term
     Size
   | -- | Sized natural number type.
     Nat Size
-  | -- | Zero constructor.
+  | -- | Zero constructor / size.
     Zero
-  | -- | Successor constructor.
+  | -- | Successor constructor / size.
     Suc Term
+  | -- | Infinity size.
+    Infty
   | -- ^ (Dependent) function type.
     Pi (Dom Type) (Abs Term)
   | -- ^ Lambda abstraction
@@ -63,7 +56,7 @@ type Elim  = Elim' Term
 
 data Elim' a
   = -- | Function application.
-    Apply (Arg Term)
+    Apply (Arg a)
   | -- | Case distinction
     Case
     { caseReturn :: a -- ^ @T : Nat (b + 1) -> Setω@
@@ -108,3 +101,11 @@ data Relevance
   | ShapeIrr
   | Irrelevant
   deriving (Eq, Ord, Show)
+
+-- * Smart constructor.
+
+var :: Index -> Term
+var i = Var i []
+
+defaultArg :: a -> Arg a
+defaultArg = Arg Relevant
