@@ -33,10 +33,10 @@ data Term
     Size
   | -- | Sized natural number type.
     Nat Size
-  | -- | Zero constructor / size.
-    Zero
-  | -- | Successor constructor / size.
-    Suc Term
+  | -- | Zero constructor, or zero size (then @Size@ is ignored).
+    Zero Size
+  | -- | Successor constructor, or successor size (then @Size@ is ignored).
+    Suc Size Term
   | -- | Infinity size.
     Infty
   | -- ^ (Dependent) function type.
@@ -109,3 +109,13 @@ var i = Var i []
 
 defaultArg :: a -> Arg a
 defaultArg = Arg Relevant
+
+-- | Zero size.
+
+sZero :: Term
+sZero = Zero Infty
+
+-- | Successor size.
+
+sSuc  :: Term -> Term
+sSuc  = Suc Infty
