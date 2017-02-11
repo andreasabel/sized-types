@@ -237,7 +237,12 @@
 \newcommand{\suty}[4]{#1 \der #2 \eeq #3 : #4}
 \newcommand{\sueq}[5]{#1 \der #2 = #3 \eeq #4 : #5}
 
+\newcommand{\sqsubsetsim}{\mathrel{\substack{\scriptstyle\sqsubset\\[-0.6ex]\scriptstyle\sim}}}
+%\newcommand{\sqsubsetsim}{\mathrel{\substack{\textstyle\sqsubset\\[-0.2ex]\textstyle\sim}}}
+\newcommand{\shape}{\sqsubsetsim}
+\newcommand{\ssh}[4]{#1 \valid #2 \shape #3 /_{#4}}
 
+\newcommand{\The}{\Theta}
 
 % % natural transformations
 % \newcommand{\subscriptopt}[1]{\ifthenelse{\equal{#1}{}}{}{_{#1}}}
@@ -358,6 +363,7 @@
 \newcommand{\eqtyt}{\eqchkt}
 %\newcommand{\eqinft}{~\buildrel\cdot\over\longleftrightarrow~}
 %\newcommand{\eqchkt}{~\buildrel\cdot\over\Longleftrightarrow~}
+\newcommand{\EqNat}[3]{#1 \der #2 \eqchk #3 : \tNat}
 
 % PTS
 \newcommand{\Axiom}{\mathsf{Axiom}}
@@ -594,6 +600,7 @@
 %\newcommand{\Rbase}[5]{#1 : #2 \reifiesto #3 \der #4 : #5}
 %\newcommand{\Rne}[4]{#1 \der #2 \reifiesto #3 : #4}
 
+\newcommand{\tNat}{\mathsf{Nat}}
 \newcommand{\Nat}{\mathsf{Nat}\,}
 \newcommand{\tzero}{\mathsf{zero}}
 
@@ -1377,7 +1384,8 @@
 \newcommand{\sty}[3]{#1 \valid #2 : \SET[#3]}
 \newcommand{\steqd}[5]{#1 \valid #2 = #3 : \SET[#4] /_{#5}}
 \newcommand{\sttmd}[4]{#1 \valid #2 : #3 /_{#4}}
-\newcommand{\sttmeqd}[6]{#1 \valid #2 = #3 : #4 /_{#5,#6}}
+\newcommand{\stmeqd}[5]{#1 \valid #2 = #3 : #4 /_{#5}}
+\newcommand{\sttmeqd}[6]{#1 \valid #2 = #3 : #4 /_{#5}}
 \newcommand{\snat}[3]{#1 \valid #2 : \NAT(#3)}
 \newcommand{\snateq}[4]{#1 \valid #2 = #3 : \NAT(#4)}
 \newcommand{\sneq}[4]{#1 \valid #2 = #3 : \NE(#4)}

@@ -419,7 +419,7 @@ Congruence rules.
 \qquad
   \ru{\cext \Gamma \Size \der T = T' : s
     }{\Gamma \der \epiT \Size T = \epiT \Size T' : s}
-\qquad
+\\[2ex]
   \ru{%\der \Gamma \qquad
       \Gamma \der a : \Size
     }{\Gamma \der \Nat a = \Nat a : s}
@@ -438,10 +438,15 @@ Congruence rules.
 %   \ru{\Gamma \der t : T \qquad
 %       \Gamma \mid T \der e : T'
 %     }{\Gamma \der t\,e : T'}
-\qquad
+\\[2ex]
   \ru{\Gamma \der t = t' : \piT \Size T \qquad
       \Gamma \der a : \Size
     }{\Gamma \der t\,a = t'\,a : T[a]}
+\qquad
+  \ru{\Gamma \der t = t' : \forallT T \qquad
+      \Gamma \der a, a' : \Size \qquad
+      \resurrect\Gamma \der b : \Size
+    }{\Gamma \der t \ann a = t' \ann{a'} : T[b]}
 \\[2ex] % \qquad
   \ru{\resurrect\Gamma \der b : \Size
     }{\Gamma \der \tzero = \tzero : \Nat (b + 1)}
@@ -449,14 +454,9 @@ Congruence rules.
   \ru{\Gamma \der a, a' : \Size \qquad
       \Gamma \der t = t' : \Nat b
     }{\Gamma \der \suc a t = \suc {a'} t' : \Nat (b + 1)}
-\qquad
-  \ru{\Gamma \der t = t' : \forallT T \qquad
-      \Gamma \der a, a' : \Size \qquad
-      \resurrect\Gamma \der b : \Size
-    }{\Gamma \der t \ann a = t' \ann{a'} : T[b]}
 \\[2ex]
   \ru{\Gamma \der u = u' : \Nat (a + 1) \qquad
-      \Gamma \der T = T' : \Nat (a + 1) \to \Set[\ell] \qquad
+      \Gamma \der T = T' : \Nat (a + 1) \to \Set[\ell] \\
       \Gamma \der t_z = t_z' : T \, \tzero \qquad
       \Gamma \der t_s = t_s' : (n : \Nat a) \to T \, (\suc a n)
     }{\Gamma \der u\,\case[\ell] T {t_z} t_s = u'\,\case[\ell] {T'} {t_z'} t_s' : T \, u}
@@ -729,8 +729,17 @@ We write \fbox{$\Gamma \der t :=: t' : T$} for the conjunction of $\Gamma \der t
 
 We define a family of PERs \fbox{$\sneq \Delta \_ \_ T$} that characterize the neutrals of type $T$.
 \[
-  \sneq \Delta t {t'} T \miff \Delta \der t \evalsto n : T \mand \Delta \der t' \evalsto n' : T
+  \sneq \Delta t {t'} T \miff % \Delta \der t :=: t' : T
+    \Delta \der t  \evalsto n  : T \mand
+    \Delta \der t' \evalsto n' : T \mand
+    \Delta \der n = n' : T
 \]
+\begin{lemma}[Soundness of $\NE$]
+  If\/ $\sneq \Delta t {t'} T$ then $\Delta \der t :=: t' : T$.
+\end{lemma}
+\begin{proof}
+  By transitivity of definitional equality.
+\end{proof}
 
 Assuming $\Delta \der b : \Size$, we define inductively a family \fbox{$\snateq \Delta \_ \_ b$} of relations that characterize the semantic natural numbers.
 \begin{gather*}
@@ -752,10 +761,18 @@ Assuming $\Delta \der b : \Size$, we define inductively a family \fbox{$\snateq 
 Note that in the last rule $b$ and $b'$ could be both $\infty$.
 We write \fbox{$\snat \Delta t b$} iff $\snateq \Delta t t b$.
 
+\begin{lemma}
+  If\/ $\DD :: \snateq \Delta t {t'} b$ then $\Delta \der t :=: t' : \Nat b$.
+\end{lemma}
+\begin{proof}
+  By induction on $\DD$.
+\end{proof}
+
 By recursion on level $\ell \in \NN$ we define inductively what it means to be a semantic type, \fbox{$\sty \Delta T \ell$}, and simultaneously
 \begin{enumerate}
 \item what it means for semantic types to be equal, \fbox{$\steqd \Delta T {T'} \ell {\T}$},
-\item what it means for a term to have a semantic type, \fbox{$\tcal :: \sttmd \Delta t T {\T}$}, and
+\item what it means for a term to have a semantic type, \fbox{$%\tcal ::
+  \sttmd \Delta t T {\T}$}, and
 \item what it means for two such terms to be equal, \fbox{$\sttmeqd \Delta t {t'} T {\T} {\tcal}$},
 \end{enumerate}
 all three by recursion on a derivation $\T :: \sty \Delta T \ell$.
@@ -788,6 +805,8 @@ We first list the rules for \fbox{$\sty \Delta T \ell$}:
         \steqd \Gamma {T(\rho,u)} {T(\rho,u')} \ell {\T(\rho,\uu)}
     }{\sty \Delta {T'} \ell}
 \end{gather*}
+
+
 Then, we give the cases for \fbox{$\steqd \Delta T {T'} \ell {\T}$}.
 \begin{caselist}
 
@@ -822,11 +841,16 @@ Then $\steqd \Delta T {T'} \ell {\T}$ iff $\Delta \der T' \evalsto \Nat a : \Set
         \sty \Gamma {U(\rho,a)} \ell \\
     }{\sty \Delta {T} \ell}
 \]
-Then $\steqd \Delta T {T'} \ell {\T}$ iff $\Delta \der T' \evalsto \epiT \Size {U'} : \Set[\ell]$
-and $\eext \Delta \Size \der U' : \Set[\ell]$ and forall $\rho : \Gamma \leq \Delta$ and $\Gamma \der a : \Size$ we have $\steqd \Gamma {U(\rho,a)} {U'(\rho,a)} \ell {\U(\rho,a)}$.
+Then $\steqd \Delta T {T'} \ell {\T}$
+iff % $\Delta \der T = T' : \Set[\ell]$ and
+$\Delta \der T' \evalsto \epiT \Size {U'} : \Set[\ell]$
+and $\eext \Delta \Size \der U' : \Set[\ell]$
+and forall $\rho : \Gamma \leq \Delta$ and $\Gamma \der a : \Size$
+we have $\steqd \Gamma {U(\rho,a)} {U'(\rho,a)} \ell {\U(\rho,a)}$.
 
 \nextcase Function spaces:
 \[
+  \T' ::
   \rul{\Delta \der T_1' \evalsto \piT {U_1} {T_1} : \Set[\ell] \qquad \cext \Delta U_1 \der T_1 : \Set[\ell] \\ \relax
       \U :: \forall \rho : \Gamma \leq \Delta.~ \sty{\Gamma}{U_1\rho} {\ell} \\ \relax
       \T :: \forall \rho : \Gamma \leq \Delta,~\sttmd \Gamma u {U_1\rho} {\U(\rho)}.~
@@ -836,11 +860,15 @@ and $\eext \Delta \Size \der U' : \Set[\ell]$ and forall $\rho : \Gamma \leq \De
         \steqd \Gamma {T_1(\rho,u)} {T_1(\rho,u')} \ell {\T(\rho,\uu)}
     }{\sty \Delta {T_1'} \ell}
 \]
-Then $\steqd \Delta {T_1'} {T_2'} \ell {\T}$ iff $\Delta \der T_2' \evalsto \piT{U_2}{T_2} : \Set[\ell]$ and
-$\cext \Delta{U_2} \der T_2 : \Set[\ell]$ and
-forall $\rho : \Gamma \leq \Delta$ we have $\steqd \Gamma {U_1\rho} {U_2\rho} \ell {\U(\rho)}$
-and forall $\uu :: \sttmd \Gamma u {U_1\rho} {\U(\rho)}$ finally
-$\steqd \Gamma {T_1(\rho,u)} {T_2(\rho,u)} \ell {\T(\rho,\uu)}$.
+Then $\steqd \Delta {T_1'} {T_2'} \ell {\T'}$
+iff $\sty \Delta {T_2'} \ell$
+and $\Delta \der T_1' = T_2' : \Set[\ell]$
+and $\Delta \der T_2' \evalsto \piT{U_2}{T_2} : \Set[\ell]$
+and $\cext \Delta{U_2} \der T_2 : \Set[\ell]$
+and forall $\rho : \Gamma \leq \Delta$
+we have $\steqd \Gamma {U_1\rho} {U_2\rho} \ell {\U(\rho)}$
+and forall $\uu :: \sttmd \Gamma u {U_1\rho} {\U(\rho)}$
+finally $\steqd \Gamma {T_1(\rho,u)} {T_2(\rho,u)} \ell {\T(\rho,\uu)}$.
 
 \end{caselist}
 
@@ -892,10 +920,10 @@ we have $\sttmd \Gamma {t\,a} {T(\rho,a)} {\T(\rho,\acal)}$.
     }{\sty \Delta {T'} \ell}
 \]
 Then $\sttmd \Delta t {T'} {\T'}$ iff $\Delta \der t : T'$ and
-forall $\rho : \Gamma \leq \Delta$ and $\bb :: \Gamma \der b : \Size$ and  $\resurrect\Gamma \der a : \Size$,
+forall $\rho : \Gamma \leq \Delta$ and $\bb :: \Gamma \der b : \Size$ and  $\Gamma \der a : \Size$,
 \begin{enumerate}
 \item $\tcal :: \sttmd \Gamma {t \ann a} {T(\rho,b)} {\T(\rho,\bb)}$, and
-\item $\sttmeqd \Gamma {t \ann a} {t \ann {a'}} {T(\rho,b)} {\T(\rho,\bb)} {\tcal}$ for all $\resurrect\Gamma \der a' : \Size$.
+\item $\sttmeqd \Gamma {t \ann a} {t \ann {a'}} {T(\rho,b)} {\T(\rho,\bb)} {\tcal}$ for all $\Gamma \der a' : \Size$.
 \end{enumerate}
 
 
@@ -922,8 +950,8 @@ forall $\rho : \Gamma \leq \Delta$ and $\uu :: \sttmd \Gamma u {U\rho} {\U(\rho)
 \end{caselist}
 
 
-Finally, we define \fbox{$\sttmeqd \Delta t {t'} T {\T} {\tcal}$}
-where $\tcal :: \sttmd \Delta t T {\T}$.
+Finally, we define \fbox{$\sttmeqd \Delta t {t'} T {\T} {\tcal}$}.
+%where $\tcal :: \sttmd \Delta t T {\T}$.
 \begin{caselist}
 
 
@@ -935,7 +963,8 @@ where $\tcal :: \sttmd \Delta t T {\T}$.
      }{\ell' {<} \ell}
 \]
 Then $\sttmeqd \Delta t {t'} T {\T} {\tcal}$ iff
-% $\T' : \sty \Delta {t} \ell$ and
+$\Delta \der t :=: t' : T$ and
+$\tcal :: \sty \Delta {t} \ell$ and
 $\steqd \Delta t {t'} {\ell'} {\tcal}$.
 
 \nextcase
@@ -943,14 +972,14 @@ $\steqd \Delta t {t'} {\ell'} {\tcal}$.
   \ru{\Delta \der T \evalsto N : \Set[\ell]
     }{\sty \Delta T \ell}
 \]
-Then $\sttmeqd \Delta t {t'}T {\T}$ iff $\Delta \der t \evalsto n : N$.
+Then $\stmeqd \Delta t {t'} T {\T}$ iff $\sneq \Delta t {t'} T$.
 
 \nextcase
 \[
   \ru{\Delta \der T \evalsto \Nat a : \Set[\ell]
     }{\sty \Delta T \ell}
 \]
-Then $\sttmd \Delta t T {\T}$ iff $\snat \Delta t a$.
+Then $\stmeqd \Delta t {t'} T {\T}$ iff $\snateq \Delta t {t'} a$.
 
 \nextcase %  Let $\T' :: \sty \Delta {T'} \ell$ be derived by
 \[
@@ -961,9 +990,11 @@ Then $\sttmd \Delta t T {\T}$ iff $\snat \Delta t a$.
         \sty \Gamma {T(\rho,a)} \ell \\
     }{\sty \Delta {T'} \ell}
 \]
-Then $\sttmd \Delta t {T'} {\T'}$ iff $\Delta \der t : T'$ and
+Then $\stmeqd \Delta t {t'} {T'} {\T'}$ iff
+$\sttmd \Delta {t,t'} {T'} {\T'}$ and
+$\Delta \der t = t' : T'$ and
 forall $\rho : \Gamma \leq \Delta$ and $\acal :: \Gamma \der a : \Size$
-we have $\sttmd \Gamma {t\,a} {T(\rho,a)} {\T(\rho,\acal)}$.
+we have $\stmeqd \Gamma {t\,a} {t'\,a} {T(\rho,a)} {\T(\rho,\acal)}$.
 
 \nextcase % Let $\T' :: \sty \Delta {T'} \ell$ be derived by
 \[
@@ -974,12 +1005,11 @@ we have $\sttmd \Gamma {t\,a} {T(\rho,a)} {\T(\rho,\acal)}$.
         \sty \Gamma {T(\rho,b)} \ell \\
     }{\sty \Delta {T'} \ell}
 \]
-Then $\sttmd \Delta t {T'} {\T'}$ iff $\Delta \der t : T'$ and
-forall $\rho : \Gamma \leq \Delta$ and $\bb :: \Gamma \der b : \Size$ and  $\resurrect\Gamma \der a : \Size$,
-\begin{enumerate}
-\item $\tcal :: \sttmd \Gamma {t \ann a} {T(\rho,b)} {\T(\rho,\bb)}$, and
-\item $\sttmeqd \Gamma {t \ann a} {t \ann {a'}} {T(\rho,b)} {\T(\rho,\bb)} {\tcal}$ for all $\resurrect\Gamma \der a' : \Size$.
-\end{enumerate}
+Then $\stmeqd \Delta t {t'} {T'} {\T'}$ iff
+$\sttmd \Delta {t,t'} {T'} {\T'}$ and
+$\Delta \der t = t' : T'$ and
+forall $\rho : \Gamma \leq \Delta$ and $\bb :: \resurrect\Gamma \der b : \Size$ and  $\Gamma \der a,a' : \Size$,
+$\sttmeqd \Gamma {t \ann a} {t \ann {a'}} {T(\rho,b)} {\T(\rho,\bb)} {\tcal}$.
 
 
 \nextcase
@@ -994,16 +1024,190 @@ forall $\rho : \Gamma \leq \Delta$ and $\bb :: \Gamma \der b : \Size$ and  $\res
         \steqd \Gamma {T(\rho,u)} {T(\rho,u')} \ell {\T(\rho,\uu)}
     }{\sty \Delta {T'} \ell}
 \]
-Then $\sttmd \Delta t {T'} {\T'}$ iff $\Delta \der t : T'$ and
-forall $\rho : \Gamma \leq \Delta$ and $\uu :: \sttmd \Gamma u {U\rho} {\U(\rho)}$,
-\begin{enumerate}
-\item $\tcal :: \sttmd \Gamma {t\rho\,u} {T(\rho,u)} {\T(\rho,\uu)}$, and
-\item $\sttmeqd \Gamma {t\rho\,u} {t\rho\,u'} {T(\rho,u)} {\T(\rho,\uu)} {\tcal}$ for all
-  $\sttmeqd \Gamma u {u'} {U\rho} {\U(\rho)} {\uu}$.
-\end{enumerate}
+Then $\stmeqd \Delta t {t'} {T'} {\T'}$ iff
+$\sttmd \Delta {t,t'} {T'} {\T'}$ and
+$\Delta \der t = t' : T'$ and
+forall $\rho : \Gamma \leq \Delta$ and
+$\uu :: \sttmd \Gamma u {U\rho} {\U(\rho)}$
+we have $\stmeqd \Gamma {t\rho\,u} {t'\rho\,u} {T(\rho,u)} {\T(\rho,\uu)}$.
 
 
 \end{caselist}
+
+
+
+
+
+\begin{lemma}[Soundness of the logical predicates]
+  Let $\T :: \sty \Delta T \ell$.
+  \begin{enumerate}
+  \item $\Delta \der T : \Set[\ell]$ holds.
+  \item \label{it:styeq} If $\steqd \Delta T {T'} \ell \T$ then
+%    \begin{enumerate}
+%    \item
+    $\sty \Delta {T'} \ell$ and
+%    \item
+    $\Delta \der T = T' : \Set[\ell]$.
+%    \end{enumerate}
+  \item If $\sttmd \Delta t T \T$ then $\Delta \der t : T$.
+  \item If $\stmeqd \Delta t {t'} T \T$ then $\sttmd \Delta {t,t'} T \T$ and $\Delta \der t :=: t' : T$.
+  \end{enumerate}
+\end{lemma}
+\begin{proof}
+  By induction on $\T$.  We detail the proof of (\ref{it:styeq}):
+\begin{caselist}
+
+\nextcase Universes:
+\[
+  \rux{\Delta \der T \evalsto \Set[\ell'] : \Set[\ell]
+     }{\sty \Delta T \ell
+     }{\ell' {<} \ell}
+\]
+Then $\steqd \Delta T {T'} \ell {\T}$ implies $\Delta \der T' \evalsto \Set[\ell'] : \Set[\ell]$, thus,
+$\sty \Delta {T'} \ell$ and $\Delta \der T = T' : \Set[\ell]$.
+
+\nextcase Neutrals:
+\[
+  \ru{\Delta \der T \evalsto N : \Set[\ell]
+    }{\sty \Delta T \ell}
+\]
+Then $\steqd \Delta T {T'} \ell {\T}$ implies $\Delta \der T' \evalsto N' : \Set[\ell]$, thus,
+$\sty \Delta {T'} \ell$.
+Since $\steqd \Delta T {T'} \ell {\T}$ further implies $\Delta \der N = N' : \Set[\ell]$, we get
+$\Delta \der T = T' : \Set[\ell]$ by transitivity of definitional equality.
+
+\nextcase Natural number type:
+\[
+  \ru{\Delta \der T \evalsto \Nat a : \Set[\ell]
+    }{\sty \Delta T \ell}
+\]
+Then $\steqd \Delta T {T'} \ell {\T}$ implies $\Delta \der T' \evalsto \Nat a : \Set[\ell]$, thus,
+$\sty \Delta {T'} \ell$ and $\Delta \der T = T' : \Set[\ell]$.
+
+
+\nextcase Size quantification:
+\[
+  \rul{\Delta \der T \evalsto \epiT \Size U : \Set[\ell] \qquad
+       \eext \Delta \Size \der U : \Set[\ell] \qquad
+      \U :: \forall \rho : \Gamma \leq \Delta,~\Gamma \der a : \Size.~
+        \sty \Gamma {U(\rho,a)} \ell \\
+    }{\sty \Delta {T} \ell}
+\]
+Then $\steqd \Delta T {T'} \ell {\T}$ implies $\Delta \der T' \evalsto \epiT \Size {U'} : \Set[\ell]$
+and $\eext \Delta \Size \der U' : \Set[\ell]$. Further,
+for all $\rho : \Gamma \leq \Delta$ and $\Gamma \der a : \Size$
+it entails $\steqd \Gamma {U(\rho,a)} {U'(\rho,a)} \ell {\U(\rho,a)}$.
+The latter implies $\sty \Gamma {U'(\rho,a)} \ell$ by induction hypothesis, thus,
+$\sty \Delta {T'} \ell$.
+With $\Gamma = \eext \Delta \Size$ and $\rho = \slift$ and $a = \ind 0$ we get
+$\steqd {\eext \Delta \Size} {U} {U'} {\ell} {\U(\slift,\ind 0)}$, thus, by induction hypothesis,
+$\eext \Delta \Size \der U = U' : \Set[\ell]$. This implies
+$\Delta \der \epiT \Size U = \epiT \Size U' : \Set[\ell]$
+and $\Delta \der T = T' : \Set[\ell]$.
+
+\nextcase Function spaces:
+\[
+  \rul{\Delta \der T_1' \evalsto \piT {U_1} {T_1} : \Set[\ell] \qquad \dots
+    }{\sty \Delta {T_1'} \ell}
+\]
+Both goals are directly entailed by the definition of $\steqd \Delta {T_1'} {T_2'} \ell {\T}$.
+
+\end{caselist}
+\end{proof}
+
+\begin{lemma}[Reflexivity]
+  Let $\T :: \sty \Delta T \ell$, then
+  \begin{enumerate}
+  \item $\steqd \Delta T T \ell \T$ and
+  \item if $\sttmd \Delta t T \T$ then $\stmeqd \Delta t t T \T$.
+  \end{enumerate}
+\end{lemma}
+
+
+
+
+\begin{lemma}[Proof and level irrelevance]
+  Let $\T :: \sty \Delta T \ell$ and $\T' :: \sty \Delta T {\ell'}$.
+  \begin{enumerate}
+  \item If $\steqd \Delta T {T'} \ell \T$ then $\steqd \Delta T {T'} {\ell'} {\T'}$.
+  \item If $\sttmd \Delta t T \T$ then $\sttmd \Delta t T {\T'}$.
+  \item If $\stmeqd \Delta t {t'} T \T$ then $\stmeqd \Delta t {t'} T {\T'}$.
+  \end{enumerate}
+\end{lemma}
+\begin{proof}
+  By induction on $\T$ and $\T'$.  % We detail the proof of (\ref{it:styeq}):
+\begin{caselist}
+
+\nextcase Universes:
+\[
+  \rux{\Delta \der T \evalsto \Set[\ell_1] : \Set[\ell]
+     }{\sty \Delta T \ell
+     }{\ell_1 {<} \ell}
+\qquad
+  \rux{\Delta \der T \evalsto \Set[\ell_2] : \Set[\ell']
+     }{\sty \Delta T \ell'
+     }{\ell_2 {<} \ell'}
+\]
+Since weak head evaluation is deterministic, we have $\ell_1 = \ell_2$.
+By definition of $\steqd \Delta T {T'} \ell {\T}$ we have
+$\Delta \der T' \evalsto \Set[\ell_1] : \Set[\ell]$.
+Thus, $\steqd \Delta T {T'} {\ell'} {\T'}$ by definition.
+
+\nextcase Neutrals:
+\[
+  \ru{\Delta \der T \evalsto N : \Set[\ell]
+    }{\sty \Delta T \ell}
+\qquad
+  \ru{\Delta \der T \evalsto N : \Set[\ell]
+    }{\sty \Delta T \ell}
+\]
+Then $\steqd \Delta T {T'} \ell {\T}$ implies $\Delta \der T' \evalsto N' : \Set[\ell]$, thus,
+$\sty \Delta {T'} \ell$.
+Since $\steqd \Delta T {T'} \ell {\T}$ further implies $\Delta \der N = N' : \Set[\ell]$, we get
+$\Delta \der T = T' : \Set[\ell]$ by transitivity of definitional equality.
+
+\nextcase Natural number type:
+\[
+  \ru{\Delta \der T \evalsto \Nat a : \Set[\ell]
+    }{\sty \Delta T \ell}
+\]
+Then $\steqd \Delta T {T'} \ell {\T}$ implies $\Delta \der T' \evalsto \Nat a : \Set[\ell]$, thus,
+$\sty \Delta {T'} \ell$ and $\Delta \der T = T' : \Set[\ell]$.
+
+
+\nextcase Size quantification:
+\[
+  \rul{\Delta \der T \evalsto \epiT \Size U : \Set[\ell] \qquad
+       \eext \Delta \Size \der U : \Set[\ell] \qquad
+      \U :: \forall \rho : \Gamma \leq \Delta,~\Gamma \der a : \Size.~
+        \sty \Gamma {U(\rho,a)} \ell \\
+    }{\sty \Delta {T} \ell}
+\]
+Then $\steqd \Delta T {T'} \ell {\T}$ implies $\Delta \der T' \evalsto \epiT \Size {U'} : \Set[\ell]$
+and $\eext \Delta \Size \der U' : \Set[\ell]$. Further,
+for all $\rho : \Gamma \leq \Delta$ and $\Gamma \der a : \Size$
+it entails $\steqd \Gamma {U(\rho,a)} {U'(\rho,a)} \ell {\U(\rho,a)}$.
+The latter implies $\sty \Gamma {U'(\rho,a)} \ell$ by induction hypothesis, thus,
+$\sty \Delta {T'} \ell$.
+With $\Gamma = \eext \Delta \Size$ and $\rho = \slift$ and $a = \ind 0$ we get
+$\steqd {\eext \Delta \Size} {U} {U'} {\ell} {\U(\slift,\ind 0)}$, thus, by induction hypothesis,
+$\eext \Delta \Size \der U = U' : \Set[\ell]$. This implies
+$\Delta \der \epiT \Size U = \epiT \Size U' : \Set[\ell]$
+and $\Delta \der T = T' : \Set[\ell]$.
+
+\nextcase Function spaces:
+\[
+  \rul{\Delta \der T_1' \evalsto \piT {U_1} {T_1} : \Set[\ell] \qquad \dots
+    }{\sty \Delta {T_1'} \ell}
+\]
+Both goals are directly entailed by the definition of $\steqd \Delta {T_1'} {T_2'} \ell {\T}$.
+
+\end{caselist}
+\end{proof}
+
+
+
+
 
 \newpage
 
@@ -1016,6 +1220,257 @@ forall $\rho : \Gamma \leq \Delta$ and $\uu :: \sttmd \Gamma u {U\rho} {\U(\rho)
 If\/ $\Gamma \der c : \Nat b$ then $\resurrect\Gamma \der b : \Size$ and $b > 0$.
 \end{lemma}
 
+
+\newpage
+
+\section{Algorithmic Equality}
+
+The equality algorithm takes two well-typed terms and decides that
+whether they are definitionally equal.  Since we want $\eta$ not only
+for function types, but also for record types, including the empty
+record types (aka unit type), algorithmic equality needs to be type
+directed.  When comparing two terms at a function type we apply the
+terms to a fresh variable and continue checking at the codomain type.
+To terms at the unit type are always equal, no matter what they are.
+At neutral types, we need to compare the terms structurally, ignoring
+the irrelevant size arguments.
+
+It has been observed before \cite{harperPfenning:equivalenceLF} that
+the type directing the algorithmic equality need not be precise.  To
+decide whether $\eta$ applies, we only need to distinguish on the
+shape of the type (function type, record type, etc.).  For LF, the
+shape is the underlying simple type.  For type theory with universes,
+the picture is more complicated, as the shape of type is also a proper
+value-dependent type.  For instance, just consider the type of an
+function of varying arity, $\funT n \tNat \underbrace{X \to ... \to
+  X}_{n~\mathrm{times}} \to X$: the shape depends on what $n$ is
+instantiated to.
+
+For our purposes, we can conflate all universes to a single shape
+\emph{universe}, all slices $\Nat a$ of $\Nat \infty$ to shape
+\emph{natural number}, and all neutral types to shape \emph{neutral}.
+We will not introduce a new syntax for type shapes, but define a
+relation \fbox{$\ssh \Delta T A \T$} by recursion on
+$\T :: \sty \Delta T \ell$ that expresses that $A$ has the same shape
+as semantically valid type $T$ (but $A$ might not be semantically
+valid itself).
+
+
+\begin{caselist}
+
+\nextcase Universes:
+\[
+  \rux{\Delta \der T \evalsto \Set[\ell'] : \Set[\ell]
+     }{\sty \Delta T \ell
+     }{\ell' {<} \ell}
+\]
+Then $\ssh \Delta T A \T$ iff
+$A \evalsto \Set[\ell_1]$ for some $\ell_1 \in \NN$.
+
+\nextcase Neutrals:
+\[
+  \ru{\Delta \der T \evalsto N : \Set[\ell]
+    }{\sty \Delta T \ell}
+\]
+Then $\ssh \Delta T A \T$ iff
+$A \evalsto N'$ for some neutral $N'$.
+
+\nextcase Natural number type:
+\[
+  \ru{\Delta \der T \evalsto \Nat a : \Set[\ell]
+    }{\sty \Delta T \ell}
+\]
+Then $\ssh \Delta T A \T$ iff
+$A \evalsto \Nat a'$ for some size $a'$.
+
+\nextcase Size quantification:
+\[
+  \rul{\Delta \der T \evalsto \epiT \Size U : \Set[\ell] \qquad
+       \eext \Delta \Size \der U : \Set[\ell] \qquad
+      \U :: \forall \rho : \Gamma \leq \Delta,~\Gamma \der a : \Size.~
+        \sty \Gamma {U(\rho,a)} \ell \\
+    }{\sty \Delta {T} \ell}
+\]
+Then $\ssh \Delta T A \T$ iff $A \evalsto \epiT B$ and
+forall $\rho : \Gamma \leq \Delta$ and all $\Gamma \der a,a' : \Size$
+we have $\ssh \Gamma {U(\rho,a)} {B(\rho,a')} {\U(\rho,a)}$.
+Note that here we allow \emph{different} size instantiations, in
+contrast to semantic type equality.
+
+\nextcase Function spaces:
+\[
+  \T' ::
+  \rul{\Delta \der T' \evalsto \piT {U} {T} : \Set[\ell] \qquad \cext \Delta U \der T : \Set[\ell] \\ \relax
+      \U :: \forall \rho : \Gamma \leq \Delta.~ \sty{\Gamma}{U\rho} {\ell} \\ \relax
+      \T :: \forall \rho : \Gamma \leq \Delta,~\sttmd \Gamma u {U\rho} {\U(\rho)}.~
+        \sty \Gamma {T(\rho,u)} \ell \\
+      \forall \rho : \Gamma \leq \Delta,~ \uu :: \sttmd \Gamma u {U\rho} {\U(\rho)}.~
+        \sttmeqd \Gamma u {u'} {U\rho} {\U(\rho)} {\uu} \implies
+        \steqd \Gamma {T(\rho,u)} {T(\rho,u')} \ell {\T(\rho,\uu)}
+    }{\sty \Delta {T'} \ell}
+\]
+Then $\ssh \Delta {T'} {A'} {\T'}$ iff $A' \evalsto \piT A B$ and
+$\ssh \Delta U A {\U(\sid)}$ and
+for all $\rho : \Gamma \leq \Delta$ and all $\uu :: \sttmd \Gamma u {U\rho} {\U(\rho)}$
+and all $\stmeqd \Gamma u {u'} {U\rho} {\U(\rho)}$
+we have $\ssh \Gamma {T(\rho,u)} {B(\rho,u')} {\T(\rho,\uu)}$.
+\end{caselist}
+
+Shapes are weak head normalizing and invariant under type equality.
+\begin{lemma}[Properties of type approximation]
+  Let $\T :: \sty \Delta T \ell$ and $\ssh \Delta T A \T$.
+  \begin{enumerate}
+  \item Normalization: $A \evalsto A'$ for some $A'$.
+  \item Proof irrelevance: If\/ $\T' :: \sty \Delta T {\ell'}$ then
+    $\ssh \Delta T A {\T'}$.
+  \item Conversion: If\/ $\steqd \Delta T {T'} \ell \T$ then $\ssh \Delta {T'} A \T$.
+  \end{enumerate}
+\end{lemma}
+
+We define algorithmic equality by the following judgements, which are defined simultaneously and inductively:
+\[
+\begin{array}{l@{\qquad}l}
+  \The \der t \eqchk t' : A & \mbox{terms $t$ and $t'$ are equal at type shape $A$} \\
+  \The \der W \eqchk W'         & \mbox{weak head normal forms $W$ and $W'$ are equal types} \\
+  \The \der w \eqchk w' : \tNat & \mbox{weak head normal forms $w$ and $w'$ are equal natural numbers} \\
+  \The \der n \eqinf n' : A     & \mbox{neutral terms $n$ and $n'$ are equal and $A$ is their inferred type shape} \\
+\end{array}
+\]
+All arguments of these judgements are inputs except for the type shape $A$ inferred by the structural comparisons of neutrals in $\The \der n \eqinf n' : A$.
+
+Type-directed equality \fbox{$\The \der t \eqchk t' : A$} holds if one
+of the following conjunctions holds.  Each conjunction is to be understood as list of premises of
+a rule which allows us to conclude this judgement.
+\begin{itemize}
+\item % Functions:
+  $A \evalsto \piT B C$ (including $B = \Size$) and
+  $\cext \The B \der t \slift \ind0 \eqchk t' \slift \ind0 : C$
+  (functions).
+\item % Size abstractions:
+  $A \evalsto \forallT C$ and
+  $\erext \The \Size \der t \slift \ind0 \eqchk t' \slift \ind0 : C$
+  (size abstractions).
+\item % Types:
+  $A \evalsto \Set[\ell]$ and $t \evalsto W$ and $t' \evalsto W'$ and
+  $\The \der W \eqchk W'$
+  (types).
+\item % Natural numbers:
+  $A \evalsto \Nat a$ and $t \evalsto w$ and $t' \evalsto w'$ and
+  $\EqNat \The w {w'}$
+  (natural numbers).
+\item % Neutrals
+  $A \evalsto N$ and $t \evalsto n$ and $t' \evalsto n'$ and
+  $\The \der n \eqinf n' : C$ for some $C$
+  (neutrals).
+\end{itemize}
+Type equality \fbox{$\The \der W \eqchk W'$} is given by the following rules,
+where we extend the judgement to non-whnfs \fbox{$\The \der T \eqchk T'$}
+as a shorthand for the conjunction $T \evalsto W$ and $T' \evalsto W'$ and $\The \der W \eqchk W'$.
+\begin{gather*}
+  \ru{
+    }{\The \der \Set[\ell] \eqchk \Set[\ell]}
+\qquad
+  \ru{
+    }{\The \der \Nat a \eqchk \Nat a}
+\qquad
+  \ru{\The \der N \eqinf N' : A
+    }{\The \der N \eqchk N'}
+\\[2ex]
+  \ru{\cext \The \Size \der T \eqchk T'
+    }{\The \der \epiT \Size T \eqchk \epiT \Size T'}
+  % \ru{T \evalsto W \qquad
+  %     T' \evalsto W' \qquad
+  %     \cext \The \Size \der W \eqchk W'
+  %   }{\The \der \epiT \Size T \eqchk \epiT \Size T'}
+\qquad
+  \ru{\The \der U \eqchk U' \qquad
+      \cext \The U \der T \eqchk T'
+    }{\The \der \piT U T \eqchk \piT {U'} {T'}}
+\end{gather*}
+Natural number equality \fbox{$\EqNat \The w {w'}$} is analogously extended to non-whnfs \fbox{$\EqNat \The t {t'}$} and defined inductively by the following rules:
+\begin{gather*}
+  \ru{}{\EqNat \The \tzero \tzero}
+\qquad
+  \ru{\EqNat \The t {t'}
+    }{\EqNat \The {\suc a t}{\suc {a'} {t'}}}
+\qquad
+  \ru{\The \der n \eqinf n' : A
+    }{\EqNat \The n {n'}}
+\end{gather*}
+Finally, structural equality of neutrals $\The \der n \eqinf n' : A$ ($A$ is output!)
+is defined inductively by the following rules.
+\begin{gather*}
+  \ru{\The(i) = A
+    }{\The \der \ind i \eqinf \ind i : A}
+\qquad
+  \ru{\The \der n \eqinf n' : A \qquad
+      A \evalsto \piT B C \qquad
+      \The \der u \eqchk u' : B
+    }{\The \der n\,u \eqinf n'\,u' : C[u]}
+\\[2ex]
+  \ru{\The \der n \eqinf n' : A \qquad
+      A \evalsto \piT \Size C
+    }{\The \der n\,a \eqinf n'\,a : C[a]}
+\qquad
+  \ru{\The \der n \eqinf n' : A \qquad
+      A \evalsto \erpiT \Size C
+    }{\The \der n\,\ann a \eqinf n'\,\ann{a'} : C[\infty]}
+\end{gather*}
+We skipped the rules for $\tcase$ and $\tfix$ which are boring but lengthy.
+
+The rule for irrelevant size application is the most interesting.  Here the size expression to substitute into $C$ is not uniquely determined.  We could use $a$ or $a'$ or any other size; we chose $\infty$ to emphasize it is no use to rely on the size annotations $a$ or $a'$.  Note that $C[a]$ and $C[a']$ are in general not equal types (definitionally nor semantically), but they have the same shape (and the same shape as $C[\infty]$), which is all that matters here.
+
+\newpage
+
+\section{Template}
+
+Bla
+
+\begin{caselist}
+
+\nextcase Universes:
+\[
+  \rux{\Delta \der T \evalsto \Set[\ell'] : \Set[\ell]
+     }{\sty \Delta T \ell
+     }{\ell' {<} \ell}
+\]
+
+
+\nextcase Neutrals:
+\[
+  \ru{\Delta \der T \evalsto N : \Set[\ell]
+    }{\sty \Delta T \ell}
+\]
+
+\nextcase Natural number type:
+\[
+  \ru{\Delta \der T \evalsto \Nat a : \Set[\ell]
+    }{\sty \Delta T \ell}
+\]
+
+\nextcase Size quantification:
+\[
+  \rul{\Delta \der T \evalsto \epiT \Size U : \Set[\ell] \qquad
+       \eext \Delta \Size \der U : \Set[\ell] \qquad
+      \U :: \forall \rho : \Gamma \leq \Delta,~\Gamma \der a : \Size.~
+        \sty \Gamma {U(\rho,a)} \ell \\
+    }{\sty \Delta {T} \ell}
+\]
+
+\nextcase Function spaces:
+\[
+  \T' ::
+  \rul{\Delta \der T' \evalsto \piT {U} {T} : \Set[\ell] \qquad \cext \Delta U \der T : \Set[\ell] \\ \relax
+      \U :: \forall \rho : \Gamma \leq \Delta.~ \sty{\Gamma}{U\rho} {\ell} \\ \relax
+      \T :: \forall \rho : \Gamma \leq \Delta,~\sttmd \Gamma u {U\rho} {\U(\rho)}.~
+        \sty \Gamma {T(\rho,u)} \ell \\
+      \forall \rho : \Gamma \leq \Delta,~ \uu :: \sttmd \Gamma u {U\rho} {\U(\rho)}.~
+        \sttmeqd \Gamma u {u'} {U\rho} {\U(\rho)} {\uu} \implies
+        \steqd \Gamma {T(\rho,u)} {T(\rho,u')} \ell {\T(\rho,\uu)}
+    }{\sty \Delta {T'} \ell}
+\]
+
+\end{caselist}
 
 \section{Conclusions}
 \label{sec:concl}
