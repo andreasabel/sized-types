@@ -1,8 +1,15 @@
-*.agdai
 *~
+*.agdai
 *.aux
+*.bak
+*.blg
+*.bin
+*.hi
 *.log
+*.o
 *.out
+*.pdf
 *.snm
 *.toc
 old
+/prototyping/size-irrelevance/Sit/
