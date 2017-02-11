@@ -27,11 +27,11 @@ import Internal
 type TypeError = String
 
 -- | The type checking monad
-type Check = ReaderT Env (StateT St (Except TypeError))
+type Check = ReaderT TCEnv (StateT TCSt (Except TypeError))
 
 -- | Local context
 
-data Env = Env
+data TCEnv = TCEnv
   { envCxt :: Cxt
   }
 
@@ -41,7 +41,7 @@ type Id = String
 
 -- | Global state
 
-data St = St
+data TCSt = TCSt
   { stSig :: Sig
   }
 
@@ -55,8 +55,8 @@ data Function = Function
 typeCheck :: [A.Decl] -> Either String ()
 typeCheck decls = runExcept (evalStateT (runReaderT (checkDecls decls) initEnv) initSt)
   where
-  initEnv = Env { envCxt = [] }
-  initSt  = St  { stSig  = Map.empty }
+  initEnv = TCEnv { envCxt = [] }
+  initSt  = TCSt  { stSig  = Map.empty }
 
 checkDecls :: [A.Decl] -> Check ()
 checkDecls = mapM_ checkDecl

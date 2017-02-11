@@ -1,8 +1,16 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE DeriveFunctor #-}
+{-# LANGUAGE DeriveFoldable #-}
+{-# LANGUAGE DeriveTraversable #-}
 
 -- | Internal Syntax.
 
 module Internal where
+
+import Data.Foldable (Foldable)
+import Data.Traversable (Traversable)
+
+import Sit.Abs (Ident)
 
 -- | Variables are de Bruijn indices.
 
@@ -11,15 +19,16 @@ newtype Index = Index { dbIndex :: Int }
 
 -- | Size expressions.
 
-data Size
-  = SVar Index Integer
+data Size' a
+  = SVar a Integer
     -- ^ @i + k@: Size variable plus offset.
   | SConst Integer
     -- ^ @k@:     Constant finite size.
   | SInfty
     -- ^ @oo@:    Infinity size.
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord, Show, Functor, Foldable, Traversable)
 
+type Size = Size' Index
 type Level = Size
 
 -- | Terms/types
@@ -43,29 +52,32 @@ data Term
     Lam ArgInfo (Abs Term)
   | -- ^ Application (neutral).
     Var Index Elims
+  | -- ^ Function call
+    Def Ident Elims
   deriving (Eq, Ord, Show)
 
 -- | Eliminations.
 
 type Elims = [ Elim ]
+type Elim  = Elim' Term
 
-data Elim
+data Elim' a
   = -- | Function application.
     Apply (Arg Term)
   | -- | Case distinction
     Case
-    { caseReturn :: Type -- ^ @T : Nat (b + 1) -> Setω@
-    , caseZero   :: Term -- ^ @tz : T zero@
-    , caseSuc    :: Term -- ^ @ts : (t : Nat b) -> T (suc t)@
+    { caseReturn :: a -- ^ @T : Nat (b + 1) -> Setω@
+    , caseZero   :: a -- ^ @tz : T zero@
+    , caseSuc    :: a -- ^ @ts : (t : Nat b) -> T (suc t)@
     }
   | -- | Recursion
     Fix
-    { fixReturn :: Term
+    { fixReturn :: a
       -- ^ @T : ..(i : Size) -> Nat i -> Setω@
-    , fixBody   :: Term
+    , fixBody   :: a
       -- ^ @t : .(i : Size) (f : (x : Nat i) -> T i x) (x : Nat (i + 1)) -> T (i + 1) x@
     }
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord, Show, Functor, Foldable, Traversable)
 
 -- | Abstraction.
 
@@ -81,12 +93,12 @@ data Abs a
 -- | Function domain decoration.
 
 data Dom a = Dom { domInfo :: ArgInfo, unDom :: a }
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord, Show, Functor, Foldable, Traversable)
 
 -- | Argument decoration.
 
 data Arg a = Arg { argInfo :: ArgInfo, unArg :: a }
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord, Show, Functor, Foldable, Traversable)
 
 type ArgInfo = Relevance
 

@@ -4,7 +4,7 @@ all : test
 test : Sit.bin test/Test.agda
 	Sit.bin test/Test.agda
 
-Sit.bin : Sit.hs Sit/Abs.hs Sit/Lex.hs Sit/Par.hs TypeChecker.hs Internal.hs
+Sit.bin : Sit.hs Sit/Abs.hs Sit/Lex.hs Sit/Par.hs TypeChecker.hs Internal.hs Evaluation.hs Substitute.hs
 	ghc --make $< -o Sit.bin
 
 Sit/Test.hs Sit/Lex.x Sit/Par.y Sit/Abs.hs : Sit.cf
