@@ -23,6 +23,7 @@ import Impossible
 -- | Generic values are de Bruijn levels.
 type VGen   = Int
 
+-- | We have just a single type of values, including size values.
 type VSize  = Val
 type VLevel = VSize
 
@@ -47,7 +48,7 @@ data Val
     VDown VType Val
 
 data VNe
-  = VNe VLevel VElims
+  = VNe VGen VElims
 
 data VClos = VClos
   { closBody :: Abs Term
@@ -151,7 +152,7 @@ class Readback a b where
   readback :: MonadEval m => a -> ReaderT Int m b
 
 instance Readback VGen Index where
-  readback k = Index (- 1 - n) <$> ask
+  readback k = Index . (\ n -> n - (k + 1)) <$> ask
 
 instance Readback Val Term where
   readback = \case
@@ -160,12 +161,24 @@ instance Readback Val Term where
 
     VDown (VPi a b) d -> do
       v0 <- VUp (unDom a) . (`VNe` []) <$> ask
-      c <- applyClos b v0
-      Lam (domInfo a) <$> do
+      c <- lift $ applyClos b v0
+      Lam (domInfo a) . Abs "x" <$> do
         local succ . readback . VDown c =<< do
-          apply d $ Arg (domInfo a) v0
+          lift $ apply d $ Arg (domInfo a) v0
 
-    VDown (VUp _  ) (VUp _ n) -> readbackNe n
+    VDown (VUp _ _) (VUp _ n) -> readbackNe n
+
+instance Readback a b => Readback [a] [b] where
+  readback = traverse readback
+
+instance Readback a b => Readback (Dom a) (Dom b) where
+  readback = traverse readback
+
+instance Readback a b => Readback (Arg a) (Arg b) where
+  readback = traverse readback
+
+instance Readback a b => Readback (Elim' a) (Elim' b) where
+  readback = traverse readback
 
 readbackType :: MonadEval m => Val -> ReaderT Int m Term
 readbackType = \case
@@ -173,27 +186,30 @@ readbackType = \case
   VType a -> Type <$> readbackSize a
   VNat a  -> Nat  <$> readbackSize a
   VPi a b -> do
-    u  <- traverse readbackType u
+    u  <- traverse readbackType a
     v0 <- VUp (unDom a) . (`VNe` []) <$> ask
-    readbackType =<< applyClos b v0
+    Pi u . Abs "x" <$> do
+      local succ . readbackType =<< do
+        lift $ applyClos b v0
   VUp _ n -> readbackNe n
   _ -> __IMPOSSIBLE__
 
 readbackNat  :: MonadEval m => Val -> ReaderT Int m Term
 readbackNat = \case
-  VZero a        -> Zero $ readbackSize a
+  VZero a        -> Zero <$> readbackSize a
   VSuc a t       -> liftA2 Suc (readbackSize a) (readbackNat t)
   VUp (VNat _) n -> readbackNe n
   _ -> __IMPOSSIBLE__
 
 readbackNe  :: MonadEval m => VNe -> ReaderT Int m Term
-readbackNe = \case
-  _ -> __IMPOSSIBLE__
+readbackNe (VNe x es) = do
+  i <- readback x
+  Var i <$> readback es
 
 readbackSize  :: MonadEval m => Val -> ReaderT Int m Term
 readbackSize = \case
   VInfty   -> pure Infty
   VZero _  -> pure sZero
-  VSuc _ a -> sSuc <$> readBackSize a
-  VUp VSize (VNe x []) -> Var <$> readback x
+  VSuc _ a -> sSuc <$> readbackSize a
+  VUp VSize (VNe x []) -> var <$> readback x
   _ -> __IMPOSSIBLE__
