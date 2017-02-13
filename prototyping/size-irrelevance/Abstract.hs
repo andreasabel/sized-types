@@ -6,6 +6,22 @@ module Abstract where
 
 import Sit.Abs as A
 
+-- | Can this expression only denote a type?
+
+mustBeType :: Exp -> Bool
+mustBeType = \case
+  Nat      -> True
+  Set      -> True
+  Set1     -> True
+  Set2     -> True
+  Forall{} -> True
+  Pi{}     -> True
+  Arrow{}  -> True
+  App f _  -> mustBeType f
+  _ -> False
+
+-- | Is this expression an introduction?
+
 introduction :: Exp -> Bool
 introduction = \case
   Var{}    -> False

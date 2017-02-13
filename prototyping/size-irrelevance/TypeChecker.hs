@@ -210,20 +210,38 @@ checkLevel = \case
 --   where failure = throwError $ "Cannot assign a universe level to type " ++ printTree e
 
 checkExp :: A.Exp -> VType -> Check Term
-checkExp = \case
-  _ -> __IMPOSSIBLE__
-
+checkExp e0 t = do
+  case e0 of
+    A.Lam []     e -> checkExp e t
+    A.Lam (x:xs) e -> do
+      case t of
+        VPi dom cl -> addContext (x, dom) $ do
+          t' <- applyClosure cl =<< lastVal
+          u  <- checkExp (A.Lam xs e) t'
+          return $ Lam (domInfo dom) $ Abs (fromIdU x) u
+        _ -> throwError $ "Lambda abstraction expects function type, but got " ++ show t
+    e -> do
+      (u, ti) <- inferExp e
+      coerce u ti t
+    -- e -> nyi $ "checking " ++ printTree e
 
 -- | Precondition: @not (A.introduction e)@.
 
 inferExp :: A.Exp -> Check (Term, VType)
 inferExp = \case
+
+  e | mustBeType e -> do
+    (t, l) <- inferType e
+    return (t, VType l)
+
   A.Var x -> do
     (u, Dom r t) <- inferVar x
     if r == Relevant then return (u,t) else
       throwError $ "Illegal reference to variable: " ++ printTree x
+
   A.App f e -> nyi "application"
   A.Case{}  -> nyi "case"
+
   _ -> __IMPOSSIBLE__
 
 -- | Infer type of a variable
@@ -234,6 +252,10 @@ inferVar (A.Ident x) = do
     Nothing     -> throwError $ "Variable not in scope: " ++ x
     Just (i, t) -> return (var $ Index i, t)
 
+-- | Coercion / subtype checking.
+
+coerce :: Term -> VType -> VType -> Check Term
+coerce u ti tc = nyi "Coercion"
 
 -- | Type checker auxiliary functions.
 
@@ -257,14 +279,22 @@ addTySig x t = stTySigs %= Map.insert x t
 addDef :: Id -> Val -> Check ()
 addDef x v = stDefs %= Map.insert x v
 
+-- * Invoking evaluation
+
+instance MonadEval (Reader (Map Id Val)) where
+  getDef x = fromMaybe __IMPOSSIBLE__ . Map.lookup x <$> ask
+
 evaluate :: Term -> Check Val
 evaluate t = do
   sig   <- use stDefs
   delta <- asks _envEnv
   return $ runReader (evalIn t delta) sig
 
-instance MonadEval (Reader (Map Id Val)) where
-  getDef x = fromMaybe __IMPOSSIBLE__ . Map.lookup x <$> ask
+applyClosure :: VClos -> Val -> Check Val
+applyClosure cl v =
+  runReader (applyClos cl v) <$> use stDefs
+
+-- * Context manipulation
 
 -- | Looking up in the typing context
 
@@ -276,6 +306,12 @@ lookupCxt x cxt = loop 0 cxt
     ((y,t) : cxt)
       | x == y    -> Just (i,t)
       | otherwise -> loop (succ i) cxt
+
+
+-- | Value of last variable added to context.
+
+lastVal :: Check Val
+lastVal = head <$> asks _envEnv
 
 -- | Extending the typing context
 

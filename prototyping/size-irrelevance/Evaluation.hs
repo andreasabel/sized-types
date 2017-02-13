@@ -52,14 +52,17 @@ data Val
     VUp VType VNe
   | -- | Type annotation for readback (normal form).
     VDown VType Val
+  deriving (Show)
 
 data VNe
   = VNe VGen VElims
+  deriving (Show)
 
 data VClos = VClos
   { closBody :: Abs Term
   , closEnv  :: Env
   }
+  deriving (Show)
 
 -- | Variable
 

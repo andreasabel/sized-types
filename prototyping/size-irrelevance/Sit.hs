@@ -39,7 +39,7 @@ exitMsg msg = do
 check :: String -> IO ()
 check txt = do
   Prg decls <- failOnErr "PARSE ERROR" $ pPrg $ myLexer txt
-  putStrLn "Parsed the following declarations"
-  forM_ decls $ \ d -> do
-    putStrLn $ printTree d
+  -- putStrLn "Parsed the following declarations"
+  -- forM_ decls $ \ d -> do
+  --   putStrLn $ printTree d
   either (\ err -> exitMsg $ unlines [ "TYPE ERROR" , err ]) return $ typeCheck decls
