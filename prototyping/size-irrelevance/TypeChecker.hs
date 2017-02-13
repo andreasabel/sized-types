@@ -25,6 +25,7 @@ import qualified Sit.Abs as A
 import Sit.Print
 import Sit.ErrM
 
+import Abstract as A
 import Internal
 import Evaluation
 
@@ -74,6 +75,8 @@ checkDecl = \case
   A.Sig x a -> checkSig x a
   A.Def x e -> checkDef x e
 
+-- | Check a type signature.
+
 checkSig :: A.Ident -> A.Exp -> Check ()
 checkSig x0@(A.Ident x) a = traceCheck (A.Sig x0 a) $ do
 
@@ -86,6 +89,8 @@ checkSig x0@(A.Ident x) a = traceCheck (A.Sig x0 a) $ do
   t <- checkType a
   addTySig x =<< evaluate t
 
+-- | Check a definition.
+
 checkDef :: A.Ident -> A.Exp -> Check ()
 checkDef x0@(A.Ident x) e = traceCheck (A.Def x0 e) $ do
 
@@ -94,7 +99,7 @@ checkDef x0@(A.Ident x) e = traceCheck (A.Def x0 e) $ do
   t <- maybe noSig return =<< lookupTySig x
 
   -- Check that x has not yet a definition
-  mv <- lookupTySig x
+  mv <- lookupDef x
   unless (isNothing mv) $
     throwError $ "Duplicate definition of " ++ x
 
@@ -102,36 +107,96 @@ checkDef x0@(A.Ident x) e = traceCheck (A.Def x0 e) $ do
   v <- checkExp e t
   addDef x =<< evaluate v
 
+-- | Check well-formedness of a type.
+
 checkType :: A.Exp -> Check Type
 checkType e = fst <$> inferType e
 
--- | Check that something is a type and infer its universe level
+-- | Check that something is a type and infer its universe level.
+
 inferType :: A.Exp -> Check (Type, VLevel)
-inferType = \case
+inferType e = do
+  let invalidType = throwError $ "Not a valid type expression: " ++ printTree e
+  case e of
 
-  -- Universe
-  A.Set  -> return (Type sZero, vsConst 1)
-  A.Set1 -> return (Type $ sSuc sZero, vsConst 2)
-  A.Set2 -> return (Type $ sSuc $ sSuc sZero, vsConst 3)
-  A.App A.Set l -> do
-    a <- checkLevel l
-    v <- evaluate a
-    return (Type a, vsSuc v)
+    -- Universes
 
-  -- Function types
-  e@(A.Arrow a b) -> do
-    (u, l1) <- inferType a
-    (t, l2) <- inferType b
-    return (Pi (defaultDom u) (NoAbs "_" t) , maxSize l1 l2)
+    A.Set  -> return (Type sZero, vsConst 1)
+    A.Set1 -> return (Type $ sSuc sZero, vsConst 2)
+    A.Set2 -> return (Type $ sSuc $ sSuc sZero, vsConst 3)
+    A.App A.Set l -> do
+      a <- checkLevel l
+      v <- evaluate a
+      return (Type a, vsSuc v)
 
-  e@(A.Pi xs a b) -> do
-    (u, l1) <- inferType a
-    v <- evaluate u
-    addContext (map (,v) xs) $ do
+    -- Natural number type
+
+    A.App A.Nat s -> do
+      a <- checkSize s
+      v <- evaluate a
+      return (Nat a, vsZero)
+
+    -- Function types
+
+    A.Arrow a b -> do
+      (u, l1) <- inferType a
       (t, l2) <- inferType b
-      return __IMPOSSIBLE__
+      return (Pi (defaultDom u) (NoAbs "_" t) , maxSize l1 l2)
 
-  _ -> __IMPOSSIBLE__
+    A.Pi xs a b -> inferPisType (map (, defaultDom a) xs) $ inferType b
+
+    A.Forall bs c -> inferPisType (fromBind =<< bs) $ inferType c
+      where
+      fromBind :: A.Bind -> [(A.IdU, Dom A.Exp)]
+      fromBind = \case
+        A.BIrrel x  -> return (A.Id x, Dom Irrelevant A.Size)
+        A.BRel   x  -> return (A.Id x, Dom ShapeIrr   A.Size)
+        A.BAnn xs a -> map (\ x -> (A.Id x, defaultDom a)) xs
+
+    -- Neutral types
+
+    e | A.introduction e -> invalidType
+
+    e -> do
+      (t,v) <- inferExp e
+      case v of
+        VType l -> return (t,l)
+        _ -> invalidType
+
+inferPisType :: [(A.IdU, Dom A.Exp)] -> Check (Type, VLevel) -> Check (Type, VLevel)
+inferPisType = foldr (.) id . map (uncurry inferPiType)
+
+inferPiType :: A.IdU -> Dom A.Exp -> Check (Type, VLevel) -> Check (Type, VLevel)
+inferPiType x dom cont = do
+
+  -- Check the domain
+  (u, l1) <- inferType $ unDom dom
+
+  -- Check the codomain in the extended context.
+  v <- evaluate u
+  addContext (x, v) $ do
+    (t, l2) <- cont
+
+    -- Compute the universe level of the Pi-type.
+    let l0 = maxSize l1 l2
+
+    -- Check that the level does not mention the bound variable
+    -- If yes, return oo instead.
+    l <- case fromMaybe __IMPOSSIBLE__ $ sizeView l0 of
+      SVVar k' _ -> do
+        k <- length <$> asks _envCxt
+        return $ if k' >= k then VInfty else l0
+      _ -> return l0
+
+    -- Construct the function type
+    return ( Pi (dom $> u) $ Abs (fromIdU x) t , l )
+
+checkSize :: A.Exp -> Check Size
+checkSize = \case
+  A.LZero        -> return $ sZero
+  A.App A.LSuc e -> sSuc <$> checkSize e
+  e@(A.Var x)    -> checkExp e VSize
+  e -> throwError $ "Not a valid size expression: " ++ printTree e
 
 checkLevel :: A.Exp -> Check Level
 checkLevel = \case
@@ -147,6 +212,28 @@ checkLevel = \case
 checkExp :: A.Exp -> VType -> Check Term
 checkExp = \case
   _ -> __IMPOSSIBLE__
+
+
+-- | Precondition: @not (A.introduction e)@.
+
+inferExp :: A.Exp -> Check (Term, VType)
+inferExp = \case
+  A.Var x -> do
+    (u, Dom r t) <- inferVar x
+    if r == Relevant then return (u,t) else
+      throwError $ "Illegal reference to variable: " ++ printTree x
+  A.App f e -> nyi "application"
+  A.Case{}  -> nyi "case"
+  _ -> __IMPOSSIBLE__
+
+-- | Infer type of a variable
+
+inferVar :: A.Ident -> Check (Term, Dom VType)
+inferVar (A.Ident x) = do
+  (lookupCxt x <$> asks _envCxt) >>= \case
+    Nothing     -> throwError $ "Variable not in scope: " ++ x
+    Just (i, t) -> return (var $ Index i, t)
+
 
 -- | Type checker auxiliary functions.
 
@@ -179,7 +266,18 @@ evaluate t = do
 instance MonadEval (Reader (Map Id Val)) where
   getDef x = fromMaybe __IMPOSSIBLE__ . Map.lookup x <$> ask
 
--- | Extend the typing context
+-- | Looking up in the typing context
+
+lookupCxt :: Id -> Cxt -> Maybe (Int, Dom VType)
+lookupCxt x cxt = loop 0 cxt
+  where
+  loop i = \case
+    [] -> Nothing
+    ((y,t) : cxt)
+      | x == y    -> Just (i,t)
+      | otherwise -> loop (succ i) cxt
+
+-- | Extending the typing context
 
 class AddContext a where
   addContext :: a -> Check b -> Check b
@@ -213,8 +311,3 @@ instance AddContext (Id, Dom VType) where
     $ over envCxt ((x,t):)
     . over envEnv nextVar
     where nextVar delta = vVar (unDom t) (length delta) : delta
-
-fromIdU :: A.IdU -> String
-fromIdU = \case
-  A.Id (A.Ident x) -> x
-  A.Under -> "_"

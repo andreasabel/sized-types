@@ -58,6 +58,9 @@ Fix.   Exp2 ::= "fix";
 LZero. Exp2 ::= "lzero";
 LSuc.  Exp2 ::= "lsuc";
 
+internal
+Size. Exp ::= "Size";
+
 -- Applications:
 
 App.  Exp1 ::= Exp1 Exp2;
