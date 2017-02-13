@@ -12,6 +12,7 @@ import Control.Applicative
 import Control.Monad
 import Control.Monad.Reader
 
+import Data.Maybe
 import Data.Traversable (traverse)
 
 import Internal
@@ -126,20 +127,17 @@ unSizeView = \case
   SVConst n -> vsConst n
   SVVar x n -> vsPlus n $ vsVar x
 
--- | Compute the maximum of two sizes, if it exists.
+-- | Compute the maximum of two sizes.
 
-maxSize :: VSize -> VSize -> Maybe VSize
-maxSize v1 v2 = do
-  s1 <- sizeView v1
-  s2 <- sizeView v2
-  case (s1, s2) of
-    (SVInfty, _) -> return $ VInfty
-    (_, SVInfty) -> return $ VInfty
-    (SVConst n, SVConst m)          -> return $ unSizeView $ SVConst $ max n m
-    (SVVar x n, SVVar y m) | x == y -> return $ unSizeView $ SVVar x $ max n m
-    (SVConst n, SVVar y m) | n <= m -> return $ unSizeView $ SVVar y m
-    (SVVar x n, SVConst m) | n >= m -> return $ unSizeView $ SVVar x n
-    _ -> Nothing
+maxSize :: VSize -> VSize -> VSize
+maxSize v1 v2 =
+  case ( fromMaybe __IMPOSSIBLE__ $ sizeView v1
+       , fromMaybe __IMPOSSIBLE__ $ sizeView v2) of
+    (SVConst n, SVConst m)          -> unSizeView $ SVConst $ max n m
+    (SVVar x n, SVVar y m) | x == y -> unSizeView $ SVVar x $ max n m
+    (SVConst n, SVVar y m) | n <= m -> unSizeView $ SVVar y m
+    (SVVar x n, SVConst m) | n >= m -> unSizeView $ SVVar x n
+    _ -> VInfty
 
 -- * Evaluation
 

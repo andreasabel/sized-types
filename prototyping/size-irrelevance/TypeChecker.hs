@@ -122,8 +122,7 @@ inferType = \case
   e@(A.Arrow a b) -> do
     (u, l1) <- inferType a
     (t, l2) <- inferType b
-    l <- maxLevel e l1 l2
-    return (Pi (defaultDom u) (NoAbs "_" t) , l)
+    return (Pi (defaultDom u) (NoAbs "_" t) , maxSize l1 l2)
 
   e@(A.Pi xs a b) -> do
     (u, l1) <- inferType a
@@ -141,9 +140,9 @@ checkLevel = \case
   e@(A.Var x)    -> checkExp e VSize
   e -> throwError $ "Not a valid level expression: " ++ printTree e
 
-maxLevel :: A.Exp -> VLevel -> VLevel -> Check VLevel
-maxLevel e l1 l2 = maybe failure return $ maxSize l1 l2
-  where failure = throwError $ "Cannot assign a universe level to type " ++ printTree e
+-- maxLevel :: A.Exp -> VLevel -> VLevel -> Check VLevel
+-- maxLevel e l1 l2 = maybe failure return $ maxSize l1 l2
+--   where failure = throwError $ "Cannot assign a universe level to type " ++ printTree e
 
 checkExp :: A.Exp -> VType -> Check Term
 checkExp = \case
