@@ -52,17 +52,17 @@ data Val
     VUp VType VNe
   | -- | Type annotation for readback (normal form).
     VDown VType Val
-  deriving (Show)
+  deriving (Eq, Show)
 
 data VNe
   = VNe VGen VElims
-  deriving (Show)
+  deriving (Eq, Show)
 
 data VClos = VClos
   { closBody :: Abs Term
   , closEnv  :: Env
   }
-  deriving (Show)
+  deriving (Eq, Show)
 
 -- | Variable
 
@@ -255,9 +255,9 @@ instance Readback Val Term where
     VDown (VPi a b) d -> do
       v0 <- vVar (unDom a) <$> ask
       c <- lift $ applyClos b v0
-      Lam (domInfo a) . Abs "x" <$> do
+      Lam (_domInfo a) . Abs "x" <$> do
         local succ . readback . VDown c =<< do
-          lift $ apply d $ Arg (domInfo a) v0
+          lift $ apply d $ Arg (_domInfo a) v0
 
     VDown (VUp _ _) (VUp _ n) -> readbackNe n
 

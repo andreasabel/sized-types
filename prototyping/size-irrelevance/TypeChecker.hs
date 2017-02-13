@@ -119,20 +119,20 @@ inferType e = do
   let invalidType = throwError $ "Not a valid type expression: " ++ printTree e
   case e of
 
-    -- Universes
+    -- Universes (shape irrelevant)
 
     A.Set  -> return (Type sZero, vsConst 1)
     A.Set1 -> return (Type $ sSuc sZero, vsConst 2)
     A.Set2 -> return (Type $ sSuc $ sSuc sZero, vsConst 3)
     A.App A.Set l -> do
-      a <- checkLevel l
+      a <- resurrect ShapeIrr $ checkLevel l
       v <- evaluate a
       return (Type a, vsSuc v)
 
-    -- Natural number type
+    -- Natural number type (shape irrelevant)
 
     A.App A.Nat s -> do
-      a <- checkSize s
+      a <- resurrect ShapeIrr $ checkSize s
       v <- evaluate a
       return (Nat a, vsZero)
 
@@ -218,7 +218,7 @@ checkExp e0 t = do
         VPi dom cl -> addContext (x, dom) $ do
           t' <- applyClosure cl =<< lastVal
           u  <- checkExp (A.Lam xs e) t'
-          return $ Lam (domInfo dom) $ Abs (fromIdU x) u
+          return $ Lam (_domInfo dom) $ Abs (fromIdU x) u
         _ -> throwError $ "Lambda abstraction expects function type, but got " ++ show t
     e -> do
       (u, ti) <- inferExp e
@@ -235,27 +235,42 @@ inferExp = \case
     return (t, VType l)
 
   A.Var x -> do
-    (u, Dom r t) <- inferVar x
+    (u, Dom r t) <- inferId x
     if r == Relevant then return (u,t) else
       throwError $ "Illegal reference to variable: " ++ printTree x
 
-  A.App f e -> nyi "application"
+  e0@(A.App f e) -> do
+    (tf, t) <- inferExp f
+    case t of
+      VPi (Dom r tdom) cl -> do
+        te <- resurrect r $ checkExp e tdom
+        v  <- evaluate te
+        (fromMaybe __IMPOSSIBLE__ $ app tf (Arg r te),) <$> applyClosure cl v
+      _ -> throwError $ "Function type expected in application " ++ printTree e0
+             ++ " ; but found type" ++ show t
+
+
   A.Case{}  -> nyi "case"
 
   _ -> __IMPOSSIBLE__
 
 -- | Infer type of a variable
 
-inferVar :: A.Ident -> Check (Term, Dom VType)
-inferVar (A.Ident x) = do
+inferId :: A.Ident -> Check (Term, Dom VType)
+inferId (A.Ident x) = do
   (lookupCxt x <$> asks _envCxt) >>= \case
-    Nothing     -> throwError $ "Variable not in scope: " ++ x
     Just (i, t) -> return (var $ Index i, t)
+    Nothing     -> do
+      (Map.lookup x <$> use stTySigs) >>= \case
+        Nothing -> throwError $ "Identifier not in scope: " ++ x
+        Just t  -> return (Def x [], defaultDom t)
 
 -- | Coercion / subtype checking.
 
 coerce :: Term -> VType -> VType -> Check Term
-coerce u ti tc = nyi "Coercion"
+coerce u ti tc = do
+  subType ti tc
+  return u
 
 -- | Type checker auxiliary functions.
 
@@ -347,3 +362,27 @@ instance AddContext (Id, Dom VType) where
     $ over envCxt ((x,t):)
     . over envEnv nextVar
     where nextVar delta = vVar (unDom t) (length delta) : delta
+
+-- | Context: resurrecting irrelevant variables
+resurrect :: Relevance -> Check a -> Check a
+resurrect = \case
+  -- Relevant application: resurrect nothing.
+  Relevant   -> id
+  -- Irrelevant application: resurrect everything.
+  Irrelevant -> local $ over envCxt $ map $ over _2 $ set domInfo Relevant
+  -- Shape irrelevant application: resurrect shape-irrelevant variables.
+  ShapeIrr   -> local $ over envCxt $ map $ over _2 $ over domInfo $ resSI
+    where
+    resSI = \case
+      ShapeIrr -> Relevant
+      r -> r
+
+-- * Subtyping
+
+subType :: Val -> Val -> Check ()
+subType ti tc =
+  case (ti, tc) of
+    (VNat a, VNat b) -> return () -- TODO
+    (VType a, VType b) -> return () -- TODO
+    _ | ti == tc -> return ()
+    _ -> nyi $ "Is " ++ show ti ++ " a subtype of " ++ show tc ++ " ?"

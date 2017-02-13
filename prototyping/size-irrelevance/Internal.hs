@@ -2,10 +2,13 @@
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE DeriveFoldable #-}
 {-# LANGUAGE DeriveTraversable #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 -- | Internal Syntax.
 
 module Internal where
+
+import Control.Lens hiding (Level, Index)
 
 import Data.Foldable (Foldable)
 import Data.Traversable (Traversable)
@@ -87,7 +90,7 @@ data Abs a
 
 -- | Function domain decoration.
 
-data Dom a = Dom { domInfo :: ArgInfo, unDom :: a }
+data Dom a = Dom { _domInfo :: ArgInfo, unDom :: a }
   deriving (Eq, Ord, Show, Functor, Foldable, Traversable)
 
 -- | Argument decoration.
@@ -109,6 +112,12 @@ data Relevance
 var :: Index -> Term
 var i = Var i []
 
+app :: Term -> Arg Term -> Maybe Term
+app t u = case t of
+  Var x es -> Just $ Var x $ es ++ [ Apply u ]
+  Def f es -> Just $ Def f $ es ++ [ Apply u ]
+  _ -> Nothing
+
 defaultArg :: a -> Arg a
 defaultArg = Arg Relevant
 
@@ -124,3 +133,6 @@ sZero = Zero Infty
 
 sSuc  :: Term -> Term
 sSuc  = Suc Infty
+
+
+makeLenses ''Dom
