@@ -14,11 +14,12 @@ import Control.Monad.Reader
 
 import Data.Traversable (traverse)
 
-import Sit.Abs (Ident)
 import Internal
 
 import Impossible
 #include "undefined.h"
+
+-- * Values
 
 -- | Generic values are de Bruijn levels.
 type VGen   = Int
@@ -39,9 +40,13 @@ data Val
   | VSuc VSize Val
   | VInfty
   | VPi (Dom VType) VClos
-  | VLam VClos
+  -- Functions
+  | -- | Lambda abstraction
+    VLam VClos
   | -- | @\ x -> x e@ for internal use in fix.
     VElimBy VElim
+  -- -- | -- | Constant function
+  -- --   VConst Val
   | -- | Neutrals.
     VUp VType VNe
   | -- | Type annotation for readback (normal form).
@@ -55,6 +60,89 @@ data VClos = VClos
   , closEnv  :: Env
   }
 
+-- | Variable
+
+vVar :: VType -> VGen -> Val
+vVar t x = VUp t $ VNe x []
+
+-- * Size arithmetic
+
+-- | Zero size.
+
+vsZero :: VSize
+vsZero = VZero VInfty
+
+-- | Successor size.
+
+vsSuc :: VSize -> VSize
+vsSuc = VSuc VInfty
+
+-- | Variable size.
+
+vsVar :: VGen -> VSize
+vsVar = vVar VSize
+
+-- | Size increment.
+
+vsPlus :: Int -> VSize -> VSize
+vsPlus n v = iterate vsSuc v !! n
+
+-- | Constant size.
+
+vsConst :: Int -> VSize
+vsConst n = vsPlus n vsZero
+
+-- | View a value as a size expression.
+
+data SizeView
+  = SVConst Int
+    -- ^ @n@
+  | SVVar VGen Int
+    -- ^ @i + n@
+  | SVInfty
+    -- ^ @oo@
+
+-- | Successor size on view.
+
+svSuc :: SizeView -> SizeView
+svSuc = \case
+  SVConst n -> SVConst $ succ n
+  SVVar x n -> SVVar x $ succ n
+  SVInfty   -> SVInfty
+
+-- | View a value as a size expression.
+
+sizeView :: Val -> Maybe SizeView
+sizeView = \case
+  VZero _              -> return $ SVConst 0
+  VSuc _ v             -> svSuc <$> sizeView v
+  VInfty               -> return $ SVInfty
+  VUp VSize (VNe k []) -> return $ SVVar k 0
+  _ -> Nothing
+
+unSizeView :: SizeView -> Val
+unSizeView = \case
+  SVInfty -> VInfty
+  SVConst n -> vsConst n
+  SVVar x n -> vsPlus n $ vsVar x
+
+-- | Compute the maximum of two sizes, if it exists.
+
+maxSize :: VSize -> VSize -> Maybe VSize
+maxSize v1 v2 = do
+  s1 <- sizeView v1
+  s2 <- sizeView v2
+  case (s1, s2) of
+    (SVInfty, _) -> return $ VInfty
+    (_, SVInfty) -> return $ VInfty
+    (SVConst n, SVConst m)          -> return $ unSizeView $ SVConst $ max n m
+    (SVVar x n, SVVar y m) | x == y -> return $ unSizeView $ SVVar x $ max n m
+    (SVConst n, SVVar y m) | n <= m -> return $ unSizeView $ SVVar y m
+    (SVVar x n, SVConst m) | n >= m -> return $ unSizeView $ SVVar x n
+    _ -> Nothing
+
+-- * Evaluation
+
 -- | An environment maps de Bruijn indices to values.
 --   The first entry in the list is the binding for index 0.
 
@@ -63,12 +151,12 @@ type Env = [Val]
 -- | Evaluation monad.
 
 class (Functor m, Applicative m, Monad m) => MonadEval m where
-  getDef :: Ident -> m Val
+  getDef :: Id -> m Val
 
 -- | Evaluation.
 
-evaluate :: MonadEval m => Term -> Env -> m Val
-evaluate t rho = runReaderT (eval t) rho
+evalIn :: MonadEval m => Term -> Env -> m Val
+evalIn t rho = runReaderT (eval t) rho
 
 class Evaluate a b where -- -- | a -> b where
   eval :: MonadEval m => a -> ReaderT Env m b
@@ -85,6 +173,7 @@ instance Evaluate Term Val where
     Zero a   -> VZero <$> eval a
     Suc a t  -> liftA2 VSuc (eval a) (eval t)
     Pi u t   -> liftA2 VPi (eval u) (eval t)
+    -- Lam ai (NoAbs x t) -> VConst <$> eval t
     Lam ai t -> VLam <$> eval t
     Var x es -> do
       h   <- eval x
@@ -125,6 +214,7 @@ apply :: MonadEval m => Val -> Arg Val -> m Val
 apply v arg@(Arg ai u) = case v of
   VLam cl   -> applyClos cl u
   VElimBy e -> applyE u [ e ]
+  -- VConst f  -> return f
   VUp (VPi a b) (VNe x es) -> do
     t' <- applyClos b u
     return $ VUp t' $ VNe x $ es ++ [ Apply $ Arg ai $ VDown (unDom a) u ]
@@ -133,8 +223,8 @@ apply v arg@(Arg ai u) = case v of
 
 applyClos :: MonadEval m => VClos -> Val -> m Val
 applyClos (VClos b rho) u = case b of
-  NoAbs _ t -> evaluate t rho
-  Abs   _ t -> evaluate t $ u : rho
+  NoAbs _ t -> evalIn t rho
+  Abs   _ t -> evalIn t $ u : rho
 
 -- | Unfold a fixed-point.
 
@@ -145,6 +235,8 @@ unfoldFix t f a v = applyE f $ map (Apply . defaultArg) [ a , VElimBy (Fix t f) 
 
 elimNeNat :: MonadEval m => VSize -> VNe -> VElim -> m Val
 elimNeNat a n e = __IMPOSSIBLE__
+
+-- * Readback
 
 -- | Readback.
 
@@ -160,7 +252,7 @@ instance Readback Val Term where
     VDown (VNat _ ) d -> readbackNat  d
 
     VDown (VPi a b) d -> do
-      v0 <- VUp (unDom a) . (`VNe` []) <$> ask
+      v0 <- vVar (unDom a) <$> ask
       c <- lift $ applyClos b v0
       Lam (domInfo a) . Abs "x" <$> do
         local succ . readback . VDown c =<< do
@@ -187,7 +279,7 @@ readbackType = \case
   VNat a  -> Nat  <$> readbackSize a
   VPi a b -> do
     u  <- traverse readbackType a
-    v0 <- VUp (unDom a) . (`VNe` []) <$> ask
+    v0 <- vVar (unDom a) <$> ask
     Pi u . Abs "x" <$> do
       local succ . readbackType =<< do
         lift $ applyClos b v0

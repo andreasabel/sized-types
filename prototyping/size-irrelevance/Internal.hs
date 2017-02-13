@@ -10,7 +10,9 @@ module Internal where
 import Data.Foldable (Foldable)
 import Data.Traversable (Traversable)
 
-import Sit.Abs (Ident)
+-- | Definition names are strings.
+
+type Id = String
 
 -- | Variables are de Bruijn indices.
 
@@ -46,7 +48,7 @@ data Term
   | -- ^ Application (neutral).
     Var Index Elims
   | -- ^ Function call
-    Def Ident Elims
+    Def Id Elims
   deriving (Eq, Ord, Show)
 
 -- | Eliminations.
@@ -109,6 +111,9 @@ var i = Var i []
 
 defaultArg :: a -> Arg a
 defaultArg = Arg Relevant
+
+defaultDom :: a -> Dom a
+defaultDom = Dom Relevant
 
 -- | Zero size.
 

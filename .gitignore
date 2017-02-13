@@ -4,6 +4,8 @@
 *.bak
 *.blg
 *.bin
+*.dyn_hi
+*.dyn_o
 *.hi
 *.log
 *.o
