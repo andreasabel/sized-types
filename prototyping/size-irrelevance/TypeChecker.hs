@@ -10,6 +10,7 @@ import Control.Applicative
 import Control.Lens hiding (Level)
 import Control.Monad
 import Control.Monad.Except
+import Control.Monad.Identity
 import Control.Monad.Reader
 import Control.Monad.State
 
@@ -119,6 +120,13 @@ inferType e = do
   let invalidType = throwError $ "Not a valid type expression: " ++ printTree e
   case e of
 
+    -- Size type (internal use only).
+
+    -- Each universe is closed under size quantification.
+    -- Thus, we place Size in Set0.
+
+    A.Size -> return (Size, vsConst 0)
+
     -- Universes (shape irrelevant)
 
     A.Set  -> return (Type sZero, vsConst 1)
@@ -193,6 +201,7 @@ inferPiType x dom cont = do
 
 checkSize :: A.Exp -> Check Size
 checkSize = \case
+  A.Infty        -> return Infty
   A.LZero        -> return $ sZero
   A.App A.LSuc e -> sSuc <$> checkSize e
   e@(A.Var x)    -> checkExp e VSize
@@ -234,6 +243,17 @@ inferExp = \case
     (t, l) <- inferType e
     return (t, VType l)
 
+  e | (A.Fix, es) <- appView e -> do
+    case es of
+      [ et , ef , en ] -> do
+        tT <- checkExp et fixKind
+        tF <- fixType tT
+        tf <- checkExp ef =<< evaluate tF
+        (tn, a) <- inferNat en
+        -- return $ App tn [ Fix tT tf ]
+        nyi "checking fix -- need non-normal terms"
+      _ -> throwError $ "fix expects exactly 3 arguments: " ++ printTree e
+
   A.Var x -> do
     (u, Dom r t) <- inferId x
     if r == Relevant then return (u,t) else
@@ -254,6 +274,19 @@ inferExp = \case
 
   _ -> __IMPOSSIBLE__
 
+-- | @fixKind = ..(i : Size) -> Nat i -> Setω@
+
+fixKind :: VType
+fixKind = evaluateClosed $
+  Pi (Dom ShapeIrr Size) $ Abs "i" $
+    Pi (Dom Relevant (Nat $ var 0)) $ Abs "x" $
+      Type Infty
+
+-- | Construct the type of the functional for fix.
+
+fixType :: Term -> Check Term
+fixType t = nyi "fixType -- need renaming"
+
 -- | Infer type of a variable
 
 inferId :: A.Ident -> Check (Term, Dom VType)
@@ -264,6 +297,13 @@ inferId (A.Ident x) = do
       (Map.lookup x <$> use stTySigs) >>= \case
         Nothing -> throwError $ "Identifier not in scope: " ++ x
         Just t  -> return (Def x [], defaultDom t)
+
+inferNat :: A.Exp -> Check (Term, VSize)
+inferNat e = do
+  (u,t) <- inferExp e
+  case t of
+    VNat a -> return (u, a)
+    _ -> throwError $ "Expected natural number, but found " ++ printTree e
 
 -- | Coercion / subtype checking.
 
@@ -295,6 +335,12 @@ addDef :: Id -> Val -> Check ()
 addDef x v = stDefs %= Map.insert x v
 
 -- * Invoking evaluation
+
+instance MonadEval Identity where
+  getDef x = __IMPOSSIBLE__
+
+evaluateClosed :: Term -> Val
+evaluateClosed t = runIdentity $ evalIn t []
 
 instance MonadEval (Reader (Map Id Val)) where
   getDef x = fromMaybe __IMPOSSIBLE__ . Map.lookup x <$> ask
@@ -380,9 +426,22 @@ resurrect = \case
 -- * Subtyping
 
 subType :: Val -> Val -> Check ()
-subType ti tc =
+subType ti tc = do
+  let failure = throwError $ "Subtyping failed: type " ++ show ti
+        ++ " is not a subtype of " ++ show tc
   case (ti, tc) of
-    (VNat a, VNat b) -> return () -- TODO
-    (VType a, VType b) -> return () -- TODO
+    (VNat  a, VNat  b) -> unless (leqSize a b) failure
+    (VType a, VType b) -> unless (leqSize a b) failure
+    (VPi dom1 cl1, VPi dom2 cl2) -> do
+      unless (_domInfo dom2 <= _domInfo dom1) failure
+      subType (unDom dom2) (unDom dom1)
+      addContext (absName $ closBody cl2, dom2) $ do
+        v  <- lastVal
+        b1 <- applyClosure cl1 v
+        b2 <- applyClosure cl2 v
+        subType b1 b2
     _ | ti == tc -> return ()
     _ -> nyi $ "Is " ++ show ti ++ " a subtype of " ++ show tc ++ " ?"
+
+-- subDom :: Dom Val -> Dom Val -> Check ()
+-- subDom (Dom r1 t1) (Dom r2 t2) = do

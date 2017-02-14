@@ -105,6 +105,7 @@ data SizeView
     -- ^ @i + n@
   | SVInfty
     -- ^ @oo@
+  deriving (Eq, Show)
 
 -- | Successor size on view.
 
@@ -306,3 +307,23 @@ readbackSize = \case
   VSuc _ a -> sSuc <$> readbackSize a
   VUp VSize (VNe x []) -> var <$> readback x
   _ -> __IMPOSSIBLE__
+
+-- * Comparison
+
+-- | Size values are partially ordered
+
+cmpSizes :: VSize -> VSize -> Maybe Ordering
+cmpSizes v1 v2 = do
+  s1 <- sizeView v1
+  s2 <- sizeView v2
+  case (s1, s2) of
+    (a,b) | a == b -> return EQ
+    (SVInfty, _) -> return GT
+    (_, SVInfty) -> return LT
+    (SVConst n, SVConst m) -> return $ compare n m
+    (SVVar x n, SVVar y m) | x == y -> return $ compare n m
+    (SVConst n, SVVar y m) | n <= m -> __IMPOSSIBLE__  -- Here, LT is too strong.
+    _ -> __IMPOSSIBLE__  -- TODO
+
+leqSize :: VSize -> VSize -> Bool
+leqSize a b = maxSize a b == b

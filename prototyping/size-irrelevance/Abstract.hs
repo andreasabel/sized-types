@@ -1,10 +1,28 @@
 {-# LANGUAGE LambdaCase #-}
 
+{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
+
 -- | Auxiliary functions for abstract syntax.
 
 module Abstract where
 
+import Control.Lens
+
 import Sit.Abs as A
+
+-- data AppView
+--   = FixV [Exp]
+--   | SetV [Exp]
+--   | VarV [Exp]
+--   | ZeroV [Exp]
+--   | SucV  [Exp]
+
+-- | Gather applications to expose head.
+
+appView :: Exp -> (Exp, [Exp])
+appView = \case
+  App f e -> over _2 (++ [e]) $ appView f
+  e -> (e, [])
 
 -- | Can this expression only denote a type?
 
@@ -29,6 +47,7 @@ introduction = \case
   Case{}   -> False
   Int{}    -> True
   Infty    -> True
+  Size     -> True
   Nat      -> True
   Set      -> True
   Set1     -> True
@@ -44,6 +63,8 @@ introduction = \case
   Arrow{}  -> True
   Plus{}   -> True
   ELam{}   -> True
+
+-- | Convert "identifier-or-underscore" to string.
 
 fromIdU :: A.IdU -> String
 fromIdU = \case
