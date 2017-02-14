@@ -265,7 +265,7 @@ inferExp = \case
       VPi (Dom r tdom) cl -> do
         te <- resurrect r $ checkExp e tdom
         v  <- evaluate te
-        (fromMaybe __IMPOSSIBLE__ $ app tf (Arg r te),) <$> applyClosure cl v
+        (App tf $ Apply $ Arg r te,) <$> applyClosure cl v
       _ -> throwError $ "Function type expected in application " ++ printTree e0
              ++ " ; but found type" ++ show t
 
@@ -279,7 +279,7 @@ inferExp = \case
 fixKind :: VType
 fixKind = evaluateClosed $
   Pi (Dom ShapeIrr Size) $ Abs "i" $
-    Pi (Dom Relevant (Nat $ var 0)) $ Abs "x" $
+    Pi (Dom Relevant (Nat $ Var 0)) $ Abs "x" $
       Type Infty
 
 -- | Construct the type of the functional for fix.
@@ -292,11 +292,11 @@ fixType t = nyi "fixType -- need renaming"
 inferId :: A.Ident -> Check (Term, Dom VType)
 inferId (A.Ident x) = do
   (lookupCxt x <$> asks _envCxt) >>= \case
-    Just (i, t) -> return (var $ Index i, t)
+    Just (i, t) -> return (Var $ Index i, t)
     Nothing     -> do
       (Map.lookup x <$> use stTySigs) >>= \case
         Nothing -> throwError $ "Identifier not in scope: " ++ x
-        Just t  -> return (Def x [], defaultDom t)
+        Just t  -> return (Def x, defaultDom t)
 
 inferNat :: A.Exp -> Check (Term, VSize)
 inferNat e = do

@@ -48,10 +48,12 @@ data Term
     Pi (Dom Type) (Abs Term)
   | -- ^ Lambda abstraction
     Lam ArgInfo (Abs Term)
-  | -- ^ Application (neutral).
-    Var Index Elims
-  | -- ^ Function call
-    Def Id Elims
+  | -- ^ Variable.
+    Var Index
+  | -- ^ Function call.
+    Def Id
+  | -- ^ Application/eliminiation.
+    App Term Elim
   deriving (Eq, Ord, Show)
 
 -- | Eliminations.
@@ -109,14 +111,14 @@ data Relevance
 
 -- * Smart constructor.
 
-var :: Index -> Term
-var i = Var i []
+-- var :: Index -> Term
+-- var i = Var i []
 
-app :: Term -> Arg Term -> Maybe Term
-app t u = case t of
-  Var x es -> Just $ Var x $ es ++ [ Apply u ]
-  Def f es -> Just $ Def f $ es ++ [ Apply u ]
-  _ -> Nothing
+-- app :: Term -> Arg Term -> Maybe Term
+-- app t u = case t of
+--   Var x es -> Just $ Var x $ es ++ [ Apply u ]
+--   Def f es -> Just $ Def f $ es ++ [ Apply u ]
+--   _ -> Nothing
 
 defaultArg :: a -> Arg a
 defaultArg = Arg Relevant

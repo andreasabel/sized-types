@@ -177,14 +177,12 @@ instance Evaluate Term Val where
     Pi u t   -> liftA2 VPi (eval u) (eval t)
     -- Lam ai (NoAbs x t) -> VConst <$> eval t
     Lam ai t -> VLam <$> eval t
-    Var x es -> do
-      h   <- eval x
-      ves <- mapM eval es
-      lift $ applyE h ves
-    Def f es -> do
-      h   <- lift $ getDef f
-      ves <- mapM eval es
-      lift $ applyE h ves
+    Var x -> eval x
+    Def f -> lift $ getDef f
+    App t e -> do
+      h <- eval t
+      e <- eval e
+      lift $ applyE h e
 
 instance Evaluate (Abs Term) VClos where
   eval t = VClos t <$> ask
@@ -198,9 +196,12 @@ instance Evaluate a b => Evaluate (Dom a) (Dom b) where
 instance Evaluate a b => Evaluate (Elim' a) (Elim' b) where
   eval = traverse eval
 
-applyE :: MonadEval m => Val -> VElims -> m Val
-applyE v []       = return v
-applyE v (e : es) = (`applyE` es) =<<
+applyEs :: MonadEval m => Val -> VElims -> m Val
+applyEs v []       = return v
+applyEs v (e : es) = applyE v e >>= (`applyEs` es)
+
+applyE :: MonadEval m => Val -> VElim -> m Val
+applyE v e =
   case (v, e) of
     (_        , Apply u   ) -> apply v u
     (VZero _  , Case _ u _) -> return u
@@ -215,7 +216,7 @@ applyE v (e : es) = (`applyE` es) =<<
 apply :: MonadEval m => Val -> Arg Val -> m Val
 apply v arg@(Arg ai u) = case v of
   VLam cl   -> applyClos cl u
-  VElimBy e -> applyE u [ e ]
+  VElimBy e -> applyE u e
   -- VConst f  -> return f
   VUp (VPi a b) (VNe x es) -> do
     t' <- applyClos b u
@@ -231,7 +232,7 @@ applyClos (VClos b rho) u = case b of
 -- | Unfold a fixed-point.
 
 unfoldFix :: MonadEval m => VType -> Val -> VSize -> Val -> m Val
-unfoldFix t f a v = applyE f $ map (Apply . defaultArg) [ a , VElimBy (Fix t f) , v ]
+unfoldFix t f a v = applyEs f $ map (Apply . defaultArg) [ a , VElimBy (Fix t f) , v ]
 
 -- | Eliminate a neutral natural number.
 
@@ -298,14 +299,14 @@ readbackNat = \case
 readbackNe  :: MonadEval m => VNe -> ReaderT Int m Term
 readbackNe (VNe x es) = do
   i <- readback x
-  Var i <$> readback es
+  foldl App (Var i) <$> readback es
 
 readbackSize  :: MonadEval m => Val -> ReaderT Int m Term
 readbackSize = \case
   VInfty   -> pure Infty
   VZero _  -> pure sZero
   VSuc _ a -> sSuc <$> readbackSize a
-  VUp VSize (VNe x []) -> var <$> readback x
+  VUp VSize (VNe x []) -> Var <$> readback x
   _ -> __IMPOSSIBLE__
 
 -- * Comparison
