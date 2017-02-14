@@ -215,6 +215,7 @@ applyE v e =
 
 apply :: MonadEval m => Val -> Arg Val -> m Val
 apply v arg@(Arg ai u) = case v of
+  VPi _ cl  -> applyClos cl u  -- we also allow instantiation of Pi-types by apply
   VLam cl   -> applyClos cl u
   VElimBy e -> applyE u e
   -- VConst f  -> return f

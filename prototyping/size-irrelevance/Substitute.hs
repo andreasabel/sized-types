@@ -2,9 +2,11 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE TypeSynonymInstances, FlexibleInstances #-}
 
+{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
+
 -- | Substitution and weak head evaluation
 
-module Evaluation where
+module Substitute where
 
 import Internal
 
@@ -18,7 +20,7 @@ type Subst = [Term]
 -- | Weakening substitution @Γ.Δ ⊢ wkS |Δ| : Γ@
 
 wkS :: Int -> Subst
-wkS n = map (var . Index) [n,n+1..]
+wkS n = map (Var . Index) [n,n+1..]
 
 -- | Identity substitution @Γ ⊢ idS : Γ@.
 
@@ -53,7 +55,7 @@ consS = (:)
 --   @
 
 liftS :: Subst -> Subst
-liftS s = consS (var 0) $ weakS s
+liftS s = consS (Var 0) $ weakS s
 
 -- | Weakening a substitution.
 --
@@ -74,9 +76,46 @@ lookupS s i =  s !! dbIndex i
 -- | Substitution for various syntactic categories.
 
 class Substitute a where
-  subst      :: Subst -> a -> a
-  subst s t = substApply t s []
+  subst :: Subst -> a -> a
 
+instance Substitute a => Substitute [a] where
+  subst s = map (subst s)
+
+instance Substitute a => Substitute (Dom a) where
+  subst s = fmap (subst s)
+
+instance Substitute a => Substitute (Arg a) where
+  subst s = fmap (subst s)
+
+instance Substitute a => Substitute (Elim' a) where
+  subst s = fmap (subst s)
+
+instance Substitute Term where
+  subst s = \case
+    Type l  -> Type $ subst s l
+    Size    -> Size
+    Nat a   -> Nat $ subst s a
+    Zero a  -> Zero $ subst s a
+    Suc a t -> Suc (subst s a) $ subst s t
+    Infty   -> Infty
+    Pi u t  -> Pi (subst s u) $ subst s t
+    Lam r t -> Lam r $ subst s t
+    Var i   -> lookupS s i
+    Def f   -> Def f
+    App t u -> App (subst s t) (subst s u)
+
+instance Substitute (Abs Term) where
+  subst s (Abs   x t) = Abs   x $ subst (liftS s) t
+  subst s (NoAbs x t) = NoAbs x $ subst s t
+
+raise :: Substitute a => Int -> a -> a
+raise n = subst (wkS n)
+
+{- TODO!?
+
+-- | Application
+
+class Substitute a => Apply a where
   applyE     :: a -> Elims -> a
   applyE t [] = t
   applyE t es = substApply t idS es
@@ -84,28 +123,31 @@ class Substitute a where
   substApply :: a -> Subst -> Elims -> a
   substApply t s es = subst s t `applyE` es
 
-instance Substitute a => Substitute [a] where
-  subst s            = map (subst s)
+instance Apply a => Apply [a] where
   applyE ts es       = map (`applyE` es) ts
   substApply ts s es = map (\ t -> substApply t s es) ts
 
-instance Substitute a => Substitute (Dom a) where
-  subst s            = fmap (subst s)
+instance Apply a => Apply (Dom a) where
   applyE ts es       = fmap (`applyE` es) ts
   substApply ts s es = fmap (\ t -> substApply t s es) ts
 
-instance Substitute a => Substitute (Arg a) where
-  subst s            = fmap (subst s)
+instance Apply a => Apply (Arg a) where
   applyE ts es       = fmap (`applyE` es) ts
   substApply ts s es = fmap (\ t -> substApply t s es) ts
 
-instance Substitute a => Substitute (Elim' a) where
-  subst s            = fmap (subst s)
+instance Apply a => Apply (Elim' a) where
   applyE ts es       = fmap (`applyE` es) ts
   substApply ts s es = fmap (\ t -> substApply t s es) ts
 
-instance Substitute Term where
+instance Apply Term where
   substApply t s es = case t of
+    -- Eliminations
+    Var i   -> lookupS s i `applyE` es
+    Def f   -> foldl App (Def f) es
+    App t u -> substApply t s $ Apply (subst s u) : es
+    -- Eliminateables
+
+    -- Types & non-eliminateables
     Type l
       | null es   -> Type $ subst s l
       | otherwise -> __IMPOSSIBLE__
@@ -127,6 +169,16 @@ instance Substitute Term where
     Pi u t
       | null es   -> Pi (subst s u) $ subst s t
       | otherwise -> __IMPOSSIBLE__
-    Var i es -> lookupS s i `applyE` subst s es
 
-instance Substitute (Abs Term) where
+instance Apply (Abs Term) where
+
+  substApply (Abs x t) s = \case
+    (Apply (Arg _ u) : es) -> substApply t (consS u s) es
+    _ -> __IMPOSSIBLE__
+
+  substApply (NoAbs x t) s = \case
+    (Apply _ : es) -> substApply t s es
+    _ -> __IMPOSSIBLE__
+
+
+-}

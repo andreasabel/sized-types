@@ -28,6 +28,7 @@ import Sit.ErrM
 
 import Abstract as A
 import Internal
+import Substitute
 import Evaluation
 
 import Impossible
@@ -221,6 +222,9 @@ checkLevel = \case
 checkExp :: A.Exp -> VType -> Check Term
 checkExp e0 t = do
   case e0 of
+
+    -- Functions
+
     A.Lam []     e -> checkExp e t
     A.Lam (x:xs) e -> do
       case t of
@@ -229,6 +233,13 @@ checkExp e0 t = do
           u  <- checkExp (A.Lam xs e) t'
           return $ Lam (_domInfo dom) $ Abs (fromIdU x) u
         _ -> throwError $ "Lambda abstraction expects function type, but got " ++ show t
+
+    A.ELam az ez as en es -> do
+       case t of
+         VPi (Dom r (VNat b)) cl -> do
+           nyi $ "checking " ++ printTree e0
+         _ -> throwError $ "Extended lambda is function from Nat _, but here it got type " ++ show t
+
     e -> do
       (u, ti) <- inferExp e
       coerce u ti t
@@ -247,11 +258,12 @@ inferExp = \case
     case es of
       [ et , ef , en ] -> do
         tT <- checkExp et fixKind
-        tF <- fixType tT
+        vT <- evaluate tT
+        let tF = fixType tT
         tf <- checkExp ef =<< evaluate tF
         (tn, a) <- inferNat en
-        -- return $ App tn [ Fix tT tf ]
-        nyi "checking fix -- need non-normal terms"
+        vn <- evaluate tn
+        (App tn $ Fix tT tf,) <$> applyArgs vT [ Arg ShapeIrr a , Arg Relevant vn ]
       _ -> throwError $ "fix expects exactly 3 arguments: " ++ printTree e
 
   A.Var x -> do
@@ -272,7 +284,7 @@ inferExp = \case
 
   A.Case{}  -> nyi "case"
 
-  _ -> __IMPOSSIBLE__
+  e -> nyi $ "inferring type of " ++ printTree e
 
 -- | @fixKind = ..(i : Size) -> Nat i -> Setω@
 
@@ -283,9 +295,19 @@ fixKind = evaluateClosed $
       Type Infty
 
 -- | Construct the type of the functional for fix.
+--
+--   @fixType t = .(i : Size) -> ((x : Nat i) -> T i x) -> (x : Nat (i + 1)) -> T (i + 1) x
 
-fixType :: Term -> Check Term
-fixType t = nyi "fixType -- need renaming"
+fixType :: Term -> Term
+fixType t =
+  Pi (Dom Irrelevant Size) $ Abs "i" $
+    Pi (Dom Relevant $ f $ Var 0) $ NoAbs "_" $
+      f $ sSuc $ Var 0
+  where
+  f a = Pi (Dom Relevant (Nat a)) $ Abs "x" $
+          raise 2 t
+            `App` Apply (Arg ShapeIrr $ raise 1 a)
+            `App` Apply (Arg Relevant $ Var 0)
 
 -- | Infer type of a variable
 
@@ -354,6 +376,14 @@ evaluate t = do
 applyClosure :: VClos -> Val -> Check Val
 applyClosure cl v =
   runReader (applyClos cl v) <$> use stDefs
+
+applyElims :: Val -> VElims -> Check Val
+applyElims v es =
+  runReader (applyEs v es) <$> use stDefs
+
+applyArgs :: Val -> [Arg Val] -> Check Val
+applyArgs v = applyElims v . map Apply
+
 
 -- * Context manipulation
 

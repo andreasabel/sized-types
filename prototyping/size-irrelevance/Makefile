@@ -7,7 +7,7 @@ test : Sit.bin test/Test.agda
 
 Sit.bin : Sit.hs Sit/Abs.hs Sit/Lex.hs Sit/Par.hs \
   undefined.h Impossible.hs \
-  TypeChecker.hs Abstract.hs Internal.hs Evaluation.hs Substitute.hs
+  Abstract.hs Internal.hs Substitute.hs Evaluation.hs TypeChecker.hs
 	ghc --make $< -o Sit.bin
 
 Sit/Lex.x Sit/Par.y Sit/Abs.hs : Sit.cf
