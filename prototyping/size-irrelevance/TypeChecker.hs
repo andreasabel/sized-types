@@ -234,29 +234,55 @@ checkExp e0 t = do
           return $ Lam (_domInfo dom) $ Abs (fromIdU x) u
         _ -> throwError $ "Lambda abstraction expects function type, but got " ++ show t
 
-    A.ELam az ez as en es -> do
-       case t of
-         VPi (Dom r (VNat b)) cl -> do
-           nyi $ "checking " ++ printTree e0
-         _ -> throwError $ "Extended lambda is function from Nat _, but here it got type " ++ show t
+    e@(A.ELam jz ez js x es) -> do
+      case t of
+        VPi (Dom r (VNat b)) cl -> do
+          tt <- reifyType t
+          -- Make sure that b is a successor size
+          let failNotSuc = throwError $
+                "Splitting Nat is only possible at successor size, when checking " ++ printTree e
+          a <- maybe failNotSuc return $ sizePred b
+          tz <- checkExp ez =<< applyClosure cl (VZero a)
+          addContext (x, Dom Relevant $ VNat a) $ do
+            ts <- checkExp es =<< applyClosure cl =<< do VSuc a <$> lastVal
+            return $ Lam Relevant $ Abs "x" $ App (Var 0) $ raise 1 $
+              Case tt tz ts
+
+        _ -> throwError $ "Extended lambda is function from Nat _, but here it got type " ++ show t
 
     e -> do
       (u, ti) <- inferExp e
       coerce u ti t
     -- e -> nyi $ "checking " ++ printTree e
 
--- | Precondition: @not (A.introduction e)@.
+-- | Infers neutrals, natural numbers, types.
 
 inferExp :: A.Exp -> Check (Term, VType)
-inferExp = \case
+inferExp e0 = case (e0, appView e0) of
 
-  e | mustBeType e -> do
+  (e,_) | mustBeType e -> do
     (t, l) <- inferType e
     return (t, VType l)
 
-  e | (A.Fix, es) <- appView e -> do
+  (e, (A.Zero, es)) -> do
     case es of
-      [ et , ef , en ] -> do
+      [ ea ] -> do
+        a <- resurrect Irrelevant $ checkSize ea
+        (zero a ,) . VNat . vsSuc <$> evaluate a
+      _ -> throwError $ "zero expects exactly 1 argument: " ++ printTree e
+
+  (e, (A.Suc, es)) -> do
+    case es of
+      [ ea, en ] -> do
+        a <- resurrect Irrelevant $ checkSize ea
+        va <- evaluate a
+        n <- checkExp en $ VNat va
+        return (suc a n, VNat $ vsSuc va)
+      _ -> throwError $ "suc expects exactly 2 arguments: " ++ printTree e
+
+  (e, (A.Fix, es)) -> do
+    case es of
+      (et : ef : en : es') -> do
         tT <- checkExp et fixKind
         vT <- evaluate tT
         let tF = fixType tT
@@ -264,14 +290,14 @@ inferExp = \case
         (tn, a) <- inferNat en
         vn <- evaluate tn
         (App tn $ Fix tT tf,) <$> applyArgs vT [ Arg ShapeIrr a , Arg Relevant vn ]
-      _ -> throwError $ "fix expects exactly 3 arguments: " ++ printTree e
+      _ -> throwError $ "fix expects at least 3 arguments: " ++ printTree e
 
-  A.Var x -> do
+  (A.Var x, _) -> do
     (u, Dom r t) <- inferId x
     if r == Relevant then return (u,t) else
       throwError $ "Illegal reference to variable: " ++ printTree x
 
-  e0@(A.App f e) -> do
+  (e0@(A.App f e), _) -> do
     (tf, t) <- inferExp f
     case t of
       VPi (Dom r tdom) cl -> do
@@ -282,9 +308,9 @@ inferExp = \case
              ++ " ; but found type" ++ show t
 
 
-  A.Case{}  -> nyi "case"
+  (A.Case{}, _)  -> nyi "case"
 
-  e -> nyi $ "inferring type of " ++ printTree e
+  (e, _) -> nyi $ "inferring type of " ++ printTree e
 
 -- | @fixKind = ..(i : Size) -> Nat i -> Setω@
 
@@ -384,6 +410,11 @@ applyElims v es =
 applyArgs :: Val -> [Arg Val] -> Check Val
 applyArgs v = applyElims v . map Apply
 
+reifyType :: VType -> Check Type
+reifyType t = do
+  n <- length <$> asks _envCxt
+  sig <- use stDefs
+  return $ runReader (runReaderT (readbackType t) n) sig
 
 -- * Context manipulation
 
@@ -470,8 +501,14 @@ subType ti tc = do
         b1 <- applyClosure cl1 v
         b2 <- applyClosure cl2 v
         subType b1 b2
-    _ | ti == tc -> return ()
-    _ -> nyi $ "Is " ++ show ti ++ " a subtype of " ++ show tc ++ " ?"
+    _ -> equalType ti tc
 
 -- subDom :: Dom Val -> Dom Val -> Check ()
 -- subDom (Dom r1 t1) (Dom r2 t2) = do
+
+equalType :: Val -> Val -> Check ()
+equalType v v' = do
+  t  <- reifyType v
+  t' <- reifyType v'
+  unless (t == t') $
+    throwError $ "Inferred type " ++ show t ++ " is not equal to expected type " ++ show t'

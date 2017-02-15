@@ -39,9 +39,9 @@ data Term
   | -- | Sized natural number type.
     Nat Size
   | -- | Zero constructor, or zero size (then @Size@ is ignored).
-    Zero Size
+    Zero (Arg Size)
   | -- | Successor constructor, or successor size (then @Size@ is ignored).
-    Suc Size Term
+    Suc (Arg Size) Term
   | -- | Infinity size.
     Infty
   | -- ^ (Dependent) function type.
@@ -98,7 +98,11 @@ data Dom a = Dom { _domInfo :: ArgInfo, unDom :: a }
 -- | Argument decoration.
 
 data Arg a = Arg { argInfo :: ArgInfo, unArg :: a }
-  deriving (Eq, Ord, Show, Functor, Foldable, Traversable)
+  deriving (Ord, Show, Functor, Foldable, Traversable)
+
+instance Eq a => Eq (Arg a) where
+   Arg Irrelevant _ == Arg Irrelevant _ = True
+   Arg r a == Arg r' a' = r == r' && a == a'
 
 type ArgInfo = Relevance
 
@@ -110,6 +114,12 @@ data Relevance
   deriving (Eq, Ord, Show)
 
 -- * Smart constructor.
+
+zero :: Size -> Term
+zero = Zero . Arg Irrelevant
+
+suc :: Size -> Term -> Term
+suc = Suc . Arg Irrelevant
 
 -- var :: Index -> Term
 -- var i = Var i []
@@ -129,12 +139,12 @@ defaultDom = Dom Relevant
 -- | Zero size.
 
 sZero :: Term
-sZero = Zero Infty
+sZero = zero Infty
 
 -- | Successor size.
 
 sSuc  :: Term -> Term
-sSuc  = Suc Infty
+sSuc  = suc Infty
 
 
 makeLenses ''Dom

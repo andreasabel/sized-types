@@ -172,8 +172,8 @@ instance Evaluate Term Val where
     Nat a    -> VNat <$> eval a
     Size     -> pure VSize
     Infty    -> pure VInfty
-    Zero a   -> VZero <$> eval a
-    Suc a t  -> liftA2 VSuc (eval a) (eval t)
+    Zero a   -> VZero <$> eval (unArg a)
+    Suc a t  -> liftA2 VSuc (eval $ unArg a) (eval t)
     Pi u t   -> liftA2 VPi (eval u) (eval t)
     -- Lam ai (NoAbs x t) -> VConst <$> eval t
     Lam ai t -> VLam <$> eval t
@@ -222,6 +222,7 @@ apply v arg@(Arg ai u) = case v of
   VUp (VPi a b) (VNe x es) -> do
     t' <- applyClos b u
     return $ VUp t' $ VNe x $ es ++ [ Apply $ Arg ai $ VDown (unDom a) u ]
+  _ -> error $ "NYI: apply  " ++ show v ++ "  to  " ++ show u
 
 -- | Apply a closure to a value.
 
@@ -238,7 +239,7 @@ unfoldFix t f a v = applyEs f $ map (Apply . defaultArg) [ a , VElimBy (Fix t f)
 -- | Eliminate a neutral natural number.
 
 elimNeNat :: MonadEval m => VSize -> VNe -> VElim -> m Val
-elimNeNat a n e = __IMPOSSIBLE__
+elimNeNat a n e = error $ "NYI: elimNeNat"
 
 -- * Readback
 
@@ -292,8 +293,8 @@ readbackType = \case
 
 readbackNat  :: MonadEval m => Val -> ReaderT Int m Term
 readbackNat = \case
-  VZero a        -> Zero <$> readbackSize a
-  VSuc a t       -> liftA2 Suc (readbackSize a) (readbackNat t)
+  VZero a        -> zero <$> readbackSize a
+  VSuc a t       -> liftA2 suc (readbackSize a) (readbackNat t)
   VUp (VNat _) n -> readbackNe n
   _ -> __IMPOSSIBLE__
 
@@ -329,3 +330,12 @@ cmpSizes v1 v2 = do
 
 leqSize :: VSize -> VSize -> Bool
 leqSize a b = maxSize a b == b
+
+-- | Compute predecessor size, if possible.
+sizePred :: VSize -> Maybe VSize
+sizePred v = do
+  sizeView v >>= \case
+    SVInfty -> return $ VInfty
+    SVConst n | n > 0 -> return $ unSizeView $ SVConst $ n-1
+    SVVar x n | n > 0 -> return $ unSizeView $ SVVar x $ n-1
+    _ -> Just v

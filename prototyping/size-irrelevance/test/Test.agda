@@ -55,20 +55,26 @@ plus' = \ i x ->
 
 --; --- Predecessor
 
+--- pred  : forall .i -> Nat i -> Nat i  --;
+--- pred = \ _ -> \{ (zero j) -> zero j ; (suc j y) -> y }
+
 pred  : forall .i -> Nat i -> Nat i  --;
-pred = \ _ -> \{ (zero j) -> zero j ; (suc j y) -> y }
+pred = \ i n ->
+  fix (\ i _ -> Nat i)
+      (\ i _ -> \{ (zero _) -> zero i ; (suc _ y) -> y })
+      n
 
 --; --- Subtraction
 
-{- {- Agda does not like the following -}
-minus : forall .i -> Nat i -> forall .j -> Nat j -> Nat i --;
-minus = \ i x j y ->
-  fix (\ _ _ -> Nat i -> Nat i)  --- Variable i is declared irrelevant, so it cannot be used here
-      (\ _ f -> \{ (zero _) -> \ x -> x; (suc _ y) -> \ x -> f y (pred i x) })
-      y
-      x
-  --;
---- -}
+--- {- {- Agda does not like the following -}
+--- minus : forall .i -> Nat i -> forall .j -> Nat j -> Nat i --;
+--- minus = \ i x j y ->
+---   fix (\ _ _ -> Nat i -> Nat i)  --- Variable i is declared irrelevant, so it cannot be used here
+---       (\ _ f -> \{ (zero _) -> \ x -> x; (suc _ y) -> \ x -> f y (pred i x) })
+---       y
+---       x
+---   --;
+--- --- -}
 
 sub : forall .j -> Nat j -> forall .i -> Nat i -> Nat i  --;
 sub = \ j y ->
