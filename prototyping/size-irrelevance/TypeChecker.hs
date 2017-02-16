@@ -73,7 +73,8 @@ checkDecls = mapM_ checkDecl
 
 checkDecl :: A.Decl -> Check ()
 checkDecl = \case
-  A.Open{} -> return ()
+  A.Blank{} -> return ()
+  A.Open{}  -> return ()
   A.Sig x a -> checkSig x a
   A.Def x e -> checkDef x e
 
@@ -292,10 +293,12 @@ inferExp e0 = case (e0, appView e0) of
         (App tn $ Fix tT tf,) <$> applyArgs vT [ Arg ShapeIrr a , Arg Relevant vn ]
       _ -> throwError $ "fix expects at least 3 arguments: " ++ printTree e
 
-  (A.Var x, _) -> do
-    (u, Dom r t) <- inferId x
-    if r == Relevant then return (u,t) else
-      throwError $ "Illegal reference to variable: " ++ printTree x
+  (A.Plus x k, _) -> do
+    (u, t) <- inferId x
+    subType t VSize
+    return (sPlus u k, t)
+
+  (A.Var x, _) -> inferId x
 
   (e0@(A.App f e), _) -> do
     (tf, t) <- inferExp f
@@ -337,14 +340,17 @@ fixType t =
 
 -- | Infer type of a variable
 
-inferId :: A.Ident -> Check (Term, Dom VType)
+inferId :: A.Ident -> Check (Term, VType)
 inferId (A.Ident x) = do
   (lookupCxt x <$> asks _envCxt) >>= \case
-    Just (i, t) -> return (Var $ Index i, t)
+    Just (i, Dom r t)
+      | r == Relevant -> return (Var $ Index i, t)
+      | otherwise     -> throwError $ "Illegal reference to " ++ show r ++ " variable: " ++ printTree x
+
     Nothing     -> do
       (Map.lookup x <$> use stTySigs) >>= \case
         Nothing -> throwError $ "Identifier not in scope: " ++ x
-        Just t  -> return (Def x, defaultDom t)
+        Just t  -> return (Def x, t)
 
 inferNat :: A.Exp -> Check (Term, VSize)
 inferNat e = do

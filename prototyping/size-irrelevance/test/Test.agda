@@ -41,7 +41,16 @@ plus = \ i x y ->
               ; (suc j x) -> suc oo (f x)
               })
       x
-  --;
+
+--; --- Reduction rules for plus
+
+plus_red_zero : forall .i (y : Nat oo) -> Eq (Nat oo) (plus (i + 1) (zero i) y) y  --;
+plus_red_zero = \ i y -> refl (Nat oo) y  --;
+
+plus_red_suc : forall .i (x : Nat i) (y : Nat oo) -> Eq (Nat oo) (plus (i + 1) (suc i x) y) (suc oo (plus i x y))  --;
+plus_red_suc = \ i x y -> refl (Nat oo) (suc oo (plus i x y))  --;
+
+--; --- Another definition of addition
 
 plus' : forall .i -> Nat i -> Nat oo -> Nat oo  --;
 plus' = \ i x ->

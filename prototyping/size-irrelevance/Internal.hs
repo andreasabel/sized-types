@@ -146,5 +146,9 @@ sZero = zero Infty
 sSuc  :: Term -> Term
 sSuc  = suc Infty
 
+-- | Size increment.
+
+sPlus :: Term -> Integer -> Term
+sPlus t n = iterate sSuc t !! fromInteger n
 
 makeLenses ''Dom

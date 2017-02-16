@@ -22,6 +22,7 @@ Prg.    Prg  ::= [Decl];
 Sig.    Decl ::= Ident ":" Exp; 
 Def.    Decl ::= Ident "=" Exp;
 Open.   Decl ::= "open" "import" QualId;
+Blank.  Decl ::= ;
 
 Sg.     QualId ::= Ident;
 Cons.   QualId ::= QualId "." Ident;
