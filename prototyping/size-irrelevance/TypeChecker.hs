@@ -288,9 +288,10 @@ inferExp e0 = case (e0, appView e0) of
     case es of
       (et : ef : en : []) -> do
         -- Check the motive of elimination
-        tT <- checkExp et fixKind
+        tT <- checkExp et fixKindV
         -- Check the functional
-        tf <- checkExp ef =<< evaluate (fixType tT)
+        let tF = fixType tT
+        tf <- checkExp ef =<< evaluate tF
         -- Check the argument
         (tn, a) <- inferNat en
         -- Compute the type of the elimination
@@ -298,7 +299,7 @@ inferExp e0 = case (e0, appView e0) of
         vn <- evaluate tn
         ve <- applyArgs vT [ Arg ShapeIrr a , Arg Relevant vn ]
         -- Return as postfix application
-        return (App tn $ Fix tT tf, ve)
+        return (App tn $ Fix tT tF tf, ve)
 
       _ -> throwError $ "fix expects exactly 3 arguments: " ++ printTree e
 
@@ -325,29 +326,6 @@ inferExp e0 = case (e0, appView e0) of
   (A.Case{}, _)  -> nyi "case"
 
   (e, _) -> nyi $ "inferring type of " ++ printTree e
-
--- | @fixKind = ..(i : Size) -> Nat i -> Setω@
-
-fixKind :: VType
-fixKind = evaluateClosed $
-  Pi (Dom ShapeIrr Size) $ Abs "i" $
-    Pi (Dom Relevant (Nat $ Var 0)) $ Abs "x" $
-      Type Infty
-
--- | Construct the type of the functional for fix.
---
---   @fixType t = .(i : Size) -> ((x : Nat i) -> T i x) -> (x : Nat (i + 1)) -> T (i + 1) x
-
-fixType :: Term -> Term
-fixType t =
-  Pi (Dom Irrelevant Size) $ Abs "i" $
-    Pi (Dom Relevant $ f $ Var 0) $ NoAbs "_" $
-      f $ sSuc $ Var 0
-  where
-  f a = Pi (Dom Relevant (Nat a)) $ Abs "x" $
-          raise 2 t
-            `App` Apply (Arg ShapeIrr $ raise 1 a)
-            `App` Apply (Arg Relevant $ Var 0)
 
 -- | Infer type of a variable
 
@@ -400,12 +378,6 @@ addDef :: Id -> Val -> Check ()
 addDef x v = stDefs %= Map.insert x v
 
 -- * Invoking evaluation
-
-instance MonadEval Identity where
-  getDef x = __IMPOSSIBLE__
-
-evaluateClosed :: Term -> Val
-evaluateClosed t = runIdentity $ evalIn t []
 
 instance MonadEval (Reader (Map Id Val)) where
   getDef x = fromMaybe __IMPOSSIBLE__ . Map.lookup x <$> ask

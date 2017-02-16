@@ -74,6 +74,9 @@ data Elim' a
     Fix
     { fixReturn :: a
       -- ^ @T : ..(i : Size) -> Nat i -> Setω@
+    , fixTyBody :: a
+      -- ^ Type of fixBody.  Stored here for convenience, must be
+      -- @.(i : Size) (f : (x : Nat i) -> T i x) (x : Nat (i + 1)) -> T (i + 1) x@.
     , fixBody   :: a
       -- ^ @t : .(i : Size) (f : (x : Nat i) -> T i x) (x : Nat (i + 1)) -> T (i + 1) x@
     }
@@ -113,6 +116,8 @@ data Relevance
   | Irrelevant
   deriving (Eq, Ord, Show)
 
+makeLenses ''Dom
+
 -- * Smart constructor.
 
 zero :: Size -> Term
@@ -151,4 +156,10 @@ sSuc  = suc Infty
 sPlus :: Term -> Integer -> Term
 sPlus t n = iterate sSuc t !! fromInteger n
 
-makeLenses ''Dom
+-- | @fixKind = ..(i : Size) -> Nat i -> Setω@
+
+fixKind :: Type
+fixKind =
+  Pi (Dom ShapeIrr Size) $ Abs "i" $
+    Pi (Dom Relevant (Nat $ Var 0)) $ Abs "x" $
+      Type Infty

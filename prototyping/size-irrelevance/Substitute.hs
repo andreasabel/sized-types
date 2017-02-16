@@ -182,3 +182,20 @@ instance Apply (Abs Term) where
 
 
 -}
+
+
+
+-- | Construct the type of the functional for fix.
+--
+--   @fixType t = .(i : Size) -> ((x : Nat i) -> T i x) -> (x : Nat (i + 1)) -> T (i + 1) x
+
+fixType :: Term -> Term
+fixType t =
+  Pi (Dom Irrelevant Size) $ Abs "i" $
+    Pi (Dom Relevant $ f $ Var 0) $ NoAbs "_" $
+      f $ sSuc $ Var 0
+  where
+  f a = Pi (Dom Relevant (Nat a)) $ Abs "x" $
+          raise 2 t
+            `App` Apply (Arg ShapeIrr $ raise 1 a)
+            `App` Apply (Arg Relevant $ Var 0)

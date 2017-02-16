@@ -1,6 +1,7 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeSynonymInstances, FlexibleInstances, MultiParamTypeClasses #-}
 -- {-# LANGUAGE FunctionalDependencies, UndecidableInstances #-}
 
@@ -9,6 +10,7 @@
 module Evaluation where
 
 import Control.Applicative
+import Control.Lens hiding (Index, Level)
 import Control.Monad
 import Control.Monad.Reader
 
@@ -16,6 +18,7 @@ import Data.Maybe
 import Data.Traversable (traverse)
 
 import Internal
+import Substitute
 
 import Impossible
 #include "undefined.h"
@@ -54,8 +57,10 @@ data Val
     VDown VType Val
   deriving (Eq, Show)
 
-data VNe
-  = VNe VGen VElims
+data VNe = VNe
+  { _neVar :: VGen
+  , _neElims :: VElims
+  }
   deriving (Eq, Show)
 
 data VClos = VClos
@@ -63,6 +68,13 @@ data VClos = VClos
   , closEnv  :: Env
   }
   deriving (Eq, Show)
+
+-- | An environment maps de Bruijn indices to values.
+--   The first entry in the list is the binding for index 0.
+
+type Env = [Val]
+
+makeLenses ''VNe
 
 -- | Variable
 
@@ -145,15 +157,16 @@ maxSize v1 v2 =
 
 -- * Evaluation
 
--- | An environment maps de Bruijn indices to values.
---   The first entry in the list is the binding for index 0.
-
-type Env = [Val]
-
 -- | Evaluation monad.
 
 class (Functor m, Applicative m, Monad m) => MonadEval m where
   getDef :: Id -> m Val
+
+instance MonadEval Identity where
+  getDef x = __IMPOSSIBLE__
+
+evaluateClosed :: Term -> Val
+evaluateClosed t = runIdentity $ evalIn t []
 
 -- | Evaluation.
 
@@ -206,8 +219,8 @@ applyE v e =
     (_        , Apply u   ) -> apply v u
     (VZero _  , Case _ u _) -> return u
     (VSuc _ n , Case _ _ f) -> apply f $ defaultArg n
-    (VZero a  , Fix t f   ) -> unfoldFix t f a v -- apply f $ e : map (Apply . defaultArg) [ v , VZero ]
-    (VSuc a n , Fix t f   ) -> unfoldFix t f a v
+    (VZero a  , Fix t tf f) -> unfoldFix t tf f a v -- apply f $ e : map (Apply . defaultArg) [ v , VZero ]
+    (VSuc a n , Fix t tf f) -> unfoldFix t tf f a v
     (VUp (VNat a) n , _)    -> elimNeNat a n e
     _ -> __IMPOSSIBLE__
 
@@ -233,17 +246,34 @@ applyClos (VClos b rho) u = case b of
 
 -- | Unfold a fixed-point.
 
-unfoldFix :: MonadEval m => VType -> Val -> VSize -> Val -> m Val
-unfoldFix t f a v = applyEs f $ map Apply
+unfoldFix :: MonadEval m => VType -> VType -> Val -> VSize -> Val -> m Val
+unfoldFix t tf f a v = applyEs f $ map Apply
   [ Arg Irrelevant a
-  , defaultArg $ VElimBy $ Fix t f
+  , defaultArg $ VElimBy $ Fix t tf f
   , defaultArg v
   ]
 
 -- | Eliminate a neutral natural number.
+--   Here we need to compute the correct type of the elimination
 
 elimNeNat :: MonadEval m => VSize -> VNe -> VElim -> m Val
-elimNeNat a n e = error $ "NYI: elimNeNat"
+elimNeNat a n e = case e of
+  Apply{} -> __IMPOSSIBLE__
+  Case t u f -> error "NYI: elimNeNat Case"
+
+  Fix t tf f -> do
+    -- Compute the type of the result of the elimination application
+    tr <- applyEs t $ map Apply [ Arg ShapeIrr a, Arg Relevant $ VUp (VNat a) n ]
+    -- Assemble the elimination
+    let e = Fix (VDown fixKindV t) (VDown (VType VInfty) tf) (VDown tf f)
+    -- Assemble the result
+    return $ VUp tr $ over neElims (++ [e]) n
+
+-- | Type of type of fix motive.
+--   @fixKind = ..(i : Size) -> Nat i -> Setω@
+
+fixKindV :: VType
+fixKindV = evaluateClosed fixKind
 
 -- * Readback
 
