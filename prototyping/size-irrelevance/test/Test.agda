@@ -81,6 +81,17 @@ plus_zero = \ i x ->
          })
       x
 
+--; --- Law: x + suc y = suc x + y
+
+plus_suc : forall .i (x : Nat i) (y : Nat oo) -> Eq (Nat oo) (plus i x (inc y)) (inc (plus i x y))  --;
+plus_suc = \ i x y ->
+  fix (\ i x -> Eq (Nat oo) (plus i x (inc y)) (inc (plus i x y)))
+      (\ j f -> \
+         { (zero _)  -> refl (Nat oo) (inc y)
+         ; (suc _ x') -> cong (Nat oo) (Nat oo) inc (plus j x' (inc y)) (inc (plus j x' y)) (f x')
+         })
+      x
+
 --; --- Another definition of addition
 
 plus' : forall .i -> Nat i -> Nat oo -> Nat oo  --;
