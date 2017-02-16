@@ -74,7 +74,7 @@ Pi.     Exp ::= "(" [IdU] ":" Exp ")" "->" Exp;
 Arrow.  Exp ::= Exp1 "->" Exp;
 Case.   Exp ::= "case" Exp "return" Exp "of" Exp;
 Plus.   Exp ::= Ident "+" Integer;
-ELam.   Exp ::= "\\" "{" "(" "zero" IdU ")" "->" Exp ";" "(" "suc" IdU IdU ")" "->" Exp "}";
+ELam.   Exp ::= "\\" "{" "(" "zero" "_" ")" "->" Exp ";" "(" "suc" "_" IdU ")" "->" Exp "}";
 
 coercions Exp 2;
 

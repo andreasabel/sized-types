@@ -37,8 +37,8 @@ plus = \ i x y ->
   fix (\ i x -> Nat oo)
       (\ _ f -> \
 ---      (\ _ f x -> case x return (\ _ -> Nat oo) of \
-              { (zero j)   -> y
-              ; (suc j x) -> suc oo (f x)
+              { (zero _)   -> y
+              ; (suc _ x) -> suc oo (f x)
               })
       x
 
@@ -57,15 +57,15 @@ plus' = \ i x ->
   fix (\ i x -> Nat oo -> Nat oo)
 ---           (\ f x -> case x return (\ _ -> Nat oo -> Nat oo) of \
       (\ _ f -> \
-         { (zero j)  -> \ y -> y
-         ; (suc j x) -> \ y -> suc oo (f x y)
+         { (zero _)  -> \ y -> y
+         ; (suc _ x) -> \ y -> suc oo (f x y)
          })
       x
 
 --; --- Predecessor
 
 --- pred  : forall .i -> Nat i -> Nat i  --;
---- pred = \ _ -> \{ (zero j) -> zero j ; (suc j y) -> y }
+--- pred = \ _ -> \{ (zero _) -> zero _ ; (suc _ y) -> y }
 
 pred  : forall .i -> Nat i -> Nat i  --;
 pred = \ i n ->
@@ -88,7 +88,7 @@ pred = \ i n ->
 sub : forall .j -> Nat j -> forall .i -> Nat i -> Nat i  --;
 sub = \ j y ->
   fix (\ _ _ -> forall .i -> Nat i -> Nat i)
-      (\ _ f -> \ { (zero j) -> \ i x -> x; (suc j y) -> \ i x -> f y i (pred i x) }) --- pred i (f y i x) })
+      (\ _ f -> \ { (zero _) -> \ i x -> x; (suc _ y) -> \ i x -> f y i (pred i x) }) --- pred i (f y i x) })
       y
 
 --; --- Lemma: x - x == 0
@@ -96,7 +96,7 @@ sub = \ j y ->
 sub_diag : forall .i (x : Nat i) -> Eq (Nat oo) (sub i x i x) (zero oo)  --;
 sub_diag = \ i x ->
   fix (\ i x -> Eq (Nat oo) (sub i x i x) (zero oo))
-      (\ _ f -> \{ (zero j) -> refl (Nat oo) (zero oo) ; (suc j y) -> f y })
+      (\ _ f -> \{ (zero _) -> refl (Nat oo) (zero oo) ; (suc _ y) -> f y })
       x
 
 --; ---

@@ -235,7 +235,7 @@ checkExp e0 t = do
           return $ Lam (_domInfo dom) $ Abs (fromIdU x) u
         _ -> throwError $ "Lambda abstraction expects function type, but got " ++ show t
 
-    e@(A.ELam jz ez js x es) -> do
+    e@(A.ELam ez x es) -> do
       case t of
         VPi (Dom r (VNat b)) cl -> do
           tt <- reifyType t
