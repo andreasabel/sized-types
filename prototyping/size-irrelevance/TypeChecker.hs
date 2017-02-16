@@ -90,6 +90,7 @@ checkSig x0@(A.Ident x) a = traceCheck (A.Sig x0 a) $ do
 
   -- Check type and add to signature
   t <- checkType a
+  -- traceM $ "Adding  " ++ show x ++ "  of type  " ++ show t
   addTySig x =<< evaluate t
 
 -- | Check a definition.
@@ -108,6 +109,7 @@ checkDef x0@(A.Ident x) e = traceCheck (A.Def x0 e) $ do
 
   -- Check definition and add to signature
   v <- checkExp e t
+  -- traceM $ "Adding  " ++ show x ++ "  of value  " ++ show v
   addDef x =<< evaluate v
 
 -- | Check well-formedness of a type.
@@ -244,10 +246,11 @@ checkExp e0 t = do
                 "Splitting Nat is only possible at successor size, when checking " ++ printTree e
           a <- maybe failNotSuc return $ sizePred b
           tz <- checkExp ez =<< applyClosure cl (VZero a)
-          addContext (x, Dom Relevant $ VNat a) $ do
-            ts <- checkExp es =<< applyClosure cl =<< do VSuc a <$> lastVal
-            return $ Lam Relevant $ Abs "x" $ App (Var 0) $ raise 1 $
-              Case tt tz ts
+          ts <- Lam Relevant . Abs (A.fromIdU x) <$> do
+            addContext (x, Dom Relevant $ VNat a) $ do
+              checkExp es =<< applyClosure cl =<< do VSuc a <$> lastVal
+          return $ Lam Relevant $ Abs "x" $ App (Var 0) $ raise 1 $
+            Case tt tz ts
 
         _ -> throwError $ "Extended lambda is function from Nat _, but here it got type " ++ show t
 
@@ -283,15 +286,23 @@ inferExp e0 = case (e0, appView e0) of
 
   (e, (A.Fix, es)) -> do
     case es of
-      (et : ef : en : es') -> do
+      (et : ef : en : []) -> do
+        -- Check the motive of elimination
         tT <- checkExp et fixKind
-        vT <- evaluate tT
-        let tF = fixType tT
-        tf <- checkExp ef =<< evaluate tF
+        -- Check the functional
+        tf <- checkExp ef =<< evaluate (fixType tT)
+        -- Check the argument
         (tn, a) <- inferNat en
+        -- Compute the type of the elimination
+        vT <- evaluate tT
         vn <- evaluate tn
-        (App tn $ Fix tT tf,) <$> applyArgs vT [ Arg ShapeIrr a , Arg Relevant vn ]
-      _ -> throwError $ "fix expects at least 3 arguments: " ++ printTree e
+        ve <- applyArgs vT [ Arg ShapeIrr a , Arg Relevant vn ]
+        -- Return as postfix application
+        return (App tn $ Fix tT tf, ve)
+
+      _ -> throwError $ "fix expects exactly 3 arguments: " ++ printTree e
+
+  (A.Infty, _) -> return (Infty, VSize)
 
   (A.Plus x k, _) -> do
     (u, t) <- inferId x

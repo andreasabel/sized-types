@@ -234,7 +234,11 @@ applyClos (VClos b rho) u = case b of
 -- | Unfold a fixed-point.
 
 unfoldFix :: MonadEval m => VType -> Val -> VSize -> Val -> m Val
-unfoldFix t f a v = applyEs f $ map (Apply . defaultArg) [ a , VElimBy (Fix t f) , v ]
+unfoldFix t f a v = applyEs f $ map Apply
+  [ Arg Irrelevant a
+  , defaultArg $ VElimBy $ Fix t f
+  , defaultArg v
+  ]
 
 -- | Eliminate a neutral natural number.
 

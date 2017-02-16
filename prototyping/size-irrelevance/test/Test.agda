@@ -42,6 +42,26 @@ plus = \ i x y ->
               })
       x
 
+--; --- Unit tests for plus
+
+inc : Nat oo -> Nat oo --;
+inc = \ x -> suc oo x  --;
+
+one : Nat oo        --;
+one = inc (zero oo) --;
+
+two : Nat oo  --;
+two = inc one --;
+
+three : Nat oo  --;
+three = inc two --;
+
+plus_one_zero : Eq (Nat oo) (plus oo one (zero oo)) one --;
+plus_one_zero = refl (Nat oo) one  --;
+
+plus_one_one : Eq (Nat oo) (plus oo one one) two --;
+plus_one_one = refl (Nat oo) two  --;
+
 --; --- Reduction rules for plus
 
 plus_red_zero : forall .i (y : Nat oo) -> Eq (Nat oo) (plus (i + 1) (zero i) y) y  --;
