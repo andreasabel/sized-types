@@ -70,6 +70,17 @@ plus_red_zero = \ i y -> refl (Nat oo) y  --;
 plus_red_suc : forall .i (x : Nat i) (y : Nat oo) -> Eq (Nat oo) (plus (i + 1) (suc i x) y) (suc oo (plus i x y))  --;
 plus_red_suc = \ i x y -> refl (Nat oo) (suc oo (plus i x y))  --;
 
+--; --- Law: x + 0 = x
+
+plus_zero : forall .i (x : Nat i) -> Eq (Nat oo) (plus i x (zero oo)) x  --;
+plus_zero = \ i x ->
+  fix (\ i x -> Eq (Nat oo) (plus i x (zero oo)) x)
+      (\ j f -> \
+         { (zero _)  -> refl (Nat oo) (zero oo)
+         ; (suc _ y) -> cong (Nat oo) (Nat oo) inc (plus j y (zero oo)) y (f y)
+         })
+      x
+
 --; --- Another definition of addition
 
 plus' : forall .i -> Nat i -> Nat oo -> Nat oo  --;

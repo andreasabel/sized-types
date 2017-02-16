@@ -17,6 +17,8 @@ import Control.Monad.Reader
 import Data.Maybe
 import Data.Traversable (traverse)
 
+import Debug.Trace
+
 import Internal
 import Substitute
 
@@ -235,7 +237,9 @@ apply v arg@(Arg ai u) = case v of
   VUp (VPi a b) (VNe x es) -> do
     t' <- applyClos b u
     return $ VUp t' $ VNe x $ es ++ [ Apply $ Arg ai $ VDown (unDom a) u ]
-  _ -> error $ "NYI: apply  " ++ show v ++ "  to  " ++ show u
+  _ -> do
+    traceM $ "apply  " ++ show v ++ "  to  " ++ show u
+    __IMPOSSIBLE__
 
 -- | Apply a closure to a value.
 
@@ -259,7 +263,18 @@ unfoldFix t tf f a v = applyEs f $ map Apply
 elimNeNat :: MonadEval m => VSize -> VNe -> VElim -> m Val
 elimNeNat a n e = case e of
   Apply{} -> __IMPOSSIBLE__
-  Case t u f -> error "NYI: elimNeNat Case"
+
+  Case t u f -> do
+    -- Compute the type of the result of the elimination application
+    tr <- apply t $ Arg Relevant $ VUp (VNat a) n
+    -- Compute the type of the zero branch
+    tz <- apply t $ Arg Relevant u
+    -- Compute the type of the suc branch
+    ts <- return t -- TODO: must be (x : Nat a) -> t (suc a x)
+    -- Assemble the elimination
+    let e = Case (VDown (VType VInfty) t) (VDown tz u) (VDown ts f)
+    -- Assemble the result
+    return $ VUp tr $ over neElims (++ [e]) n
 
   Fix t tf f -> do
     -- Compute the type of the result of the elimination application
