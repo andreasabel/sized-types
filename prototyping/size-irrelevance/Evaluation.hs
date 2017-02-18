@@ -218,12 +218,12 @@ applyEs v (e : es) = applyE v e >>= (`applyEs` es)
 applyE :: MonadEval m => Val -> VElim -> m Val
 applyE v e =
   case (v, e) of
-    (_        , Apply u   ) -> apply v u
-    (VZero _  , Case _ u _) -> return u
-    (VSuc _ n , Case _ _ f) -> apply f $ defaultArg n
-    (VZero a  , Fix t tf f) -> unfoldFix t tf f a v -- apply f $ e : map (Apply . defaultArg) [ v , VZero ]
-    (VSuc a n , Fix t tf f) -> unfoldFix t tf f a v
-    (VUp (VNat a) n , _)    -> elimNeNat a n e
+    (_        , Apply u     ) -> apply v u
+    (VZero _  , Case _ u _ _) -> return u
+    (VSuc _ n , Case _ _ _ f) -> apply f $ defaultArg n
+    (VZero a  , Fix t tf f  ) -> unfoldFix t tf f a v -- apply f $ e : map (Apply . defaultArg) [ v , VZero ]
+    (VSuc a n , Fix t tf f  ) -> unfoldFix t tf f a v
+    (VUp (VNat a) n , _)      -> elimNeNat a n e
     _ -> __IMPOSSIBLE__
 
 -- | Apply a function to an argument.
@@ -264,7 +264,7 @@ elimNeNat :: MonadEval m => VSize -> VNe -> VElim -> m Val
 elimNeNat a n e = case e of
   Apply{} -> __IMPOSSIBLE__
 
-  Case t u f -> do
+  Case t u tf f -> do
     -- Compute the type of the result of the elimination application
     tr <- apply t $ Arg Relevant $ VUp (VNat a) n
     -- Compute the type of the zero branch
@@ -272,7 +272,7 @@ elimNeNat a n e = case e of
     -- Compute the type of the suc branch
     ts <- return t -- TODO: must be (x : Nat a) -> t (suc a x)
     -- Assemble the elimination
-    let e = Case (VDown (VType VInfty) t) (VDown tz u) (VDown ts f)
+    let e = Case (VDown (VType VInfty) t) (VDown tz u) (VDown (VType VInfty) tf) (VDown tf f)
     -- Assemble the result
     return $ VUp tr $ over neElims (++ [e]) n
 
@@ -302,6 +302,7 @@ instance Readback VGen Index where
 
 instance Readback Val Term where
   readback = \case
+    VDown VSize     d -> readbackSize d
     VDown (VType _) d -> readbackType d
     VDown (VNat _ ) d -> readbackNat  d
 

@@ -1,2 +1,2 @@
 default :
-	make -C ..
+	make -C .. loop

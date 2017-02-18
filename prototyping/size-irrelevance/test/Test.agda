@@ -56,6 +56,15 @@ two = inc one --;
 three : Nat oo  --;
 three = inc two --;
 
+four : Nat oo  --;
+four = inc three --;
+
+five : Nat oo  --;
+five = inc four --;
+
+six : Nat oo  --;
+six = inc five --;
+
 plus_one_zero : Eq (Nat oo) (plus oo one (zero oo)) one --;
 plus_one_zero = refl (Nat oo) one  --;
 
@@ -141,4 +150,36 @@ sub_diag = \ i x ->
       (\ _ f -> \{ (zero _) -> refl (Nat oo) (zero oo) ; (suc _ y) -> f y })
       x
 
---; ---
+--- Large eliminations
+
+--; --- Varying arity
+
+Fun : forall .i (n : Nat i) (A : Set) (B : Set) -> Set --;
+Fun = \ i n A B ->
+  fix (\ _ _ -> Set)
+      (\ _ f -> \
+         { (zero _) -> B
+         ; (suc _ x) -> A -> f x
+         })
+      n
+
+--; --- Type of n-ary Sum function
+
+Sum : forall .i (n : Nat i) -> Set  --;
+Sum = \ i n -> Nat oo -> Fun i n (Nat oo) (Nat oo)
+
+--; --- n-ary summation function
+
+sum : forall .i (n : Nat i) -> Sum i n --;
+sum = \ _ n ->
+  fix (\ i n -> Sum i n)
+      (\ _ f -> \
+        { (zero _) -> \ acc -> acc
+        ; (suc _ x) -> \ acc -> \ k -> f x (plus oo k acc)
+        })
+      n
+
+--; --- Testing sum
+
+sum123 : Eq (Nat oo) (sum oo three (zero oo) one two three) six --;
+sum123 = refl (Nat oo) six

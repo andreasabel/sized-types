@@ -5,6 +5,9 @@ all : test
 test : Sit.bin test/Test.agda
 	Sit.bin test/Test.agda
 
+loop : Sit.bin test/Loop.agda
+	Sit.bin test/Loop.agda
+
 Sit.bin : Sit.hs Sit/Abs.hs Sit/Lex.hs Sit/Par.hs \
   undefined.h Impossible.hs \
   Abstract.hs Internal.hs Substitute.hs Evaluation.hs TypeChecker.hs

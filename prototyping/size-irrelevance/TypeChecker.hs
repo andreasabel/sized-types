@@ -204,12 +204,13 @@ inferPiType x dom cont = do
     return ( Pi (dom $> u) $ Abs (fromIdU x) t , l )
 
 checkSize :: A.Exp -> Check Size
-checkSize = \case
-  A.Infty        -> return Infty
-  A.LZero        -> return $ sZero
-  A.App A.LSuc e -> sSuc <$> checkSize e
-  e@(A.Var x)    -> checkExp e VSize
-  e -> throwError $ "Not a valid size expression: " ++ printTree e
+checkSize e = checkExp e VSize
+-- checkSize = \case
+--   A.Infty        -> return Infty
+--   A.LZero        -> return $ sZero
+--   A.App A.LSuc e -> sSuc <$> checkSize e
+--   e@(A.Var x)    -> checkExp e VSize
+--   e -> throwError $ "Not a valid size expression: " ++ printTree e
 
 checkLevel :: A.Exp -> Check Level
 checkLevel = \case
@@ -237,20 +238,29 @@ checkExp e0 t = do
           return $ Lam (_domInfo dom) $ Abs (fromIdU x) u
         _ -> throwError $ "Lambda abstraction expects function type, but got " ++ show t
 
-    e@(A.ELam ez x es) -> do
+    e@(A.ELam ez x0 es) -> do
       case t of
         VPi (Dom r (VNat b)) cl -> do
+          let x = A.fromIdU x0
+          unless (r == Relevant) $ throwError $
+            "Extended lambda constructs relevant function: " ++ printTree e
+          -- Infer the type of the case expression
           tt <- reifyType t
           -- Make sure that b is a successor size
-          let failNotSuc = throwError $
-                "Splitting Nat is only possible at successor size, when checking " ++ printTree e
-          a <- maybe failNotSuc return $ sizePred b
+          -- let failNotSuc = throwError $ "Splitting Nat is only possible at successor size, when checking " ++ printTree e
+          -- a  <- maybe failNotSuc return $ sizePred b
+          let a = fromMaybe __IMPOSSIBLE__ $ sizePred b
+          ta <- reifySize a
           tz <- checkExp ez =<< applyClosure cl (VZero a)
-          ts <- Lam Relevant . Abs (A.fromIdU x) <$> do
+          (ts0, tS0) <-
             addContext (x, Dom Relevant $ VNat a) $ do
-              checkExp es =<< applyClosure cl =<< do VSuc a <$> lastVal
+              vts <- applyClosure cl =<< do VSuc a <$> lastVal
+              tS0 <- reifyType vts
+              (,tS0) <$> checkExp es vts
+          let ts = Lam Relevant $ Abs x ts0
+          let tS = Pi (Dom Relevant $ Nat ta) $ Abs x tS0
           return $ Lam Relevant $ Abs "x" $ App (Var 0) $ raise 1 $
-            Case tt tz ts
+            Case tt tz tS ts
 
         _ -> throwError $ "Extended lambda is function from Nat _, but here it got type " ++ show t
 
@@ -296,6 +306,7 @@ inferExp e0 = case (e0, appView e0) of
         (tn, a) <- inferNat en
         -- Compute the type of the elimination
         vT <- evaluate tT
+        admissible vT
         vn <- evaluate tn
         ve <- applyArgs vT [ Arg ShapeIrr a , Arg Relevant vn ]
         -- Return as postfix application
@@ -405,6 +416,12 @@ reifyType t = do
   sig <- use stDefs
   return $ runReader (runReaderT (readbackType t) n) sig
 
+reifySize :: VSize -> Check Size
+reifySize t = do
+  n <- length <$> asks _envCxt
+  sig <- use stDefs
+  return $ runReader (runReaderT (readbackSize t) n) sig
+
 -- * Context manipulation
 
 -- | Looking up in the typing context
@@ -501,3 +518,117 @@ equalType v v' = do
   t' <- reifyType v'
   unless (t == t') $
     throwError $ "Inferred type " ++ show t ++ " is not equal to expected type " ++ show t'
+
+
+-- * Continuity check
+
+admissible :: Val -> Check ()
+admissible v = do
+  k <- length <$> asks _envCxt
+  addContext ("i", VSize) $ do
+    va <- lastVal
+    addContext ("x", VNat $ va) $ do
+      u  <- lastVal
+      tv  <- applyArgs v [ Arg ShapeIrr va, Arg Relevant u]
+      debug "testing upperSemi" k tv
+      ok <- upperSemi k tv
+      unless ok $ do
+        t <- reifyType tv
+        a <- reifySize va
+        throwError $
+          "Type " ++ show t ++ " of fix needs to be upper semi-continuous in size " ++ show a
+
+debug :: String -> VGen -> VType -> Check ()
+debug txt k tv = do
+    a <- reifySize $ vsVar k
+    t <- reifyType tv
+    traceM $ txt ++ " " ++ show a ++ "  " ++ show t
+
+-- | For a function type to be upper semi-continuous,
+--   its codomain needs to be so, and
+--   the domain needs to be lower semi-continous.
+
+upperSemi :: VGen -> VType -> Check Bool
+upperSemi k t = do
+  debug "upperSemi" k t
+  case t of
+    VPi dom cl -> do
+      lowerSemi k $ unDom dom
+      addContext (absName $ closBody cl, dom) $ do
+        v <- lastVal
+        upperSemi k =<< applyClosure cl v
+    VType{}         -> return True
+    VSize           -> return True
+    VNat{}          -> return True
+    t@(VUp (VType _) _) -> monotone k True t
+    t -> do
+     traceM $ "upperSemi " ++ show k ++ "  " ++ show t
+     __IMPOSSIBLE__
+
+-- | Base types and antitone types are lower semi-continuous.
+
+lowerSemi :: VGen -> VType -> Check Bool
+lowerSemi k t = do
+  debug "lowerSemi" k t
+  case t of
+    t@(VPi dom cl)  -> monotone k False t
+    VType{}         -> return True
+    VSize           -> return True
+    VNat{}          -> return True
+    t@(VUp (VType _) _) -> monotone k False t
+    t -> do
+     traceM $ "lowerSemi " ++ show k ++ "  " ++ show t
+     __IMPOSSIBLE__
+
+-- antitone :: VGen -> VType -> Check Bool
+-- antitone k t = do
+--   traceM $ "\nantitone " ++ show k ++ "  " ++ show t
+--   return True
+
+monotone :: VGen -> Bool -> VType -> Check Bool
+monotone k b t = do
+  debug (if b then "monotone" else "antitone") k t
+  case t of
+    VPi dom cl -> do
+      monotone k (not b) $ unDom dom
+      addContext (absName $ closBody cl, dom) $ do
+        u <- lastVal
+        monotone k b =<< applyClosure cl u
+    VType a -> monotoneSize k b a
+    VNat  a -> monotoneSize k b a
+    VSize   -> return True
+    -- VInfty  -> return True
+    -- VZero _ -> return True
+    -- VSuc _ v -> monotone k b v
+    -- VLam cl  -> addContext ("#", VSize) $ do
+    --   u <- lastVal
+    --   monotone k b =<< applyClosure cl u
+    -- VUp _ (VNe k' es)
+    --   | k == k'   -> return b
+    --   | otherwise -> return True
+    VUp (VType _) _ -> return True
+    _ -> __IMPOSSIBLE__
+
+  -- traceM $ "\nmonotone " ++ show k ++ "  " ++ show t
+  -- return True
+
+monotoneSize :: VGen -> Bool -> VSize -> Check Bool
+monotoneSize k b t = do
+  debugSize (if b then "monotone" else "antitone") k t
+  case t of
+    VInfty  -> return True
+    VZero _ -> return True
+    VSuc _ v -> monotoneSize k b v
+    VUp _ (VNe k' es)
+      | k == k'   -> do
+          traceM $ "same var"
+          unless b $ throwError "admissibility check failed"
+          return b
+      | otherwise -> return True
+    _ -> __IMPOSSIBLE__
+
+debugSize :: String -> VGen -> VType -> Check ()
+debugSize txt k v = do
+    a <- reifySize $ vsVar k
+    b <- reifySize v
+    traceM $ txt ++ " " ++ show a ++ "  " ++ show b

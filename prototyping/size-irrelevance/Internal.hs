@@ -68,6 +68,8 @@ data Elim' a
     Case
     { caseReturn :: a -- ^ @T : Nat (b + 1) -> Setω@
     , caseZero   :: a -- ^ @tz : T zero@
+    , caseTySuc  :: a -- ^ Type of @caseSuc@.  Stored here for convenience, must be
+                      --        @(t : Nat b) -> T (suc t)@
     , caseSuc    :: a -- ^ @ts : (t : Nat b) -> T (suc t)@
     }
   | -- | Recursion
@@ -75,7 +77,7 @@ data Elim' a
     { fixReturn :: a
       -- ^ @T : ..(i : Size) -> Nat i -> Setω@
     , fixTyBody :: a
-      -- ^ Type of fixBody.  Stored here for convenience, must be
+      -- ^ Type of @fixBody@.  Stored here for convenience, must be
       -- @.(i : Size) (f : (x : Nat i) -> T i x) (x : Nat (i + 1)) -> T (i + 1) x@.
     , fixBody   :: a
       -- ^ @t : .(i : Size) (f : (x : Nat i) -> T i x) (x : Nat (i + 1)) -> T (i + 1) x@
