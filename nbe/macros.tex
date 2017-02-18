@@ -226,6 +226,7 @@
 \newcommand{\tfix}{\mathsf{fix}}
 
 \newcommand{\ann}[1]{\langle#1\rangle}
+\newcommand{\zero}[1]{\tzero\ann{#1}}
 \newcommand{\suc}[1]{\tsuc\ann{#1}}
 \newcommand{\fix}[2][]{\tfix_{#1}\,#2\,}
 \newcommand{\case}[3][]{\tcase_{#1}\,#2\,#3\,}
@@ -1105,13 +1106,15 @@
 \newcommand{\UP}{\mathop{\Uparrow}\nolimits^{\tkind}}
 %\newcommand{\UP}{\mathop{\upuparrows}\nolimits}
 \newcommand{\Up}[1]{\mathop{\Uparrow}\nolimits^{#1}}
-\newcommand{\up}[1]{\mathop{\uparrow}\nolimits^{#1}}
+%\newcommand{\up}[1]{\mathop{\uparrow}\nolimits^{#1}}
+\newcommand{\up}[1]{\mathord{\uparrow^{#1}}}
 %\newcommand{\upPi}[2]{\up{\piV{#1}{#2}}}
 
 %\newcommand{\DOWN}{\mathop{\Downarrow}\nolimits^{\tkind}}
 \newcommand{\DOWN}{\mathop{\downarrow}\nolimits}%\downdownarrows
 \newcommand{\Down}[1]{\mathop{\Downarrow}\nolimits^{#1}}
-\newcommand{\down}[1]{\mathop{\downarrow}\nolimits^{#1}}
+\newcommand{\down}[1]{\mathord{\downarrow^{#1}}}
+%\newcommand{\down}[1]{\mathop{\downarrow}\nolimits^{#1}}
 \newcommand{\downPi}[2]{\down{\piV{#1}{#2}}}
 
 
@@ -1170,6 +1173,7 @@
 % de Bruijn index
 \newcommand{\ind}[1]{\mathsf{v}_{#1}}
 % de Bruijn level
+\newcommand{\lev}[1]{\x_{#1}}
 \newcommand{\var}[1]{\x_{#1}}
 \newcommand{\x}{\mathsf{x}}
 \newcommand{\xdel}[1][]{\ifthenelse{\equal{#1}{}}{\x_\Delta}{\x_{\Delta+#1}}}
