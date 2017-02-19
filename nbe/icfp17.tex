@@ -792,9 +792,10 @@ Judgements.
     }{\R k t v}
 \qquad
   \ru{t \evalsto \down{U} u \qquad
-      U \evalsto \up {T'} {t'} \\
-      \RNe k u v
-    }{\R k t v}
+      U \evalsto N \\
+      u \evalsto \up{T} n \qquad
+      \RNe k n m
+    }{\R k t m}
 \\[2ex]
   \ru{t \evalsto \down{U} f \qquad
       U \evalsto \piT A B \qquad
@@ -814,7 +815,7 @@ Judgements.
 
 \fbox{$\RNat k t v $}
 \begin{gather*}
-  \ru{t \evalsto n \qquad
+  \ru{t \evalsto \up {\Nat a} n \qquad
       \RNe k n m
     }{\RNat k t m}
 \qquad
@@ -878,8 +879,8 @@ Judgements.
       \RSize k a b
     }{\RTy k T {\Nat b}}
 \qquad
-  \ru{T \evalsto \up{U}u \qquad
-      \RNe k u m
+  \ru{T \evalsto \up{U}n \qquad
+      \RNe k n m
     }{\RTy k T m}
 \\[2ex]
   \ru{T \evalsto \piT A B \qquad
