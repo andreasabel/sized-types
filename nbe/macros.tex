@@ -245,6 +245,14 @@
 
 \newcommand{\The}{\Theta}
 
+\newcommand{\Rty}[3]{\mathop{\mathsf{R}}\nolimits^{\mathsf{ty}}_{#1} \, #2 \evalsto #3}
+\newcommand{\RTy}[3]{\mathop{\mathsf{R}}\nolimits^{\mathsf{ty}}_{#1} \, #2 \evalsto #3}
+\newcommand{\RNe}[3]{\mathop{\mathsf{R}}\nolimits^{\mathsf{ne}}_{#1} \, #2 \evalsto #3}
+\newcommand{\RNat}[3]{\mathop{\mathsf{R}}\nolimits^{\mathsf{nat}}_{#1} \, #2 \evalsto #3}
+\newcommand{\RSize}[3]{\mathop{\mathsf{R}}\nolimits^{\mathsf{size}}_{#1} \, #2 \evalsto #3}
+\newcommand{\RElim}[3]{\mathop{\mathsf{R}}\nolimits^{\mathsf{elim}}_{#1} \, #2 \evalsto #3}
+\newcommand{\R}[3]{\mathsf{R}_{#1} \, #2 \evalsto #3}
+
 % % natural transformations
 % \newcommand{\subscriptopt}[1]{\ifthenelse{\equal{#1}{}}{}{_{#1}}}
 % \newcommand{\superscriptopt}[1]{\ifthenelse{\equal{#1}{}}{}{^{#1}}}
@@ -328,8 +336,8 @@
 
 % long version
 \newcommand{\squash}[1]{#1^{\div}}
-\newcommand{\R}{\mathrel{\circledR}}
-\newcommand{\Rcl}{\R}%{\mathrel{\widehat{\circledR}}}
+%\newcommand{\R}{\mathrel{\circledR}}
+%\newcommand{\Rcl}{\R}%{\mathrel{\widehat{\circledR}}}
 %\newcommand{\Univ}[1]{\mathcal{U}\kern-0.3ex\mathit{niv}_{#1}}
 \newcommand{\Univ}[1]{\mathsf{U}_{#1}}
 \newcommand{\ePIAF}{\Pi^{\evar}\,\A\,\F}
@@ -1088,6 +1096,7 @@
 \newcommand{\napp}{~}
 \newcommand{\CXT}{\mathcal{C}\!\mathit{xt}}
 \newcommand{\TYPE}{\mathcal{T}\!\mathit{ype}}
+\newcommand{\SIZE}{\mathcal{S}\!\mathit{ize}}
 \newcommand{\uTYPE}{\underline{\mathcal{T}\!\mathit{ype}}}
 \newcommand{\EMPTY}{{\mathcal{E}\!\mathit{mpty}}}
 \newcommand{\UNIT}{{\mathcal{U}\!\mathit{nit}}}
@@ -1095,13 +1104,15 @@
 \newcommand{\SET}[1][]{{\mathcal{S}\!\mathit{et}_{#1}}}
 \newcommand{\el}[1]{[#1]}
 \newcommand{\elt}[1]{#1}
-\newcommand{\EL}{\mathcal{E}\kern-0.2ex\ell}
+\newcommand{\EL}[1][]{\mathcal{E}\kern-0.2ex\ell_{#1}}
 \newcommand{\ELT}[1]{[#1]}
 \newcommand{\ELC}[1]{[#1]}
 \newcommand{\FUN}{\mathcal{F}\!\mathit{un}}
 \newcommand{\PAIR}{\mathcal{P}\!\mathit{air}}
-\newcommand{\PI}[1]{\Pi\,#1\,}
+%\newcommand{\PI}[1]{\Pi\,#1\,}
+\newcommand{\PI}{\prod}
 \newcommand{\PIAF}{\PI\A\F}
+\newcommand{\FORALL}{\forall}
 
 \newcommand{\UP}{\mathop{\Uparrow}\nolimits^{\tkind}}
 %\newcommand{\UP}{\mathop{\upuparrows}\nolimits}
@@ -1256,6 +1267,7 @@
 \newcommand{\UD}{\mathsf{U}}
 \newcommand{\SetD}{\mathsf{Set}}
 \newcommand{\UpD}{\mathsf{Up}}
+\newcommand{\tUp}{\mathsf{Up}}
 %\renewcommand{\Up}[1]{#1}%{\UpD\,#1}
 \newcommand{\UpPar}[1]{#1}%{(\UpD\,#1)}
 \newcommand{\ONLYIFUP}[1]{}
@@ -1346,6 +1358,7 @@
 \renewcommand{\S}{\mathcal{S}}
 \newcommand{\T}{\mathcal{T}}
 \newcommand{\NE}{\mathcal{N}\!\mathit{e}}
+\newcommand{\NF}{\mathcal{N}\!\mathit{f}}
 
 \newcommand{\RO}{\mathcal{R}}
 \newcommand{\RR}{\mathrel{\RO}}

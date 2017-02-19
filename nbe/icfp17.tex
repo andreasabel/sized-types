@@ -208,7 +208,7 @@ Syntax (de Bruijn terms).
     & ::= & \ind i \mid n \, e & \mbox{neutral expressions} \\
 \Elim & \ni & e
     & ::= & t \mid a \mid \ann a \mid \case[\ell] T {t_1} t_2 \mid \fix[\ell] T t & \mbox{eliminations} \\
-\SizeExp & \ni & a,b & ::= & \infty \mid k \mid \ind i + k ~(k \in \NN) & \mbox{size expressions} \\
+\SizeExp & \ni & a,b & ::= & \infty \mid o \mid \ind i + o ~(o \in \NN) & \mbox{size expressions} \\
 \Cxt & \ni & \Gamma, \Delta & ::= & \cempty \mid \erext[\noterased] \Gamma T \mid \erext \Gamma \Size \\
 \end{array}
 \]
@@ -221,7 +221,7 @@ them by ``$\noterased$''-markers).  Note that, trivially, resurrection is idempo
 
 We write $\sigma$ and $\tau$ for substitutions, which are lists of terms, and $t \sigma$ for the application of substitution $\sigma$ to term $t$.  We write $\slift^k_m$ for the substitution $(\ind{k+m-1},\dots,\ind{k+1},\ind k)$ which applies to a term with $m$ free indices and increases all of them by $k$.  We write $\slift_m$ for the lifting $\slift^1_m$ and $\sid_m$ for the identity substitution $ \slift^0_m$. The substitution $[u]_m = (\sid_m, u)$ replaces free index $\ind 0$ by term $u$ and decrements all other free indices by $1$. We drop subscript $m$ when clear from the context.
 
-Size increment \fbox{$a + k$} for $k \in \NN$ extends addition by $\infty + k = \infty$ and $(\ind i + k') + k = \ind i + (k' + k)$.  Size comparison \fbox{$a \leq b$} holds if either $b = \infty$ or  $k \leq k'$ where either $a = k$ and $b = k'$ or $a \in \{ k, \ind i + k \}$ and $b = \ind i + k'$.
+Size increment \fbox{$a + o'$} for $o' \in \NN$ extends addition by $\infty + o' = \infty$ and $(\ind i + o) + o' = \ind i + (o + o')$.  Size comparison \fbox{$a \leq b$} holds if either $b = \infty$ or  $o \leq o'$ where either $a = o$ and $b = o'$ or $a \in \{ o, \ind i + o \}$ and $b = \ind i + o'$.
 
 Judgements.
 \[
@@ -333,17 +333,16 @@ Inference rules.
       \resurrect\Gamma \der b : \Size
     }{\Gamma \der t \ann a : T[b]}
 \\[2ex]
-  \ru{\Gamma \der u : \Nat (b + 1) \qquad
-      \Gamma \der T : \Nat (b + 1) \to \Set[\ell] \\
-      \Gamma \der a_z,a_s : \Size \qquad
-      \Gamma \der t_z : T \, (\zero{a_z}) \qquad
-      \Gamma \der t_s : (t : \Nat b) \to T \, (\suc{a_s} t)
+  \ru{\Gamma \der u : \Nat (a + 1) \qquad
+      \Gamma \der T : \Nat (a + 1) \to \Set[\ell] \qquad
+      \Gamma \der t_z : T \, (\zero{a}) \qquad
+      \Gamma \der t_s : (t : \Nat a) \to T \, (\suc{a} t)
     }{\Gamma \der u\,\case[\ell] T {t_z} t_s : T \, u}
 \\[2ex]
-  \ru{\Gamma \der u : \Nat b \qquad
+  \ru{\Gamma \der u : \Nat a \qquad
       \Gamma \der T : \FixK\,\ell \qquad %% \funT i \Size \Nat i \to \Set[\ell] \\
       \Gamma \der t : \FixT\, T
-     }{\Gamma \der u\,\fix[\ell] T t : T \,b \, u}
+     }{\Gamma \der u\,\fix[\ell] T t : T \,a \, u}
 \end{gather*}
 Note: Size is relevant in $T$ as we would like for instance $T\,i\,x = \Nat i$.
 % \fbox{$\Gamma \mid U \der e : T$}
@@ -381,17 +380,17 @@ Computation rules.
 \\[2ex]
   \ru{\resurrect\Gamma \der b : \Size \qquad
       \Gamma \der T : \Nat (b + 1) \to \Set[\ell] \qquad
-      \Gamma \der a_z,a_s : \Size \qquad
-      \Gamma \der t_z : T\,\zero{a_z} \qquad
-      \Gamma \der t_s : (n : \Nat b) \to T\,(\suc{a_s}n)
-    }{\Gamma \der (\zero{a_z})\,\case[\ell] T {t_z} {t_s} = t_z : T\,\zero{a_z}}
+      \Gamma \der a : \Size \qquad
+      \Gamma \der t_z : T\,\zero{b} \qquad
+      \Gamma \der t_s : (n : \Nat b) \to T\,(\suc{b}n)
+    }{\Gamma \der (\zero{a})\,\case[\ell] T {t_z} {t_s} = t_z : T\,\zero{a_z}}
 \\[2ex]
   \ru{\Gamma \der t : \Nat b \qquad
       \Gamma \der T : \Nat (b + 1) \to \Set[\ell] \qquad
-      \Gamma \der a_z,a_s : \Size \qquad
-      \Gamma \der t_z : T\,\zero{a_z} \qquad
-      \Gamma \der t_s : (n : \Nat b) \to T\,(\suc{a_s}n)
-    }{\Gamma \der (\suc{a_s} t)\,\case[\ell] T {t_z} {t_s} = t_s\,t : T\,(\suc{a_s} t)}
+      \Gamma \der a : \Size \qquad
+      \Gamma \der t_z : T\,\zero{b} \qquad
+      \Gamma \der t_s : (n : \Nat b) \to T\,(\suc{b}n)
+    }{\Gamma \der (\suc{a} t)\,\case[\ell] T {t_z} {t_s} = t_s\,t : T\,(\suc{a} t)}
 \\[2ex]
   \ru{\Gamma \der c : \Nat b \qquad
       \Gamma \der a : \Size \qquad
@@ -677,7 +676,9 @@ reflection and reification operations of NbE.
 \begin{array}{lllrl@{\qquad}l}
 %  \Exp  & \ni & t & ::= & \dots \mid \lev k \mid \up T t \mid \down T t \\
   \Ne   & \ni & n & ::= & \dots \mid \lev k \\
-  \Whnf & \ni & w,d,f,g,A,B,F,G & ::= & \dots \mid  \up T n \mid \down T t \\
+  \tUp  & \ni & N & ::= & \up T n \\
+  \Whnf & \ni & w & ::= & \dots \mid N \mid \down T t \\
+%  \Whnf & \ni & w,d,f,g,A,B,F,G & ::= & \dots \mid  \up T n \mid \down T t \\
 \end{array}
 \]
 
@@ -724,7 +725,7 @@ Judgements.
 \qquad
   \ru{t_s\, t \evalsto w
     }{(\suc a t) @ \casett \evalsto w}
-\qquad
+\\[2ex]
   \ru{t\,\ann a\,(\lambda x.\, x@ \fixtt)\,c \evalsto w
      }{c @ \fixtt \evalsto w
      }{c\in \{ \zero a, \suc a u \}}
@@ -753,15 +754,213 @@ The rules added for NbE deal with elimination of delayed reflection:
 \\[2ex]
   \ru{T' \evalsto \Nat b \qquad
     }{(\up {T'} n) @ \case[\ell] T {t_z} {t_s} \evalsto
-      \up{T\,(\up{\Nat \infty} n)} (n\,\case[\ell] {(\down {\Set[\infty]} T)} {(\down {T\,{\zero\infty}} t_z)} {(t_s)})
+      \up{T\,(\up{\Nat \infty} n)}
+         n\,\case[\ell]
+             T %% {(\down {\Set[\infty]} T)}
+             {(\down {T\,{\zero\infty}} t_z)}
+             {(\down {\funS x {\Nat \infty} T\,(\suc \infty x)} t_s)}
+    }
+\\[2ex]
+  \ru{T' \evalsto \Nat b \qquad
+    }{(\up {T'} n) @ \fix[\ell] T t \evalsto
+      n\,\fix[\ell] {(\down {\FixK} T)} {(\down {\FixT\, T} t)}
     }
 \end{gather*}
 
+\subsection{Read back}
+\label{sec:read}
+
+Judgements.
+\[
+\begin{array}{l@{\qquad}l}
+   \R k t  v     & \mbox{} \\
+   \RTy k T  V  & \mbox{} \\
+   \RNat k t  v & \mbox{} \\
+   \RNe k t  m  & \mbox{} \\
+\end{array}
+\]
+\fbox{$\R k t v$}
+\begin{gather*}
+  \ru{t \evalsto \down{U} T \qquad
+      U \evalsto s \\
+      \RTy k T V
+    }{\R k t V}
+\qquad
+  \ru{t \evalsto \down{U} u \qquad
+      U \evalsto \Nat a \\
+      \RNat k u v
+    }{\R k t v}
+\qquad
+  \ru{t \evalsto \down{U} u \qquad
+      U \evalsto \up {T'} {t'} \\
+      \RNe k u v
+    }{\R k t v}
+\\[2ex]
+  \ru{t \evalsto \down{U} f \qquad
+      U \evalsto \piT A B \qquad
+      \R{k+1} {\down{B[\up A \lev k]} (f\,\up A \lev k)} v
+    }{\R k t {\lambda v}}
+\\[2ex]
+  \ru{t \evalsto \down{U} f \qquad
+      U \evalsto \piT \Size B \qquad
+      \R{k+1} {\down{B[\lev k]} (f\,\lev k)} v
+    }{\R k t {\lambda v}}
+\qquad
+  \ru{t \evalsto \down{U} f \qquad
+      U \evalsto \forallT B \qquad
+      \R{k+1} {\down{B[\lev k]} (f\,\ann{\lev k})} v
+    }{\R k t {\lambda v}}
+\end{gather*}
+
+\fbox{$\RNat k t v $}
+\begin{gather*}
+  \ru{t \evalsto n \qquad
+      \RNe k n m
+    }{\RNat k t m}
+\qquad
+  \ru{t \evalsto \zero{a_v} \qquad
+      \RSize k {a_v} a
+    }{\RNat k t {\zero a}}
+\qquad
+  \ru{t \evalsto \suc{a_v}u \qquad
+      \RSize k {a_v} a \qquad
+      \RNat k u v
+    }{\RNat k t {\suc a v}}
+\end{gather*}
+
+\fbox{$\RSize k {a_v} a$}
+\begin{gather*}
+  \ru{
+    }{\RSize k \infty \infty}
+\qquad
+  \ru{
+    }{\RSize k o o}
+\qquad
+  \ru{
+    }{\RSize k {\lev j + o} {\ind{k-1-j} + o}}
+\end{gather*}
+
+\fbox{$\RNe k t m$} and \fbox{$\RElim k e e^v$}
+\begin{gather*}
+%   \ru{t \evalsto \lev j
+%     }{\RNe k t {\ind{k-1-j}}}
+% \qquad
+  \ru{t \evalsto \lev j\,\vec e \qquad
+      \RElim k {e_i} {e^v_i} \mforall i
+    }{\RNe k t {\ind{k-1-j}\,\vec e^v}}
+\qquad
+% \end{gather*}
+% \begin{gather*}
+  \ru{\R k t v
+    }{\RElim k t v}
+\qquad
+  \ru{\RSize k a b
+    }{\RElim k a b}
+\qquad
+  \ru{\RSize k a b
+    }{\RElim k {\ann a} {\ann b}}
+\\[2ex]
+  \ru{\RTy k T V \qquad
+      \R k {t_z} {v_z} \qquad
+      \R k {t_s} {v_s}
+    }{\RElim k {(\case[\ell] T {t_z} {t_s})} {\case[\ell] V {v_z} {v_s}}}
+\qquad
+  \ru{\RTy k T V \qquad
+      \R k t v
+    }{\RElim k {(\fix[\ell] T t)} {\fix[\ell] V v}}
+\end{gather*}
+\fbox{$\RTy k T V$}
+\begin{gather*}
+  \ru{T \evalsto \Set[\ell]
+    }{\RTy k T {\Set[\ell]}}
+\qquad
+  \ru{T \evalsto \Nat a \qquad
+      \RSize k a b
+    }{\RTy k T {\Nat b}}
+\qquad
+  \ru{T \evalsto \up{U}u \qquad
+      \RNe k u m
+    }{\RTy k T m}
+\\[2ex]
+  \ru{T \evalsto \piT A B \qquad
+      \RTy k A {V_a} \qquad
+      \RTy {k+1} B {V_b}
+    }{\RTy k T {\piT {V_a} V_b}}
+\qquad
+  \ru{T \evalsto \epiT \Size B \qquad
+      \RTy {k+1} B {V_b}
+    }{\RTy k T {\epiT \Size V_b}}
+\end{gather*}
 
 We write \fbox{$t \approx t'$} iff $t$ and $t'$ are syntactically equal if we ignore sizes $\ann a$ in irrelevant positions.  For example, $\suc a \tzero \approx \suc 0 \tzero$, but $\Nat a \not\approx \Nat 0$.
 
 
 
+\subsection{Partial equivalence relations}
+\label{sec:per}
+
+A type $T$ will be interpreted as a partial equivalence relation (PER) $\A$ on terms, \ie, a relation which is symmetric and transitive. The domain $\dom(\A)$ of the relation can be thought of the set of terms which define the extension of the type; on $\dom(\A)$ the relation $\A$ is in fact an equivalence relation.
+
+The PERs $\NE$ and $\NF$ charaterize (neutral) normalizing terms.
+\[
+\begin{array}{l@{\quad}l@{\quad}l@{~}l@{~}l@{~}l@{~}l@{~}l}
+  \fbox{$t = t' \in \NE$}
+    & \defas &
+    \RNe k t m &\mand& \RNe k {t'} {m'} &\mand& m \approx m' &\mforall k \\
+  \fbox{$t = t' \in \NF$}
+    & \defas &
+    \R k t v &\mand& \R k {t'} {v'} &\mand& v \approx v' &\mforall k \\
+\end{array}
+  % \ru{\RNe k t m \mand \RNe k {t'} {m'} \mand m \approx m' \mforall k
+  %   }{t = t' \in \NE}
+  % \ru{t \evalsto \up N n \qquad t' \evalsto \up{N'}{n'} \qquad n \approx n'
+  %   }{t = t' \in \NE}
+\]
+All PERs $\A$ we consider are sandwiched $\NE \subseteq \A \subseteq \NF$ between $\NE$ and $\NF$.
+
+\subsection{PER model}
+\label{sec:permode}
+
+By induction on $\ell \in \NN$ we define the PER family
+$\_ = \_ \in \Set[\ell]$ of types
+together with the extension $\EL[\ell] T$ (for $T = T' \in \Set[\ell]$)
+which is PER of values of type $A$.
+The rules for \fbox{$T = T' \in \SET[\ell]$} are:
+\[
+\begin{array}{l@{\qquad}l}
+  \ru{T \evalsto N \qquad T' \evalsto N'
+    }{T = T' \in \SET[\ell]}
+  & \EL[\ell](T) = \NE
+\\[3ex]
+  \ru{T \evalsto \Nat\,a \qquad T' \evalsto \Nat\,a
+    }{T = T' \in \SET[\ell]}
+  & \EL[\ell](T) = \NAT(a)
+\\[3ex]
+  \rux{T \evalsto \Set[\ell'] \qquad T' \evalsto \Set[\ell']
+     }{T = T' \in \SET[\ell]
+     }{\ell'{<}\ell}
+  & \EL[\ell](T) = \SET[\ell']
+\\[3ex]
+  \rul{T \evalsto \piT A B \qquad
+      T' \evalsto \piT{A'}{B'} \\
+      A = A' \in \SET[\ell] \qquad
+      B[u] = B'[u'] \in \SET[\ell] \mforall u = u' \in \EL[\ell](A)
+    }{T = T' \in \SET[\ell]}
+  & \EL[\ell](T) = \PI(\EL[\ell](A),\;u \mapsto \EL[\ell](B[u]))
+\\[3ex]
+  \rul{T \evalsto \piT \Size B \quad
+      T' \evalsto \piT{\Size}{B'} \quad
+      B[a] = B'[a] \in \SET[\ell] \mforall a \in \SIZE
+    }{T = T' \in \SET[\ell]}
+  & \EL[\ell](T) = \PI(\SIZE,\; a \mapsto \EL[\ell](B[a]))
+\\[3ex]
+  \rul{T \evalsto \forallT B \quad
+      T' \evalsto \forallT{B'} \quad
+      B[a] = B'[a] \in \SET[\ell] \mforall a \in \SIZE
+    }{T = T' \in \SET[\ell]}
+  & \EL[\ell](T) = \FORALL(a \mapsto \EL[\ell](B[a]))
+\end{array}
+\]
 
 
 
