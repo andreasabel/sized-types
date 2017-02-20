@@ -615,12 +615,14 @@ match a part of a judgement.
 \begin{lemma}[Resurrection]
 \label{lem:res} \bla
 \begin{enumerate}
-\item If\/ $\der \Gamma$ then $\der \resurrect\Gamma$ and $\resurrect \Gamma \der \sid : \Gamma$.
+\item $\der \Gamma$ iff $\der \resurrect\Gamma$;  then $\resurrect \Gamma \der \sid : \Gamma$.
   % Consequently, if\/ $\Gamma \der J$ then $\resurrect \Gamma \der J$.
   % Further, if $\Gamma \der J : \resurrect\Delta$ then $\Gamma \der J : \Delta$.
 \item If\/ $\Gamma \der J$ then $\resurrect \Gamma \der J$.
-\item If\/ $\Gamma \der J : \resurrect \Delta$ and $\der \Delta$ then $\Gamma \der J : \Delta$.
-\item If\/ $\Gamma \der \sigma : \Delta$ then $\resurrect\Gamma \der \sigma : \resurrect\Delta$.
+\item If\/ $\Gamma \der J : \resurrect \Delta$ % and $\der \Delta$
+  then $\Gamma \der J : \Delta$.
+\item If\/ $\Gamma \der \sigma : \Delta$ then $\Gamma \der \sigma : \resurrect\Delta$.
+% then $\resurrect\Gamma \der \sigma : \resurrect\Delta$.
 \end{enumerate}
 \end{lemma}
 
@@ -1501,6 +1503,18 @@ Logical relation for substitutions.
     }{\LRSub \Gamma {(\sigma,a)} {(\tau,b)} {\erext \Delta \Size} {(\eta,\alpha)} {(\rho,\beta)}}
 \end{gather*}
 
+\begin{lemma}[Properties of the logical relation for substitution]
+  \label{lem:wklrsub}
+  Let $\LRSub \Gamma \sigma \tau \Delta \eta \rho$.
+  \begin{enumerate}
+  \item Weakening:
+  If $\sigma' : \Gamma' \leq \Gamma$ then
+  $\LRSub{\Gamma'}{\sigma\sigma'}{\tau\sigma'}{\Delta}\eta\rho$.
+  \item Resurrection:
+  Let $\LRSub {\Gamma} \tau \tau {\resurrect\Delta} \rho \rho$.
+  \end{enumerate}
+\end{lemma}
+
 % \begin{lemma}[Typing of constructed data]
 % \label{lem:invdata} \bla
 % If\/ $\Gamma \der c : \Nat b$ then $\resurrect\Gamma \der b : \Size$ and $b > 0$.
@@ -1509,105 +1523,68 @@ Logical relation for substitutions.
 Validity judgements.
 \[
 \begin{array}{l@{\quad}l@{\quad}l}
-  \valid () & \defas & \mtrue \\
-  \valid \eext \Gamma \Size & \defas & \valid \Gamma \\
-  \valid \cext \Gamma T     & \defas & \valid \Gamma \mand \resurrect\Gamma \valid T
-\\[2ex]
-  \Gamma \valid s & \defas & \valid \Gamma \\
-%  \Gamma \valid s & \defas & \mtrue \\
-  \Gamma \valid T & \defas & \Gamma \valid T = T \\
-  \Gamma \valid T = T' & \defas & \Gamma \valid T = T' : s \mforsome s %\Set[\ell] \mforsome \ell
-\\[2ex]
-  \Gamma \valid t : T & \defas & \Gamma \valid t = t : T \\
-  \Gamma \valid t = t' : T & \defas & %\valid \Gamma \mand
+  \Gamma \valid t : T & \defas & %\valid \Gamma \mand
     % \resurrect\Gamma \valid T \mand
     \valid \cext \Gamma T \mand
-    \LR {\Gamma'} {t \sigma} {T \tau} {t' \eta} {T \rho}
+    \LR {\Gamma'} {t \sigma} {T \tau} {t \eta} {T \rho}
     \mforall \LRSub {\Gamma'} \sigma \tau \Gamma \eta \rho
-\\[2ex]
-  \Gamma \valid \sigma : \Delta & \defas & \Gamma \valid \sigma = \sigma \eeq \sigma : \Delta \\
-  \Gamma \valid \sigma_1 = \sigma_2 \eeq \tau : \Delta & \defas &
-    \valid \Gamma \mand \valid \Delta \mand
-    \LRSub {\Gamma'} {\sigma_1 \sigma'} {\tau \tau'} \Delta {\sigma_2 \eta'} {\tau \rho'}
+\\[1ex]
+  \Gamma \valid \sigma : \Delta & \defas &
+    \LRSub {\Gamma'} {\sigma \sigma'} {\sigma \tau'} \Delta {\sigma \eta'} {\sigma \rho'}
     \mforall \LRSub {\Gamma'} {\sigma'} {\tau'} \Gamma {\eta'} {\rho'}
 \end{array}
 \]
 
-\begin{theorem}[Fundamental theorem]
+\begin{theorem}[Fundamental theorem of typing]
   \bla
   \begin{enumerate}
   \item
-  If $\der \Gamma$ then $\valid \Gamma$.
+  If $\Gamma \der t : T$ then $\Gamma \valid t : T$.
   \item
-  If $\Gamma \der J$ then % $\valid \Gamma$ and
-  $\Gamma \valid J$
+  If $\Gamma \der \sigma : \Delta$ then
+  $\Gamma \valid \sigma : \Delta$
   \end{enumerate}
 \end{theorem}
 \begin{proof}
-Simultaneously, by induction on the derivation.
+Each by induction on the derivation.
 
 \begin{caselist}
+
 \nextcase $\forall$-introduction.
 \[
-  \ru{\erext \Gamma \Size \der t = t' : T
-    }{\Gamma \der \lambda t = \lambda t' : \forall T}
+  \ru{\erext \Gamma \Size \der t : T
+    }{\Gamma \der \lambda t : \forall T}
 \]
-First $\valid \Gamma$ follows from the induction hypothesis $\valid {\erext \Gamma \Size}$.
-To show $\resurrect\Gamma \valid \forall T$,
-assume $\eta = \eta' \eeq \rho \in \resurrect \Gamma$
-and show $(\forall T)\eta = (\forall T)\eta' \in \SET[\ell]$ for some $\ell$.
-To this end, assume $\alpha \in \SIZE$ and show $T(\eta,\alpha) = T(\eta',\alpha) \in \SET[\ell]$.
-Note that $(\eta,\alpha) = (\eta',\alpha) \eeq (\rho,\alpha) \in
-\resurrect {\erext \Gamma \Size} = \cext {\resurrect\Gamma}\Size$,
-thus, we can instantiate the induction hypothesis and obtain our goal.
-
-For the main goal,
-assume $\eta = \eta' \eeq \rho \in \Gamma$ and
-show $(\lambda t)\eta = (\lambda t')\eta' \in (\forall T)\rho$.
-To this end, assume arbitrary $\alpha,a',b \in \SIZE$ and show
-$t(\eta,\alpha) = t'(\eta',a') \in T(\rho,b)$.
-Since $(\eta,\alpha) = (\eta',a') \eeq (\rho,b) \in \erext \Gamma \Size$,
-we conclude by induction hypothesis.
+Assume $\LRSub {\Delta} {\sigma} {\tau} \Gamma {\eta} {\rho}$ and show
+$\LR \Delta {(\lambda t)\sigma} {(\forall T)\tau} {(\lambda t)\eta} {(\forall T)\rho}$.
+To this end, assume a weakening $\sigma' : \Delta' \leq \Delta$ and
+size expressions $\Delta' \der a : \Size$ and
+$\resurrect{\Delta'} \der b : \Size$ and size values $\alpha,\beta$ with
+$\LRSize {\Delta'} b \beta$ and show
+$\LR {\Delta'} {t(\sigma\sigma',a)} {T(\tau\sigma',b)} {t(\eta,\alpha)} {T(\rho,\beta)}$.
+This follows from the induction hypothesis, since
+$\LRSub {\Delta'} {(\sigma\sigma',a)} {(\tau\sigma',b)} {\erext \Gamma \Size} {(\eta,\alpha)} {(\rho,\beta)}$
+by Lemma~\ref{lem:wklrsub} and substitution extension.
 
 \nextcase $\forall$-elimination.
 \[
-  \ru{\Gamma \der t = t' : \forall T \qquad
-      \Gamma \der a, a' : \Size \qquad
-      \resurrect\Gamma \der b : \Size
-    }{\Gamma \der t \ann a = t' \ann {a'} : T[b]}
+  \ru{\Gamma \der t : \forall T \qquad \Gamma \der a : \Size \qquad \resurrect \Gamma \der b : \Size
+    }{\Gamma \der t \ann a : T[b]}
 \]
-First, $\valid \Gamma$ follows by induction hypothesis.
-For goal $\resurrect \Gamma \valid T[b]$,
-assume $\eta = \eta' \eeq \rho \in \resurrect\Gamma$ and show
-$T[b]\eta = T[b]\eta' \in \SET[\ell]$ for some $\ell$.
-By induction hypothesis,  $b\eta = b\eta' \in \SIZE$.
-% , thus,
-% $(\eta,b\eta) = (\eta',b\eta') \eeq (\rho,b\eta) \in \cext{\resurrect\Gamma}\Size$
-By another induction hypothesis, $(\forall T)\eta = (\forall T)\eta' \in \SET[\ell]$,
-which by definition entails our goal $T(\eta, b\eta) = T(\eta', b\eta') \in \SET[\ell]$.
+Assume $\LRSub {\Delta} {\sigma} {\tau} \Gamma {\eta} {\rho}$ and show
+$\LR \Delta {t \ann a \sigma} {T[b]\tau} {t \ann a \eta} {T[b]\rho}$.
+By induction hypothesis we have $\LR \Delta {t \sigma} {(\forall T)\tau} {t \eta} {(\forall T) \rho}$.
+It suffices to show
+\begin{enumerate}
+\item $\Delta \der a\sigma : \Size$
+%\item $\resurrect\Delta \der b\tau : \Size$.
+ and $a\eta \in \SIZE$: follows by induction hypothesis on $\Gamma \der a : \Size$.
+%\item $b\rho \in \SIZE$.
+\item $\LRSize {\resurrect \Delta} {b\tau} {b\rho}$: follows from induction hypothesis on $\resurrect \Gamma \der b : \Size$ via $\LRSub {\resurrect \Delta} \tau \tau {\resurrect\Gamma} \rho \rho$ (from Lemma~\ref{lem:wklrsub}).
+\end{enumerate}
 
-
-For the remaining main goal,
-assume $\eta = \eta' \eeq \rho \in \Gamma$ and
-show $t \ann a \eta = t' \ann{a'} \eta' \in T[b]\rho$.
-By definition of substitution, it suffices to show
-$t \eta \ann{a \eta} = t' \eta' \ann{a' \eta'} \in T(\rho, b \rho)$.
-By induction hypothesis,
-$t \eta = t' \eta' : (\forall T) \rho$, thus, by definition of this PER,
-$t \eta \ann {\alpha_1} = t' \eta' \ann{\alpha_2} \in T(\rho, b')$ for any size values $\alpha_1$, $\alpha_2$, and $b'$.
-We conclude by choosing $\alpha_1 = a \eta$ and $\alpha_2 = a' \eta'$ and $b' = b \rho$.
-
-We now argue that this choice is possible,
-namely that $a \eta, a'\eta, b\rho \in \SIZE$.
-Note that the induction hypothesis gives us
-$a \eta  = a  \eta' \in \SIZE$ and
-$a' \eta = a' \eta' \in \SIZE$.
-By resurrection (Lemma~\ref{lem:resenv}) we have $\rho \in \resurrect\Gamma$,
-thus, by induction hypothesis, $b \rho \in \SIZE$.
 \end{caselist}
 \end{proof}
-
-
 
 
 \section{Conclusions}
