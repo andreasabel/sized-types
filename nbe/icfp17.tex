@@ -5,6 +5,9 @@
 %% For final camera-ready submission
 %\documentclass[acmlarge]{acmart}\settopmatter{}
 
+\usepackage{mathtools} %mathrlap
+\usepackage[all]{xy}
+
 \usepackage[cal=boondoxo]{mathalfa}
 
 %% Note: Authors migrating a paper from PACMPL format to traditional
@@ -684,6 +687,44 @@ reflection and reification operations of NbE.
 \end{array}
 \]
 
+
+\begin{figure}
+$$
+\xymatrix@R=12ex@C=12ex{
+\mathrlap{\mbox{Semantics ($\beta$)}} &
+  &                f \in \D   \ar@[red][d]_{\down A}
+\\
+\mathrlap{\mbox{Semantics ($\beta\eta$)}} &
+  &                d \in \DNf \ar@[red][d]_{\tR_k{}}
+  &                n \in \DNe \ar[d]_{\tRne_k} \ar@[blue][ul]_{\up A}
+  & \ar@[blue][l]_{\var{}} j \in \Level \ar@{<->}[d]_{k\dotminus(1+\_)}
+\\
+\mathrlap{\mbox{Syntax}} &
+t \in \Exp \ar@[red]@(u,dl)[uur]^{\_\color{blue}\eta} %\ar@/^/[uur]^{\den\_}
+  & \ar[l]_{\supseteq}  v \in \Nf
+  & \ar[l]_{\supseteq}  m \in \Ne
+  & \ar[l]_{\ind{}}     i \in \Index
+  &
+}
+$$
+\caption{Type-assignment NbE in locally nameless
+    style.\label{fig:typedchart}}
+\end{figure}
+
+Figure~\ref{fig:typedchart}, adapted from \citet{abel:habil} shows the syntactic categories and main operations involved in NbE in what we call \emph{locally nameless style}.  The red path $\Exp \to \D \to \Dnf \to \Nf$ decomposes $\beta\eta$-normalization into three steps.
+\begin{enumerate}
+\item
+First, we close the term $t$ with an environment $\eta$ that maps the free de Bruijn indices of $t$ to reflected de Bruijn levels.  Reflection of de Bruijn levels follows the blue path $\Level \to \Dne \to \D$: Levels embed via constructor $\var{}$ into semantic neutrals $\DNe$ which are labelled with their type $A \in \D$ to become and element $\up A \lev j \in \D$.
+
+\item
+Then, we label value $t \eta \in \D$ with its type $A$ to obtain $\down A t \eta \in \Dnf$.
+\item
+Finally, \emph{read back} %% $\tR_k$
+$\tR_k \down{A} t\eta$ produces a long normal form $v \in \Nf$, converting de Bruijn levels back to indices.
+Herein, $k$ should be the length of the context the original term $t$ lived in.
+If this is the case, each de Bruijn level encountered during read back is below $k$ and can be safely converted to a de Bruijn index.
+\end{enumerate}
+
 \subsection{Operational semantics}
 
 Judgements.
@@ -1071,6 +1112,14 @@ For the logical framework, the shape of a dependent type is just its underlying 
   If $T = T' \in \SET[\ell]$ then $T \shape T'$.
 \end{lemma}
 
+Note that $T \in \SET[\ell]$ and $T \shape S$ do not imply $S \in \SET[\ell]$.
+Type shapes are not well-defined types in general.
+For instance, assume a term $F : \Nat 0 \to \Set[0]$ which diverges if applied to a successor term.
+Then $T := \funT x {\Nat 0} {F\,x}$ is a welldefined type; we have $T \in \SET[0]$.
+Now consider $S := \funT x {\Nat \infty} {F\,x}$.
+We have $T \shape S$, but not $S$ is not well-defined; $S \not\in \SET[0]$.
+% $\funT x {\Nat 0} {F\,x} \shape , but the latter one is not a well-defined type.
+
 \begin{theorem}[Reification and reflection]
 Let $T \in \SET[\ell]$ and $T \shape S_1$ and $T \shape S_2$.
 \begin{enumerate}
@@ -1276,8 +1325,45 @@ thus, by induction hypothesis, $b \rho \in \SIZE$.
 \end{proof}
 
 
-\section{Completeness of NbE}
+\subsection{Completeness of NbE}
 \label{sec:compl}
+
+\section{Soundness  of NbE}
+\label{sec:compl}
+
+In this section, we show that NbE is sound for judgemental equality, i.e., that same normal form implies definitional equality.  The proof follows previous work on NbE \cite{abelCoquandDybjer:lics07,abel:habil}.
+
+\[
+  \fbox{$\LRSize \Gamma a b$} \defas
+  \forall \sigma : \Gamma' \leq \Gamma.\
+  \exists a'.\
+  \RSize {\Gamma'} b a' \mand
+  \Gamma' \der a\sigma = a' : \Size
+\]
+
+\fbox{$\LR \Gamma t {T'} f {A'}$} defined by induction on ${A'} \in \SET[\ell]$.
+\begin{caselist}
+
+\nextcase $A' \evalsto \piT A B$.  Then $\LR \Gamma t {T'} f {A'}$ if all of the following:
+\[
+\begin{array}{l}
+\Gamma \der T' = \piT U T \mforsome U, T\\
+\LRT \Gamma U A \\
+\forall \sigma : \Gamma' \leq \Gamma.\ \
+\LR {\Gamma'} u {U\sigma} a A \implies \LR {\Gamma'} {t\sigma\,u} {T(\sigma,u)} {f\,a} {B[a]}
+\end{array}
+\]
+
+\nextcase $A' \evalsto \forallT B$.  Then $\LR \Gamma t {T'} f {A'}$ if all of the following:
+\[
+\begin{array}{l}
+\Gamma \der T' = \forallT T \mforsome T\\
+\forall \sigma : \Gamma' \leq \Gamma.\ \
+\LRSize {\Gamma'} u a \implies \LR {\Gamma'} {t\sigma\,u} {T(\sigma,u)} {f\,a} {B[a]}
+\end{array}
+\]
+
+\end{caselist}
 
 
 % \begin{lemma}[Typing of constructed data]

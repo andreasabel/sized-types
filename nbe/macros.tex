@@ -262,6 +262,7 @@
 \newcommand{\RSize}[3]{\mathop{\mathsf{R}}\nolimits^{\mathsf{size}}_{#1} \, #2 \evalsto #3}
 \newcommand{\RElim}[3]{\mathop{\mathsf{R}}\nolimits^{\mathsf{elim}}_{#1} \, #2 \evalsto #3}
 \newcommand{\R}[3]{\mathsf{R}_{#1} \, #2 \evalsto #3}
+\newcommand{\tRne}{\mathsf{R}^{\mathsf{ne}}}
 
 \newcommand{\monus}{\dotminus} %{\stackrel{\cdot}{-}}
 
@@ -1373,6 +1374,7 @@
 \newcommand{\NEE}{\mathcal{N}\!\mathcal{E}}
 \newcommand{\NE}{\mathcal{N}\!\mathit{e}}
 \newcommand{\NF}{\mathcal{N}\!\mathit{f}}
+\newcommand{\Index}{\mathsf{Index}}
 
 \newcommand{\RO}{\mathcal{R}}
 \newcommand{\RR}{\mathrel{\RO}}
@@ -1384,8 +1386,10 @@
 
 % logical relation
 \newcommand{\circleR}{\mathrel{\mbox{\textregistered}}}
-%\newcommand{\R}[6]{#1 \der #2 : #3 \circleR #4 \der #5 : #6}
-%\newcommand{\R}[4]{#1 \der #2 : #3 \circleR #4}
+\newcommand{\LR}[5]{#1 \der #2 : #3 \circleR #4 \in #5}
+\newcommand{\LRSub}[4]{#1 \der #2 : #3 \circleR #4}
+\newcommand{\LRSize}[3]{#1 \der #2 : \Size \circleR #3}
+\newcommand{\LRT}[3]{#1 \der #2 \circleR #3}
 %\newcommand{\RG}[5]{#1 \der #2 \circleR #4 \der #5 :: #3}
 \newcommand{\RG}[3]{#1 \der #2  \circleR #3}
 \newcommand{\TyG}[1]{\Ty(#1)}
