@@ -677,7 +677,9 @@ reflection and reification operations of NbE.
 %  \Exp  & \ni & t & ::= & \dots \mid \lev k \mid \up T t \mid \down T t \\
   \Ne   & \ni & n & ::= & \dots \mid \lev k \\
   \tUp  & \ni & N & ::= & \up T n \\
-  \Whnf & \ni & w & ::= & \dots \mid N \mid \down T t \\
+  \Whnf & \ni & w & ::= & \dots \mid N \\
+  \tDown & \ni & d & ::= & \down T t \\
+  \Exp  & \ni & t & ::= & \dots \mid d \\
 %  \Whnf & \ni & w,d,f,g,A,B,F,G & ::= & \dots \mid  \up T n \mid \down T t \\
 \end{array}
 \]
@@ -773,44 +775,38 @@ The rules added for NbE deal with elimination of delayed reflection:
 Judgements.
 \[
 \begin{array}{l@{\qquad}l}
-   \R k t  v     & \mbox{} \\
+   \R k d  v     & \mbox{} \\
    \RTy k T  V  & \mbox{} \\
    \RNat k t  v & \mbox{} \\
    \RNe k t  m  & \mbox{} \\
 \end{array}
 \]
-\fbox{$\R k t v$}
+\fbox{$\R k d v$}
 \begin{gather*}
-  \ru{t \evalsto \down{U} T \qquad
-      U \evalsto s \\
+  \ru{U \evalsto s \qquad
       \RTy k T V
-    }{\R k t V}
+    }{\R k {\down{U} T} V}
 \qquad
-  \ru{t \evalsto \down{U} u \qquad
-      U \evalsto \Nat a \\
+  \ru{U \evalsto \Nat a \qquad
       \RNat k u v
-    }{\R k t v}
+    }{\R k {\down{U} u} v}
 \qquad
-  \ru{t \evalsto \down{U} u \qquad
-      U \evalsto N \\
+  \ru{U \evalsto N \qquad
       u \evalsto \up{T} n \qquad
       \RNe k n m
-    }{\R k t m}
+    }{\R k {\down{U} u} m}
 \\[2ex]
-  \ru{t \evalsto \down{U} f \qquad
-      U \evalsto \piT A B \qquad
+  \ru{U \evalsto \piT A B \qquad
       \R{k+1} {\down{B[\up A \lev k]} (f\,\up A \lev k)} v
-    }{\R k t {\lambda v}}
+    }{\R k {\down{U} f} {\lambda v}}
 \\[2ex]
-  \ru{t \evalsto \down{U} f \qquad
-      U \evalsto \piT \Size B \qquad
+  \ru{U \evalsto \piT \Size B \qquad
       \R{k+1} {\down{B[\lev k]} (f\,\lev k)} v
-    }{\R k t {\lambda v}}
+    }{\R k {\down{U} f} {\lambda v}}
 \qquad
-  \ru{t \evalsto \down{U} f \qquad
-      U \evalsto \forallT B \qquad
+  \ru{U \evalsto \forallT B \qquad
       \R{k+1} {\down{B[\lev k]} (f\,\ann{\lev k})} v
-    }{\R k t {\lambda v}}
+    }{\R k {\down{U} f} {\lambda v}}
 \end{gather*}
 
 \fbox{$\RNat k t v $}
@@ -838,22 +834,22 @@ Judgements.
     }{\RSize k o o}
 \qquad
   \ru{
-    }{\RSize k {\lev j + o} {\ind{k-1-j} + o}}
+    }{\RSize k {\lev j + o} {\ind{k\dotminus(1+j)} + o}}
 \end{gather*}
 
-\fbox{$\RNe k t m$} and \fbox{$\RElim k e e^v$}
+\fbox{$\RNe k n m$} and \fbox{$\RElim k e e^v$}
 \begin{gather*}
 %   \ru{t \evalsto \lev j
 %     }{\RNe k t {\ind{k-1-j}}}
 % \qquad
-  \ru{t \evalsto \lev j\,\vec e \qquad
+  \ru{%t \evalsto \lev j\,\vec e \qquad
       \RElim k {e_i} {e^v_i} \mforall i
-    }{\RNe k t {\ind{k-1-j}\,\vec e^v}}
+    }{\RNe k {\lev j\,\vec e} {\ind{k \monus (1+j)}\,\vec e^v}}
 \qquad
 % \end{gather*}
 % \begin{gather*}
-  \ru{\R k t v
-    }{\RElim k t v}
+  \ru{\R k d v
+    }{\RElim k d v}
 \qquad
   \ru{\RSize k a b
     }{\RElim k a b}
@@ -862,13 +858,13 @@ Judgements.
     }{\RElim k {\ann a} {\ann b}}
 \\[2ex]
   \ru{\RTy k T V \qquad
-      \R k {t_z} {v_z} \qquad
-      \R k {t_s} {v_s}
-    }{\RElim k {(\case[\ell] T {t_z} {t_s})} {\case[\ell] V {v_z} {v_s}}}
+      \R k {d_z} {v_z} \qquad
+      \R k {d_s} {v_s}
+    }{\RElim k {(\case[\ell] T {d_z} {d_s})} {\case[\ell] V {v_z} {v_s}}}
 \qquad
   \ru{\RTy k T V \qquad
-      \R k t v
-    }{\RElim k {(\fix[\ell] T t)} {\fix[\ell] V v}}
+      \R k d v
+    }{\RElim k {(\fix[\ell] T d)} {\fix[\ell] V v}}
 \end{gather*}
 \fbox{$\RTy k T V$}
 \begin{gather*}
@@ -902,22 +898,91 @@ We write \fbox{$t \approx t'$} iff $t$ and $t'$ are syntactically equal if we ig
 
 A type $T$ will be interpreted as a partial equivalence relation (PER) $\A$ on terms, \ie, a relation which is symmetric and transitive. The domain $\dom(\A)$ of the relation can be thought of the set of terms which define the extension of the type; on $\dom(\A)$ the relation $\A$ is in fact an equivalence relation.
 
-The PERs $\NE$ and $\NF$ charaterize (neutral) normalizing terms.
+The PERs $\NE$ characterizes neutral reifyable terms.
+% \[
+% \begin{array}{lll}%{l@{\quad}l@{\quad}l@{~}l@{~}l@{~}l@{~}l@{~}l}
+%   \fbox{$\up T n = \up {T'} {n'} \in \NE$}
+%     & \defas &
+%     T \evalsto N \mand T' \evalsto N' \mand
+%     \mforall k \mboth
+%     \RNe k n m \mand \RNe k {n'} {m'} \mand m \approx m'
+%     .\\
+% \end{array}
+% \]
+The PERs $\NE$ and $\NF$ characterize (neutral) normalizing terms.
 \[
 \begin{array}{l@{\quad}l@{\quad}l@{~}l@{~}l@{~}l@{~}l@{~}l}
-  \fbox{$t = t' \in \NE$}
+  \fbox{$n = n' \in \NE$}
     & \defas &
-    \RNe k t m &\mand& \RNe k {t'} {m'} &\mand& m \approx m' &\mforall k \\
-  \fbox{$t = t' \in \NF$}
+    \RNe k n m &\mand& \RNe k {n'} {m'} &\mand& m \approx m' &\mforall k \\
+  \fbox{$d = d' \in \NF$}
     & \defas &
-    \R k t v &\mand& \R k {t'} {v'} &\mand& v \approx v' &\mforall k \\
+    \R k d v &\mand& \R k {d'} {v'} &\mand& v \approx v' &\mforall k \\
 \end{array}
   % \ru{\RNe k t m \mand \RNe k {t'} {m'} \mand m \approx m' \mforall k
   %   }{t = t' \in \NE}
   % \ru{t \evalsto \up N n \qquad t' \evalsto \up{N'}{n'} \qquad n \approx n'
   %   }{t = t' \in \NE}
 \]
-All PERs $\A$ we consider are sandwiched $\NE \subseteq \A \subseteq \NF$ between $\NE$ and $\NF$.
+%All PERs $\A$ we consider are sandwiched $\NE \subseteq \A \subseteq \NF$ between $\NE$ and $\NF$.
+
+\begin{lemma}[Closure properties of $\NE$ and $\NF$]
+  \bla
+  \begin{enumerate}
+  \item $\lev k = \lev k \in \NE$.
+  \item If $n = n' \in \NE$ and $d = d' \in \NF$ then $n\,d = n'\,d' in \NE$.
+%  \item If $d = d' \in \NF$
+  \end{enumerate}
+\end{lemma}
+
+\[
+\fbox{$\NEE$} \defas \{ (\up T n, \up{T'}{n'})
+  \msuchthat T \evalsto N \mand T' \evalsto N' \mand n = n' \in \NE \}
+\]
+\fbox{$\NAT(a)$}
+\begin{gather*}
+  \ru{t \evalsto \zero a \qquad
+      t' \evalsto \zero{a'}
+    }{t = t' \in \NAT(b+1)}
+\qquad
+  \ru{t \evalsto \suc a u \qquad
+      t' \evalsto \suc {a'} {u'} \qquad
+      u = u' \in \NAT(b)
+    }{t = t' \in \NAT(b+1)}
+\\[2ex]
+  \ru{t \evalsto \up{\Nat a} n \qquad
+      t' \evalsto \up{\Nat a'} n' \qquad
+      n = n' \in \NE
+    }{t = t' \in \NAT(b)}
+\end{gather*}
+
+\fbox{$\SIZE$} is a discrete PER of size values:
+\begin{gather*}
+  \ru{
+    }{\infty = \infty \in \SIZE}
+\qquad
+  \ru{
+    }{o = o \in \SIZE}
+\qquad
+  \ru{
+    }{\lev k + o = \lev k + o \in \SIZE}
+\end{gather*}
+
+Let $\A$ be a PER and $\F$ a family of PERs over $\A$ such that
+$\F(u) = \F(u')$ whenever $u = u' \in \A$.  We define
+\[
+  \fbox{$\PIAF$} \defas \{(t,t') \mid t\,u = t'\,u' \in \F(u) \mforall u = u' \in \A \}
+  .
+\]
+This works also for $\A = \SIZE$.
+For a family $\F$ over $\SIZE$ we also have the irrelevant function space
+\[
+  \fbox{$\FORALL\,\F$} \defas
+  \{(t,t') \mid t \ann a = t' \ann{a'} \in \F(b) \mforall a,a',b \in \SIZE \}
+  .
+\]
+
+
 
 \subsection{PER model}
 \label{sec:permode}
@@ -931,7 +996,7 @@ The rules for \fbox{$T = T' \in \SET[\ell]$} are:
 \begin{array}{l@{\qquad}l}
   \ru{T \evalsto N \qquad T' \evalsto N'
     }{T = T' \in \SET[\ell]}
-  & \EL[\ell](T) = \NE
+  & \EL[\ell](T) = \NEE
 \\[3ex]
   \ru{T \evalsto \Nat\,a \qquad T' \evalsto \Nat\,a
     }{T = T' \in \SET[\ell]}
@@ -962,19 +1027,263 @@ The rules for \fbox{$T = T' \in \SET[\ell]$} are:
   & \EL[\ell](T) = \FORALL(a \mapsto \EL[\ell](B[a]))
 \end{array}
 \]
+All PERs involved here are closed under weak head expansion.
 
+The PER model has the usual properties, one of them being that $\EL[\ell](T)$ does not depend $\ell$ nor the derivation that introduced $T = T' \in \SET[\ell]$.  Thus, we simply write $t = t' \in \EL(T)$ or even $t = t' \in T$.
 
+\subsection{Type shapes}
 
-\newpage
+Reflection and reification perform $\eta$-expansion such that we arrive at an $\eta$-long $\beta$-normal form.  To perform the $\eta$-expansion, not the precise type is needed, just the approximate shape, in particular, whether it is a function type (do expand) or a base type (do not expand).
+For the logical framework, the shape of a dependent type is just its underlying simple type \cite{harperPfenning:equivalenceLF}. However, in the presence of universes and large eliminations, there is no underlying simple type.  Of course, we can take a type as its own shape, but we want at least that $\Nat a$ and $\Nat b$ have the same shape even for different $a, b$.  Thus, we define a relation $T \shape S$ to express that $S$ is a possible shape of type $T$.
 
-\section{Metatheory}
-\label{sec:meta}
-
-
-\begin{lemma}[Typing of constructed data]
-\label{lem:invdata} \bla
-If\/ $\Gamma \der c : \Nat b$ then $\resurrect\Gamma \der b : \Size$ and $b > 0$.
+\fbox{$T \shape S$} for $T \in \SET[\ell]$.
+\begin{gather*}
+  \ru{T \evalsto \Nat a \qquad
+      S \evalsto \Nat b
+    }{T \shape S}
+\qquad
+  \ru{T \evalsto N \qquad
+      S \evalsto N'
+    }{T \shape S}
+\qquad
+   \ru{T \evalsto \Set[\ell] \qquad
+       S \evalsto \Set[\ell]
+    }{T \shape S}
+\\[2ex]
+  \ru{T \evalsto \piT A B \qquad
+      S \evalsto \piT{A'}{B'} \qquad
+      A \shape A' \qquad
+      B[u] \shape B'[u'] \mforall u = u' \in A
+    }{T \shape S}
+\\[2ex]
+  \ru{T \evalsto \piT \Size B \qquad
+      S \evalsto \piT{\Size}{B'} \qquad
+      B[a] \shape B'[a] \mforall a \in \SIZE
+    }{T \shape S}
+\\[2ex]
+  \ru{T \evalsto \forallT B \qquad
+      S \evalsto \forallT{B'} \qquad
+      B[a] \shape B'[a'] \mforall a,a' \in \SIZE
+    }{T \shape S}
+\end{gather*}
+% The last rule is the crucial one
+\begin{lemma}[Reflexivity for shapes]
+  If $T = T' \in \SET[\ell]$ then $T \shape T'$.
 \end{lemma}
+
+\begin{theorem}[Reification and reflection]
+Let $T \in \SET[\ell]$ and $T \shape S_1$ and $T \shape S_2$.
+\begin{enumerate}
+\item If $n_1 = n_2 \in \NE$ then $\up{S_1}{n_1} = \up{S_2}{n_2} \in T$.
+\item If $t_1 = t_2 \in T$ then $\down{S_1}{t_1} = \down{S_2}{t_2} \in \NF$.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+By induction on $T \in \SET[\ell]$ and cases on $T \shape S_1$ and $T \shape S_2$.
+\begin{caselist}
+
+\nextcase $T \evalsto \piT A B$
+\begin{gather*}
+  \ru{A \in \SET[\ell] \qquad
+      B[u] = B[u'] \in \SET[\ell] \mforall u = u' \in A
+    }{T \in \SET[\ell]}
+\\[2ex]
+  \ru{S_1 \evalsto \piT{A_1}{B_1} \qquad
+      A \shape A_1 \qquad
+      B[u] \shape B_1[u'] \mforall u = u' \in A
+    }{T \shape S_1}
+\\[2ex]
+  \ru{S_2 \evalsto \piT{A_2}{B_2} \qquad
+      A \shape A_2 \qquad
+      B[u] \shape B_2[u'] \mforall u = u' \in A
+    }{T \shape S_2}
+\end{gather*}
+\begin{enumerate}
+\item To show $\up{S_1}{n_1} = \up{S_2}{n_2} \in T$ assume arbitrary $u_1 = u_2 \in A$.
+  Let $d_i = \down{A_i}{u_i}$.
+  By induction hypothesis, $d_1 = d_2 \in \NF$.
+  Thus, $n_1\,d_1 = n_2\,d_2 \in \NE$, and
+  by induction hypothesis,  $\up{B_1[u_1]}(n_1\,d_1) = \up{B_2[u_2]}(n_2\,d_2) \in B[u_1]$.
+  With $(\up{S_i}{n_i})\,u_i \evalsto \up{B_i[u_i]}(n_i\,d_i)$ we are done by definition of $\EL(T)$.
+
+\item We assume $k \in \NN$ and show $\R k {\down{S_i}{t_i}} \lambda v_i$ for some normal forms
+$v_1,v_2$.  Let $u_i = \up{A_i} \lev k$.  Note that $u_1 = u_2 \in A$ by induction hypothesis.
+It is sufficient to show
+$\R{k+1}{\down{B_i[u_i]}{(t_i\,u_i)}} {v_i}$.
+By definition of $\EL(T)$ we have $t_1\,u_1 = t_2\,u_2 \in B[u_1]$, thus, by induction hypothesis,
+$\down{B_1[u_1]}(t_1\,u_1) = \down{B_2[u_2]}(t_2\,u_2) \in \NF$, which delivers $v_1$ and $v_2$ for $k+1$.
+\end{enumerate}
+
+\nextcase $T \evalsto \forallT B$
+\begin{gather*}
+  \ru{B[a] = B[a] \in \SET[\ell] \mforall a \in \SIZE
+    }{T \in \SET[\ell]}
+\\[2ex]
+  \ru{S_1 \evalsto \forallT{B_1} \qquad
+      B[a] \shape B_1[a'] \mforall a, a' \in \SIZE
+    }{T \shape S_1}
+\\[2ex]
+  \ru{S_2 \evalsto \forallT{B_2} \qquad
+      B[a] \shape B_2[a'] \mforall a, a' \in \SIZE
+    }{T \shape S_2}
+\end{gather*}
+\begin{enumerate}
+\item To show $\up{S_1}{n_1} = \up{S_2}{n_2} \in T$ assume arbitrary $a_1,a_2 \in \SIZE$.
+  Since $n_1 \ann{a_1} = n_2 \ann{a_2} \in \NE$, we obtain
+  $\up{B_1[a_1]}{(n_1 \ann{a_1})} = \up{B_2[a_2]}{(n_2 \ann{a_2})} \in B[a_1]$
+  by induction hypothesis.
+  Thus, $(\up{S_1}{n_1}) \ann{a_1} = (\up{S_2}{n_2}) \ann{a_2} \in B[a_1]$
+  by weak head expansion, which entails the goal by definition of $\EL(T)$.
+\item Assume $k \in \NN$ and note that $\lev k = \lev k \in \SIZE$, hence,
+  $t_1\,\ann{\lev k} = t_2\,\ann{\lev k} \in B[\lev k]$.  Thus, by induction hypothesis,
+  $\R{k+1}{\down{B_i[\lev k]}(t_i\,\ann{\lev k})}{v_i}$, and finally
+  $\R k {\down{S_i} t_i} {\lambda v_i}$ by definition of read back.
+
+\end{enumerate}
+
+\end{caselist}
+\end{proof}
+
+\begin{corollary}
+  If\/ $T \in \SET[\ell]$ and $t = t' \in T$ then $\down T t = \down T {t'} \in \NF$.
+\end{corollary}
+
+
+\subsection{Fundamental Theorem}
+\label{sec:fund}
+
+PER of substitutions
+\fbox{$\eta = \eta' \eeq \rho \in \Gamma$}.
+\begin{gather*}
+  \ru{
+    }{\sempty = \sempty \eeq \sempty \in \cempty}
+\qquad
+  \ru{\eta = \eta' \eeq \rho \in \Gamma \qquad
+      T\rho \in \SET[\ell] \qquad
+      u = u' = t \in T \rho
+    }{\sext \eta u = \sext{\eta'}{u'} \eeq \sext{\rho}{t} \in \cext \Gamma T}
+\\[2ex]
+  \ru{\eta = \eta' \eeq \rho \in \Gamma \qquad a \in \SIZE
+    }{\sext \eta a = \sext{\eta'}{a} \eeq \sext{\rho}{a} \in \cext \Gamma \Size}
+\qquad
+  \ru{\eta = \eta' \eeq \rho \in \Gamma \qquad a,a',b \in \SIZE
+    }{\sext \eta a = \sext{\eta'}{a'} \eeq \sext{\rho}{b} \in \erext \Gamma \Size}
+\end{gather*}
+We write $\rho \in \Gamma$ for $\rho = \rho \eeq \rho \in \Gamma$.
+\begin{lemma}[Resurrection]
+  \label{lem:resenv}
+  If $\eta = \eta' \eeq \rho \in \Gamma$ then $\rho \in \resurrect\Gamma$.
+\end{lemma}
+
+Semantic judgements:
+\[
+\begin{array}{l@{\quad}l@{\quad}l}
+  \models () & \defas & \mtrue \\
+  \models \eext \Gamma \Size & \defas & \models \Gamma \\
+  \models \cext \Gamma T     & \defas & \models \Gamma \mand \resurrect\Gamma \models T
+\\[2ex]
+  \Gamma \models s & \defas & \models \Gamma \\
+%  \Gamma \models s & \defas & \mtrue \\
+  \Gamma \models T & \defas & \Gamma \models T = T \\
+  \Gamma \models T = T' & \defas & \Gamma \models T = T' : s \mforsome s %\Set[\ell] \mforsome \ell
+\\[2ex]
+  \Gamma \models t : T & \defas & \Gamma \models t = t : T \\
+  \Gamma \models t = t' : T & \defas & %\models \Gamma \mand
+    % \resurrect\Gamma \models T \mand
+    \models \cext \Gamma T \mand
+    t \eta = t' \eta' \in T \rho \mforall \eta = \eta' \eeq \rho \in \Gamma
+\\[2ex]
+  \Gamma \models \sigma : \Delta & \defas & \Gamma \models \sigma = \sigma \eeq \sigma : \Delta \\
+  \Gamma \models \sigma = \sigma' \eeq \tau : \Delta & \defas &
+    \models \Gamma \mand \models \Delta \mand
+    \sigma \eta = \sigma' \eta' \eeq \tau \rho \in \Delta
+    \mforall \eta = \eta' \eeq \rho \in \Gamma
+\end{array}
+\]
+
+\begin{theorem}[Fundamental theorem]
+  \bla
+  \begin{enumerate}
+  \item
+  If $\der \Gamma$ then $\models \Gamma$.
+  \item
+  If $\Gamma \der J$ then % $\models \Gamma$ and
+  $\Gamma \models J$
+  \end{enumerate}
+\end{theorem}
+\begin{proof}
+Simultaneously, by induction on the derivation.
+
+\begin{caselist}
+\nextcase $\forall$-introduction.
+\[
+  \ru{\erext \Gamma \Size \der t = t' : T
+    }{\Gamma \der \lambda t = \lambda t' : \forall T}
+\]
+First $\models \Gamma$ follows from the induction hypothesis $\models {\erext \Gamma \Size}$.
+To show $\resurrect\Gamma \models \forall T$,
+assume $\eta = \eta' \eeq \rho \in \resurrect \Gamma$
+and show $(\forall T)\eta = (\forall T)\eta' \in \SET[\ell]$ for some $\ell$.
+To this end, assume $a \in \SIZE$ and show $T(\eta,a) = T(\eta',a) \in \SET[\ell]$.
+Note that $(\eta,a) = (\eta',a) \eeq (\rho,a) \in
+\resurrect {\erext \Gamma \Size} = \cext {\resurrect\Gamma}\Size$,
+thus, we can instantiate the induction hypothesis and obtain our goal.
+
+For the main goal,
+assume $\eta = \eta' \eeq \rho \in \Gamma$ and
+show $(\lambda t)\eta = (\lambda t')\eta' \in (\forall T)\rho$.
+To this end, assume arbitrary $a,a',b \in \SIZE$ and show
+$t(\eta,a) = t'(\eta',a') \in T(\rho,b)$.
+Since $(\eta,a) = (\eta',a') \eeq (\rho,b) \in \erext \Gamma \Size$,
+we conclude by induction hypothesis.
+
+\nextcase $\forall$-elimination.
+\[
+  \ru{\Gamma \der t = t' : \forall T \qquad
+      \Gamma \der a, a' : \Size \qquad
+      \resurrect\Gamma \der b : \Size
+    }{\Gamma \der t \ann a = t' \ann {a'} : T[b]}
+\]
+First, $\models \Gamma$ follows by induction hypothesis.
+For goal $\resurrect \Gamma \models T[b]$,
+assume $\eta = \eta' \eeq \rho \in \resurrect\Gamma$ and show
+$T[b]\eta = T[b]\eta' \in \SET[\ell]$ for some $\ell$.
+By induction hypothesis,  $b\eta = b\eta' \in \SIZE$.
+% , thus,
+% $(\eta,b\eta) = (\eta',b\eta') \eeq (\rho,b\eta) \in \cext{\resurrect\Gamma}\Size$
+By another induction hypothesis, $(\forall T)\eta = (\forall T)\eta' \in \SET[\ell]$,
+which by definition entails our goal $T(\eta, b\eta) = T(\eta', b\eta') \in \SET[\ell]$.
+
+
+For the remaining main goal,
+assume $\eta = \eta' \eeq \rho \in \Gamma$ and
+show $t \ann a \eta = t' \ann{a'} \eta' \in T[b]\rho$.
+By definition of substitution, it suffices to show
+$t \eta \ann{a \eta} = t' \eta' \ann{a' \eta'} \in T(\rho, b \rho)$.
+By induction hypothesis,
+$t \eta = t' \eta' : (\forall T) \rho$, thus, by definition of this PER,
+$t \eta \ann {a_1} = t' \eta' \ann{a_2} \in T(\rho, b')$ for any size values $a_1$, $a_2$, and $b'$.
+We conclude by choosing $a_1 = a \eta$ and $a_2 = a' \eta'$ and $b' = b \rho$.
+
+We now argue that this choice is possible,
+namely that $a \eta, a'\eta, b\rho \in \SIZE$.
+Note that the induction hypothesis gives us
+$a \eta  = a  \eta' \in \SIZE$ and
+$a' \eta = a' \eta' \in \SIZE$.
+By resurrection (Lemma~\ref{lem:resenv}) we have $\rho \in \resurrect\Gamma$,
+thus, by induction hypothesis, $b \rho \in \SIZE$.
+\end{caselist}
+\end{proof}
+
+
+\section{Completeness of NbE}
+\label{sec:compl}
+
+
+% \begin{lemma}[Typing of constructed data]
+% \label{lem:invdata} \bla
+% If\/ $\Gamma \der c : \Nat b$ then $\resurrect\Gamma \der b : \Size$ and $b > 0$.
+% \end{lemma}
 
 
 

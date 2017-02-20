@@ -1,4 +1,5 @@
 \RequirePackage{ifthen}
+%% NOT FOUND: \RequirePackage{mnsymbol} % \dotminus
 %\RequirePackage{amssymb}
 %\RequirePackage{amsfonts}
 \RequirePackage{stmaryrd} % \shortuparrow
@@ -78,6 +79,13 @@
 
 \def\tocolow{\buildrel\raise-5pt\hbox{$\scriptscriptstyle+$}\over\rightarrow}
 
+% \dotminus from http://tex.stackexchange.com/questions/114188/special-character-dot-over-dash
+\makeatletter
+\newcommand{\dotminus}{\mathbin{\text{\@dotminus}}}
+\newcommand{\@dotminus}{%
+  \ooalign{\hidewidth\raise1ex\hbox{.}\hidewidth\cr$\m@th-$\cr}%
+}
+\makeatother
 
 % type equality
 \def\lo{\mathopen{{\lceil\kern-0.25em\lceil}}}
@@ -149,6 +157,8 @@
 \newcommand{\mwith}{\ \mbox{with}\ }
 \newcommand{\mholds}{\ \mbox{holds}\ }
 \newcommand{\munless}{\ \mbox{unless}\ }
+\newcommand{\mboth}{\ \mbox{both}\ }
+\newcommand{\msuchthat}{\ \mbox{such that}\ }
 % proofs
 \newcommand{\msince}{\mbox{since}\ }
 \newcommand{\mdef}{\mbox{by def.}}
@@ -252,6 +262,8 @@
 \newcommand{\RSize}[3]{\mathop{\mathsf{R}}\nolimits^{\mathsf{size}}_{#1} \, #2 \evalsto #3}
 \newcommand{\RElim}[3]{\mathop{\mathsf{R}}\nolimits^{\mathsf{elim}}_{#1} \, #2 \evalsto #3}
 \newcommand{\R}[3]{\mathsf{R}_{#1} \, #2 \evalsto #3}
+
+\newcommand{\monus}{\dotminus} %{\stackrel{\cdot}{-}}
 
 % % natural transformations
 % \newcommand{\subscriptopt}[1]{\ifthenelse{\equal{#1}{}}{}{_{#1}}}
@@ -1268,6 +1280,7 @@
 \newcommand{\SetD}{\mathsf{Set}}
 \newcommand{\UpD}{\mathsf{Up}}
 \newcommand{\tUp}{\mathsf{Up}}
+\newcommand{\tDown}{\mathsf{Down}}
 %\renewcommand{\Up}[1]{#1}%{\UpD\,#1}
 \newcommand{\UpPar}[1]{#1}%{(\UpD\,#1)}
 \newcommand{\ONLYIFUP}[1]{}
@@ -1357,6 +1370,7 @@
 \newcommand{\Y}{\mathcal{Y}}
 \renewcommand{\S}{\mathcal{S}}
 \newcommand{\T}{\mathcal{T}}
+\newcommand{\NEE}{\mathcal{N}\!\mathcal{E}}
 \newcommand{\NE}{\mathcal{N}\!\mathit{e}}
 \newcommand{\NF}{\mathcal{N}\!\mathit{f}}
 
