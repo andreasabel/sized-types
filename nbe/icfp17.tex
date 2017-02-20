@@ -757,21 +757,21 @@ Judgements.
   \ru{t[u] \evalsto w
     }{(\lambda t) @ u \evalsto w}
 \qquad
-  \ru{t[a] \evalsto w
-    }{(\lambda t) @ a \evalsto w}
+  \ru{t[\alpha] \evalsto w
+    }{(\lambda t) @ \alpha \evalsto w}
 \qquad
-  \ru{t[a] \evalsto w
-    }{(\lambda t) @ \ann a \evalsto w}
+  \ru{t[\alpha] \evalsto w
+    }{(\lambda t) @ \ann \alpha \evalsto w}
 \\[2ex]
   \ru{t_z \evalsto w
-    }{(\zero a) @ \casett \evalsto w}
+    }{(\zero \alpha) @ \casett \evalsto w}
 \qquad
   \ru{t_s\, t \evalsto w
-    }{(\suc a t) @ \casett \evalsto w}
+    }{(\suc \alpha t) @ \casett \evalsto w}
 \\[2ex]
-  \ru{t\,\ann a\,(\lambda x.\, x@ \fixtt)\,c \evalsto w
+  \ru{t\,\ann \alpha\,(\lambda x.\, x@ \fixtt)\,c \evalsto w
      }{c @ \fixtt \evalsto w
-     }{c\in \{ \zero a, \suc a u \}}
+     }{c\in \{ \zero \alpha, \suc \alpha u \}}
 \end{gather*}
 The rules added for NbE deal with elimination of delayed reflection:
 \begin{gather*}
@@ -779,21 +779,21 @@ The rules added for NbE deal with elimination of delayed reflection:
     }{(\up {T'} n) @ u \evalsto \up{T[u]} (n \, \down U u) }
 \qquad
   \ru{T' \evalsto \piT \Size T
-    }{(\up {T'} n) @ a \evalsto \up{T[a]} (n \, a)}
+    }{(\up {T'} n) @ \alpha \evalsto \up{T[\alpha]} (n \, \alpha)}
 \qquad
   \ru{T' \evalsto \forallT T
-    }{(\up {T'} n) @ \ann a \evalsto \up{T[a]} (n \ann a)}
+    }{(\up {T'} n) @ \ann \alpha \evalsto \up{T[\alpha]} (n \ann \alpha)}
 %   \ru{T \evalsto \piT A B \qquad
 %       \up{B[u]} (n \, \down A u) \evalsto w
 %     }{(\up T n) @ u \evalsto w}
 % \qquad
 %   \ru{T \evalsto \piT \Size B \qquad
-%       \up{B[u]} (n \, a) \evalsto w
-%     }{(\up T n) @ a \evalsto w}
+%       \up{B[u]} (n \, \alpha) \evalsto w
+%     }{(\up T n) @ \alpha \evalsto w}
 % \qquad
 %   \ru{T \evalsto \forallT B \qquad
-%       \up{B[a]} (n \ann a) \evalsto w
-%     }{(\up T n) @ \ann a \evalsto w}
+%       \up{B[\alpha]} (n \ann \alpha) \evalsto w
+%     }{(\up T n) @ \ann \alpha \evalsto w}
 \\[2ex]
   \ru{T' \evalsto \Nat b \qquad
     }{(\up {T'} n) @ \case[\ell] T {t_z} {t_s} \evalsto
@@ -828,7 +828,7 @@ Judgements.
       \RTy k T V
     }{\R k {\down{U} T} V}
 \qquad
-  \ru{U \evalsto \Nat a \qquad
+  \ru{U \evalsto \Nat \alpha \qquad
       \RNat k u v
     }{\R k {\down{U} u} v}
 \qquad
@@ -852,21 +852,21 @@ Judgements.
 
 \fbox{$\RNat k t v $}
 \begin{gather*}
-  \ru{t \evalsto \up {\Nat a} n \qquad
+  \ru{t \evalsto \up {\Nat \alpha} n \qquad
       \RNe k n m
     }{\RNat k t m}
 \qquad
-  \ru{t \evalsto \zero{a_v} \qquad
-      \RSize k {a_v} a
+  \ru{t \evalsto \zero{\alpha_v} \qquad
+      \RSize k {\alpha_v} a
     }{\RNat k t {\zero a}}
 \qquad
-  \ru{t \evalsto \suc{a_v}u \qquad
-      \RSize k {a_v} a \qquad
+  \ru{t \evalsto \suc{\alpha_v}u \qquad
+      \RSize k {\alpha_v} a \qquad
       \RNat k u v
     }{\RNat k t {\suc a v}}
 \end{gather*}
 
-\fbox{$\RSize k {a_v} a$}
+\fbox{$\RSize k {\alpha_v} a$}
 \begin{gather*}
   \ru{
     }{\RSize k \infty \infty}
@@ -892,11 +892,11 @@ Judgements.
   \ru{\R k d v
     }{\RElim k d v}
 \qquad
-  \ru{\RSize k a b
-    }{\RElim k a b}
+  \ru{\RSize k \alpha b
+    }{\RElim k \alpha b}
 \qquad
-  \ru{\RSize k a b
-    }{\RElim k {\ann a} {\ann b}}
+  \ru{\RSize k \alpha b
+    }{\RElim k {\ann \alpha} {\ann b}}
 \\[2ex]
   \ru{\RTy k T V \qquad
       \R k {d_z} {v_z} \qquad
@@ -912,8 +912,8 @@ Judgements.
   \ru{T \evalsto \Set[\ell]
     }{\RTy k T {\Set[\ell]}}
 \qquad
-  \ru{T \evalsto \Nat a \qquad
-      \RSize k a b
+  \ru{T \evalsto \Nat \alpha \qquad
+      \RSize k \alpha b
     }{\RTy k T {\Nat b}}
 \qquad
   \ru{T \evalsto \up{U}n \qquad
@@ -980,18 +980,18 @@ The PERs $\NE$ and $\NF$ characterize (neutral) normalizing terms.
 \fbox{$\NEE$} \defas \{ (\up T n, \up{T'}{n'})
   \msuchthat T \evalsto N \mand T' \evalsto N' \mand n = n' \in \NE \}
 \]
-\fbox{$\NAT(a)$}
+\fbox{$\NAT(\alpha)$}
 \begin{gather*}
-  \ru{t \evalsto \zero a \qquad
+  \ru{t \evalsto \zero \alpha \qquad
       t' \evalsto \zero{a'}
     }{t = t' \in \NAT(b+1)}
 \qquad
-  \ru{t \evalsto \suc a u \qquad
+  \ru{t \evalsto \suc \alpha u \qquad
       t' \evalsto \suc {a'} {u'} \qquad
       u = u' \in \NAT(b)
     }{t = t' \in \NAT(b+1)}
 \\[2ex]
-  \ru{t \evalsto \up{\Nat a} n \qquad
+  \ru{t \evalsto \up{\Nat \alpha} n \qquad
       t' \evalsto \up{\Nat a'} n' \qquad
       n = n' \in \NE
     }{t = t' \in \NAT(b)}
@@ -1019,7 +1019,7 @@ This works also for $\A = \SIZE$.
 For a family $\F$ over $\SIZE$ we also have the irrelevant function space
 \[
   \fbox{$\FORALL\,\F$} \defas
-  \{(t,t') \mid t \ann a = t' \ann{a'} \in \F(b) \mforall a,a',b \in \SIZE \}
+  \{(t,t') \mid t \ann \alpha = t' \ann{a'} \in \F(b) \mforall \alpha,a',b \in \SIZE \}
   .
 \]
 
@@ -1039,9 +1039,9 @@ The rules for \fbox{$T = T' \in \SET[\ell]$} are:
     }{T = T' \in \SET[\ell]}
   & \EL[\ell](T) = \NEE
 \\[3ex]
-  \ru{T \evalsto \Nat\,a \qquad T' \evalsto \Nat\,a
+  \ru{T \evalsto \Nat\,\alpha \qquad T' \evalsto \Nat\,\alpha
     }{T = T' \in \SET[\ell]}
-  & \EL[\ell](T) = \NAT(a)
+  & \EL[\ell](T) = \NAT(\alpha)
 \\[3ex]
   \rux{T \evalsto \Set[\ell'] \qquad T' \evalsto \Set[\ell']
      }{T = T' \in \SET[\ell]
@@ -1057,15 +1057,15 @@ The rules for \fbox{$T = T' \in \SET[\ell]$} are:
 \\[3ex]
   \rul{T \evalsto \piT \Size B \quad
       T' \evalsto \piT{\Size}{B'} \quad
-      B[a] = B'[a] \in \SET[\ell] \mforall a \in \SIZE
+      B[\alpha] = B'[\alpha] \in \SET[\ell] \mforall \alpha \in \SIZE
     }{T = T' \in \SET[\ell]}
-  & \EL[\ell](T) = \PI(\SIZE,\; a \mapsto \EL[\ell](B[a]))
+  & \EL[\ell](T) = \PI(\SIZE,\; \alpha \mapsto \EL[\ell](B[\alpha]))
 \\[3ex]
   \rul{T \evalsto \forallT B \quad
       T' \evalsto \forallT{B'} \quad
-      B[a] = B'[a] \in \SET[\ell] \mforall a \in \SIZE
+      B[\alpha] = B'[\alpha] \in \SET[\ell] \mforall \alpha \in \SIZE
     }{T = T' \in \SET[\ell]}
-  & \EL[\ell](T) = \FORALL(a \mapsto \EL[\ell](B[a]))
+  & \EL[\ell](T) = \FORALL(\alpha \mapsto \EL[\ell](B[\alpha]))
 \end{array}
 \]
 All PERs involved here are closed under weak head expansion.
@@ -1075,11 +1075,11 @@ The PER model has the usual properties, one of them being that $\EL[\ell](T)$ do
 \subsection{Type shapes}
 
 Reflection and reification perform $\eta$-expansion such that we arrive at an $\eta$-long $\beta$-normal form.  To perform the $\eta$-expansion, not the precise type is needed, just the approximate shape, in particular, whether it is a function type (do expand) or a base type (do not expand).
-For the logical framework, the shape of a dependent type is just its underlying simple type \cite{harperPfenning:equivalenceLF}. However, in the presence of universes and large eliminations, there is no underlying simple type.  Of course, we can take a type as its own shape, but we want at least that $\Nat a$ and $\Nat b$ have the same shape even for different $a, b$.  Thus, we define a relation $T \shape S$ to express that $S$ is a possible shape of type $T$.
+For the logical framework, the shape of a dependent type is just its underlying simple type \cite{harperPfenning:equivalenceLF}. However, in the presence of universes and large eliminations, there is no underlying simple type.  Of course, we can take a type as its own shape, but we want at least that $\Nat \alpha$ and $\Nat b$ have the same shape even for different $\alpha, b$.  Thus, we define a relation $T \shape S$ to express that $S$ is a possible shape of type $T$.
 
 \fbox{$T \shape S$} for $T \in \SET[\ell]$.
 \begin{gather*}
-  \ru{T \evalsto \Nat a \qquad
+  \ru{T \evalsto \Nat \alpha \qquad
       S \evalsto \Nat b
     }{T \shape S}
 \qquad
@@ -1099,12 +1099,12 @@ For the logical framework, the shape of a dependent type is just its underlying 
 \\[2ex]
   \ru{T \evalsto \piT \Size B \qquad
       S \evalsto \piT{\Size}{B'} \qquad
-      B[a] \shape B'[a] \mforall a \in \SIZE
+      B[\alpha] \shape B'[\alpha] \mforall \alpha \in \SIZE
     }{T \shape S}
 \\[2ex]
   \ru{T \evalsto \forallT B \qquad
       S \evalsto \forallT{B'} \qquad
-      B[a] \shape B'[a'] \mforall a,a' \in \SIZE
+      B[\alpha] \shape B'[a'] \mforall \alpha,a' \in \SIZE
     }{T \shape S}
 \end{gather*}
 % The last rule is the crucial one
@@ -1165,23 +1165,23 @@ $\down{B_1[u_1]}(t_1\,u_1) = \down{B_2[u_2]}(t_2\,u_2) \in \NF$, which delivers 
 
 \nextcase $T \evalsto \forallT B$
 \begin{gather*}
-  \ru{B[a] = B[a] \in \SET[\ell] \mforall a \in \SIZE
+  \ru{B[\alpha] = B[\alpha] \in \SET[\ell] \mforall \alpha \in \SIZE
     }{T \in \SET[\ell]}
 \\[2ex]
   \ru{S_1 \evalsto \forallT{B_1} \qquad
-      B[a] \shape B_1[a'] \mforall a, a' \in \SIZE
+      B[\alpha] \shape B_1[a'] \mforall \alpha, a' \in \SIZE
     }{T \shape S_1}
 \\[2ex]
   \ru{S_2 \evalsto \forallT{B_2} \qquad
-      B[a] \shape B_2[a'] \mforall a, a' \in \SIZE
+      B[\alpha] \shape B_2[a'] \mforall \alpha, a' \in \SIZE
     }{T \shape S_2}
 \end{gather*}
 \begin{enumerate}
-\item To show $\up{S_1}{n_1} = \up{S_2}{n_2} \in T$ assume arbitrary $a_1,a_2 \in \SIZE$.
-  Since $n_1 \ann{a_1} = n_2 \ann{a_2} \in \NE$, we obtain
-  $\up{B_1[a_1]}{(n_1 \ann{a_1})} = \up{B_2[a_2]}{(n_2 \ann{a_2})} \in B[a_1]$
+\item To show $\up{S_1}{n_1} = \up{S_2}{n_2} \in T$ assume arbitrary $\alpha_1,\alpha_2 \in \SIZE$.
+  Since $n_1 \ann{\alpha_1} = n_2 \ann{\alpha_2} \in \NE$, we obtain
+  $\up{B_1[\alpha_1]}{(n_1 \ann{\alpha_1})} = \up{B_2[\alpha_2]}{(n_2 \ann{\alpha_2})} \in B[\alpha_1]$
   by induction hypothesis.
-  Thus, $(\up{S_1}{n_1}) \ann{a_1} = (\up{S_2}{n_2}) \ann{a_2} \in B[a_1]$
+  Thus, $(\up{S_1}{n_1}) \ann{\alpha_1} = (\up{S_2}{n_2}) \ann{\alpha_2} \in B[\alpha_1]$
   by weak head expansion, which entails the goal by definition of $\EL(T)$.
 \item Assume $k \in \NN$ and note that $\lev k = \lev k \in \SIZE$, hence,
   $t_1\,\ann{\lev k} = t_2\,\ann{\lev k} \in B[\lev k]$.  Thus, by induction hypothesis,
@@ -1212,11 +1212,11 @@ PER of substitutions
       u = u' = t \in T \rho
     }{\sext \eta u = \sext{\eta'}{u'} \eeq \sext{\rho}{t} \in \cext \Gamma T}
 \\[2ex]
-  \ru{\eta = \eta' \eeq \rho \in \Gamma \qquad a \in \SIZE
-    }{\sext \eta a = \sext{\eta'}{a} \eeq \sext{\rho}{a} \in \cext \Gamma \Size}
+  \ru{\eta = \eta' \eeq \rho \in \Gamma \qquad \alpha \in \SIZE
+    }{\sext \eta \alpha = \sext{\eta'}{\alpha} \eeq \sext{\rho}{\alpha} \in \cext \Gamma \Size}
 \qquad
-  \ru{\eta = \eta' \eeq \rho \in \Gamma \qquad a,a',b \in \SIZE
-    }{\sext \eta a = \sext{\eta'}{a'} \eeq \sext{\rho}{b} \in \erext \Gamma \Size}
+  \ru{\eta = \eta' \eeq \rho \in \Gamma \qquad \alpha,a',b \in \SIZE
+    }{\sext \eta \alpha = \sext{\eta'}{a'} \eeq \sext{\rho}{b} \in \erext \Gamma \Size}
 \end{gather*}
 We write $\rho \in \Gamma$ for $\rho = \rho \eeq \rho \in \Gamma$.
 \begin{lemma}[Resurrection]
@@ -1273,17 +1273,17 @@ First $\models \Gamma$ follows from the induction hypothesis $\models {\erext \G
 To show $\resurrect\Gamma \models \forall T$,
 assume $\eta = \eta' \eeq \rho \in \resurrect \Gamma$
 and show $(\forall T)\eta = (\forall T)\eta' \in \SET[\ell]$ for some $\ell$.
-To this end, assume $a \in \SIZE$ and show $T(\eta,a) = T(\eta',a) \in \SET[\ell]$.
-Note that $(\eta,a) = (\eta',a) \eeq (\rho,a) \in
+To this end, assume $\alpha \in \SIZE$ and show $T(\eta,\alpha) = T(\eta',\alpha) \in \SET[\ell]$.
+Note that $(\eta,\alpha) = (\eta',\alpha) \eeq (\rho,\alpha) \in
 \resurrect {\erext \Gamma \Size} = \cext {\resurrect\Gamma}\Size$,
 thus, we can instantiate the induction hypothesis and obtain our goal.
 
 For the main goal,
 assume $\eta = \eta' \eeq \rho \in \Gamma$ and
 show $(\lambda t)\eta = (\lambda t')\eta' \in (\forall T)\rho$.
-To this end, assume arbitrary $a,a',b \in \SIZE$ and show
-$t(\eta,a) = t'(\eta',a') \in T(\rho,b)$.
-Since $(\eta,a) = (\eta',a') \eeq (\rho,b) \in \erext \Gamma \Size$,
+To this end, assume arbitrary $\alpha,a',b \in \SIZE$ and show
+$t(\eta,\alpha) = t'(\eta',a') \in T(\rho,b)$.
+Since $(\eta,\alpha) = (\eta',a') \eeq (\rho,b) \in \erext \Gamma \Size$,
 we conclude by induction hypothesis.
 
 \nextcase $\forall$-elimination.
@@ -1311,8 +1311,8 @@ By definition of substitution, it suffices to show
 $t \eta \ann{a \eta} = t' \eta' \ann{a' \eta'} \in T(\rho, b \rho)$.
 By induction hypothesis,
 $t \eta = t' \eta' : (\forall T) \rho$, thus, by definition of this PER,
-$t \eta \ann {a_1} = t' \eta' \ann{a_2} \in T(\rho, b')$ for any size values $a_1$, $a_2$, and $b'$.
-We conclude by choosing $a_1 = a \eta$ and $a_2 = a' \eta'$ and $b' = b \rho$.
+$t \eta \ann {\alpha_1} = t' \eta' \ann{\alpha_2} \in T(\rho, b')$ for any size values $\alpha_1$, $\alpha_2$, and $b'$.
+We conclude by choosing $\alpha_1 = a \eta$ and $\alpha_2 = a' \eta'$ and $b' = b \rho$.
 
 We now argue that this choice is possible,
 namely that $a \eta, a'\eta, b\rho \in \SIZE$.
@@ -1334,42 +1334,278 @@ thus, by induction hypothesis, $b \rho \in \SIZE$.
 In this section, we show that NbE is sound for judgemental equality, i.e., that same normal form implies definitional equality.  The proof follows previous work on NbE \cite{abelCoquandDybjer:lics07,abel:habil}.
 
 \[
-  \fbox{$\LRSize \Gamma a b$} \defas
-  \forall \sigma : \Gamma' \leq \Gamma.\
-  \exists a'.\
-  \RSize {\Gamma'} b a' \mand
-  \Gamma' \der a\sigma = a' : \Size
+  \fbox{$\LRSize \Gamma a \alpha$} \defas
+  \forall \sigma : \Gamma' \leq \Gamma.\ \
+  \RSize {\Gamma'} \alpha {a\sigma}
+  % \exists a'.\
+  % \RSize {\Gamma'} \alpha a' \mand
+  % \Gamma' \der a\sigma = a' : \Size
 \]
 
-\fbox{$\LR \Gamma t {T'} f {A'}$} defined by induction on ${A'} \in \SET[\ell]$.
+\fbox{$\LRT \Gamma {T'} {A'} \ell$} and \fbox{$\LR \Gamma t {T'} f {A'}$} defined by induction on ${A'} \in \SET[\ell]$.
+
 \begin{caselist}
 
-\nextcase $A' \evalsto \piT A B$.  Then $\LR \Gamma t {T'} f {A'}$ if all of the following:
+\nextcase $A' \evalsto N$ neutral.
+
+  \noindent
+  $\LRT{\Gamma}{T'}{A'}\ell$ iff
+  $\forall \sigma : \Gamma' \leq \Gamma.\ \ \exists M.\ \ \RTy{\Gamma'}{A'}M \mand \Gamma' \der T'\sigma = M : \Set[\ell]$.
+
+  \noindent
+  $\LR{\Gamma}{t}{T'}{f}{A'}$ iff
+  $\forall \sigma : \Gamma' \leq \Gamma.\ \
+   \exists m. \ \
+   \R {\Gamma'} {\down {A'} f} m \mand
+   \Gamma' \der t\sigma = m : T'\sigma$.
+
+\nextcase $A' \evalsto \Nat \alpha$.
+
+  \noindent
+  $\LRT{\Gamma}{T'}{A'}\ell$ iff $\Gamma \der T' = \Nat a$ for some $a$ and $\LRSize \Gamma a \alpha$.
+
+  \noindent
+  $\LR{\Gamma}{t}{T'}{f}{A'}$ iff $\resurrect\Gamma \der T' = \Nat a$ for some $a$ and
+  $\LRSize {\resurrect\Gamma} a \alpha$ and \\
+  $\forall \sigma : \Gamma' \leq \Gamma.\ \
+   \exists v. \ \
+   \R {\Gamma'} {\down {A'} f} v \mand
+   \Gamma' \der t\sigma = v : \Nat\,a\sigma$.
+
+
+\nextcase $A' \evalsto \Set[\ell']$.
+
+  \noindent
+  $\LRT {\Gamma} {T'} {A'} \ell$ iff $\Gamma \der T' = \Set[\ell'] : \Set[\ell]$.
+
+  \noindent
+  $\LR \Gamma U {T'} B {A'}$ iff
+  $\resurrect\Gamma \der T' = \Set[\ell'] : \Set[\ell]$ and $\LRT \Gamma U B {\ell'}$.
+
+\nextcase $A' \evalsto \piT A B$.
+
+\noindent
+$\LRT \Gamma {T'} {A'} \ell$ iff
 \[
 \begin{array}{l}
-\Gamma \der T' = \piT U T \mforsome U, T\\
-\LRT \Gamma U A \\
+\Gamma \der T' = \piT U T : \Set[\ell] \mforsome U, T \mand \LRT \Gamma U A \ell \mand \\
+\forall \sigma : \Gamma' \leq \Gamma.\ \
+\LR {\Gamma'} u {U\sigma} a A \implies \LRT {\Gamma'} {T(\sigma,u)} {B[a]} \ell
+. \\
+\end{array}
+\]
+$\LR \Gamma t {T'} f {A'}$ iff
+\[
+\begin{array}{l}
+\resurrect\Gamma \der T' = \piT U T : \Set[\ell] \mforsome U, T \mand \LRT {\resurrect\Gamma} U A \ell \mand \\
 \forall \sigma : \Gamma' \leq \Gamma.\ \
 \LR {\Gamma'} u {U\sigma} a A \implies \LR {\Gamma'} {t\sigma\,u} {T(\sigma,u)} {f\,a} {B[a]}
+.
 \end{array}
 \]
 
-\nextcase $A' \evalsto \forallT B$.  Then $\LR \Gamma t {T'} f {A'}$ if all of the following:
+\nextcase $A' \evalsto \piT \Size B$.
+
+\noindent
+$\LRT \Gamma {T'} {A'} \ell$ iff
 \[
 \begin{array}{l}
-\Gamma \der T' = \forallT T \mforsome T\\
+\Gamma \der T' = \piT \Size T : \Set[\ell] \mforsome T\\
 \forall \sigma : \Gamma' \leq \Gamma.\ \
-\LRSize {\Gamma'} u a \implies \LR {\Gamma'} {t\sigma\,u} {T(\sigma,u)} {f\,a} {B[a]}
+\LRSize {\Gamma'} a \alpha
+\implies \LRT {\Gamma'} {T(\sigma,a)} {B[\alpha]} \ell
+.
+\end{array}
+\]
+$\LR \Gamma t {T'} f {A'}$ iff
+\[
+\begin{array}{l}
+\resurrect\Gamma \der T' = \piT \Size T : \Set[\ell] \mforsome T\\
+\forall \sigma : \Gamma' \leq \Gamma.\ \
+\LRSize {\Gamma'} a \alpha
+\implies \LR {\Gamma'} {t\sigma\,a} {T(\sigma,a)} {f\,\alpha} {B[\alpha]}
+.
+\end{array}
+\]
+
+\nextcase $A' \evalsto \forallT B$.
+
+\noindent
+$\LRT \Gamma {T'} {A'} \ell$ iff
+\[
+\begin{array}{l}
+\Gamma \der T' = \forallT T : \Set[\ell] \mforsome T\\
+\forall \sigma : \Gamma' \leq \Gamma,\
+{\Gamma'} \der b : \Size,\
+\beta \in \SIZE. \ \
+\LRSize {\Gamma'} b \beta
+\implies \LRT {\Gamma'} {T(\sigma,b)} {B[\beta]} \ell
+.
+\end{array}
+\]
+$\LR \Gamma t {T'} f {A'}$ iff
+\[
+\begin{array}{l}
+\resurrect\Gamma \der T' = \forallT T : \Set[\ell] \mforsome T\\
+\forall \sigma : \Gamma' \leq \Gamma,\
+\Gamma' \der a : \Size,\
+\resurrect{\Gamma'} \der b : \Size,\
+\alpha,\beta \in \SIZE. \ \\ \qquad
+\LRSize {\resurrect{\Gamma'}} b \beta
+\implies \LR {\Gamma'} {t\sigma\,\ann a} {T(\sigma,b)} {f\,\ann\alpha} {B[\beta]}
+.
 \end{array}
 \]
 
 \end{caselist}
 
+\begin{theorem}[Into and out of the logical relation]
+  \bla
+  Let $A \in \Set[\ell]$.
+  \begin{enumerate}
+
+  \item $\LR \Gamma t T {\up A n} A$ if for all $\sigma : \Gamma' \leq \Gamma$ there is an $m$ such that
+     $\RNe{\Gamma'}n m$ and $\Gamma' \der t\sigma = m : T$.
+
+  \item If\/ $\LRT{\Gamma} T A \ell$ then for all $\sigma : \Gamma' \leq \Gamma$ there is some normal form $V$ such that
+  $\Rty{\Gamma'} A V$ and $\Gamma' \der T\sigma = V : \Set[\ell]$.
+
+  \item If\/ $\LR \Gamma t T f A$ then for all $\sigma : \Gamma' \leq \Gamma$ there is some normal form $v$ such that
+  $\R{\Gamma'} {\down A f} v$ and $\Gamma' \der t\sigma = v : T\sigma$.
+
+  \end{enumerate}
+\end{theorem}
+
+Logical relation for substitutions.
+\fbox{$\LRSub \Gamma \sigma \tau \Delta \eta \rho$}.
+\begin{gather*}
+  \ru{\der \Gamma
+    }{\LRSub \Gamma {\sempty} {\sempty} {\cempty} {\sempty} {\sempty}}
+\\[2ex]
+  \ru{\LRSub \Gamma \sigma \tau \Delta \eta \rho \qquad
+      \resurrect \Delta \der T \qquad
+      \Gamma \der u = t : T\tau \qquad
+      \LR \Gamma t {T \tau} f {T \rho} \qquad
+      f = g \in T\rho
+    }{\LRSub \Gamma {(\sigma,u)} {(\tau,t)} {\cext \Delta T} {(\eta,f)} {(\rho,q)}}
+\\[2ex]
+  \ru{\LRSub \Gamma \sigma \tau \Delta \eta \rho \qquad
+      \Gamma \der a : \Size \qquad
+      \LRSize \Gamma a \alpha
+    }{\LRSub \Gamma {(\sigma,a)} {(\tau,a)} {\cext \Delta \Size} {(\eta,\alpha)} {(\rho,\alpha)}}
+\\[2ex]
+  \ru{\LRSub \Gamma \sigma \tau \Delta \eta \rho \qquad
+      \Gamma \der a, b : \Size \qquad
+      \alpha,\beta \in \SIZE \qquad
+      \LRSize \Gamma b \beta
+    }{\LRSub \Gamma {(\sigma,a)} {(\tau,b)} {\erext \Delta \Size} {(\eta,\alpha)} {(\rho,\beta)}}
+\end{gather*}
 
 % \begin{lemma}[Typing of constructed data]
 % \label{lem:invdata} \bla
 % If\/ $\Gamma \der c : \Nat b$ then $\resurrect\Gamma \der b : \Size$ and $b > 0$.
 % \end{lemma}
+
+Validity judgements.
+\[
+\begin{array}{l@{\quad}l@{\quad}l}
+  \valid () & \defas & \mtrue \\
+  \valid \eext \Gamma \Size & \defas & \valid \Gamma \\
+  \valid \cext \Gamma T     & \defas & \valid \Gamma \mand \resurrect\Gamma \valid T
+\\[2ex]
+  \Gamma \valid s & \defas & \valid \Gamma \\
+%  \Gamma \valid s & \defas & \mtrue \\
+  \Gamma \valid T & \defas & \Gamma \valid T = T \\
+  \Gamma \valid T = T' & \defas & \Gamma \valid T = T' : s \mforsome s %\Set[\ell] \mforsome \ell
+\\[2ex]
+  \Gamma \valid t : T & \defas & \Gamma \valid t = t : T \\
+  \Gamma \valid t = t' : T & \defas & %\valid \Gamma \mand
+    % \resurrect\Gamma \valid T \mand
+    \valid \cext \Gamma T \mand
+    \LR {\Gamma'} {t \sigma} {T \tau} {t' \eta} {T \rho}
+    \mforall \LRSub {\Gamma'} \sigma \tau \Gamma \eta \rho
+\\[2ex]
+  \Gamma \valid \sigma : \Delta & \defas & \Gamma \valid \sigma = \sigma \eeq \sigma : \Delta \\
+  \Gamma \valid \sigma_1 = \sigma_2 \eeq \tau : \Delta & \defas &
+    \valid \Gamma \mand \valid \Delta \mand
+    \LRSub {\Gamma'} {\sigma_1 \sigma'} {\tau \tau'} \Delta {\sigma_2 \eta'} {\tau \rho'}
+    \mforall \LRSub {\Gamma'} {\sigma'} {\tau'} \Gamma {\eta'} {\rho'}
+\end{array}
+\]
+
+\begin{theorem}[Fundamental theorem]
+  \bla
+  \begin{enumerate}
+  \item
+  If $\der \Gamma$ then $\valid \Gamma$.
+  \item
+  If $\Gamma \der J$ then % $\valid \Gamma$ and
+  $\Gamma \valid J$
+  \end{enumerate}
+\end{theorem}
+\begin{proof}
+Simultaneously, by induction on the derivation.
+
+\begin{caselist}
+\nextcase $\forall$-introduction.
+\[
+  \ru{\erext \Gamma \Size \der t = t' : T
+    }{\Gamma \der \lambda t = \lambda t' : \forall T}
+\]
+First $\valid \Gamma$ follows from the induction hypothesis $\valid {\erext \Gamma \Size}$.
+To show $\resurrect\Gamma \valid \forall T$,
+assume $\eta = \eta' \eeq \rho \in \resurrect \Gamma$
+and show $(\forall T)\eta = (\forall T)\eta' \in \SET[\ell]$ for some $\ell$.
+To this end, assume $\alpha \in \SIZE$ and show $T(\eta,\alpha) = T(\eta',\alpha) \in \SET[\ell]$.
+Note that $(\eta,\alpha) = (\eta',\alpha) \eeq (\rho,\alpha) \in
+\resurrect {\erext \Gamma \Size} = \cext {\resurrect\Gamma}\Size$,
+thus, we can instantiate the induction hypothesis and obtain our goal.
+
+For the main goal,
+assume $\eta = \eta' \eeq \rho \in \Gamma$ and
+show $(\lambda t)\eta = (\lambda t')\eta' \in (\forall T)\rho$.
+To this end, assume arbitrary $\alpha,a',b \in \SIZE$ and show
+$t(\eta,\alpha) = t'(\eta',a') \in T(\rho,b)$.
+Since $(\eta,\alpha) = (\eta',a') \eeq (\rho,b) \in \erext \Gamma \Size$,
+we conclude by induction hypothesis.
+
+\nextcase $\forall$-elimination.
+\[
+  \ru{\Gamma \der t = t' : \forall T \qquad
+      \Gamma \der a, a' : \Size \qquad
+      \resurrect\Gamma \der b : \Size
+    }{\Gamma \der t \ann a = t' \ann {a'} : T[b]}
+\]
+First, $\valid \Gamma$ follows by induction hypothesis.
+For goal $\resurrect \Gamma \valid T[b]$,
+assume $\eta = \eta' \eeq \rho \in \resurrect\Gamma$ and show
+$T[b]\eta = T[b]\eta' \in \SET[\ell]$ for some $\ell$.
+By induction hypothesis,  $b\eta = b\eta' \in \SIZE$.
+% , thus,
+% $(\eta,b\eta) = (\eta',b\eta') \eeq (\rho,b\eta) \in \cext{\resurrect\Gamma}\Size$
+By another induction hypothesis, $(\forall T)\eta = (\forall T)\eta' \in \SET[\ell]$,
+which by definition entails our goal $T(\eta, b\eta) = T(\eta', b\eta') \in \SET[\ell]$.
+
+
+For the remaining main goal,
+assume $\eta = \eta' \eeq \rho \in \Gamma$ and
+show $t \ann a \eta = t' \ann{a'} \eta' \in T[b]\rho$.
+By definition of substitution, it suffices to show
+$t \eta \ann{a \eta} = t' \eta' \ann{a' \eta'} \in T(\rho, b \rho)$.
+By induction hypothesis,
+$t \eta = t' \eta' : (\forall T) \rho$, thus, by definition of this PER,
+$t \eta \ann {\alpha_1} = t' \eta' \ann{\alpha_2} \in T(\rho, b')$ for any size values $\alpha_1$, $\alpha_2$, and $b'$.
+We conclude by choosing $\alpha_1 = a \eta$ and $\alpha_2 = a' \eta'$ and $b' = b \rho$.
+
+We now argue that this choice is possible,
+namely that $a \eta, a'\eta, b\rho \in \SIZE$.
+Note that the induction hypothesis gives us
+$a \eta  = a  \eta' \in \SIZE$ and
+$a' \eta = a' \eta' \in \SIZE$.
+By resurrection (Lemma~\ref{lem:resenv}) we have $\rho \in \resurrect\Gamma$,
+thus, by induction hypothesis, $b \rho \in \SIZE$.
+\end{caselist}
+\end{proof}
 
 
 
