@@ -237,6 +237,7 @@ Judgements.
 %  \Gamma \mid U \der e : T & \mbox{in context $\Gamma$, elimination $e$ goes from $U$ to $T$} \\
 %  \Gamma \mid U \der e = e' : T & \mbox{in context $\Gamma$, eliminations $e$ and $e'$ are equal} \\
   \Gamma \der T \leq T' & \mbox{in context $\Gamma$, type $T$ is a subtype of $T'$} \\
+  \Gamma \der T : \Adm \ell & \mbox{in context $\Gamma$ type constructor $T$ is admissible for recursion} \\
   \suty \Gamma \sigma \tau \Delta & \mbox{$\sigma$/$\tau$ is a valid term/type-level substitution for $\Delta$} \\
   \sueq \Gamma \sigma {\sigma'} \tau \Delta & \mbox{$\sigma$/$\sigma'$/$\tau$ are a equal term/term/type-level substitutions for $\Delta$} \\
 \end{array}
@@ -248,7 +249,11 @@ Derived judgements.
     & \mbox{in context $\Gamma$, type $T$ is well-formed} \\
   \Gamma \der T = T' & \defas & \Gamma \der T = T' : s & \mforsome s
     & \mbox{in context $\Gamma$, types $T$ and $T'$ are equal} \\
-  \Gamma \der a \leq b : \Size & \defas & \multicolumn 2 {l@{\qquad}} {\Gamma \der a : \Size \mand \Gamma \der b : \Size \mand a \leq b}
+  \Gamma \der a = b : \Size & \defas & \multicolumn 2 {l@{\qquad}} {\Gamma \der a : \Size \mand a = b}
+    & \mbox{sizes $a$ and $b$ are well-formed and identical} \\
+  \Gamma \der a \leq b : \Size & \defas &
+     \multicolumn 2 {l@{\qquad}} {\Gamma \der a : \Size \mand \Gamma \der b : \Size \mand a \leq b}
+%     \multicolumn 2 {l@{\qquad}} {\Gamma \der a : \Size \mand \Gamma \der b : \Size \mand a \leq b}
     & \mbox{sizes $a$ and $b$ are well-formed and comparable} \\
 %    & \mbox{in context $\Gamma$, well-formed size $a$ is less or equal than well-formed size $b$} \\
 \end{array}
@@ -323,17 +328,17 @@ Inference rules.
       \Gamma \der a : \Size
     }{\Gamma \der t\,a : T[a]}
 \\[2ex] % \qquad
-  \ru{\Gamma \der a : \Size \qquad
-      \resurrect\Gamma \der b : \Size
+  \ru{%\Gamma \der a : \Size \qquad
+      \resurrect\Gamma \der a, b : \Size
     }{\Gamma \der \zero{a} : \Nat (b + 1)}
 \qquad
-  \ru{\Gamma \der a : \Size \qquad
+  \ru{\resurrect\Gamma \der a : \Size \qquad
       \Gamma \der t : \Nat b
     }{\Gamma \der \suc a t : \Nat (b + 1)}
 \qquad
   \ru{\Gamma \der t : \forallT T \qquad
-      \Gamma \der a : \Size \qquad
-      \resurrect\Gamma \der b : \Size
+      %\Gamma \der a : \Size \qquad
+      \resurrect\Gamma \der a,b : \Size
     }{\Gamma \der t \ann a : T[b]}
 \\[2ex]
   \ru{\Gamma \der u : \Nat (a + 1) \qquad
@@ -863,8 +868,8 @@ Judgements.
     }{\R k {\down{U} u} v}
 \qquad
   \ru{U \evalsto N \qquad
-      u \evalsto \up{T} n \qquad
-      \RNe k n m
+      \RUp k u m
+      % u \evalsto \up{T} n \qquad \RNe k n m
     }{\R k {\down{U} u} m}
 \\[2ex]
   \ru{U \evalsto \piT A B \qquad
@@ -880,10 +885,18 @@ Judgements.
     }{\R k {\down{U} f} {\lambda v}}
 \end{gather*}
 
+\fbox{$\RUp k t m$}\ \  Read back neutrals under annotation, which is ignored.
+\begin{gather*}
+  \ru{t \evalsto \up T n \qquad
+      \RNe k n m
+    }{\RUp k t m}
+\end{gather*}
+
 \fbox{$\RNat k t v $}
 \begin{gather*}
-  \ru{t \evalsto \up {\Nat \alpha} n \qquad
-      \RNe k n m
+  \ru{% t \evalsto \up {\Nat \alpha} n \qquad
+      %t \evalsto \up {T} n \qquad \RNe k n m
+      \RUp k t m
     }{\RNat k t m}
 \qquad
   \ru{t \evalsto \zero{\alpha} \qquad
@@ -946,8 +959,8 @@ Judgements.
       \RSize k \alpha b
     }{\RTy k T {\Nat b}}
 \qquad
-  \ru{T \evalsto \up{U}n \qquad
-      \RNe k n m
+  \ru{% T \evalsto \up{U}n \qquad \RNe k n m
+      \RUp k T m
     }{\RTy k T m}
 \\[2ex]
   \ru{T \evalsto \piT A B \qquad
@@ -956,8 +969,8 @@ Judgements.
     }{\RTy k T {\piT {V_a} V_b}}
 \qquad
   \ru{T \evalsto \epiT \Size B \qquad
-      \RTy {k+1} B {V_b}
-    }{\RTy k T {\epiT \Size V_b}}
+      \RTy {k+1} B {V}
+    }{\RTy k T {\epiT \Size V}}
 \end{gather*}
 
 We write \fbox{$t \approx t'$} iff $t$ and $t'$ are syntactically equal if we ignore sizes $\ann a$ in irrelevant positions.  For example, $\suc a \tzero \approx \suc 0 \tzero$, but $\Nat a \not\approx \Nat 0$.
@@ -1006,12 +1019,23 @@ The PERs $\NE$ and $\NF$ characterize (neutral) normalizing terms.
   \end{enumerate}
 \end{lemma}
 
+Neutrals in the value world $\D$.
 \[
-\fbox{$\NEE$} \defas \{ (\up T n, \up{T'}{n'})
-  \msuchthat T \evalsto N \mand T' \evalsto N' \mand n = n' \in \NE \}
+\fbox{$t = t' \in \NEE$} \defas
+  t \evalsto \up T n \mand t' \evalsto \up{T'}{n'} \mand
+  n = n' \in \NE
+% \fbox{$\NEE$} \defas \{ (\up T n, \up{T'}{n'})
+%   % \msuchthat T \evalsto N \mand T' \evalsto N' \mand
+%   \mid n = n' \in \NE \}
 \]
 \fbox{$\NAT(\alpha)$}
 \begin{gather*}
+  \ru{% t \evalsto \up{\Nat \alpha} n \qquad
+      % t' \evalsto \up{\Nat \alpha'} n' \qquad
+      % n = n' \in \NE
+      t = t' \in \NEE
+    }{t = t' \in \NAT(\beta)}
+\qquad
   \ru{t \evalsto \zero \alpha \qquad
       t' \evalsto \zero{\alpha'}
     }{t = t' \in \NAT(\beta+1)}
@@ -1020,11 +1044,6 @@ The PERs $\NE$ and $\NF$ characterize (neutral) normalizing terms.
       t' \evalsto \suc {\alpha'} {u'} \qquad
       u = u' \in \NAT(\beta)
     }{t = t' \in \NAT(\beta+1)}
-\\[2ex]
-  \ru{t \evalsto \up{\Nat \alpha} n \qquad
-      t' \evalsto \up{\Nat \alpha'} n' \qquad
-      n = n' \in \NE
-    }{t = t' \in \NAT(\beta)}
 \end{gather*}
 
 \fbox{$\SIZE$} is a discrete PER of size values:
@@ -1053,14 +1072,14 @@ For a family $\F$ over $\SIZE$ we also have the irrelevant function space
   .
 \]
 
-\begin{lemma}[PER Subsumption]
-\label{lem:subsump} \hfill
-\begin{enumerate}
-\item If $\alpha \leq \beta$ then $\NAT(\alpha) \subseteq \NAT(\beta)$.
-\item If $\F(\alpha) \leq \F'(\alpha)$ for all $\alpha \in \SIZE$, then $\FORALL \F \subseteq \FORALL \F'$.
-\item IF $\A' \subseteq \A$ and $\F(u) \subseteq \F'(u)$ for all $u \in \A'$, then $\PIAF \subseteq \PI\,\A'\,\F'$.
-\end{enumerate}
-\end{lemma}
+% \begin{lemma}[PER Subsumption]
+% \label{lem:subsump} \hfill
+% \begin{enumerate}
+% \item If $\alpha \leq \beta$ then $\NAT(\alpha) \subseteq \NAT(\beta)$.
+% \item If $\F(\alpha) \leq \F'(\alpha)$ for all $\alpha \in \SIZE$, then $\FORALL \F \subseteq \FORALL \F'$.
+% \item IF $\A' \subseteq \A$ and $\F(u) \subseteq \F'(u)$ for all $u \in \A'$, then $\PIAF \subseteq \PI\,\A'\,\F'$.
+% \end{enumerate}
+% \end{lemma}
 
 
 
@@ -1074,7 +1093,10 @@ which is PER of values of type $A$.
 The rules for \fbox{$T = T' \in \SET[\ell]$} are:
 \[
 \begin{array}{l@{\qquad}l}
-  \ru{T \evalsto N \qquad T' \evalsto N'
+  \ru{% T \evalsto \up{\Set[\ell']} n \qquad
+      % T' \evalsto \up{\Set[\ell'']} n' \qquad
+      % n = n' \in \NE
+      T = T' \in \NEE
     }{T = T' \in \SET[\ell]}
   & \EL[\ell](T) = \NEE
 \\[3ex]
@@ -1113,7 +1135,7 @@ All relations involved here are closed under weak head expansion.
   \begin{enumerate}
   \item Symmetry: $T_2 = T_1 \in \SET[\ell]$.
   \item Transitivity: If $T_2 = T_3 \in \SET[\ell]$ then $T_1 = T_3 \in \SET[\ell]$.
-  \item Extension is PER: $\EL[\ell](T_1) = \EL[\ell](T_2)$ and ``both'' are PERs.
+  \item Extension: $\EL[\ell](T_1) = \EL[\ell](T_2)$ and ``both'' are PERs.
   \end{enumerate}
 \end{lemma}
 \begin{proof}
@@ -1131,12 +1153,24 @@ All relations involved here are closed under weak head expansion.
 \end{proof}
 Sine $\EL[\ell](T)$ does not depend $\ell$ nor the derivation that introduced $T = T' \in \SET[\ell]$,  we may simply write $t = t' \in \EL(T)$ or even $t = t' \in T$.
 
-\begin{lemma}[Universe subsumption]
-  \label{lem:usubsump}
-  If $\ell \leq \ell'$ then $\SET[\ell] \subseteq \SET[\ell']$.
+
+\subsection{Subtyping}
+\label{sec:subty}
+
+The semantic types (PERs) admit subsumption:
+
+\begin{lemma}[Subsumption]
+\label{lem:subsump} \hfill
+\begin{enumerate}
+\item \label{it:natsub} If $\alpha \leq \beta$ then $\NAT(\alpha) \subseteq \NAT(\beta)$.
+\item \label{it:allsub} If $\F(\alpha) \leq \F'(\alpha)$ for all $\alpha \in \SIZE$, then $\FORALL \F \subseteq \FORALL \F'$.
+\item \label{it:pisub}  If $\A' \subseteq \A$ and $\F(u) \subseteq \F'(u)$ for all $u \in \A'$, then $\PIAF \subseteq \PI\,\A'\,\F'$.
+\item \label{it:usub}  If $\ell \leq \ell'$ then $\SET[\ell] \subseteq \SET[\ell']$.
+\end{enumerate}
 \end{lemma}
 \begin{proof}
-  Prove $T = T' \in \SET[\ell']$ by induction on $T = T' \in \SET[\ell]$.
+  Propositions (\ref{it:natsub}--\ref{it:pisub}) are clear.
+  For (\ref{it:usub}), prove $T = T' \in \SET[\ell']$ by induction on $T = T' \in \SET[\ell]$.
   For the base types this is direct, let us look at the function space.
 \[
   \rul{T \evalsto \piT A B \qquad
@@ -1147,13 +1181,69 @@ Sine $\EL[\ell](T)$ does not depend $\ell$ nor the derivation that introduced $T
 \]
   By induction hypothesis, $A = A' \in \SET[\ell']$, and we have $\EL[\ell'](A) = \EL[\ell](A)$ by Lemma~\ref{lem:indep}.  Assuming $u = u' \in \EL(A)$, we get $B[u] = B'[u'] \in \SET[\ell']$ by induction hypothesis on $B[u] = B'[u'] \in \SET[\ell]$.
 \end{proof}
+We can define subtyping of type values \fbox{$T \leq T'$} by induction on $T \in \SET[\ell]$ and $T' \in \SET[\ell']$.
+Simultaneously, we need to prove correctness, namely that $T \leq T'$ implies $\EL(T) \subseteq \EL(T')$.  The correctness follows from Lemma~\ref{lem:subsump} and we do not spell it out here.
+\begin{gather*}
+  \ru{T = T' \in \NEE
+    }{T \leq T'}
+\qquad
+  \ru{T \evalsto \Nat \alpha \qquad
+      T' \evalsto \Nat \alpha' \qquad
+      \alpha \leq \alpha'
+    }{T \leq T'}
+\qquad
+  \ru{T \evalsto \Set[\ell_0] \qquad
+      T' \evalsto \Set[\ell_0'] \qquad
+      \ell_0 \leq \ell_0'
+    }{T \leq T'}
+\\[2ex]
+  \ru{T \evalsto \piT A B \qquad
+      T' \evalsto \piT {A'}{B'} \qquad
+      A' \leq A \qquad
+      B[u] \leq B'[u'] \mforall u = u' \in A'
+    }{T \leq T'}
+\\[2ex]
+  \ru{T \evalsto \epiT \Size B \qquad
+      T' \evalsto \epiT {\Size}{B'} \qquad
+      B[\alpha] \leq B'[\alpha] \mforall \alpha \in \SIZE
+    }{T \leq T'}
+\end{gather*}
+\begin{lemma}[Subtyping is preorder]
+\label{lem:preord}
+\bla
+\begin{enumerate}
+\item If\/ $T = T' \in \SET[\ell]$ then $T \leq T'$.
+\item If\/ $T_1 \leq T_2$ and $T_2 \leq T_3$ then $T_1 \leq T_3$.
+\end{enumerate}
+\end{lemma}
+
+
+% \begin{lemma}[Universe subsumption]
+%   \label{lem:usubsump}
+%   If $\ell \leq \ell'$ then $\SET[\ell] \subseteq \SET[\ell']$.
+% \end{lemma}
+% \begin{proof}
+%   Prove $T = T' \in \SET[\ell']$ by induction on $T = T' \in \SET[\ell]$.
+%   For the base types this is direct, let us look at the function space.
+% \[
+%   \rul{T \evalsto \piT A B \qquad
+%       T' \evalsto \piT{A'}{B'} \qquad
+%       A = A' \in \SET[\ell] \qquad
+%       B[u] = B'[u'] \in \SET[\ell] \mforall u = u' \in \EL[\ell](A)
+%     }{T = T' \in \SET[\ell]}
+% \]
+%   By induction hypothesis, $A = A' \in \SET[\ell']$, and we have $\EL[\ell'](A) = \EL[\ell](A)$ by Lemma~\ref{lem:indep}.  Assuming $u = u' \in \EL(A)$, we get $B[u] = B'[u'] \in \SET[\ell']$ by induction hypothesis on $B[u] = B'[u'] \in \SET[\ell]$.
+% \end{proof}
+
+
 
 \subsection{Type shapes}
+\label{sec:shape}
 
 Reflection and reification perform $\eta$-expansion such that we arrive at an $\eta$-long $\beta$-normal form.  To perform the $\eta$-expansion, not the precise type is needed, just the approximate shape, in particular, whether it is a function type (do expand) or a base type (do not expand).
 For the logical framework, the shape of a dependent type is just its underlying simple type \cite{harperPfenning:equivalenceLF}. However, in the presence of universes and large eliminations, there is no underlying simple type.  Of course, we can take a type as its own shape, but we want at least that $\Nat \alpha$ and $\Nat \beta$ have the same shape even for different $\alpha, \beta$.  Thus, we define a relation $T \shape S$ to express that $S$ is a possible shape of type $T$.
 
-\fbox{$T \shape S$} for $T \in \SET[\ell]$.
+\fbox{$T \shape S$} for $T \in \SET[\ell]$.  We call $T$ the \emph{template} and $S$ one of its possible \emph{shapes}.
 \begin{gather*}
   \ru{T \evalsto \Nat \alpha \qquad
       S \evalsto \Nat \beta
@@ -1184,9 +1274,6 @@ For the logical framework, the shape of a dependent type is just its underlying 
     }{T \shape S}
 \end{gather*}
 % The last rule is the crucial one
-\begin{lemma}[Reflexivity for shapes]
-  If $T = T' \in \SET[\ell]$ then $T \shape T'$.
-\end{lemma}
 
 Note that $T \in \SET[\ell]$ and $T \shape S$ do not imply $S \in \SET[\ell]$.
 Type shapes are not well-defined types in general.
@@ -1196,7 +1283,44 @@ Now consider $S := \funT x {\Nat \infty} {F\,x}$.
 We have $T \shape S$, but not $S$ is not well-defined; $S \not\in \SET[0]$.
 % $\funT x {\Nat 0} {F\,x} \shape , but the latter one is not a well-defined type.
 
-\begin{theorem}[Reification and reflection]
+\begin{lemma}[Types are their own shapes]
+  If\/ $T = T' \in \SET[\ell]$ then $T \shape T'$.
+\end{lemma}
+
+\begin{lemma}[Equal types make equally good templates]
+  If\/ $T = T' \in \SET[\ell]$ and $T' \shape S$ then $T \shape S$.
+\end{lemma}
+
+However, templates are not closed under subtyping in either direction because of contravariance.
+
+Further, it is not true that equal types make equally good shapes.  We do not have that
+$T \shape S$ and $S = S' \in \SET[\ell]$ imply $T \shape S'$.  This property fails for function types.
+Given $\piT U T \shape \piT R S$ and $\piT R S = \piT {R'}{S'} \in \SET[\ell]$ we would need to show that $T[u] \shape S'[u']$ for all $u = u' \in U$, but we only have $S[u] = S'[u'] \in \SET[\ell]$ for all $u = u' \in R$, thus the induction does not go through.  The fact that $U \shape R$ does not give us a handle on their inhabitants, we would need $U \leq R$.
+It is possible to construct an actual counterexample, using
+$\piT {R'} S' =  \funT x {\Nat 0} {F\,x}$ from above and $\piT R S = \funT x {\Nat 0} {G\,x}$
+such that $G$ is defined on all of $\Nat \infty$ but agrees with $F$ only on $x \in \Nat 0$.
+Then $\piT U T = \funT x {\Nat \infty} {G\,x}$ gives the desired counterexample.
+
+% Note that while such examples exist in the semantics, they probably do not exist in the syntax (where no well-typed term is diverging).  However, it is not clear to us how to define
+
+% %% WRONG
+% \begin{lemma}[Subtypes are valid templates]
+%   Let $T \in \SET[\ell]$ and $T' \in \SET[\ell']$.
+%   If\/ $T \leq T'$ and $T' \shape S'$ then $T \shape S'$.
+% \end{lemma}
+% \begin{proof}
+% By induction on the derivations.
+% \begin{caselist}
+
+% \nextcase $T \evalsto \piT A B$ and $T' \evalsto \piT{A'}{B'}$ and $T' \evalsto \piT R S$.
+% \\
+% We have $A \shape R$ by induction hypothesis on $A' \leq A$ and $A' \shape R$.  No!
+% \end{caselist}
+% \end{proof}
+
+Shapes are used to direct $\eta$-expansion when we reflect neutrals into semantic types and reify semantic values to long normal forms.  The following theorem is the heart of our technical development.
+
+\begin{theorem}[Reflection and reification]
 Let $T \in \SET[\ell]$ and $T \shape S_1$ and $T \shape S_2$.
 \begin{enumerate}
 \item If $n_1 = n_2 \in \NE$ then $\up{S_1}{n_1} = \up{S_2}{n_2} \in T$.
@@ -1241,7 +1365,7 @@ $\down{B_1[u_1]}(t_1\,u_1) = \down{B_2[u_2]}(t_2\,u_2) \in \NF$, which delivers 
 
 \nextcase $T \evalsto \forallT B$
 \begin{gather*}
-  \ru{B[\alpha] = B[\alpha] \in \SET[\ell] \mforall \alpha \in \SIZE
+  \ru{B[\alpha] \in \SET[\ell] \mforall \alpha \in \SIZE
     }{T \in \SET[\ell]}
 \\[2ex]
   \ru{S_1 \evalsto \forallT{B_1} \qquad
@@ -1313,7 +1437,9 @@ Semantic judgements:
   \Gamma \models T = T' & \defas & \Gamma \models T = T' : s \mforsome s %\Set[\ell] \mforsome \ell
 \\[2ex]
   \Gamma \models T \leq T' & \defas & \Gamma \models T \mand \Gamma \models T' \mand
-    \EL(T\eta) \subseteq \EL(T'\eta') \mforall \eta = \eta' \eeq \rho \in \Gamma
+    T\eta \leq T'\eta'
+    % \EL(T\eta) \subseteq \EL(T'\eta')
+    \mforall \eta = \eta' \eeq \rho \in \Gamma
 \\[2ex]
   \Gamma \models t : T & \defas & \Gamma \models t = t : T \\
   \Gamma \models t = t' : T & \defas & %\models \Gamma \mand
@@ -1341,7 +1467,7 @@ Semantic judgements:
 \end{theorem}
 \begin{proof}
 Simultaneously, by induction on the derivation.
-The soundness of subtyping and the conversion rule is due to subsumption (lemmata \ref{lem:subsump} and \ref{lem:usubsump}).
+% The soundness of subtyping and the conversion rule is due to subsumption (lemmata \ref{lem:subsump} and \ref{lem:usubsump}).
 
 \begin{caselist}
 \nextcase $\forall$-introduction.
