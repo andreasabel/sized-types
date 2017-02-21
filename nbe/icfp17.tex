@@ -346,6 +346,10 @@ Inference rules.
       \Gamma \der T : \FixK\,\ell \qquad %% \funT i \Size \Nat i \to \Set[\ell] \\
       \Gamma \der t : \FixT\, T
      }{\Gamma \der u\,\fix[\ell] T t : T \,a \, u}
+\qquad
+  \ru{\Gamma \der t : T \qquad
+      \resurrect\Gamma \der T \leq T'
+     }{\Gamma \der t : T'}
 \end{gather*}
 Note: Size is relevant in $T$ as we would like for instance $T\,i\,x = \Nat i$.
 % \fbox{$\Gamma \mid U \der e : T$}
@@ -469,6 +473,10 @@ Congruence rules.
       \Gamma \der T = T' : \FixK\,\ell \qquad %% \funT i \Size \Nat i \to \Set[\ell] \\
       \Gamma \der t = t' : \FixT\,T \qquad %% \allT i \Size (\funT x {\Nat i} T \,i\, x) \to \funT x {\Nat (i + 1)} T \,{i+1}\, x
      }{\Gamma \der u\,\fix[\ell] T t = u'\,\fix[\ell] {T'} t' : T \, a \, u}
+\qquad
+  \ru{\Gamma \der t = t' : T \qquad
+      \resurrect\Gamma \der T \leq T'
+     }{\Gamma \der t = t' : T'}
 \end{gather*}
 Equivalence rules.  (Reflexivity is admissible.)
 \begin{gather*}
@@ -481,7 +489,8 @@ Equivalence rules.  (Reflexivity is admissible.)
 \end{gather*}
 
 
-\fbox{$\Gamma \der T \leq T'$} (implies $\resurrect \Gamma \der T,T'$)
+\fbox{$\Gamma \der T \leq T'$} (implies $\Gamma \der T,T'$)
+% (implies $\resurrect \Gamma \der T,T'$)
 \begin{gather*}
   \ru{\der \Gamma \qquad \ell {\leq} \ell'
     }{\Gamma \der \Set[\ell] \leq \Set[\ell']}
@@ -496,11 +505,15 @@ Equivalence rules.  (Reflexivity is admissible.)
       \cext \Gamma {U'} \der T \leq T'
     }{\Gamma \der \piT U T \leq \piT {U'} {T'}}
 \qquad
+  \ru{\cext \Gamma {\Size} \der T \leq T'
+    }{\Gamma \der \epiT \Size T \leq \epiT {\Size} {T'}}
+\qquad
   \ru{\Gamma \der T_1 \leq T_2 \qquad
       \Gamma \der T_2 \leq T_3
     }{\Gamma \der T_1 \leq T_3}
 \qquad
 \end{gather*}
+
 
 Substitution typing. % and equality.
 \fbox{$\Gamma \der \tau : \Delta$}
@@ -520,6 +533,21 @@ Substitution typing. % and equality.
   \ru{\Gamma \der \tau : \Delta \qquad
       \Gamma \der a : \Size
     }{\Gamma \der \sext \tau a : \eext \Delta \Size}
+\end{gather*}
+
+Weakenings \fbox{$\xi : \Gamma \leq \Delta$}  (implies $\der \Gamma$ and $\der \Delta$ and $\Gamma \der \xi : \Delta$).
+\begin{gather*}
+  \ru{\der \Gamma
+    }{\sempty : \Gamma \leq \cempty}
+\qquad
+  \ru{\xi : \Gamma \leq \Delta \qquad
+      \resurrect\Gamma \der T
+    }{\xi \slift : \cext \Gamma T \leq \Delta}
+\qquad
+  \ru{\xi : \Gamma \leq \Delta \qquad
+      \resurrect \Delta \der U \qquad
+      \resurrect\Gamma \der T \leq U \xi
+    }{(\xi \slift, \ind 0) : \cext \Gamma T \leq \cext \Delta U}
 \end{gather*}
 
 % Substitution typing. % and equality.
@@ -797,7 +825,7 @@ The rules added for NbE deal with elimination of delayed reflection:
 %       \up{B[\alpha]} (n \ann \alpha) \evalsto w
 %     }{(\up T n) @ \ann \alpha \evalsto w}
 \\[2ex]
-  \ru{T' \evalsto \Nat b \qquad
+  \ru{T' \evalsto \Nat \beta \qquad
     }{(\up {T'} n) @ \case[\ell] T {t_z} {t_s} \evalsto
       \up{T\,(\up{\Nat \infty} n)}
          n\,\case[\ell]
@@ -806,7 +834,7 @@ The rules added for NbE deal with elimination of delayed reflection:
              {(\down {\funS x {\Nat \infty} T\,(\suc \infty x)} t_s)}
     }
 \\[2ex]
-  \ru{T' \evalsto \Nat b \qquad
+  \ru{T' \evalsto \Nat \beta \qquad
     }{(\up {T'} n) @ \fix[\ell] T t \evalsto
       n\,\fix[\ell] {(\down {\FixK} T)} {(\down {\FixT\, T} t)}
     }
@@ -858,17 +886,17 @@ Judgements.
       \RNe k n m
     }{\RNat k t m}
 \qquad
-  \ru{t \evalsto \zero{\alpha_v} \qquad
-      \RSize k {\alpha_v} a
+  \ru{t \evalsto \zero{\alpha} \qquad
+      \RSize k {\alpha} a
     }{\RNat k t {\zero a}}
 \qquad
-  \ru{t \evalsto \suc{\alpha_v}u \qquad
-      \RSize k {\alpha_v} a \qquad
+  \ru{t \evalsto \suc{\alpha}u \qquad
+      \RSize k {\alpha} a \qquad
       \RNat k u v
     }{\RNat k t {\suc a v}}
 \end{gather*}
 
-\fbox{$\RSize k {\alpha_v} a$}
+\fbox{$\RSize k {\alpha} a$}
 \begin{gather*}
   \ru{
     }{\RSize k \infty \infty}
@@ -939,7 +967,7 @@ We write \fbox{$t \approx t'$} iff $t$ and $t'$ are syntactically equal if we ig
 \subsection{Partial equivalence relations}
 \label{sec:per}
 
-A type $T$ will be interpreted as a partial equivalence relation (PER) $\A$ on terms, \ie, a relation which is symmetric and transitive. The domain $\dom(\A)$ of the relation can be thought of the set of terms which define the extension of the type; on $\dom(\A)$ the relation $\A$ is in fact an equivalence relation.
+A type $T$ will be interpreted as a partial equivalence relation (PER) $\A$ on terms, \ie, a relation which is symmetric and transitive. The domain $\dom(\A)$ of the relation can be thought of the set of terms which define the extension of the type; on $\dom(\A) = \{a \mid \exists a'.\ (a,a') \in \A \}$ the relation $\A$ is in fact an equivalence relation.  We write $a = a' \in \A$ for relatedness in $\A$ and $a \in \A$ if $a \in \dom(\A)$.
 
 The PERs $\NE$ characterizes neutral reifyable terms.
 % \[
@@ -973,7 +1001,7 @@ The PERs $\NE$ and $\NF$ characterize (neutral) normalizing terms.
   \bla
   \begin{enumerate}
   \item $\lev k = \lev k \in \NE$.
-  \item If $n = n' \in \NE$ and $d = d' \in \NF$ then $n\,d = n'\,d' in \NE$.
+  \item If $n = n' \in \NE$ and $d = d' \in \NF$ then $n\,d = n'\,d' \in \NE$.
 %  \item If $d = d' \in \NF$
   \end{enumerate}
 \end{lemma}
@@ -985,18 +1013,18 @@ The PERs $\NE$ and $\NF$ characterize (neutral) normalizing terms.
 \fbox{$\NAT(\alpha)$}
 \begin{gather*}
   \ru{t \evalsto \zero \alpha \qquad
-      t' \evalsto \zero{a'}
-    }{t = t' \in \NAT(b+1)}
+      t' \evalsto \zero{\alpha'}
+    }{t = t' \in \NAT(\beta+1)}
 \qquad
   \ru{t \evalsto \suc \alpha u \qquad
-      t' \evalsto \suc {a'} {u'} \qquad
-      u = u' \in \NAT(b)
-    }{t = t' \in \NAT(b+1)}
+      t' \evalsto \suc {\alpha'} {u'} \qquad
+      u = u' \in \NAT(\beta)
+    }{t = t' \in \NAT(\beta+1)}
 \\[2ex]
   \ru{t \evalsto \up{\Nat \alpha} n \qquad
-      t' \evalsto \up{\Nat a'} n' \qquad
+      t' \evalsto \up{\Nat \alpha'} n' \qquad
       n = n' \in \NE
-    }{t = t' \in \NAT(b)}
+    }{t = t' \in \NAT(\beta)}
 \end{gather*}
 
 \fbox{$\SIZE$} is a discrete PER of size values:
@@ -1021,9 +1049,18 @@ This works also for $\A = \SIZE$.
 For a family $\F$ over $\SIZE$ we also have the irrelevant function space
 \[
   \fbox{$\FORALL\,\F$} \defas
-  \{(t,t') \mid t \ann \alpha = t' \ann{a'} \in \F(b) \mforall \alpha,a',b \in \SIZE \}
+  \{(t,t') \mid t \ann \alpha = t' \ann{\alpha'} \in \F(\beta) \mforall \alpha,\alpha',\beta \in \SIZE \}
   .
 \]
+
+\begin{lemma}[PER Subsumption]
+\label{lem:subsump} \hfill
+\begin{enumerate}
+\item If $\alpha \leq \beta$ then $\NAT(\alpha) \subseteq \NAT(\beta)$.
+\item If $\F(\alpha) \leq \F'(\alpha)$ for all $\alpha \in \SIZE$, then $\FORALL \F \subseteq \FORALL \F'$.
+\item IF $\A' \subseteq \A$ and $\F(u) \subseteq \F'(u)$ for all $u \in \A'$, then $\PIAF \subseteq \PI\,\A'\,\F'$.
+\end{enumerate}
+\end{lemma}
 
 
 
@@ -1070,19 +1107,56 @@ The rules for \fbox{$T = T' \in \SET[\ell]$} are:
   & \EL[\ell](T) = \FORALL(\alpha \mapsto \EL[\ell](B[\alpha]))
 \end{array}
 \]
-All PERs involved here are closed under weak head expansion.
+All relations involved here are closed under weak head expansion.
+\begin{lemma}[Well-definedness]
+  Let $\DD :: T_1 = T_2 \in \SET[\ell]$.
+  \begin{enumerate}
+  \item Symmetry: $T_2 = T_1 \in \SET[\ell]$.
+  \item Transitivity: If $T_2 = T_3 \in \SET[\ell]$ then $T_1 = T_3 \in \SET[\ell]$.
+  \item Extension is PER: $\EL[\ell](T_1) = \EL[\ell](T_2)$ and ``both'' are PERs.
+  \end{enumerate}
+\end{lemma}
+\begin{proof}
+  Simultaneously by induction on $\DD$.
+\end{proof}
 
-The PER model has the usual properties, one of them being that $\EL[\ell](T)$ does not depend $\ell$ nor the derivation that introduced $T = T' \in \SET[\ell]$.  Thus, we simply write $t = t' \in \EL(T)$ or even $t = t' \in T$.
+% The PER model has the usual properties, one of them being that $\EL[\ell](T)$ does not depend $\ell$ nor the derivation that introduced $T = T' \in \SET[\ell]$.  Thus, we simply write $t = t' \in \EL(T)$ or even $t = t' \in T$.
+\begin{lemma}[Derivation independence of extension]
+\label{lem:indep}
+  If $\DD_1 :: T = T_1 \in \SET[\ell_1]$
+  and $\DD_2 :: T_2 = T \in \SET[\ell_2]$ then $\EL[\ell_1](T) = \EL[\ell_2](T)$.
+\end{lemma}
+\begin{proof}
+  By induction on $\DD_1$ and cases on $\DD_2$.
+\end{proof}
+Sine $\EL[\ell](T)$ does not depend $\ell$ nor the derivation that introduced $T = T' \in \SET[\ell]$,  we may simply write $t = t' \in \EL(T)$ or even $t = t' \in T$.
+
+\begin{lemma}[Universe subsumption]
+  \label{lem:usubsump}
+  If $\ell \leq \ell'$ then $\SET[\ell] \subseteq \SET[\ell']$.
+\end{lemma}
+\begin{proof}
+  Prove $T = T' \in \SET[\ell']$ by induction on $T = T' \in \SET[\ell]$.
+  For the base types this is direct, let us look at the function space.
+\[
+  \rul{T \evalsto \piT A B \qquad
+      T' \evalsto \piT{A'}{B'} \qquad
+      A = A' \in \SET[\ell] \qquad
+      B[u] = B'[u'] \in \SET[\ell] \mforall u = u' \in \EL[\ell](A)
+    }{T = T' \in \SET[\ell]}
+\]
+  By induction hypothesis, $A = A' \in \SET[\ell']$, and we have $\EL[\ell'](A) = \EL[\ell](A)$ by Lemma~\ref{lem:indep}.  Assuming $u = u' \in \EL(A)$, we get $B[u] = B'[u'] \in \SET[\ell']$ by induction hypothesis on $B[u] = B'[u'] \in \SET[\ell]$.
+\end{proof}
 
 \subsection{Type shapes}
 
 Reflection and reification perform $\eta$-expansion such that we arrive at an $\eta$-long $\beta$-normal form.  To perform the $\eta$-expansion, not the precise type is needed, just the approximate shape, in particular, whether it is a function type (do expand) or a base type (do not expand).
-For the logical framework, the shape of a dependent type is just its underlying simple type \cite{harperPfenning:equivalenceLF}. However, in the presence of universes and large eliminations, there is no underlying simple type.  Of course, we can take a type as its own shape, but we want at least that $\Nat \alpha$ and $\Nat b$ have the same shape even for different $\alpha, b$.  Thus, we define a relation $T \shape S$ to express that $S$ is a possible shape of type $T$.
+For the logical framework, the shape of a dependent type is just its underlying simple type \cite{harperPfenning:equivalenceLF}. However, in the presence of universes and large eliminations, there is no underlying simple type.  Of course, we can take a type as its own shape, but we want at least that $\Nat \alpha$ and $\Nat \beta$ have the same shape even for different $\alpha, \beta$.  Thus, we define a relation $T \shape S$ to express that $S$ is a possible shape of type $T$.
 
 \fbox{$T \shape S$} for $T \in \SET[\ell]$.
 \begin{gather*}
   \ru{T \evalsto \Nat \alpha \qquad
-      S \evalsto \Nat b
+      S \evalsto \Nat \beta
     }{T \shape S}
 \qquad
   \ru{T \evalsto N \qquad
@@ -1106,7 +1180,7 @@ For the logical framework, the shape of a dependent type is just its underlying 
 \\[2ex]
   \ru{T \evalsto \forallT B \qquad
       S \evalsto \forallT{B'} \qquad
-      B[\alpha] \shape B'[a'] \mforall \alpha,a' \in \SIZE
+      B[\alpha] \shape B'[\alpha'] \mforall \alpha,\alpha' \in \SIZE
     }{T \shape S}
 \end{gather*}
 % The last rule is the crucial one
@@ -1171,11 +1245,11 @@ $\down{B_1[u_1]}(t_1\,u_1) = \down{B_2[u_2]}(t_2\,u_2) \in \NF$, which delivers 
     }{T \in \SET[\ell]}
 \\[2ex]
   \ru{S_1 \evalsto \forallT{B_1} \qquad
-      B[\alpha] \shape B_1[a'] \mforall \alpha, a' \in \SIZE
+      B[\alpha] \shape B_1[\alpha'] \mforall \alpha, \alpha' \in \SIZE
     }{T \shape S_1}
 \\[2ex]
   \ru{S_2 \evalsto \forallT{B_2} \qquad
-      B[\alpha] \shape B_2[a'] \mforall \alpha, a' \in \SIZE
+      B[\alpha] \shape B_2[\alpha'] \mforall \alpha, \alpha' \in \SIZE
     }{T \shape S_2}
 \end{gather*}
 \begin{enumerate}
@@ -1217,8 +1291,8 @@ PER of substitutions
   \ru{\eta = \eta' \eeq \rho \in \Gamma \qquad \alpha \in \SIZE
     }{\sext \eta \alpha = \sext{\eta'}{\alpha} \eeq \sext{\rho}{\alpha} \in \cext \Gamma \Size}
 \qquad
-  \ru{\eta = \eta' \eeq \rho \in \Gamma \qquad \alpha,a',b \in \SIZE
-    }{\sext \eta \alpha = \sext{\eta'}{a'} \eeq \sext{\rho}{b} \in \erext \Gamma \Size}
+  \ru{\eta = \eta' \eeq \rho \in \Gamma \qquad \alpha,\alpha',\beta \in \SIZE
+    }{\sext \eta \alpha = \sext{\eta'}{\alpha'} \eeq \sext{\rho}{\beta} \in \erext \Gamma \Size}
 \end{gather*}
 We write $\rho \in \Gamma$ for $\rho = \rho \eeq \rho \in \Gamma$.
 \begin{lemma}[Resurrection]
@@ -1237,6 +1311,9 @@ Semantic judgements:
 %  \Gamma \models s & \defas & \mtrue \\
   \Gamma \models T & \defas & \Gamma \models T = T \\
   \Gamma \models T = T' & \defas & \Gamma \models T = T' : s \mforsome s %\Set[\ell] \mforsome \ell
+\\[2ex]
+  \Gamma \models T \leq T' & \defas & \Gamma \models T \mand \Gamma \models T' \mand
+    \EL(T\eta) \subseteq \EL(T'\eta') \mforall \eta = \eta' \eeq \rho \in \Gamma
 \\[2ex]
   \Gamma \models t : T & \defas & \Gamma \models t = t : T \\
   \Gamma \models t = t' : T & \defas & %\models \Gamma \mand
@@ -1264,6 +1341,7 @@ Semantic judgements:
 \end{theorem}
 \begin{proof}
 Simultaneously, by induction on the derivation.
+The soundness of subtyping and the conversion rule is due to subsumption (lemmata \ref{lem:subsump} and \ref{lem:usubsump}).
 
 \begin{caselist}
 \nextcase $\forall$-introduction.
@@ -1283,9 +1361,9 @@ thus, we can instantiate the induction hypothesis and obtain our goal.
 For the main goal,
 assume $\eta = \eta' \eeq \rho \in \Gamma$ and
 show $(\lambda t)\eta = (\lambda t')\eta' \in (\forall T)\rho$.
-To this end, assume arbitrary $\alpha,a',b \in \SIZE$ and show
-$t(\eta,\alpha) = t'(\eta',a') \in T(\rho,b)$.
-Since $(\eta,\alpha) = (\eta',a') \eeq (\rho,b) \in \erext \Gamma \Size$,
+To this end, assume arbitrary $\alpha,\alpha',\beta \in \SIZE$ and show
+$t(\eta,\alpha) = t'(\eta',\alpha') \in T(\rho,\beta)$.
+Since $(\eta,\alpha) = (\eta',\alpha') \eeq (\rho,\beta) \in \erext \Gamma \Size$,
 we conclude by induction hypothesis.
 
 \nextcase $\forall$-elimination.
