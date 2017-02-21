@@ -287,6 +287,8 @@ Inference rules.
 \[
   \ru{\der \Gamma}{\Gamma \der \infty : \Size}
 \qquad
+  \rux{\der \Gamma}{\Gamma \der o : \Size}{o \in \NN}
+\qquad
   \ru{\der \Gamma \qquad \Gamma(i) = \erann[\noterased]\Size
     }{\Gamma \der \ind i + o : \Size
     }
@@ -386,26 +388,26 @@ Computation rules.
     }{\Gamma \der (\lambda t)\,a = t[a] : T[a]}
 \qquad
   \ru{\erext \Gamma \Size \der t : T \qquad
-      \Gamma \der a : \Size \qquad
-      \resurrect \Gamma \der b : \Size
+      % \Gamma \der a : \Size \qquad
+      \resurrect \Gamma \der a, b : \Size
     }{\Gamma \der (\lambda t)\,\ann a = t[a] : T[b]}
 \\[2ex]
-  \ru{\resurrect\Gamma \der b : \Size \qquad
+  \ru{\resurrect\Gamma \der a, b : \Size \qquad
       \Gamma \der T : \Nat (b + 1) \to \Set[\ell] \qquad
-      \Gamma \der a : \Size \qquad
+      % \Gamma \der a : \Size \qquad
       \Gamma \der t_z : T\,\zero{b} \qquad
       \Gamma \der t_s : (n : \Nat b) \to T\,(\suc{b}n)
-    }{\Gamma \der (\zero{a})\,\case[\ell] T {t_z} {t_s} = t_z : T\,\zero{a_z}}
+    }{\Gamma \der (\zero{a})\,\case[\ell] T {t_z} {t_s} = t_z : T\,\zero{b}}
 \\[2ex]
-  \ru{\Gamma \der t : \Nat b \qquad
+  \ru{\resurrect\Gamma \der a : \Size \qquad
+      \Gamma \der t : \Nat b \qquad
       \Gamma \der T : \Nat (b + 1) \to \Set[\ell] \qquad
-      \Gamma \der a : \Size \qquad
       \Gamma \der t_z : T\,\zero{b} \qquad
       \Gamma \der t_s : (n : \Nat b) \to T\,(\suc{b}n)
-    }{\Gamma \der (\suc{a} t)\,\case[\ell] T {t_z} {t_s} = t_s\,t : T\,(\suc{a} t)}
+    }{\Gamma \der (\suc{a} t)\,\case[\ell] T {t_z} {t_s} = t_s\,t : T\,(\suc{b} t)}
 \\[2ex]
   \ru{\Gamma \der c : \Nat b \qquad
-      \Gamma \der a : \Size \qquad
+      \resurrect\Gamma \der a : \Size \qquad
       \Gamma \der T : \FixK\,\ell \qquad %% \funT i \Size \Nat i \to \Set[\ell] \\
       \Gamma \der t : \FixT\,T %% \allT i \Size (\funT x {\Nat i} T\, i\, x) \to \funT x {\Nat (i + 1)} T \,(i+1)\, x
      }{\Gamma \der c\,\fix[\ell] T t = t\ann a (\lambda x. x\,\fix[\ell] T t)\, c : T \,b \, c
@@ -416,7 +418,9 @@ Extensionality rules.
   \ru{\Gamma \der t : \piT U T
     }{\Gamma \der t = \lambda x. t\,x : \piT U T}
 \qquad
-  \ru{\Gamma \der t : \forallT T \qquad \erext \Gamma \Size \der a : \Size
+  \ru{\Gamma \der t : \forallT T \qquad
+      \cext {\resurrect\Gamma} \Size \der a : \Size
+      %\erext \Gamma \Size \der a : \Size
     }{\Gamma \der t = \lambda i. t \ann a : \forallT T}
 \end{gather*}
 Congruence rules.
@@ -456,15 +460,15 @@ Congruence rules.
     }{\Gamma \der t\,a = t'\,a : T[a]}
 \qquad
   \ru{\Gamma \der t = t' : \forallT T \qquad
-      \Gamma \der a, a' : \Size \qquad
-      \resurrect\Gamma \der b : \Size
+      % \Gamma \der a, a' : \Size \qquad
+      \resurrect\Gamma \der a,a',b : \Size
     }{\Gamma \der t \ann a = t' \ann{a'} : T[b]}
 \\[2ex] % \qquad
-  \ru{\Gamma \der a, a' : \Size \qquad
-      \resurrect\Gamma \der b : \Size
+  \ru{%\Gamma \der a, a' : \Size \qquad
+      \resurrect\Gamma \der a, a', b : \Size
     }{\Gamma \der \zero a = \zero {a'}: \Nat (b + 1)}
 \qquad
-  \ru{\Gamma \der a, a' : \Size \qquad
+  \ru{\resurrect \Gamma \der a, a' : \Size \qquad
       \Gamma \der t = t' : \Nat b
     }{\Gamma \der \suc a t = \suc {a'} t' : \Nat (b + 1)}
 \\[2ex]
@@ -523,6 +527,7 @@ Equivalence rules.  (Reflexivity is admissible.)
 Substitution typing. % and equality.
 \fbox{$\Gamma \der \tau : \Delta$}
 (implies $\der \Gamma$ and $\der \Delta$
+ %% and $\Gamma \der \tau : \resurrect \Delta$  %NO
  [and $\resurrect\Gamma \der \tau : \Delta$]
  and $\resurrect\Gamma \der \tau : \resurrect \Delta$).
 
@@ -537,23 +542,31 @@ Substitution typing. % and equality.
 \qquad
   \ru{\Gamma \der \tau : \Delta \qquad
       \Gamma \der a : \Size
-    }{\Gamma \der \sext \tau a : \eext \Delta \Size}
+    }{\Gamma \der \sext \tau a : \cext \Delta \Size}
+\qquad
+  \ru{\Gamma \der \tau : \Delta \qquad
+      \resurrect\Gamma \der a : \Size
+    }{\Gamma \der \sext \tau a : \erext \Delta \Size}
 \end{gather*}
 
-Weakenings \fbox{$\xi : \Gamma \leq \Delta$}  (implies $\der \Gamma$ and $\der \Delta$ and $\Gamma \der \xi : \Delta$).
-\begin{gather*}
-  \ru{\der \Gamma
-    }{\sempty : \Gamma \leq \cempty}
-\qquad
-  \ru{\xi : \Gamma \leq \Delta \qquad
-      \resurrect\Gamma \der T
-    }{\xi \slift : \cext \Gamma T \leq \Delta}
-\qquad
-  \ru{\xi : \Gamma \leq \Delta \qquad
-      \resurrect \Delta \der U \qquad
-      \resurrect\Gamma \der T \leq U \xi
-    }{(\xi \slift, \ind 0) : \cext \Gamma T \leq \cext \Delta U}
-\end{gather*}
+Liftings: $\fbox{$\xi : \Gamma \leq \Delta$}
+  \defas \Gamma \der \xi : \Delta \mand \xi = \slift^k_m \mforsome k,m$
+%  \defas \xi = \slift^k_m \mwith \Gamma \der \xi : \Delta$
+(implies $\der \Gamma$ and $\der \Delta$).
+% (implies $\der \Gamma$ and $\der \Delta$ and $\Gamma \der \xi : \Delta$).
+% \begin{gather*}
+%   \ru{\der \Gamma
+%     }{\sempty : \Gamma \leq \cempty}
+% \qquad
+%   \ru{\xi : \Gamma \leq \Delta \qquad
+%       \resurrect\Gamma \der T
+%     }{\xi \slift : \cext \Gamma T \leq \Delta}
+% \qquad
+%   \ru{\xi : \Gamma \leq \Delta \qquad
+%       \resurrect \Delta \der U \qquad
+%       \resurrect\Gamma \der T \leq U \xi
+%     }{(\xi \slift, \ind 0) : \cext \Gamma T \leq \cext \Delta U}
+% \end{gather*}
 
 % Substitution typing. % and equality.
 % \fbox{$\Gamma \der \sigma : \Delta$}
@@ -626,7 +639,7 @@ Substitution equality
     }{\sueq \Gamma {\sext \sigma a } {\sext {\sigma'} {a'}} {\sext \tau b} {\cext \Delta \Size}}
 \qquad
   \ru{\sueq \Gamma \sigma {\sigma'} \tau \Delta \qquad
-      \Gamma \der a, a', b : T \tau
+      \resurrect\Gamma \der a, a', b : T \tau
     }{\sueq \Gamma {\sext \sigma a } {\sext {\sigma'} {a'}} {\sext \tau b} {\erext \Delta \Size}}
 \end{gather*}
 
@@ -654,8 +667,8 @@ match a part of a judgement.
 \item If\/ $\Gamma \der J$ then $\resurrect \Gamma \der J$.
 \item If\/ $\Gamma \der J : \resurrect \Delta$ % and $\der \Delta$
   then $\Gamma \der J : \Delta$.
-\item If\/ $\Gamma \der \sigma : \Delta$ then $\Gamma \der \sigma : \resurrect\Delta$.
-% then $\resurrect\Gamma \der \sigma : \resurrect\Delta$.
+\item If\/ $\Gamma \der \sigma : \Delta$ % then $\Gamma \der \sigma : \resurrect\Delta$.
+  then $\resurrect\Gamma \der \sigma : \resurrect\Delta$.
 \end{enumerate}
 \end{lemma}
 
@@ -692,6 +705,10 @@ match a part of a judgement.
   \end{enumerate}
 \end{enumerate}
 \end{lemma}
+\begin{corollary}[Partial resurrection for substitution equality]
+  If\/ $\sueq \Gamma \sigma {\sigma'} {\tau} \Delta$ then
+  $\sueq {\resurrect \Gamma} \tau \tau \tau {\resurrect \Delta}$.
+\end{corollary}
 
 \begin{lemma}[Inversion of typing]
 \label{lem:invty} \bla
@@ -1321,6 +1338,7 @@ Then $\piT U T = \funT x {\Nat \infty} {G\,x}$ gives the desired counterexample.
 Shapes are used to direct $\eta$-expansion when we reflect neutrals into semantic types and reify semantic values to long normal forms.  The following theorem is the heart of our technical development.
 
 \begin{theorem}[Reflection and reification]
+\label{thm:rere}
 Let $T \in \SET[\ell]$ and $T \shape S_1$ and $T \shape S_2$.
 \begin{enumerate}
 \item If $n_1 = n_2 \in \NE$ then $\up{S_1}{n_1} = \up{S_2}{n_2} \in T$.
@@ -1394,7 +1412,12 @@ $\down{B_1[u_1]}(t_1\,u_1) = \down{B_2[u_2]}(t_2\,u_2) \in \NF$, which delivers 
 \end{proof}
 
 \begin{corollary}
-  If\/ $T \in \SET[\ell]$ and $t = t' \in T$ then $\down T t = \down T {t'} \in \NF$.
+  \label{cor:rere}
+  Let\/ $T \in \SET[\ell]$.
+  \begin{enumerate}
+  \item If $n = n' \in \NE$ then $\up T n = \up T n' \in T$.
+  \item If $t = t' \in T$ then $\down T t = \down T {t'} \in \NF$.
+  \end{enumerate}
 \end{corollary}
 
 
@@ -1456,6 +1479,7 @@ Semantic judgements:
 \]
 
 \begin{theorem}[Fundamental theorem]
+  \label{thm:fund}
   \bla
   \begin{enumerate}
   \item
@@ -1534,6 +1558,61 @@ thus, by induction hypothesis, $b \rho \in \SIZE$.
 \subsection{Completeness of NbE}
 \label{sec:compl}
 
+We write $\var\Gamma$ for $\var{|\Gamma|}$.
+We define the identity environment $\rho_\Gamma$ by induction on $\Gamma$.
+We set $\rho_{\cempty} = \sempty$ and
+\[
+\begin{array}{lll}
+  \rho_{\cext \Gamma T} & = & (\rho_\Gamma, \up{T\rho_\Gamma} \var\Gamma) \\
+  \rho_{\eext \Gamma \Size} & = & (\rho_\Gamma, \var\Gamma) \\
+\end{array}
+\]
+\begin{lemma}[Identity environment]
+  If $\der \Gamma$ then
+  $\rho_\Gamma \in \Gamma$.
+  % $\rho_\Gamma = \rho_\Gamma \eeq \rho_\Gamma \in \Gamma$
+\end{lemma}
+\begin{proof}
+By induction on $\der \Gamma$.
+\begin{caselist}
+
+\nextcase
+\[
+  \ru{\der \Gamma \qquad \resurrect\Gamma \der T
+    }{\der \cext\Gamma T}
+\]
+By induction hypothesis $\rho_\Gamma \in \Gamma$.
+By resurrection (Lemma~\ref{lem:resenv}) $\rho_\Gamma \in \resurrect\Gamma$.
+By the fundamental theorem (Thm.~\ref{thm:fund}) we have $A := T\rho_\Gamma \in \SET[\ell]$ for some $\ell$.
+By reflection (Cor.~\ref{cor:rere}) it follows that $\up A \var\Gamma \in A$, thus
+$(\rho_\Gamma, \up A \var\Gamma) \in \cext \Gamma T$.
+
+\nextcase
+\[
+  \ru{\der \Gamma
+    }{\der \eext\Gamma \Size}
+\]
+By induction hypothesis $\rho_\Gamma \in \Gamma$.  Since $\var\Gamma \in \SIZE$ we conclude
+$(\rho_\Gamma, \var\Gamma) \in \eext\Gamma \Size)$.
+\end{caselist}
+\end{proof}
+
+We can now define the normalization relation
+$\nbe \Gamma T t \evalsto v \iff \R {|\Gamma|} {\down{T \rho_\Gamma} (t \rho_\Gamma)} v$.
+
+\begin{theorem}[Completeness of NbE]
+  If\/ $\Gamma \der t = t' : T$ then there are normal forms $v \approx v'$ such that
+  $\nbe \Gamma T t \evalsto v$ and $\nbe \Gamma T {t'} \evalsto v'$.
+\end{theorem}
+\begin{proof}
+  By the fundamental theorem, $T \rho_\Gamma \in \SET[\ell]$ for some $\ell$ and
+  $t \rhog = t' \rhog \in T\rhog$.  By reification (Cor.~\ref{cor:rere}) we have
+  $\down{T\rhog} (t\rhog) = \down{T\rhog}(t'\rhog) \in \NF$ which implies the theorem
+  by read back with $k = |\Gamma|$.
+\end{proof}
+
+
+
 \section{Soundness  of NbE}
 \label{sec:compl}
 
@@ -1541,30 +1620,35 @@ In this section, we show that NbE is sound for judgemental equality, i.e., that 
 
 \[
   \fbox{$\LRSize \Gamma a \alpha$} \defas
-  \forall \sigma : \Gamma' \leq \Gamma.\ \
-  \RSize {\Gamma'} \alpha {a\sigma}
+  \forall \xi : \Gamma' \leq \Gamma.\ \
+  \RSize {\Gamma'} \alpha {a\xi}
   % \exists a'.\
   % \RSize {\Gamma'} \alpha a' \mand
-  % \Gamma' \der a\sigma = a' : \Size
+  % \Gamma' \der a\xi = a' : \Size
 \]
 
-\fbox{$\LRT \Gamma {T'} {A'} \ell$} and \fbox{$\LR \Gamma t {T'} f {A'}$} defined by induction on ${A'} \in \SET[\ell]$.
+We simultaneously define
+\fbox{$\LRT \Gamma {T'} {A'} \ell$} for $\Gamma \der T' : \Set[\ell]$
+and \fbox{$\LR \Gamma t {T'} f {A'}$} for $\Gamma \der t : T'$ and $f \in A'$
+defined by induction on ${A'} \in \SET[\ell]$.
 
 \begin{caselist}
 
+\vspace{2ex}
 \nextcase $A' \evalsto N$ neutral.
 
   \noindent
   $\LRT{\Gamma}{T'}{A'}\ell$ iff
-  $\forall \sigma : \Gamma' \leq \Gamma.\ \ \exists M.\ \ \RTy{\Gamma'}{A'}M \mand \Gamma' \der T'\sigma = M : \Set[\ell]$.
+  $\forall \xi : \Gamma' \leq \Gamma.\ \ \exists M.\ \ \RTy{\Gamma'}{A'}M \mand \Gamma' \der T'\xi = M : \Set[\ell]$.
 
   \noindent
   $\LR{\Gamma}{t}{T'}{f}{A'}$ iff
-  $\forall \sigma : \Gamma' \leq \Gamma.\ \
+  $\forall \xi : \Gamma' \leq \Gamma.\ \
    \exists m. \ \
    \R {\Gamma'} {\down {A'} f} m \mand
-   \Gamma' \der t\sigma = m : T'\sigma$.
+   \Gamma' \der t\xi = m : T'\xi$.
 
+\vspace{2ex}
 \nextcase $A' \evalsto \Nat \alpha$.
 
   \noindent
@@ -1573,12 +1657,13 @@ In this section, we show that NbE is sound for judgemental equality, i.e., that 
   \noindent
   $\LR{\Gamma}{t}{T'}{f}{A'}$ iff $\resurrect\Gamma \der T' = \Nat a$ for some $a$ and
   $\LRSize {\resurrect\Gamma} a \alpha$ and \\
-  $\forall \sigma : \Gamma' \leq \Gamma.\ \
+  $\forall \xi : \Gamma' \leq \Gamma.\ \
    \exists v. \ \
    \R {\Gamma'} {\down {A'} f} v \mand
-   \Gamma' \der t\sigma = v : \Nat\,a\sigma$.
+   \Gamma' \der t\xi = v : \Nat\,a\xi$.
 
 
+\vspace{2ex}
 \nextcase $A' \evalsto \Set[\ell']$.
 
   \noindent
@@ -1588,6 +1673,7 @@ In this section, we show that NbE is sound for judgemental equality, i.e., that 
   $\LR \Gamma U {T'} B {A'}$ iff
   $\resurrect\Gamma \der T' = \Set[\ell'] : \Set[\ell]$ and $\LRT \Gamma U B {\ell'}$.
 
+\vspace{2ex}
 \nextcase $A' \evalsto \piT A B$.
 
 \noindent
@@ -1595,8 +1681,8 @@ $\LRT \Gamma {T'} {A'} \ell$ iff
 \[
 \begin{array}{l}
 \Gamma \der T' = \piT U T : \Set[\ell] \mforsome U, T \mand \LRT \Gamma U A \ell \mand \\
-\forall \sigma : \Gamma' \leq \Gamma.\ \
-\LR {\Gamma'} u {U\sigma} a A \implies \LRT {\Gamma'} {T(\sigma,u)} {B[a]} \ell
+\forall \xi : \Gamma' \leq \Gamma.\ \
+\LR {\Gamma'} u {U\xi} a A \implies \LRT {\Gamma'} {T(\xi,u)} {B[a]} \ell
 . \\
 \end{array}
 \]
@@ -1604,12 +1690,13 @@ $\LR \Gamma t {T'} f {A'}$ iff
 \[
 \begin{array}{l}
 \resurrect\Gamma \der T' = \piT U T : \Set[\ell] \mforsome U, T \mand \LRT {\resurrect\Gamma} U A \ell \mand \\
-\forall \sigma : \Gamma' \leq \Gamma.\ \
-\LR {\Gamma'} u {U\sigma} a A \implies \LR {\Gamma'} {t\sigma\,u} {T(\sigma,u)} {f\,a} {B[a]}
+\forall \xi : \Gamma' \leq \Gamma.\ \
+\LR {\Gamma'} u {U\xi} a A \implies \LR {\Gamma'} {t\xi\,u} {T(\xi,u)} {f\,a} {B[a]}
 .
 \end{array}
 \]
 
+\vspace{2ex}
 \nextcase $A' \evalsto \piT \Size B$.
 
 \noindent
@@ -1617,9 +1704,9 @@ $\LRT \Gamma {T'} {A'} \ell$ iff
 \[
 \begin{array}{l}
 \Gamma \der T' = \piT \Size T : \Set[\ell] \mforsome T\\
-\forall \sigma : \Gamma' \leq \Gamma.\ \
+\forall \xi : \Gamma' \leq \Gamma.\ \
 \LRSize {\Gamma'} a \alpha
-\implies \LRT {\Gamma'} {T(\sigma,a)} {B[\alpha]} \ell
+\implies \LRT {\Gamma'} {T(\xi,a)} {B[\alpha]} \ell
 .
 \end{array}
 \]
@@ -1627,13 +1714,14 @@ $\LR \Gamma t {T'} f {A'}$ iff
 \[
 \begin{array}{l}
 \resurrect\Gamma \der T' = \piT \Size T : \Set[\ell] \mforsome T\\
-\forall \sigma : \Gamma' \leq \Gamma.\ \
+\forall \xi : \Gamma' \leq \Gamma.\ \
 \LRSize {\Gamma'} a \alpha
-\implies \LR {\Gamma'} {t\sigma\,a} {T(\sigma,a)} {f\,\alpha} {B[\alpha]}
+\implies \LR {\Gamma'} {t\xi\,a} {T(\xi,a)} {f\,\alpha} {B[\alpha]}
 .
 \end{array}
 \]
 
+\vspace{2ex}
 \nextcase $A' \evalsto \forallT B$.
 
 \noindent
@@ -1641,11 +1729,11 @@ $\LRT \Gamma {T'} {A'} \ell$ iff
 \[
 \begin{array}{l}
 \Gamma \der T' = \forallT T : \Set[\ell] \mforsome T\\
-\forall \sigma : \Gamma' \leq \Gamma,\
+\forall \xi : \Gamma' \leq \Gamma,\
 {\Gamma'} \der b : \Size,\
 \beta \in \SIZE. \ \
 \LRSize {\Gamma'} b \beta
-\implies \LRT {\Gamma'} {T(\sigma,b)} {B[\beta]} \ell
+\implies \LRT {\Gamma'} {T(\xi,b)} {B[\beta]} \ell
 .
 \end{array}
 \]
@@ -1653,34 +1741,90 @@ $\LR \Gamma t {T'} f {A'}$ iff
 \[
 \begin{array}{l}
 \resurrect\Gamma \der T' = \forallT T : \Set[\ell] \mforsome T\\
-\forall \sigma : \Gamma' \leq \Gamma,\
-\Gamma' \der a : \Size,\
-\resurrect{\Gamma'} \der b : \Size,\
+\forall \xi : \Gamma' \leq \Gamma,\
+%\Gamma' \der a : \Size,\
+\resurrect{\Gamma'} \der a,b : \Size,\
 \alpha,\beta \in \SIZE. \ \\ \qquad
 \LRSize {\resurrect{\Gamma'}} b \beta
-\implies \LR {\Gamma'} {t\sigma\,\ann a} {T(\sigma,b)} {f\,\ann\alpha} {B[\beta]}
+\implies \LR {\Gamma'} {t\xi\,\ann a} {T(\xi,b)} {f\,\ann\alpha} {B[\beta]}
 .
 \end{array}
 \]
 
 \end{caselist}
 
+\begin{lemma}[Weakening]
+  Let $\xi : \Gamma' \leq \Gamma$.
+  \begin{enumerate}
+  \item If\/ $\LRSize \Gamma a \alpha$ then $\LRSize{\Gamma'}{a\xi}\alpha$.
+  \item If\/ $\LRT {\Gamma} T A \ell$ then $\LRT{\Gamma'}{T\xi}A \ell$.
+  \item If\/ $\LR \Gamma t T f A$ then $\LR{\Gamma'}{t\xi}{T\xi} f A$.
+  \end{enumerate}
+\end{lemma}
+
 \begin{theorem}[Into and out of the logical relation]
+  \label{thm:into}
   \bla
-  Let $A \in \Set[\ell]$.
+  Let $A \in \SET[\ell]$.
   \begin{enumerate}
 
-  \item $\LR \Gamma t T {\up A n} A$ if for all $\sigma : \Gamma' \leq \Gamma$ there is an $m$ such that
-     $\RNe{\Gamma'}n m$ and $\Gamma' \der t\sigma = m : T$.
+  \item \label{it:into}
+     $\LR \Gamma t T {\up A n} A$ if for all $\xi : \Gamma' \leq \Gamma$ there is an $m$ such that
+     $\RNe{\Gamma'}n m$ and\/ $\Gamma' \der t\xi = m : T$.
 
-  \item If\/ $\LRT{\Gamma} T A \ell$ then for all $\sigma : \Gamma' \leq \Gamma$ there is some normal form $V$ such that
-  $\Rty{\Gamma'} A V$ and $\Gamma' \der T\sigma = V : \Set[\ell]$.
+  \item \label{it:outty}
+     If\/ $\LRT{\Gamma} T A \ell$ then for all $\xi : \Gamma' \leq \Gamma$
+     there is some normal form $V$ such that
+     $\Rty{\Gamma'} A V$ and $\Gamma' \der T\xi = V : \Set[\ell]$.
 
-  \item If\/ $\LR \Gamma t T f A$ then for all $\sigma : \Gamma' \leq \Gamma$ there is some normal form $v$ such that
-  $\R{\Gamma'} {\down A f} v$ and $\Gamma' \der t\sigma = v : T\sigma$.
+  \item \label{it:out}
+    If\/ $\LR \Gamma t T f A$ then for all $\xi : \Gamma' \leq \Gamma$
+    there is some normal form $v$ such that
+    $\R{\Gamma'} {\down A f} v$ and $\Gamma' \der t\xi = v : T\xi$.
 
   \end{enumerate}
 \end{theorem}
+
+\begin{proof}
+We prove the propositions for $A'$ and $T'$ (instead of $A$ and $T$)
+simultaneously by induction on $A' \in \SET[\ell]$.
+
+\begin{caselist}
+
+\nextcase $A' \evalsto \piT A B$ and $\resurrect\Gamma \der T' = \piT U T$.
+\begin{enumerate}
+\item To demonstrate $\LR \Gamma t {T'} {\up {A'} n} {A'}$ we assume
+$\xi : \Gamma' \leq \Gamma$ and $\LR{\Gamma'}{u}{U\xi} a A$ and show
+$\LR{\Gamma'} {(t\xi\,u)} {T(\xi,u)} {\up{B[a]}(n\,\down A a)} {B[a]}$.
+This follows by induction hypothesis (\ref{it:into}) for $B[a] \in \SET[\ell]$ if
+we can prove that for all $\xi' : \Gamma'' \leq \Gamma'$ there is a neutral normal form $m$
+such that $\RNe{\Gamma''} {(n\,\down A a)} m$ and $\Gamma'' \der (t\xi\,u)\xi' = m : T(\xi,u)\xi'$.
+Note that the last goal can be rewritten to $\Gamma'' \der t\xi\xi'\,(u\xi') = m : T(\xi\xi',u\xi')$.
+We know that $\RNe{\Gamma''} n {m_0}$ with $\Gamma'' \der t\xi\xi' = m_0 : T'\xi\xi'$.
+Thus, it is sufficient to show that there is some normal form $v$ such that
+$\R{\Gamma''} {\down A a} v$ and $\Gamma'' \der u\xi' = v : U\xi\xi'$.
+However, this follows by induction hypothesis (\ref{it:out}) on
+assumption $\LR{\Gamma'}{u}{U\xi} a A$ with $\xi'$.
+\end{enumerate}
+\end{caselist}
+\end{proof}
+
+
+\begin{corollary}[Fresh variable]
+  \label{cor:fresh}
+  If $\der \cext \Gamma T$ and $A \in \SET[\ell]$
+  then $\LR {\cext \Gamma T} {\ind 0} {(T \slift)} {(\up A \var\Gamma)} A$.
+\end{corollary}
+\begin{proof}
+  Assume $\xi : \Gamma' \leq \cext \Gamma T$.
+  Note that for the length
+  $i = |\Gamma'| - |\cext \Gamma T|$ of the context extension
+  we have $\ind i = \ind 0 \xi$, thus
+  $\Gamma' \der \ind 0 \xi = \ind i : T \slift \xi$.
+  Since $\RNe{\Gamma'} {\var\Gamma} {\ind i}$,
+  the goal follows now from Thm.~\ref{thm:into} part (\ref{it:into}).
+\end{proof}
+
 
 Logical relation for substitutions.
 \fbox{$\LRSub \Gamma \sigma \tau \Delta \eta \rho$}.
@@ -1701,23 +1845,33 @@ Logical relation for substitutions.
     }{\LRSub \Gamma {(\sigma,a)} {(\tau,a)} {\cext \Delta \Size} {(\eta,\alpha)} {(\rho,\alpha)}}
 \\[2ex]
   \ru{\LRSub \Gamma \sigma \tau \Delta \eta \rho \qquad
-      \Gamma \der a, b : \Size \qquad
+      \resurrect \Gamma \der a, b : \Size \qquad
       \alpha,\beta \in \SIZE \qquad
-      \LRSize \Gamma b \beta
+      \LRSize {\resurrect\Gamma} b \beta
     }{\LRSub \Gamma {(\sigma,a)} {(\tau,b)} {\erext \Delta \Size} {(\eta,\alpha)} {(\rho,\beta)}}
 \end{gather*}
+We write \fbox{$\LRS \Gamma \tau \Delta \rho$} for $\LRSub \Gamma \tau \tau \Delta \rho \rho$.
 
 \begin{lemma}[Properties of the logical relation for substitution]
   \label{lem:wklrsub}
-  Let $\LRSub \Gamma \sigma \tau \Delta \eta \rho$.
+  Let $\LRSub \Gamma \sigma \tau \Delta \eta \rho$. Then:
   \begin{enumerate}
+  \item Welltypedness: $\Gamma \der \sigma : \Delta$
+   and $\Gamma \der \sigma = \sigma \eeq \tau : \Delta$
+   [which in turn implies $\Gamma \der \tau : \Delta$].
   \item Weakening:
-  If $\sigma' : \Gamma' \leq \Gamma$ then
-  $\LRSub{\Gamma'}{\sigma\sigma'}{\tau\sigma'}{\Delta}\eta\rho$.
+  If $\xi : \Gamma' \leq \Gamma$ then
+  $\LRSub{\Gamma'}{\sigma\xi}{\tau\xi}{\Delta}\eta\rho$.
   \item Resurrection:
-  Let $\LRSub {\Gamma} \tau \tau {\resurrect\Delta} \rho \rho$.
+  $\LRS {\resurrect\Gamma} \tau {\resurrect\Delta} \rho$.
+  % $\LRSub {\resurrect\Gamma} \tau \tau {\resurrect\Delta} \rho \rho$.
+  \item \label{it:sizesub} Size substitution:
+  If $\resurrect\Delta \der a : \Size$ then $a\eta \in \SIZE$.
   \end{enumerate}
 \end{lemma}
+\begin{proof}
+  For part (\ref{it:sizesub}), the only interesting case $a = \ind i + o$ can be proved by observing that $\eta(i) \in \SIZE$.
+\end{proof}
 
 % \begin{lemma}[Typing of constructed data]
 % \label{lem:invdata} \bla
@@ -1733,9 +1887,9 @@ Validity judgements.
     \LR {\Gamma'} {t \sigma} {T \tau} {t \eta} {T \rho}
     \mforall \LRSub {\Gamma'} \sigma \tau \Gamma \eta \rho
 \\[1ex]
-  \Gamma \valid \sigma : \Delta & \defas &
-    \LRSub {\Gamma'} {\sigma \sigma'} {\sigma \tau'} \Delta {\sigma \eta'} {\sigma \rho'}
-    \mforall \LRSub {\Gamma'} {\sigma'} {\tau'} \Gamma {\eta'} {\rho'}
+  \Gamma \valid \sigma_0 : \Delta & \defas &
+    \LRSub {\Gamma'} {\sigma_0 \sigma} {\sigma_0 \tau} \Delta {\sigma_0 \eta} {\sigma_0 \rho}
+    \mforall \LRSub {\Gamma'} {\sigma} {\tau} \Gamma {\eta} {\rho}
 \end{array}
 \]
 
@@ -1761,18 +1915,21 @@ Each by induction on the derivation.
 \]
 Assume $\LRSub {\Delta} {\sigma} {\tau} \Gamma {\eta} {\rho}$ and show
 $\LR \Delta {(\lambda t)\sigma} {(\forall T)\tau} {(\lambda t)\eta} {(\forall T)\rho}$.
-To this end, assume a weakening $\sigma' : \Delta' \leq \Delta$ and
-size expressions $\Delta' \der a : \Size$ and
-$\resurrect{\Delta'} \der b : \Size$ and size values $\alpha,\beta$ with
-$\LRSize {\Delta'} b \beta$ and show
-$\LR {\Delta'} {t(\sigma\sigma',a)} {T(\tau\sigma',b)} {t(\eta,\alpha)} {T(\rho,\beta)}$.
+To this end, assume a weakening $\xi : \Delta' \leq \Delta$ and
+size expressions % $\Delta' \der a : \Size$ and
+$\resurrect{\Delta'} \der a, b : \Size$ and size values $\alpha,\beta$ with
+$\LRSize {\resurrect{\Delta'}} b \beta$ and show
+$\LR {\Delta'} {(\lambda t)\sigma\xi \ann a} {T(\tau \slift, \ind 0)(\xi,b)} {(\lambda t)\eta \ann \alpha} {T(\rho\slift, \ind 0)[\beta]}$.
+It suffices to show (weak head reduction, substitution laws) that
+$\LR {\Delta'} {t(\sigma\xi,a)} {T(\tau\xi,b)} {t(\eta,\alpha)} {T(\rho,\beta)}$.
 This follows from the induction hypothesis, since
-$\LRSub {\Delta'} {(\sigma\sigma',a)} {(\tau\sigma',b)} {\erext \Gamma \Size} {(\eta,\alpha)} {(\rho,\beta)}$
+$\LRSub {\Delta'} {(\sigma\xi,a)} {(\tau\xi,b)} {\erext \Gamma \Size} {(\eta,\alpha)} {(\rho,\beta)}$
 by Lemma~\ref{lem:wklrsub} and substitution extension.
 
 \nextcase $\forall$-elimination.
 \[
-  \ru{\Gamma \der t : \forall T \qquad \Gamma \der a : \Size \qquad \resurrect \Gamma \der b : \Size
+  \ru{\Gamma \der t : \forall T \qquad % \Gamma \der a : \Size \qquad
+      \resurrect \Gamma \der a,b : \Size
     }{\Gamma \der t \ann a : T[b]}
 \]
 Assume $\LRSub {\Delta} {\sigma} {\tau} \Gamma {\eta} {\rho}$ and show
@@ -1780,12 +1937,54 @@ $\LR \Delta {t \ann a \sigma} {T[b]\tau} {t \ann a \eta} {T[b]\rho}$.
 By induction hypothesis we have $\LR \Delta {t \sigma} {(\forall T)\tau} {t \eta} {(\forall T) \rho}$.
 It suffices to show
 \begin{enumerate}
-\item $\Delta \der a\sigma : \Size$
+\item $\resurrect\Delta \der a\sigma : \Size$: follows from $\resurrect\Gamma \der a : \Size$
+  via $\Delta \der \sigma : \Gamma$ and $\resurrect\Delta \der \sigma : \resurrect\Gamma$
+  and substitution.
 %\item $\resurrect\Delta \der b\tau : \Size$.
- and $a\eta \in \SIZE$: follows by induction hypothesis on $\Gamma \der a : \Size$.
+\item $a\eta \in \SIZE$: follows from $\resurrect\Gamma \der a : \Size$
+  by Lemma~\ref{lem:wklrsub}, part (\ref{it:sizesub}).
 %\item $b\rho \in \SIZE$.
 \item $\LRSize {\resurrect \Delta} {b\tau} {b\rho}$: follows from induction hypothesis on $\resurrect \Gamma \der b : \Size$ via $\LRSub {\resurrect \Delta} \tau \tau {\resurrect\Gamma} \rho \rho$ (from Lemma~\ref{lem:wklrsub}).
 \end{enumerate}
+
+\end{caselist}
+\end{proof}
+
+\begin{lemma}[Identity environment]
+  If $\der \Gamma$ then
+  $\LRS \Gamma \sid \Gamma \rhog$.
+\end{lemma}
+\begin{proof}
+  By induction on $\der \Gamma$.
+\begin{caselist}
+
+\nextcase
+\[
+  \ru{\der \Gamma \qquad \resurrect\Gamma \der T
+    }{\der \cext \Gamma T}
+\]
+Let $f = \up{T\rhog} \var\Gamma$.
+We have to show $\LRS{\cext \Gamma T} \sid {\cext\Gamma T} {(\rhog, f)}$.
+Note that $\sid = (\slift,\ind0)$, thus it remains to show that
+$\LRS {\cext \Gamma T} {\slift} \Gamma \rhog$ and
+$\LR {\cext \Gamma T} {\ind0} {T\slift} f {T\rhog}$.
+The first goal follows by weakening from the induction hypothesis
+$\LRS \Gamma \sid \Gamma \rhog$.
+%Further, by resurrection we get
+%$\LRS {\cext \Gamma T} {\slift} \Gamma \rhog$, and by resurrection
+%$\LRS {\cext{\resurrect\Gamma}T}{\slift}{\resurrect\Gamma}\rhog$.
+Since $\rhog \in \resurrect\Gamma$, we get $T \rhog \in \SET[\ell]$ for some $\ell$
+by the first fundamental theorem (Thm.~\ref{thm:fund}).
+Thus, the second goal follows by Cor.~\ref{cor:fresh}.
+% Further note that for all $\Gamma' = \cext {\cext \Gamma T} {\Delta}$ and
+% $\xi : \Gamma' \leq \cext \Gamma T$ we have that
+% $\RNe{\Gamma'} {\var\Gamma} {\ind{|\Gamma'|\monus|\Gamma|}} = {\ind{|\Delta|}}$ and
+% $\Gamma' \der \ind 0 \xi = \ind{|\Delta|} : T\xi$.
+% This allows us to apply Thm.~\ref{thm:into} to get $\ind0$ into the logical relation as
+% $\LR {\cext \Gamma T} {\ind0} T f {T\rhog}$.
+
+\nextcase
+
 
 \end{caselist}
 \end{proof}
