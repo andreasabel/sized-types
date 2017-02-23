@@ -1860,7 +1860,13 @@ assumption $\LR{\Gamma'}{u}{U\xi} a A$ with $\xi'$.
 \end{caselist}
 \end{proof}
 \begin{corollary}[One-to-one]
-  If $\LRT \Gamma T A \ell$ and $\LRT \Gamma {T'} A {\ell'}$ then $\Gamma \der T = T'$.
+\bla
+% \begin{enumerate}
+% \item
+% If $\LRSize \Gamma a \alpha$ and $\LRSize \Gamma {a'} \alpha$ then $a = a'$.
+% \item
+If $\LRT \Gamma T A \ell$ and $\LRT \Gamma {T'} A {\ell'}$ then $\Gamma \der T = T'$.
+%\end{enumerate}
 \end{corollary}
 
 \begin{corollary}[Fresh variable]
@@ -1879,12 +1885,18 @@ assumption $\LR{\Gamma'}{u}{U\xi} a A$ with $\xi'$.
 \end{proof}
 
 
-\begin{lemma}[\citet{fridlenderPagano:tlca13}]
+\begin{lemma}[Semantic subtyping implies judgmental subtyping \cite{fridlenderPagano:tlca13}]
+\bla
+\begin{enumerate}
+\item
+   If $\LRSize \Gamma a \alpha$ and $\LRSize \Gamma {b} \beta$ and $\alpha \leq \beta$ then $a \leq b$.
+\item
    If $\LRT \Gamma T A \ell$ and $\LRT \Gamma {T'} {A'} {\ell'}$ and $A \leq A' \in \TYPE$ then $\Gamma \der T \leq T'$.
+\end{enumerate}
 \end{lemma}
 
 
-\begin{lemma}[\citet{fridlenderPagano:tlca13}]
+\begin{lemma}[Subsumption for the logical relation \cite{fridlenderPagano:tlca13}]
    If $\LRT \Gamma T A \ell$ and $\LRT \Gamma {T'} {A'} {\ell'}$ and $A \leq A' \in \TYPE$ then
    $\LR \Gamma t T f A$ implies $\LR \Gamma t {T'} f {A'}$.
 \end{lemma}
