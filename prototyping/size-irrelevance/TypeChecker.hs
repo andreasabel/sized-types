@@ -490,7 +490,7 @@ resurrect = \case
       ShapeIrr -> Relevant
       r -> r
 
--- * Subtyping
+-- * Subtyping and type equality
 
 subType :: Val -> Val -> Check ()
 subType ti tc = do
@@ -509,9 +509,6 @@ subType ti tc = do
         subType b1 b2
     _ -> equalType ti tc
 
--- subDom :: Dom Val -> Dom Val -> Check ()
--- subDom (Dom r1 t1) (Dom r2 t2) = do
-
 equalType :: Val -> Val -> Check ()
 equalType v v' = do
   t  <- reifyType v
@@ -519,11 +516,34 @@ equalType v v' = do
   unless (t == t') $
     throwError $ "Inferred type " ++ show t ++ " is not equal to expected type " ++ show t'
 
+-- * Admissibility check for the type of @fix@.
 
--- * Continuity check
+-- | A simple positivity check.
+--
+--   For the type constructor T of fix we check that
+--   @
+--     i : ..Size, x : Nat i |- T i x <= T oo x
+--   @
+--   This does not introduce a new concept an is sound, but excludes
+--   @
+--     min : forall .i -> Nat i -> Nat i -> Nat i
+--   @
 
 admissible :: Val -> Check ()
 admissible v = do
+  k <- length <$> asks _envCxt
+  addContext ("i", VSize) $ do
+    va <- lastVal
+    addContext ("x", VNat $ va) $ do
+      u  <- lastVal
+      t1  <- applyArgs v [ Arg ShapeIrr va, Arg Relevant u]
+      t2  <- applyArgs v [ Arg ShapeIrr VInfty, Arg Relevant u]
+      subType t1 t2
+
+-- | Semi-continuity check (to be completed)
+
+admissibleSemi :: Val -> Check ()
+admissibleSemi v = do
   k <- length <$> asks _envCxt
   addContext ("i", VSize) $ do
     va <- lastVal

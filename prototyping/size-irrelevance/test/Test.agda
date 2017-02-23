@@ -139,7 +139,10 @@ pred = \ i n ->
 sub : forall .j -> Nat j -> forall .i -> Nat i -> Nat i  --;
 sub = \ j y ->
   fix (\ _ _ -> forall .i -> Nat i -> Nat i)
-      (\ _ f -> \ { (zero _) -> \ i x -> x; (suc _ y) -> \ i x -> f y i (pred i x) }) --- pred i (f y i x) })
+      (\ _ f -> \
+        { (zero _) -> \ i x -> x
+        ; (suc _ y) -> \ i x -> f y i (pred i x)
+        }) --- pred i (f y i x) })
       y
 
 --; --- Lemma: x - x == 0
@@ -147,7 +150,10 @@ sub = \ j y ->
 sub_diag : forall .i (x : Nat i) -> Eq (Nat oo) (sub i x i x) (zero oo)  --;
 sub_diag = \ i x ->
   fix (\ i x -> Eq (Nat oo) (sub i x i x) (zero oo))
-      (\ _ f -> \{ (zero _) -> refl (Nat oo) (zero oo) ; (suc _ y) -> f y })
+      (\ _ f -> \
+        { (zero _) -> refl (Nat oo) (zero oo)
+        ; (suc _ y) -> f y
+        })
       x
 
 --- Large eliminations
@@ -183,3 +189,22 @@ sum = \ _ n ->
 
 sum123 : Eq (Nat oo) (sum oo three (zero oo) one two three) six --;
 sum123 = refl (Nat oo) six
+
+--; --- The minimum function on Nat
+--; --- Succeeds in Agda, but fails admissibility test in Sit.
+
+--(
+---
+--- min : forall .i -> Nat i -> Nat i -> Nat i --;
+--- min = \ _ x ->
+---   fix (\ i _ -> Nat i -> Nat i)
+---       (\ i f -> \
+---         { (zero _) -> \ y -> y
+---         ; (suc _ x) -> \
+---           { (zero _) -> suc i x
+---           ; (suc _ y) -> f x y
+---           }
+---         })
+---       x
+---
+--)
