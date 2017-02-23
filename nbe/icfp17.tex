@@ -955,17 +955,19 @@ Judgements.
   \ru{\RSize k \alpha b
     }{\RElim k \alpha b}
 \qquad
-  \ru{\RSize k \alpha b
-    }{\RElim k {\ann \alpha} {\ann b}}
+  \ru{
+    }{\RElim k {\ann \alpha} {\ann \infty}}
+  % \ru{\RSize k \alpha b
+  %   }{\RElim k {\ann \alpha} {\ann b}}
 \\[2ex]
   \ru{\RTy k T V \qquad
       \R k {d_z} {v_z} \qquad
       \R k {d_s} {v_s}
     }{\RElim k {(\case[\ell] T {d_z} {d_s})} {\case[\ell] V {v_z} {v_s}}}
 \qquad
-  \ru{\RTy k T V \qquad
+  \ru{\R k D V \qquad
       \R k d v
-    }{\RElim k {(\fix[\ell] T d)} {\fix[\ell] V v}}
+    }{\RElim k {(\fix[\ell] D d)} {\fix[\ell] V v}}
 \end{gather*}
 \fbox{$\RTy k T V$}
 \begin{gather*}
@@ -990,7 +992,7 @@ Judgements.
     }{\RTy k T {\epiT \Size V}}
 \end{gather*}
 
-We write \fbox{$t \approx t'$} iff $t$ and $t'$ are syntactically equal if we ignore sizes $\ann a$ in irrelevant positions.  For example, $\suc a \tzero \approx \suc 0 \tzero$, but $\Nat a \not\approx \Nat 0$.
+% We write \fbox{$t \approx t'$} iff $t$ and $t'$ are syntactically equal if we ignore sizes $\ann a$ in irrelevant positions.  For example, $\suc a \tzero \approx \suc 0 \tzero$, but $\Nat a \not\approx \Nat 0$.
 
 
 
@@ -1006,7 +1008,7 @@ The PERs $\NE$ characterizes neutral reifyable terms.
 %     & \defas &
 %     T \evalsto N \mand T' \evalsto N' \mand
 %     \mforall k \mboth
-%     \RNe k n m \mand \RNe k {n'} {m'} \mand m \approx m'
+%     \RNe k n m \mand \RNe k {n'} {m'} \mand m \nfeq m'
 %     .\\
 % \end{array}
 % \]
@@ -1015,24 +1017,43 @@ The PERs $\NE$ and $\NF$ characterize (neutral) normalizing terms.
 \begin{array}{l@{\quad}l@{\quad}l@{~}l@{~}l@{~}l@{~}l@{~}l}
   \fbox{$n = n' \in \NE$}
     & \defas &
-    \RNe k n m &\mand& \RNe k {n'} {m'} &\mand& m \approx m' &\mforall k \\
+    \RNe k n m &\mand& \RNe k {n'} {m'} &\mand& m \nfeq m' &\mforall k \\
   \fbox{$d = d' \in \NF$}
     & \defas &
-    \R k d v &\mand& \R k {d'} {v'} &\mand& v \approx v' &\mforall k \\
+    \R k d v &\mand& \R k {d'} {v'} &\mand& v \nfeq v' &\mforall k \\
+  \fbox{$e = e' \in \ELIM$}
+    & \defas &
+    \RElim k e e_v &\mand& \R k {e'} {e_v'} &\mand& e_v \nfeq e_v' &\mforall k \\
+  \fbox{$A = A' \in \TY$}
+    & \defas &
+    \RTy k A V &\mand& \RTy k {A'} {V'} &\mand& V \nfeq V' &\mforall k \\
 \end{array}
-  % \ru{\RNe k t m \mand \RNe k {t'} {m'} \mand m \approx m' \mforall k
+  % \ru{\RNe k t m \mand \RNe k {t'} {m'} \mand m \nfeq m' \mforall k
   %   }{t = t' \in \NE}
-  % \ru{t \evalsto \up N n \qquad t' \evalsto \up{N'}{n'} \qquad n \approx n'
+  % \ru{t \evalsto \up N n \qquad t' \evalsto \up{N'}{n'} \qquad n \nfeq n'
   %   }{t = t' \in \NE}
 \]
 %All PERs $\A$ we consider are sandwiched $\NE \subseteq \A \subseteq \NF$ between $\NE$ and $\NF$.
 
-\begin{lemma}[Closure properties of $\NE$ and $\NF$]
+\begin{lemma}[Closure properties of $\NE$]
+  \label{lem:closne}
   \bla
   \begin{enumerate}
   \item $\lev k = \lev k \in \NE$.
-  \item If $n = n' \in \NE$ and $d = d' \in \NF$ then $n\,d = n'\,d' \in \NE$.
-%  \item If $d = d' \in \NF$
+  \item If $n = n' \in \NE$ and $e = e' \in \ELIM$ then $n\,e = n'\,e' \in \NE$.
+  \end{enumerate}
+\end{lemma}
+
+\begin{lemma}[Closure properties of $\ELIM$]
+  \label{lem:closelim}
+  \bla
+  \begin{enumerate}
+  \item If $d = d' \in \NF$ then $d = d' \in \ELIM$.
+  \item If $\alpha \in \SIZE$ then $\alpha = \alpha \in \ELIM$.
+  \item $\ann \alpha = \ann{\alpha'} \in \ELIM$.
+  \item If $A = A' \in \TY$ and $d_z = d_z' \in \NF$ and $d_s = d_s' \in \NF$
+        then $\case[\ell] A {d_z}{d_s} = \case[\ell]{A'}{d_z'}{d_s'} \in \ELIM$.
+  \item If $D = D' \in \NF$ and $d = d' \in \NF$ then $\fix[\ell] D d = \fix[\ell]{D'}{d'} \in \ELIM$.
   \end{enumerate}
 \end{lemma}
 
@@ -1369,7 +1390,7 @@ By induction on $T \in \SET[\ell]$ and cases on $T \shape S_1$ and $T \shape S_2
 \item To show $\up{S_1}{n_1} = \up{S_2}{n_2} \in T$ assume arbitrary $u_1 = u_2 \in A$.
   Let $d_i = \down{A_i}{u_i}$.
   By induction hypothesis, $d_1 = d_2 \in \NF$.
-  Thus, $n_1\,d_1 = n_2\,d_2 \in \NE$, and
+  Thus, $n_1\,d_1 = n_2\,d_2 \in \NE$ by Lemma~\ref{lem:closne}, and
   by induction hypothesis,  $\up{B_1[u_1]}(n_1\,d_1) = \up{B_2[u_2]}(n_2\,d_2) \in B[u_1]$.
   With $(\up{S_i}{n_i})\,u_i \evalsto \up{B_i[u_i]}(n_i\,d_i)$ we are done by definition of $\EL(T)$.
 
@@ -1396,7 +1417,7 @@ $\down{B_1[u_1]}(t_1\,u_1) = \down{B_2[u_2]}(t_2\,u_2) \in \NF$, which delivers 
 \end{gather*}
 \begin{enumerate}
 \item To show $\up{S_1}{n_1} = \up{S_2}{n_2} \in T$ assume arbitrary $\alpha_1,\alpha_2 \in \SIZE$.
-  Since $n_1 \ann{\alpha_1} = n_2 \ann{\alpha_2} \in \NE$, we obtain
+  Since $n_1 \ann{\alpha_1} = n_2 \ann{\alpha_2} \in \NE$ by Lemma~\ref{lem:closne}, we obtain
   $\up{B_1[\alpha_1]}{(n_1 \ann{\alpha_1})} = \up{B_2[\alpha_2]}{(n_2 \ann{\alpha_2})} \in B[\alpha_1]$
   by induction hypothesis.
   Thus, $(\up{S_1}{n_1}) \ann{\alpha_1} = (\up{S_2}{n_2}) \ann{\alpha_2} \in B[\alpha_1]$
@@ -1601,7 +1622,7 @@ We can now define the normalization relation
 $\nbe \Gamma T t \evalsto v \iff \R {|\Gamma|} {\down{T \rho_\Gamma} (t \rho_\Gamma)} v$.
 
 \begin{theorem}[Completeness of NbE]
-  If\/ $\Gamma \der t = t' : T$ then there are normal forms $v \approx v'$ such that
+  If\/ $\Gamma \der t = t' : T$ then there are normal forms $v \nfeq v'$ such that
   $\nbe \Gamma T t \evalsto v$ and $\nbe \Gamma T {t'} \evalsto v'$.
 \end{theorem}
 \begin{proof}
