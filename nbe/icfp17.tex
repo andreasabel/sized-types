@@ -713,7 +713,9 @@ match a part of a judgement.
 \begin{lemma}[Inversion of typing]
 \label{lem:invty} \bla
 \begin{enumerate}
-\item TODO
+\item If $\Gamma \der \lambda t : T'$ then either $\Gamma \der \piT U T \leq T'$ and
+  $\cext \Gamma U \der t : T$ for some $U,T$ or $\Gamma \der \epiT\Size T \leq T'$ and
+  $\eext \Gamma \Size \der t : T$ for some $T$.
 \end{enumerate}
 \end{lemma}
 
@@ -1619,7 +1621,8 @@ $(\rho_\Gamma, \var\Gamma) \in \eext\Gamma \Size)$.
 \end{proof}
 
 We can now define the normalization relation
-$\nbe \Gamma T t \evalsto v \iff \R {|\Gamma|} {\down{T \rho_\Gamma} (t \rho_\Gamma)} v$.
+$\fbox{$\nbe \Gamma T t \evalsto v$} \iff \R {\Gamma} {\down{T \rho_\Gamma} (t \rho_\Gamma)} v$.
+Whenever $\nbe \Gamma T t \evalsto v$, we may write $\nbe \Gamma T t$ for $v$.
 
 \begin{theorem}[Completeness of NbE]
   If\/ $\Gamma \der t = t' : T$ then there are normal forms $v \nfeq v'$ such that
@@ -1972,6 +1975,7 @@ It suffices to show
 \end{proof}
 
 \begin{lemma}[Identity environment]
+  \label{lem:idenv}
   If $\der \Gamma$ then
   $\LRS \Gamma \sid \Gamma \rhog$.
 \end{lemma}
@@ -2010,6 +2014,135 @@ Thus, the second goal follows by Cor.~\ref{cor:fresh}.
 \end{caselist}
 \end{proof}
 
+\begin{corollary}[Soundness of NbE]
+  \label{cor:soundnbe} \bla
+  \begin{enumerate}
+  \item \label{it:sound}
+  If\/ $\Gamma \der t : T$ then $\Gamma \der t = \nbe \Gamma T t : T$.
+  \item
+  If\/ $\Gamma \der t,t' : T$ and $\nbe \Gamma T t \equiv \nbe \Gamma T {t'}$ then
+  $\Gamma \der t = t' : T$.
+  \end{enumerate}
+\end{corollary}
+\begin{proof}
+  \bla
+  \begin{enumerate}
+
+  \item For the identity environment $\LRS \Gamma \sid \Gamma \rhog$ (Lemm~\ref{lem:idenv})
+  the Fundamental Theorem for Typing gives $\LR \Gamma t T {t\rhog} {T\rhog}$.
+  This implies $\R \Gamma {\down{(T\rhog)} (t\rhog)} v$ for some normal form $v$ and
+  $\Gamma \der t = v : T$ by Thm.~\ref{thm:into}.
+
+  \item By transitivity of judgmental equality from (\ref{it:sound}).
+     Here we use that the computed normal forms are identical because
+     we erase all size annotations $\ann\alpha$ to $\ann\infty$ during readback.
+  \end{enumerate}
+\end{proof}
+
+\begin{corollary}[Decidability of judgemental equality]
+  If\/ $\Gamma \der t,t' : T$ then the test whether $\nbe\Gamma T t \equiv \nbe\Gamma T{t'}$
+  terminates and
+  decides $\Gamma \der t = t' : T$.
+\end{corollary}
+\begin{proof}
+  Follows directly from soundness (which includes termination) and completeness of NbE.
+\end{proof}
+
+For normalization of types, we introduce \fbox{$\Nbe \Gamma T$}
+via the relation $\Nbe \Gamma T \evalsto V \defas \RTy \Gamma {T\rhog} V$.
+Analogously, we show that the test $\Nbe \Gamma T \equiv \Nbe \Gamma T'$
+decides type equality $\Gamma \der T = T'$.
+
+\begin{corollary}[Function type injectivity]
+  \label{cor:piinj}
+  \bla
+  \begin{enumerate}
+  \item \label{it:piinj}
+    If $\Gamma \der \piT U T = \piT{U'}{T'} : s$ then
+    $\Gamma \der U = U' : s$ and
+    $\cext \Gamma U \der T = T' : s$.
+  \item \label{it:allinj}
+    If $\Gamma \der \epiT \Size T = \piT{\Size}{T'} : s$ then
+    $\cext \Gamma \Size \der T = T' : s$.
+  \end{enumerate}
+\end{corollary}
+\begin{proof}\bla
+We prove statement (\ref{it:piinj}), the second statement follows analogously.
+By the fundamental theorem,
+$(\piT U T)\rhog = (\piT{U'}{T'})\rhog \in s$ which by definition means
+$U\rhog = U'\rhog \in s$ and $T(\rhog,u) = T'(\rhog,u') \in s$ for all $u = u' \in s$.
+By reification (Thm.~\ref{thm:rere}),
+$\RTy\Gamma {U\rhog} V$ and $\RTy\Gamma {U'\rhg} V$ for some normal form
+$V$.
+Since by inversion we have $\Gamma \der U,U' : s$ we get $\Gamma \der U = U' : s$ by soundness of NbE.
+Now, choosing $u := u' := \up U \var\Gamma \in U$, obtain
+$T\rhogu = T' \rhogu \in s$, which analogously gives us $\cext\Gamma U \der T = T' : s$.
+\end{proof}
+
+The injectivity of function types allows a stronger inversion theorem for redexes.
+
+\begin{lemma}[Strong inversion of redexes]
+  \label{lem:stronginv}
+  \bla
+  \begin{enumerate}
+  \item   If $\Gamma \der (\lambda t)\,u : T'$ then
+  $\cext \Gamma U \der t : T$ and $\Gamma \der u : U$ and $\Gamma \der T[u] \leq T'$
+  for some $U,T$.
+  \item   If $\Gamma \der (\lambda t)\,a : T'$ then
+  $\cext \Gamma \Size \der t : T$ and $\Gamma \der a : \Size$ and $\Gamma \der T[a] \leq T'$
+  for some $U,T$.
+  \item   If $\Gamma \der (\lambda t)\,\ann a : T'$ then
+  $\erext \Gamma \Size \der t : T$ and $\resurrect \Gamma \der a : \Size$ and $\Gamma \der T[a] \leq T'$
+  for some $U,T$.
+  \end{enumerate}
+\end{lemma}
+
+\begin{theorem}[Subject reduction]
+  \label{thm:sr}
+  If $\Gamma \der t : T$ and $t \evalsto w$ then $\Gamma \der t = w : T$.
+\end{theorem}
+\begin{proof}
+  By induction on $t \evalsto w$, using strong inversion on $\Gamma \der t : T$.
+\end{proof}
+
+\section{Type Checking}
+\label{sec:tycheck}
+
+Algorithmic subtyping \fbox{$\Gamma \der T \asub T'$}.
+\begin{gather*}
+  \ru{T \evalsto n \qquad
+      T' \evalsto n' \qquad
+      \Nbe \Gamma n \equiv \Nbe \Gamma n'
+    }{\Gamma \der T \asub T'}
+\\[2ex]
+  \rux{T \evalsto \Set[\ell] \qquad
+      T' \evalsto \Set[\ell']
+    }{\Gamma \der T \asub T'
+    }{\ell \leq \ell'}
+\qquad
+  \ru{T \evalsto \Nat a \qquad
+      T' \evalsto \Nat a'
+    }{\Gamma \der T \asub T'
+    }{a \leq a'}
+\\[2ex]
+  \ru{T_1' \evalsto \piT{U_1}{T_1} \qquad
+      T_2' \evalsto \piT{U_2}{T_2} \qquad
+      \Gamma \der U_2 \asub U_1 \qquad
+      \cext \Gamma {U_2} \der T_1 \asub T_2
+    }{\Gamma \der T_1' \asub T_2'}
+\\[2ex]
+  \ru{T_1' \evalsto \epiT\Size{T_1} \qquad
+      T_2' \evalsto \epiT\Size{T_2} \qquad
+      \cext \Gamma {\Size} \der T_1 \asub T_2
+    }{\Gamma \der T_1' \asub T_2'}
+\end{gather*}
+
+\begin{lemma}[Soundness of algorithmic subtyping]
+  If $\Gamma \der T \asub T'$ then $\Gamma \der T \leq T'$.
+\end{lemma}
+\begin{proof}
+  By induction on $\Gamma \der T \asub T'$, using soundness of NbE and subject reduction.
+\end{proof}
 
 \section{Conclusions}
 \label{sec:concl}
