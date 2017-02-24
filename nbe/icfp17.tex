@@ -1686,20 +1686,87 @@ Whenever $\nbe \Gamma T t \evalsto v$, we may write $\nbe \Gamma T t$ for $v$.
 \label{sec:compl}
 
 In this section, we show that NbE is sound for judgemental equality, i.e., that same normal form implies definitional equality.  The proof follows \citet{abelCoquandDybjer:lics07,abel:habil}.  However, the logical relation defined in the following will also yield a weak head normalization theorem.
+\begin{alignat*}{8}
+& \Gamma \der a && \doteq \tRsize\, \alpha
+  && \quad\defas\quad
+  && \forall \xi : \Gamma' \leq \Gamma.\ \
+  && \mathrlap{ \RSize {\Gamma'} \alpha {a\xi} }
+\\[-0.6ex]
+& \Gamma \der T && \doteq \tRty\, A  : s
+  && \quad\defas\quad
+  && \forall \xi : \Gamma' \leq \Gamma.\ \
+  && \exists V.\
+  && \RTy{\Gamma'} A V
+  && ~\mand~ \Gamma' \der T\xi = V : s
+\\[-0.6ex]
+& \Gamma \der t && \doteq \tR\, d  : T
+  && \quad\defas\quad
+  && \forall \xi : \Gamma' \leq \Gamma.\ \
+  && \exists v.\
+  && \R{\Gamma'} d v
+  && ~\mand~ \Gamma' \der t\xi = v : T\xi
+\\[-0.6ex]
+& \Gamma \der t && \doteq \tRne\, n  : T
+  && \quad\defas\quad
+  && \forall \xi : \Gamma' \leq \Gamma.\ \
+  && \exists m.\
+  && \RNe{\Gamma'} n m
+  && ~\mand~ \Gamma' \der t\xi = m : T\xi
+\end{alignat*}
+% \[
+% \begin{array}{lll}
+% \Gamma \der a \doteq \tRsize\, \alpha
+%   & \defas &
+%   \forall \xi : \Gamma' \leq \Gamma.\ \ \RSize {\Gamma'} \alpha {a\xi}
+% \\
+% \Gamma \der T \doteq \tRty\, A : s
+%   & \defas &
+%   \forall \xi : \Gamma' \leq \Gamma.\ \
+%   \exists V.\
+%   \RTy{\Gamma'} A V \mand
+%   \Gamma' \der T\xi = V : s
+% \\
+% \Gamma \der t \doteq \tR\, d : T
+%   & \defas &
+%   \forall \xi : \Gamma' \leq \Gamma.\ \
+%   \exists v.\
+%   \R{\Gamma'} d v \mand
+%   \Gamma' \der t\xi = v : T\xi
+% \\
+% \Gamma \der t \doteq \tRne\, n : T
+%   & \defas &
+%   \forall \xi : \Gamma' \leq \Gamma.\ \
+%   \exists m.\
+%   \RNe{\Gamma'} n m \mand
+%   \Gamma' \der t\xi = m : T\xi
+% \end{array}
+% \]
+% \[
+%   \fbox{$\LRSize \Gamma a \alpha$} \defas
+%   \forall \xi : \Gamma' \leq \Gamma.\ \
+%   \RSize {\Gamma'} \alpha {a\xi}
+%   % \exists a'.\
+%   % \RSize {\Gamma'} \alpha a' \mand
+%   % \Gamma' \der a\xi = a' : \Size
+% \]
+By definitions, these relations are closed under subsumption and
+weakening, e.g., if $\RD \Gamma t d T$ and $\Gamma \der T \leq T'$ then $\RD \Gamma t d T'$,
+and if $\xi : \Gamma \leq \Gamma'$ then $\RD{\Gamma'}{t\xi}d{T\xi}$.
 
-\[
-  \fbox{$\LRSize \Gamma a \alpha$} \defas
-  \forall \xi : \Gamma' \leq \Gamma.\ \
-  \RSize {\Gamma'} \alpha {a\xi}
-  % \exists a'.\
-  % \RSize {\Gamma'} \alpha a' \mand
-  % \Gamma' \der a\xi = a' : \Size
-\]
+\begin{lemma}[Closure properties for neutrals]
+\label{lem:rclosne}
+\bla
+\begin{enumerate}
+\item If\/ $\RNE \Gamma t n \piT U T$ and $\RD \Gamma u d U$ then $\RNE \Gamma {t\,u} {n\,d} {T[u]}$.
+\item If\/ $\RNE \Gamma t n \piT \Size T$ and $\RSIZE \Gamma a \alpha$ then $\RNE \Gamma {t\,a} {n\,\alpha} {T[a]}$.
+\item If\/ $\RNE \Gamma t n \forallT T$ and $\RSIZE {\resurrect\Gamma} a \alpha$ then $\RNE \Gamma {t\,\ann a} {n\,\ann \alpha} {T[a]}$.
+\end{enumerate}
+\end{lemma}
 
 We simultaneously define
-\fbox{$\LRT \Gamma {T'} {A'} \ell$} for $\Gamma \der T' : \Set[\ell]$
+\fbox{$\LRTS \Gamma {T'} {A'} s$} for $\Gamma \der T' : s$
 and \fbox{$\LR \Gamma t {T'} f {A'}$} for $\Gamma \der t : T'$ and $f \in A'$
-defined by induction on ${A'} \in \SET[\ell]$.
+by induction on ${A'} \in s$.
 
 \begin{caselist}
 
@@ -1707,15 +1774,17 @@ defined by induction on ${A'} \in \SET[\ell]$.
 \nextcase $A' \evalsto N$ neutral.
 
   \noindent
-  $\LRT{\Gamma}{T'}{A'}\ell$ iff
-  $\forall \xi : \Gamma' \leq \Gamma.\ \ \exists M.\ \ \RTy{\Gamma'}{A'}M \mand \Gamma' \der T'\xi = M : \Set[\ell]$.
+  $\LRTS{\Gamma}{T'}{A'} s$ iff
+  $\Gamma \der T' \doteq \tRty\,A' : s$
+  %$\forall \xi : \Gamma' \leq \Gamma.\ \ \exists M.\ \ \RTy{\Gamma'}{A'}M \mand \Gamma' \der T'\xi = M : \Set[\ell]$.
 
   \noindent
   $\LR{\Gamma}{t}{T'}{f}{A'}$ iff
-  $\forall \xi : \Gamma' \leq \Gamma.\ \
-   \exists m. \ \
-   \R {\Gamma'} {\down {A'} f} m \mand
-   \Gamma' \der t\xi = m : T'\xi$.
+  $\Gamma \der t \doteq \tR \, \down {A'} f : T'$
+  % $\forall \xi : \Gamma' \leq \Gamma.\ \
+  %  \exists m. \ \
+  %  \R {\Gamma'} {\down {A'} f} m \mand
+  %  \Gamma' \der t\xi = m : T'\xi$.
 
 \vspace{2ex}
 \nextcase $A' \evalsto \Nat \alpha$.
@@ -1725,11 +1794,13 @@ defined by induction on ${A'} \in \SET[\ell]$.
 
   \noindent
   $\LR{\Gamma}{t}{T'}{f}{A'}$ iff $\resurrect\Gamma \der T' = \Nat a$ for some $a$ and
-  $\LRSize {\resurrect\Gamma} a \alpha$ and \\
-  $\forall \xi : \Gamma' \leq \Gamma.\ \
-   \exists v. \ \
-   \R {\Gamma'} {\down {A'} f} v \mand
-   \Gamma' \der t\xi = v : \Nat\,a\xi$.
+  $\LRSize {\resurrect\Gamma} a \alpha$ and
+  $\Gamma \der t \doteq \tR\,\down{A'} f : \Nat a$
+  % \\
+  % $\forall \xi : \Gamma' \leq \Gamma.\ \
+  %  \exists v. \ \
+  %  \R {\Gamma'} {\down {A'} f} v \mand
+  %  \Gamma' \der t\xi = v : \Nat\,a\xi$.
 
 
 \vspace{2ex}
@@ -1839,26 +1910,38 @@ $\LR \Gamma t {T'} f {A'}$ iff
 \end{lemma}
 
 \begin{theorem}[Into and out of the logical relation]
-  \label{thm:into}
-  \bla
-  Let $A \in \SET[\ell]$.
-  \begin{enumerate}
+\label{thm:into}
+\bla
+Let $A \in s$.
+\begin{enumerate}
 
-  \item \label{it:into}
-     $\LR \Gamma t T {\up A n} A$ if for all $\xi : \Gamma' \leq \Gamma$ there is an $m$ such that
-     $\RNe{\Gamma'}n m$ and\/ $\Gamma' \der t\xi = m : T$.
+\item \label{it:into}
+   If\/ $\Gamma \der t \doteq \tRne\,n : T$ then
+   $\LR \Gamma t T {\up A n} A$.
 
-  \item \label{it:outty}
-     If\/ $\LRT{\Gamma} T A \ell$ then for all $\xi : \Gamma' \leq \Gamma$
-     there is some normal form $V$ such that
-     $\Rty{\Gamma'} A V$ and $\Gamma' \der T\xi = V : \Set[\ell]$.
+\item \label{it:outty}
+   If\/ $\LRTS{\Gamma} T A s$ then
+   $\Gamma \der T \doteq \tRty\,A : s$
 
-  \item \label{it:out}
-    If\/ $\LR \Gamma t T f A$ then for all $\xi : \Gamma' \leq \Gamma$
-    there is some normal form $v$ such that
-    $\R{\Gamma'} {\down A f} v$ and $\Gamma' \der t\xi = v : T\xi$.
+\item \label{it:out}
+  If\/ $\LR \Gamma t T f A$ then
+  $\Gamma \der t \doteq \tR\,\down A f : T$.
 
-  \end{enumerate}
+% \item \label{it:into}
+%    $\LR \Gamma t T {\up A n} A$ if for all $\xi : \Gamma' \leq \Gamma$ there is an $m$ such that
+%    $\RNe{\Gamma'}n m$ and\/ $\Gamma' \der t\xi = m : T$.
+
+% \item \label{it:outty}
+%    If\/ $\LRT{\Gamma} T A \ell$ then for all $\xi : \Gamma' \leq \Gamma$
+%    there is some normal form $V$ such that
+%    $\Rty{\Gamma'} A V$ and $\Gamma' \der T\xi = V : \Set[\ell]$.
+
+% \item \label{it:out}
+%   If\/ $\LR \Gamma t T f A$ then for all $\xi : \Gamma' \leq \Gamma$
+%   there is some normal form $v$ such that
+%   $\R{\Gamma'} {\down A f} v$ and $\Gamma' \der t\xi = v : T\xi$.
+
+\end{enumerate}
 \end{theorem}
 
 \begin{proof}
@@ -1869,21 +1952,28 @@ simultaneously by induction on $A' \in \SET[\ell]$.
 
 \nextcase $A' \evalsto \piT A B$ and $\resurrect\Gamma \der T' = \piT U T$.
 \begin{enumerate}
-\item To demonstrate $\LR \Gamma t {T'} {\up {A'} n} {A'}$ we assume
+\item
+The premise is, after type conversion, $\Gamma \der t \doteq \tRne\, n : \piT U T$.
+To demonstrate $\LR \Gamma t {T'} {\up {A'} n} {A'}$ we assume
 $\xi : \Gamma' \leq \Gamma$ and $\LR{\Gamma'}{u}{U\xi} a A$ and show
 $\LR{\Gamma'} {(t\xi\,u)} {T(\xi,u)} {\up{B[a]}(n\,\down A a)} {B[a]}$.
-This follows by induction hypothesis (\ref{it:into}) for $B[a] \in \SET[\ell]$ if
-we can prove that for all $\xi' : \Gamma'' \leq \Gamma'$ there is a neutral normal form $m$
-such that $\RNe{\Gamma''} {(n\,\down A a)} m$ and $\Gamma'' \der (t\xi\,u)\xi' = m : T(\xi,u)\xi'$.
-Note that the last goal can be rewritten to $\Gamma'' \der t\xi\xi'\,(u\xi') = m : T(\xi\xi',u\xi')$.
-We know that $\RNe{\Gamma''} n {m_0}$ with $\Gamma'' \der t\xi\xi' = m_0 : T'\xi\xi'$.
-Thus, it is sufficient to show that there is some normal form $v$ such that
-$\R{\Gamma''} {\down A a} v$ and $\Gamma'' \der u\xi' = v : U\xi\xi'$.
-However, this follows by induction hypothesis (\ref{it:out}) on
-assumption $\LR{\Gamma'}{u}{U\xi} a A$ with $\xi'$.
+By induction hypothesis (\ref{it:out}) we have $\RD {\Gamma'} u {\down A a} {U\xi}$, and
+together with the weakened premise $\Gamma' \der t\xi \doteq \tRne\, n : (\piT U T) \xi$ we get
+$\Gamma' \der t\xi\, u \doteq \tRne\, (n\,\down A a) : T(\xi,u)$.
+The goal follows by induction hypothesis (\ref{it:into}) for $B[a] \in \SET[\ell]$.
+% This follows by induction hypothesis (\ref{it:into}) for $B[a] \in \SET[\ell]$ if
+% we can prove that for all $\xi' : \Gamma'' \leq \Gamma'$ there is a neutral normal form $m$
+% such that $\RNe{\Gamma''} {(n\,\down A a)} m$ and $\Gamma'' \der (t\xi\,u)\xi' = m : T(\xi,u)\xi'$.
+% Note that the last goal can be rewritten to $\Gamma'' \der t\xi\xi'\,(u\xi') = m : T(\xi\xi',u\xi')$.
+% We know that $\RNe{\Gamma''} n {m_0}$ with $\Gamma'' \der t\xi\xi' = m_0 : T'\xi\xi'$.
+% Thus, it is sufficient to show that there is some normal form $v$ such that
+% $\R{\Gamma''} {\down A a} v$ and $\Gamma'' \der u\xi' = v : U\xi\xi'$.
+% However, this follows by induction hypothesis (\ref{it:out}) on
+% assumption $\LR{\Gamma'}{u}{U\xi} a A$ with $\xi'$.
 \end{enumerate}
 \end{caselist}
 \end{proof}
+
 \begin{corollary}[One-to-one]
 \label{cor:oneone}
 \bla

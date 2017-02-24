@@ -267,6 +267,9 @@
 \newcommand{\RElim}[3]{\mathop{\mathsf{R}}\nolimits^{\mathsf{elim}}_{#1} \, #2 \evalsto #3}
 \newcommand{\R}[3]{\mathsf{R}_{#1} \, #2 \evalsto #3}
 \newcommand{\tRne}{\mathsf{R}^{\mathsf{ne}}}
+\newcommand{\tRsize}{\mathsf{R}^{\mathsf{size}}}
+\newcommand{\tRty}{\mathsf{R}^{\mathsf{ty}}}
+\newcommand{\tR}{\mathsf{R}}
 
 \newcommand{\monus}{\dotminus} %{\stackrel{\cdot}{-}}
 \newcommand{\Adm}{\mathsf{Adm}\,}
@@ -1062,9 +1065,9 @@
 \newcommand{\perpref}{per-}
 \newcommand{\rper}[1]{\rulename{\perpref{}#1}}
 
-% projections
-\newcommand{\tL}{\mathsf{L}}
-\newcommand{\tR}{\mathsf{R}}
+% % projections
+% \newcommand{\tL}{\mathsf{L}}
+% \newcommand{\tR}{\mathsf{R}}
 
 % % saturation interval
 % \renewcommand{\N}{\mathcal{N}}
@@ -1399,7 +1402,8 @@
 \newcommand{\LR}[5]{#1 \der #2 : #3 \circleR #4 \in #5}
 \newcommand{\LRS}[4]{#1 \der #2 : #3 \circleR #4}
 \newcommand{\LRSub}[6]{#1 \der #2 \eeq #3 : #4 \circleR #5 \eeq #6}
-\newcommand{\LRSize}[3]{#1 \der #2 : \Size \circleR #3}
+\newcommand{\LRSize}[3]{#1 \der #2 \doteq \tRsize #3}
+%\newcommand{\LRSize}[3]{#1 \der #2 : \Size \circleR #3}
 \newcommand{\LRTS}[4]{#1 \der #2 \circleR #3 \in #4}
 \newcommand{\LRT}[4]{#1 \der #2 \circleR #3 \in \Set[#4]}
 %\newcommand{\RG}[5]{#1 \der #2 \circleR #4 \der #5 :: #3}
@@ -1407,6 +1411,10 @@
 \newcommand{\TyG}[1]{\Ty(#1)}
 \newcommand{\TmG}[2]{\Tm(#1,#2)}
 
+\newcommand{\RNE}[4]{#1 \der #2 \doteq \tRne\, #3 : #4}
+\newcommand{\RD}[4]{#1 \der #2 \doteq \tR\, #3 : #4}
+\newcommand{\RTY}[4]{#1 \der #2 \doteq \tRty\, #3 : #4}
+\newcommand{\RSIZE}[3]{#1 \der #2 \doteq \tRsize #3}
 
 
 %\newcommand{\VDash}{\mathrel{\mathord{|}\kern-0.15ex\mathord{\models}}}
@@ -1445,7 +1453,7 @@
 
 % reification
 \newcommand{\reifiesto}{\searrow}
-\newcommand{\Nbe}[1][]{\mathop{\mathsf{Nbe}}\nolimits_{#1}}
+%\newcommand{\Nbe}[1][]{\mathop{\mathsf{Nbe}}\nolimits_{#1}}
 %\newcommand{\R}[1][]{\mathop{\mathsf{R}_{#1}}\nolimits}
 %\newcommand{\Read}[1]{\R{#1}^\ttype}
 %\newcommand{\READ}[1]{\R{#1}^\box}
