@@ -126,7 +126,11 @@
 
 % proof by cases
 \newenvironment{caselist}{%
-  \begin{list}{{\it Case}}{}%
+  \begin{list}{{\it Case}}{%
+    %\setlength{\topsep}{2ex}% DOES NOT SEEM TO WORK
+    %\setlength{\itemsep}{2ex}%
+    \setlength{\itemindent}{-2ex}%
+  }%
 }{\end{list}%
 }
 \newenvironment{subcaselist}{%
@@ -258,13 +262,14 @@
 
 \newcommand{\The}{\Theta}
 
-\newcommand{\Rty}[3]{\mathop{\mathsf{R}}\nolimits^{\mathsf{ty}}_{#1} \, #2 \evalsto #3}
-\newcommand{\RTy}[3]{\mathop{\mathsf{R}}\nolimits^{\mathsf{ty}}_{#1} \, #2 \evalsto #3}
-\newcommand{\RUp}[3]{\mathop{\mathsf{R}}\nolimits^{\mathsf{up}}_{#1} \, #2 \evalsto #3}
-\newcommand{\RNe}[3]{\mathop{\mathsf{R}}\nolimits^{\mathsf{ne}}_{#1} \, #2 \evalsto #3}
-\newcommand{\RNat}[3]{\mathop{\mathsf{R}}\nolimits^{\mathsf{nat}}_{#1} \, #2 \evalsto #3}
-\newcommand{\RSize}[3]{\mathop{\mathsf{R}}\nolimits^{\mathsf{size}}_{#1} \, #2 \evalsto #3}
-\newcommand{\RElim}[3]{\mathop{\mathsf{R}}\nolimits^{\mathsf{elim}}_{#1} \, #2 \evalsto #3}
+%\newcommand{\Rty}[3]{\mathop{\mathsf{R}}\nolimits^{\mathsf{ty}}_{#1} \, #2 \evalsto #3}
+\newcommand{\Rty}[3]{\mathsf{R}^{\mathsf{ty}}_{#1} \, #2 \evalsto #3}
+\newcommand{\RTy}[3]{\mathsf{R}^{\mathsf{ty}}_{#1} \, #2 \evalsto #3}
+\newcommand{\RUp}[3]{\mathsf{R}^{\mathsf{up}}_{#1} \, #2 \evalsto #3}
+\newcommand{\RNe}[3]{\mathsf{R}^{\mathsf{ne}}_{#1} \, #2 \evalsto #3}
+\newcommand{\RNat}[3]{\mathsf{R}^{\mathsf{nat}}_{#1} \, #2 \evalsto #3}
+\newcommand{\RSize}[3]{\mathsf{R}^{\mathsf{size}}_{#1} \, #2 \evalsto #3}
+\newcommand{\RElim}[3]{\mathsf{R}^{\mathsf{elim}}_{#1} \, #2 \evalsto #3}
 \newcommand{\R}[3]{\mathsf{R}_{#1} \, #2 \evalsto #3}
 \newcommand{\tRne}{\mathsf{R}^{\mathsf{ne}}}
 \newcommand{\tRsize}{\mathsf{R}^{\mathsf{size}}}

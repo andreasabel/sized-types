@@ -2224,6 +2224,14 @@ via the relation $\Nbe \Gamma T \evalsto V \defas \RTy \Gamma {T\rhog} V$.
 Analogously, we show that the test $\Nbe \Gamma T \equiv \Nbe \Gamma T'$
 decides type equality $\Gamma \der T = T'$.
 
+\begin{corollary}[Type weak head normalization]
+  If $\Gamma \der T$ then $T \evalsto W$ for some $W$.
+\end{corollary}
+\begin{proof}
+  By the fundamental theorem of typing, $\RG \Gamma T {T\rhog}$,
+  which implies $T \evalsto W$ by definition of the logical relation..
+\end{proof}
+
 \begin{corollary}[Type constructor injectivity]
 \label{cor:piinj}
 \bla
@@ -2377,8 +2385,8 @@ $\Gamma \der t[a] : T[b]$, thus $\Gamma \der t[a] : T'$ by subsumption.
   on the typing derivation $\DD$. % $\Gamma \der t : T$.
 \end{proof}
 
-\section{Type Checking}
-\label{sec:tycheck}
+\section{Algorithmic subtyping}
+\label{sec:asub}
 
 Algorithmic subtyping \fbox{$\Gamma \der T \asub T'$}.
 \begin{gather*}
@@ -2416,6 +2424,63 @@ Algorithmic subtyping \fbox{$\Gamma \der T \asub T'$}.
 \begin{proof}
   By induction on $\Gamma \der T \asub T'$, using soundness of NbE and subject reduction (Thm~\ref{thm:sr}).
 \end{proof}
+
+\begin{lemma}[Semantic subtyping implies algorithmic subtyping]
+\label{lem:lrasub}
+\bla
+   If\/ $\LRTS \Gamma T A s$ and $\LRTS \Gamma {T'} {A'} {s'}$ and $A \leq A' \in \TYPE$ then $\Gamma \der T \asub T'$.
+\end{lemma}
+\begin{proof}
+By induction on $A_1' \in s_1$ and $A_2' \in s_2$ and cases on the inductive relations
+$\LRTS \Gamma {T_1'} {A_1'} {s_1}$ and $\LRTS \Gamma {T_2'} {A_2'} {s_2}$ and $A_1' \leq A_2' \in \TYPE$
+we prove $\Gamma \der T_1' \asub T_2'$.
+
+\begin{caselist}
+
+\nextcase $A_i' \evalsto N_i$ and $T_i' \evalsto n_i$ and $N_1 = N_2 \in \NE$ and $\RTY \Gamma {n_i} {N_i} {s_i}$.
+By Cor.~\ref{cor:oneone} $\Gamma \der n_1 = n_2$, thus, by completeness of NbE, $\Nbe\Gamma n_1 \equiv \Nbe\Gamma n_2$, which entails $\Gamma \der T_1' \asub T_2'$.
+
+\nextcase $A_i' \evalsto \piT {A_i} {B_i}$ and  $T_i' \evalsto \piT{U_i}{T_i}$.
+From $\LRTS \Gamma {U_i} {A_i} {s_i}$ and $A_2 \leq A_1 \in \TYPE$ we get $\Gamma \der U_2 \asub U_1$
+by induction hypothesis on $A_i \in s_i$.
+Let $a := {\up{A_2} \var\Gamma}$.  With $\LR {\cext \Gamma {U_2}} {\ind 0} {(U_2\slift)} a {A_2}$ we get
+$\LRTS {\cext \Gamma {U_2}} {T_i} {B_i[a]} s$ and $B_1[a] \leq B_2[a] \in \TYPE$.  Thus by induction hypothesis on $B_i[a] \in s_i$ we obtain $\cext \Gamma {U_2} \der T_1 \leq T_2$, together $\Gamma \der T_1' \asub T_2'$.
+
+\end{caselist}
+\end{proof}
+
+\begin{corollary}[Completeness of algorithmic subtyping]
+\label{cor:complasub}
+If $\Gamma \der T \leq T'$ then $\Gamma \der T \asub T'$.
+\end{corollary}
+\begin{proof}
+  By the fundamental theorems $\RG \Gamma T {T\rhog}$ and $\RG \Gamma {T'} {T'\rhog}$ and $T\rhog \leq T'\rhog \in \TYPE$.
+  By Lemma~\ref{lem:lrasub}, $\Gamma \der T \asub T'$.
+\end{proof}
+
+Since the algorithmic subtyping relation is equivalent to the declarative one, we can freely swap one relation for the other.
+
+\begin{lemma}[Termination of algorithmic subtyping]
+  \label{lem:termasub}
+  If $\RG \Gamma T A$ and $\RG \Gamma {T'} {A'}$ then the query $\Gamma \der T \asub T'$ terminates.
+\end{lemma}
+\begin{proof}
+  By induction on $A \in s$ and $A' \in s'$ and cases on $\RG \Gamma T A$ and $\RG \Gamma {T'} {A'}$.
+\end{proof}
+
+\begin{theorem}[Decidability of subtyping]
+  If $\Gamma \der T,T'$, then $\Gamma \der T \leq T'$ is decided by the query $\Gamma \der T \asub T'$.
+\end{theorem}
+\begin{proof}
+  By the fundamental theorem of typing, $\RG \Gamma T A$ and $\RG \Gamma {T'} {A'}$,
+  thus, the query  $\Gamma \der T \asub T'$ terminates by Lemma~\ref{lem:termasub}.
+  If successfully, then $\Gamma \der T \leq T'$ by soundness of algorithmic equality.
+  If unsuccessfully, then $\Gamma \der T \leq T'$ is impossible by completeness of algorithmic equality.
+\end{proof}
+
+
+\section{Type Checking}
+\label{sec:tycheck}
 
 Bidirectional typing of normal forms.
 
