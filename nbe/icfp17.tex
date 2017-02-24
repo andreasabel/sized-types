@@ -1763,6 +1763,7 @@ and if $\xi : \Gamma \leq \Gamma'$ then $\RD{\Gamma'}{t\xi}d{T\xi}$.
 \end{enumerate}
 \end{lemma}
 
+Let \fbox{$\Gamma \der T \evalsto W : s$} denote the conjunction of $T \evalsto W$ and $\Gamma \der T = W : s$.
 We simultaneously define
 \fbox{$\LRTS \Gamma {T'} {A'} s$} for $\Gamma \der T' : s$
 and \fbox{$\LR \Gamma t {T'} f {A'}$} for $\Gamma \der t : T'$ and $f \in A'$
@@ -1775,6 +1776,7 @@ by induction on ${A'} \in s$.
 
   \noindent
   $\LRTS{\Gamma}{T'}{A'} s$ iff
+  $\Gamma \der T' \evalsto n : s$ for some neutral $n$ and
   $\Gamma \der T' \doteq \tRty\,A' : s$
   %$\forall \xi : \Gamma' \leq \Gamma.\ \ \exists M.\ \ \RTy{\Gamma'}{A'}M \mand \Gamma' \der T'\xi = M : \Set[\ell]$.
 
@@ -1790,10 +1792,10 @@ by induction on ${A'} \in s$.
 \nextcase $A' \evalsto \Nat \alpha$.
 
   \noindent
-  $\LRT{\Gamma}{T'}{A'}\ell$ iff $\Gamma \der T' = \Nat a$ for some $a$ and $\LRSize \Gamma a \alpha$.
+  $\LRTS{\Gamma}{T'}{A'} s$ iff $\Gamma \der T' \evalsto \Nat a : s$ for some $a$ and $\LRSize \Gamma a \alpha$.
 
   \noindent
-  $\LR{\Gamma}{t}{T'}{f}{A'}$ iff $\resurrect\Gamma \der T' = \Nat a$ for some $a$ and
+  $\LR{\Gamma}{t}{T'}{f}{A'}$ iff $\resurrect\Gamma \der T' \evalsto \Nat a$ for some $a$ and
   $\LRSize {\resurrect\Gamma} a \alpha$ and
   $\Gamma \der t \doteq \tR\,\down{A'} f : \Nat a$
   % \\
@@ -1807,29 +1809,29 @@ by induction on ${A'} \in s$.
 \nextcase $A' \evalsto \Set[\ell']$.
 
   \noindent
-  $\LRT {\Gamma} {T'} {A'} \ell$ iff $\Gamma \der T' = \Set[\ell'] : \Set[\ell]$.
+  $\LRTS {\Gamma} {T'} {A'} s$ iff $\Gamma \der T' \evalsto \Set[\ell'] : s$.
 
   \noindent
   $\LR \Gamma U {T'} B {A'}$ iff
-  $\resurrect\Gamma \der T' = \Set[\ell'] : \Set[\ell]$ and $\LRT \Gamma U B {\ell'}$.
+  $\resurrect\Gamma \der T' \evalsto \Set[\ell'] : s$ and $\LRT \Gamma U B {\ell'}$.
 
 \vspace{2ex}
 \nextcase $A' \evalsto \piT A B$.
 
 \noindent
-$\LRT \Gamma {T'} {A'} \ell$ iff
+$\LRTS \Gamma {T'} {A'} s$ iff
 \[
 \begin{array}{l}
-\Gamma \der T' = \piT U T : \Set[\ell] \mforsome U, T \mand \LRT \Gamma U A \ell \mand \\
+\Gamma \der T' \evalsto \piT U T : s \mforsome U, T \mand \LRTS \Gamma U A s \mand \\
 \forall \xi : \Gamma' \leq \Gamma.\ \
-\LR {\Gamma'} u {U\xi} a A \implies \LRT {\Gamma'} {T(\xi,u)} {B[a]} \ell
+\LR {\Gamma'} u {U\xi} a A \implies \LRTS {\Gamma'} {T(\xi,u)} {B[a]} s
 . \\
 \end{array}
 \]
 $\LR \Gamma t {T'} f {A'}$ iff
 \[
 \begin{array}{l}
-\resurrect\Gamma \der T' = \piT U T : \Set[\ell] \mforsome U, T \mand \LRT {\resurrect\Gamma} U A \ell \mand \\
+\resurrect\Gamma \der T' \evalsto \piT U T : s \mforsome U, T \mand \LRTS {\resurrect\Gamma} U A s \mand \\
 \forall \xi : \Gamma' \leq \Gamma.\ \
 \LR {\Gamma'} u {U\xi} a A \implies \LR {\Gamma'} {t\xi\,u} {T(\xi,u)} {f\,a} {B[a]}
 .
@@ -1840,20 +1842,20 @@ $\LR \Gamma t {T'} f {A'}$ iff
 \nextcase $A' \evalsto \piT \Size B$.
 
 \noindent
-$\LRT \Gamma {T'} {A'} \ell$ iff
+$\LRTS \Gamma {T'} {A'} s$ iff
 \[
 \begin{array}{l}
-\Gamma \der T' = \piT \Size T : \Set[\ell] \mforsome T\\
+\Gamma \der T' \evalsto \piT \Size T : s \mforsome T\\
 \forall \xi : \Gamma' \leq \Gamma.\ \
 \LRSize {\Gamma'} a \alpha
-\implies \LRT {\Gamma'} {T(\xi,a)} {B[\alpha]} \ell
+\implies \LRTS {\Gamma'} {T(\xi,a)} {B[\alpha]} s
 .
 \end{array}
 \]
 $\LR \Gamma t {T'} f {A'}$ iff
 \[
 \begin{array}{l}
-\resurrect\Gamma \der T' = \piT \Size T : \Set[\ell] \mforsome T\\
+\resurrect\Gamma \der T' \evalsto \piT \Size T : s \mforsome T\\
 \forall \xi : \Gamma' \leq \Gamma.\ \
 \LRSize {\Gamma'} a \alpha
 \implies \LR {\Gamma'} {t\xi\,a} {T(\xi,a)} {f\,\alpha} {B[\alpha]}
@@ -1865,22 +1867,22 @@ $\LR \Gamma t {T'} f {A'}$ iff
 \nextcase $A' \evalsto \forallT B$.
 
 \noindent
-$\LRT \Gamma {T'} {A'} \ell$ iff
+$\LRTS \Gamma {T'} {A'} s$ iff
 \[
 \begin{array}{l}
-\Gamma \der T' = \forallT T : \Set[\ell] \mforsome T\\
+\Gamma \der T' \evalsto \forallT T : s \mforsome T\\
 \forall \xi : \Gamma' \leq \Gamma,\
 {\Gamma'} \der b : \Size,\
 \beta \in \SIZE. \ \
 \LRSize {\Gamma'} b \beta
-\implies \LRT {\Gamma'} {T(\xi,b)} {B[\beta]} \ell
+\implies \LRTS {\Gamma'} {T(\xi,b)} {B[\beta]} s
 .
 \end{array}
 \]
 $\LR \Gamma t {T'} f {A'}$ iff
 \[
 \begin{array}{l}
-\resurrect\Gamma \der T' = \forallT T : \Set[\ell] \mforsome T\\
+\resurrect\Gamma \der T' \evalsto \forallT T : s \mforsome T\\
 \forall \xi : \Gamma' \leq \Gamma,\
 %\Gamma' \der a : \Size,\
 \resurrect{\Gamma'} \der a,b : \Size,\
@@ -1897,17 +1899,19 @@ $\LR \Gamma t {T'} f {A'}$ iff
   Let $\xi : \Gamma' \leq \Gamma$.
   \begin{enumerate}
   \item If\/ $\LRSize \Gamma a \alpha$ then $\LRSize{\Gamma'}{a\xi}\alpha$.
-  \item If\/ $\LRT {\Gamma} T A \ell$ then $\LRT{\Gamma'}{T\xi}A \ell$.
+  \item If\/ $\LRTS {\Gamma} T A s$ then $\LRTS{\Gamma'}{T\xi}A s$.
   \item If\/ $\LR \Gamma t T f A$ then $\LR{\Gamma'}{t\xi}{T\xi} f A$.
   \end{enumerate}
 \end{lemma}
-\begin{lemma}[Compatibility with definitional equality]
-  Let $\Gamma \der T = T'$.
-  \begin{enumerate}
-  \item If\/ $\LRT \Gamma T A \ell$ then $\LRT \Gamma {T'} A \ell$.
-  \item If\/ $\LR \Gamma t T f A$ and $\Gamma \der t = t' : T$ then $\LR \Gamma {t'}{T'} f A$.
-  \end{enumerate}
-\end{lemma}
+
+%% NO LONGER TRUE AT THIS POINT
+% \begin{lemma}[Compatibility with definitional equality]
+%   Let $\Gamma \der T = T'$.
+%   \begin{enumerate}
+%   \item If\/ $\LRT \Gamma T A \ell$ then $\LRT \Gamma {T'} A \ell$.
+%   \item If\/ $\LR \Gamma t T f A$ and $\Gamma \der t = t' : T$ then $\LR \Gamma {t'}{T'} f A$.
+%   \end{enumerate}
+% \end{lemma}
 
 \begin{theorem}[Into and out of the logical relation]
 \label{thm:into}
