@@ -1048,17 +1048,31 @@ The PERs $\NE$ and $\NF$ characterize (neutral) normalizing terms.
 \begin{array}{l@{\quad}l@{\quad}l@{~}l@{~}l@{~}l@{~}l@{~}l}
   \fbox{$n = n' \in \NE$}
     & \defas &
-    \RNe k n m &\mand& \RNe k {n'} {m'} &\mand& m \nfeq m' &\mforall k \\
+    \RNe k n m &\mand& \RNe k {n'} {m} &\mforall k \\
   \fbox{$d = d' \in \NF$}
     & \defas &
-    \R k d v &\mand& \R k {d'} {v'} &\mand& v \nfeq v' &\mforall k \\
+    \R k d v &\mand& \R k {d'} {v} &\mforall k \\
   \fbox{$e = e' \in \ELIM$}
     & \defas &
-    \RElim k e e_v &\mand& \R k {e'} {e_v'} &\mand& e_v \nfeq e_v' &\mforall k \\
+    \RElim k e e_v &\mand& \R k {e'} {e_v} &\mforall k \\
   \fbox{$A = A' \in \TY$}
     & \defas &
-    \RTy k A V &\mand& \RTy k {A'} {V'} &\mand& V \nfeq V' &\mforall k \\
+    \RTy k A V &\mand& \RTy k {A'} {V} &\mforall k \\
 \end{array}
+% \begin{array}{l@{\quad}l@{\quad}l@{~}l@{~}l@{~}l@{~}l@{~}l}
+%   \fbox{$n = n' \in \NE$}
+%     & \defas &
+%     \RNe k n m &\mand& \RNe k {n'} {m'} &\mand& m \nfeq m' &\mforall k \\
+%   \fbox{$d = d' \in \NF$}
+%     & \defas &
+%     \R k d v &\mand& \R k {d'} {v'} &\mand& v \nfeq v' &\mforall k \\
+%   \fbox{$e = e' \in \ELIM$}
+%     & \defas &
+%     \RElim k e e_v &\mand& \R k {e'} {e_v'} &\mand& e_v \nfeq e_v' &\mforall k \\
+%   \fbox{$A = A' \in \TY$}
+%     & \defas &
+%     \RTy k A V &\mand& \RTy k {A'} {V'} &\mand& V \nfeq V' &\mforall k \\
+% \end{array}
   % \ru{\RNe k t m \mand \RNe k {t'} {m'} \mand m \nfeq m' \mforall k
   %   }{t = t' \in \NE}
   % \ru{t \evalsto \up N n \qquad t' \evalsto \up{N'}{n'} \qquad n \nfeq n'
@@ -1654,8 +1668,10 @@ $\fbox{$\nbe \Gamma T t \evalsto v$} \iff \R {\Gamma} {\down{T \rho_\Gamma} (t \
 Whenever $\nbe \Gamma T t \evalsto v$, we may write $\nbe \Gamma T t$ for $v$.
 
 \begin{theorem}[Completeness of NbE]
-  If\/ $\Gamma \der t = t' : T$ then there are normal forms $v \nfeq v'$ such that
-  $\nbe \Gamma T t \evalsto v$ and $\nbe \Gamma T {t'} \evalsto v'$.
+  If\/ $\Gamma \der t = t' : T$ then there is a normal form $v$ such that
+  $\nbe \Gamma T t \evalsto v$ and $\nbe \Gamma T {t'} \evalsto v$.
+  % If\/ $\Gamma \der t = t' : T$ then there are normal forms $v \nfeq v'$ such that
+  % $\nbe \Gamma T t \evalsto v$ and $\nbe \Gamma T {t'} \evalsto v'$.
 \end{theorem}
 \begin{proof}
   By the fundamental theorem, $T \rho_\Gamma \in \SET[\ell]$ for some $\ell$ and
@@ -1669,7 +1685,7 @@ Whenever $\nbe \Gamma T t \evalsto v$, we may write $\nbe \Gamma T t$ for $v$.
 \section{Soundness  of NbE}
 \label{sec:compl}
 
-In this section, we show that NbE is sound for judgemental equality, i.e., that same normal form implies definitional equality.  The proof follows previous work on NbE \cite{abelCoquandDybjer:lics07,abel:habil}.
+In this section, we show that NbE is sound for judgemental equality, i.e., that same normal form implies definitional equality.  The proof follows \citet{abelCoquandDybjer:lics07,abel:habil}.  However, the logical relation defined in the following will also yield a weak head normalization theorem.
 
 \[
   \fbox{$\LRSize \Gamma a \alpha$} \defas
