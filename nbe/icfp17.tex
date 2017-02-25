@@ -215,17 +215,46 @@ Syntax (de Bruijn terms).
 \Elim & \ni & e
     & ::= & t \mid a \mid \ann a \mid \case[\ell] T {t_1} t_2 \mid \fix[\ell] T t & \mbox{eliminations} \\
 \SizeExp & \ni & a,b & ::= & \infty \mid o \mid \ind i + o ~(o \in \NN) & \mbox{size expressions} \\
-\Cxt & \ni & \Gamma, \Delta & ::= & \cempty \mid \erext[\noterased] \Gamma T \mid \erext \Gamma \Size \\
+\Cxt & \ni & \Gamma, \Delta & ::= & \cempty \mid \erext[\noterased] \Gamma T \mid \erext \Gamma \Size
+   & \mbox{contexts} \\
+\Subst & \ni & \eta,\rho,\sigma,\tau,\xi & ::= & \sempty \mid (\sigma,t)
+  & \mbox{substitutions} \\
 \end{array}
 \]
+
+%We write $\sigma$ and $\tau$ for substitutions, which are lists of terms, and
+We write $t \sigma$ for the application of substitution $\sigma$ to term $t$ which is defined as usual.  We write $\slift^k_m$ for the substitution $(\ind{k+m-1},\dots,\ind{k+1},\ind k)$ which applies to a term with $m$ free indices and increases all of them by $k$.  We write $\slift_m$ for the lifting $\slift^1_m$ and $\sid_m$ for the identity substitution $ \slift^0_m$. In general, we refer to liftings by letter $\xi$.
+The substitution $[u]_m = (\sid_m, u)$ replaces free index $\ind 0$ by term $u$ and decrements all other free indices by $1$. We drop subscript $m$ when clear from the context.
+Substitution composition $\sigma\tau$ is the pointwise application of substitution $\tau$ to the list of terms $\sigma$.  In the proofs to follow, we freely use the following identities:
+\begin{gather*}
+  t\sid \equiv t
+\quad
+  (t\sigma)\tau \equiv t(\sigma\tau)
+\qquad
+  \sigma \sid \equiv \sigma
+\quad
+  \sid \tau \equiv \tau
+\quad
+  (\rho\sigma)\tau \equiv \rho(\sigma\tau)
+\\
+  \ind 0 (\sigma,t) \equiv t
+\quad
+  \slift(\sigma,t) \equiv \sigma
+\qquad
+  [t]\sigma \equiv (\sigma, t\sigma)
+\quad
+  \slift[t] \equiv \sid
+%  (\sigma\slift)[t] \equiv \sigma
+\end{gather*}
+
 We omit the ``$\noterased$''-markers from $\Gamma$ and $\Pi$ by default.  We write $\forallT T$ for $\erpiT \Size T$.
-For concrete function types, we may use a (named dependent) function type notation as syntactic sugar for the corresponding de Bruijn representation.  For instance, $\funT i \Size \Nat i \to \Set[\ell]$ is sugar for $\piT \Size \piT {(\Nat\,\ind 0)} \Set[\ell]$.  We abbreviate this type by \fbox{$\FixK\,\ell$}, and let \fbox{$\FixT\,T$} stand for $\allT i \Size (\funT x {\Nat i} T\, i\, x) \to \funT x {\Nat (i + 1)} T \,(i+1)\, x$. Similar as for $\Pi$, we use named lambda abstraction as sugar for de Bruijn abstraction.  Named abstract takes care of proper lifting of de Bruijn indices, for instance, $\lambda x.\, t x = \lambda. (t \slift)\,\ind 0$ if $t$ is outside the scope of $x$.
+For concrete function types, we may use a named dependent function type notation as syntactic sugar for the corresponding de Bruijn representation.  For instance, $\funT i \Size \Nat i \to \Set[\ell]$ is sugar for $\piT \Size \piT {(\Nat\,\ind 0)} \Set[\ell]$.  We abbreviate this type by \fbox{$\FixK\,\ell$}, and let \fbox{$\FixT\,T$} stand for $\allT i \Size (\funT x {\Nat i} T\, i\, x) \to \funT x {\Nat (i + 1)} T \,(i+1)\, x$. Similar as for $\Pi$, we use named lambda abstraction as sugar for de Bruijn abstraction.  Named abstract takes care of proper lifting of de Bruijn indices, for instance, $\lambda x.\, t x = \lambda. (t \slift)\,\ind 0$ if $t$ is outside the scope of $x$.
+We may also use names when we construct concrete contexts, for instance, if $T$ is well-formed in context $\Gamma$, we may write $T\,i\,x$ in context $\Gamma.i\of\Size.x\of\Nat i$ to mean $T\slift^2\,\ind 1\,\ind 0$ in context
+$\Gamma.\Size.\Nat \ind 0$.
 
 Resurrection\cite{pfenning:lics01} \fbox{$\resurrect\Gamma$} removes
 the ``$\erased$''-markers from all bindings in $\Gamma$ (\ie, replaces
 them by ``$\noterased$''-markers).  Note that, trivially, resurrection is idempotent: $\resurrecttwice\Gamma = \resurrect{\Gamma}$.
-
-We write $\sigma$ and $\tau$ for substitutions, which are lists of terms, and $t \sigma$ for the application of substitution $\sigma$ to term $t$.  We write $\slift^k_m$ for the substitution $(\ind{k+m-1},\dots,\ind{k+1},\ind k)$ which applies to a term with $m$ free indices and increases all of them by $k$.  We write $\slift_m$ for the lifting $\slift^1_m$ and $\sid_m$ for the identity substitution $ \slift^0_m$. The substitution $[u]_m = (\sid_m, u)$ replaces free index $\ind 0$ by term $u$ and decrements all other free indices by $1$. We drop subscript $m$ when clear from the context.
 
 Size increment \fbox{$a + o'$} for $o' \in \NN$ extends addition by $\infty + o' = \infty$ and $(\ind i + o) + o' = \ind i + (o + o')$.  Size comparison \fbox{$a \leq b$} holds if either $b = \infty$ or  $o \leq o'$ where either $a = o$ and $b = o'$ or $a \in \{ o, \ind i + o \}$ and $b = \ind i + o'$.
 
@@ -240,25 +269,31 @@ Judgements.
 %  \Gamma \mid U \der e : T & \mbox{in context $\Gamma$, elimination $e$ goes from $U$ to $T$} \\
 %  \Gamma \mid U \der e = e' : T & \mbox{in context $\Gamma$, eliminations $e$ and $e'$ are equal} \\
   \Gamma \der T \leq T' & \mbox{in context $\Gamma$, type $T$ is a subtype of $T'$} \\
-  \Gamma \der T : \Adm \ell & \mbox{in context $\Gamma$ type constructor $T$ is admissible for recursion} \\
+%  \Gamma \der T : \Adm \ell & \mbox{in context $\Gamma$ type constructor $T$ is admissible for recursion} \\
   \suty \Gamma \sigma \tau \Delta & \mbox{$\sigma$/$\tau$ is a valid term/type-level substitution for $\Delta$} \\
   \sueq \Gamma \sigma {\sigma'} \tau \Delta & \mbox{$\sigma$/$\sigma'$/$\tau$ are a equal term/term/type-level substitutions for $\Delta$} \\
 \end{array}
 \]
 Derived judgements.
 \[
-\begin{array}{lll@{~}l@{\qquad}l}
+\begin{array}{l@{~~}l@{~~}l@{~}l@{\qquad}l}
   \Gamma \der T & \defas & \Gamma \der T : s & \mforsome s
     & \mbox{in context $\Gamma$, type $T$ is well-formed} \\
   \Gamma \der T = T' & \defas & \Gamma \der T = T' : s & \mforsome s
     & \mbox{in context $\Gamma$, types $T$ and $T'$ are equal} \\
-  \Gamma \der a = b : \Size & \defas & \multicolumn 2 {l@{\qquad}} {\Gamma \der a : \Size \mand a = b}
+  \Gamma \der a = b : \Size & \defas &
+    \multicolumn 2 {@{}l@{\qquad}} {\Gamma \der a : \Size \mand a = b}
     & \mbox{sizes $a$ and $b$ are well-formed and identical} \\
   \Gamma \der a \leq b : \Size & \defas &
-     \multicolumn 2 {l@{\qquad}} {\Gamma \der a : \Size \mand \Gamma \der b : \Size \mand a \leq b}
+     \multicolumn 2 {@{}l@{\qquad}} {\Gamma \der a : \Size \mand \Gamma \der b : \Size \mand a \leq b}
 %     \multicolumn 2 {l@{\qquad}} {\Gamma \der a : \Size \mand \Gamma \der b : \Size \mand a \leq b}
     & \mbox{sizes $a$ and $b$ are well-formed and comparable} \\
 %    & \mbox{in context $\Gamma$, well-formed size $a$ is less or equal than well-formed size $b$} \\
+  \Gamma \der T : \Adm \ell & \defas &
+     \multicolumn 2 {@{}l@{\qquad}}
+       {\Gamma \der T : \FixK \mand \Gamma.i\of\Size.x\of\Nat i \der T\,i\,x \leq T\,\infty\,x}
+    & \mbox{% in context $\Gamma$
+            type constructor $T$ is admissible for recursion} \\
 \end{array}
 \]
 Inference rules.
@@ -353,7 +388,7 @@ Inference rules.
     }{\Gamma \der u\,\case[\ell] T {t_z} t_s : T \, u}
 \\[2ex]
   \ru{\Gamma \der u : \Nat a \qquad
-      \Gamma \der T : \FixK\,\ell \qquad %% \funT i \Size \Nat i \to \Set[\ell] \\
+      \Gamma \der T : \Adm\,\ell \qquad %% \funT i \Size \Nat i \to \Set[\ell] \\
       \Gamma \der t : \FixT\, T
      }{\Gamma \der u\,\fix[\ell] T t : T \,a \, u}
 \qquad
@@ -411,7 +446,7 @@ Computation rules.
 \\[2ex]
   \ru{\Gamma \der c : \Nat b \qquad
       \resurrect\Gamma \der a : \Size \qquad
-      \Gamma \der T : \FixK\,\ell \qquad %% \funT i \Size \Nat i \to \Set[\ell] \\
+      \Gamma \der T : \Adm\,\ell \qquad %% \funT i \Size \Nat i \to \Set[\ell] \\
       \Gamma \der t : \FixT\,T %% \allT i \Size (\funT x {\Nat i} T\, i\, x) \to \funT x {\Nat (i + 1)} T \,(i+1)\, x
      }{\Gamma \der c\,\fix[\ell] T t = t\ann a (\lambda x. x\,\fix[\ell] T t)\, c : T \,b \, c
      }%{c \in \{\zero a, \suc a t'\}}
@@ -482,7 +517,7 @@ Congruence rules.
     }{\Gamma \der u\,\case[\ell] T {t_z} t_s = u'\,\case[\ell] {T'} {t_z'} t_s' : T \, u}
 \\[2ex]
   \ru{\Gamma \der u = u' : \Nat a \qquad
-      \Gamma \der T = T' : \FixK\,\ell \qquad %% \funT i \Size \Nat i \to \Set[\ell] \\
+      \Gamma \der T = T' : \Adm\,\ell \qquad %% \funT i \Size \Nat i \to \Set[\ell] \\
       \Gamma \der t = t' : \FixT\,T \qquad %% \allT i \Size (\funT x {\Nat i} T \,i\, x) \to \funT x {\Nat (i + 1)} T \,{i+1}\, x
      }{\Gamma \der u\,\fix[\ell] T t = u'\,\fix[\ell] {T'} t' : T \, a \, u}
 \qquad
@@ -742,7 +777,7 @@ match a part of a judgement.
 \item If $\Gamma \der \zero a : T'$ then $\resurrect \Gamma \der a,b : \Size$ and $\resurrect\Gamma \der \Nat (b + 1) \leq T'$ for some $b$.
 \item If $\Gamma \der \suc a t : T'$ then $\resurrect \Gamma \der a,b : \Size$ and $\Gamma \der t : \Nat b$ and $\resurrect\Gamma \der \Nat(b+1) \leq T'$.
 \item If $\Gamma \der u \case[\ell] T {t_z} {t_s} : T'$ then $\Gamma \der u : \Nat (a+1)$ and $\Gamma \der T : \Nat(a+1) \to \Set[\ell]$ and $\Gamma \der t_z : T\,(\zero a)$ and $\Gamma \der t_s : \funT x {\Nat a} {T\,(\suc a x)}$ and $\resurrect\Gamma \der T\,u \leq T'$ for some $a$.
-\item If $\Gamma \der u \fix[\ell] T t : T'$ then $\Gamma \der u : \Nat a$ and $\Gamma \der T : \FixK\,\ell$ and $\Gamma \der t : \FixT\,T$ and $\resurrect\Gamma \der T\,a\,u \leq T'$.
+\item If $\Gamma \der u \fix[\ell] T t : T'$ then $\Gamma \der u : \Nat a$ and $\Gamma \der T : \Adm\,\ell$ and $\Gamma \der t : \FixT\,T$ and $\resurrect\Gamma \der T\,a\,u \leq T'$.
 \end{enumerate}
 \end{lemma}
 \begin{proof}
@@ -1892,8 +1927,10 @@ $\LR \Gamma t {T'} f {A'}$ iff
 .
 \end{array}
 \]
-
 \end{caselist}
+We may prove theorems ``by induction on $\LRTS \Gamma T A s$'', even if in reality this will be proofs by induction on $A \in s$ and cases on $\LRTS \Gamma T A s$.
+We write \fbox{$\RG \Gamma T A$} if $\LRTS \Gamma T A s$ for some sort $s$.
+
 
 \begin{lemma}[Weakening]
   Let $\xi : \Gamma' \leq \Gamma$.
@@ -1916,20 +1953,21 @@ $\LR \Gamma t {T'} f {A'}$ iff
 \begin{theorem}[Into and out of the logical relation]
 \label{thm:into}
 \bla
-Let $A \in s$.
+Let $\LRTS{\Gamma} T A s$. Then:
+%Let $A \in s$.
 \begin{enumerate}
 
 \item \label{it:into}
    If\/ $\Gamma \der t \doteq \tRne\,n : T$ then
    $\LR \Gamma t T {\up A n} A$.
 
-\item \label{it:outty}
-   If\/ $\LRTS{\Gamma} T A s$ then
-   $\Gamma \der T \doteq \tRty\,A : s$
-
 \item \label{it:out}
   If\/ $\LR \Gamma t T f A$ then
   $\Gamma \der t \doteq \tR\,\down A f : T$.
+
+\item \label{it:outty}
+   %If\/ $\LRTS{\Gamma} T A s$ then
+   $\Gamma \der T \doteq \tRty\,A : s$.
 
 % \item \label{it:into}
 %    $\LR \Gamma t T {\up A n} A$ if for all $\xi : \Gamma' \leq \Gamma$ there is an $m$ such that
@@ -1950,7 +1988,7 @@ Let $A \in s$.
 
 \begin{proof}
 We prove the propositions for $A'$ and $T'$ (instead of $A$ and $T$)
-simultaneously by induction on $A' \in \SET[\ell]$.
+simultaneously by induction on $A' \in s$.
 
 \begin{caselist}
 
@@ -1964,7 +2002,9 @@ $\LR{\Gamma'} {(t\xi\,u)} {T(\xi,u)} {\up{B[a]}(n\,\down A a)} {B[a]}$.
 By induction hypothesis (\ref{it:out}) we have $\RD {\Gamma'} u {\down A a} {U\xi}$, and
 together with the weakened premise $\Gamma' \der t\xi \doteq \tRne\, n : (\piT U T) \xi$ we get
 $\Gamma' \der t\xi\, u \doteq \tRne\, (n\,\down A a) : T(\xi,u)$.
-The goal follows by induction hypothesis (\ref{it:into}) for $B[a] \in \SET[\ell]$.
+The goal follows by induction hypothesis (\ref{it:into}) for
+% $B[a] \in s$.
+$\LRTS{\Gamma'}{T(\xi,u)}{B[a]} s$.
 % This follows by induction hypothesis (\ref{it:into}) for $B[a] \in \SET[\ell]$ if
 % we can prove that for all $\xi' : \Gamma'' \leq \Gamma'$ there is a neutral normal form $m$
 % such that $\RNe{\Gamma''} {(n\,\down A a)} m$ and $\Gamma'' \der (t\xi\,u)\xi' = m : T(\xi,u)\xi'$.
@@ -1991,7 +2031,8 @@ If $\LRT \Gamma T A \ell$ and $\LRT \Gamma {T'} A {\ell'}$ then $\Gamma \der T =
 
 \begin{corollary}[Fresh variable]
   \label{cor:fresh}
-  If $\der \cext \Gamma T$ and $A \in \SET[\ell]$
+  If $\der \cext \Gamma T$ and %$A \in \SET[\ell]$
+  $\RG \Gamma T A$
   then $\LR {\cext \Gamma T} {\ind 0} {(T \slift)} {(\up A \var\Gamma)} A$.
 \end{corollary}
 \begin{proof}
@@ -2012,15 +2053,21 @@ If $\LRT \Gamma T A \ell$ and $\LRT \Gamma {T'} A {\ell'}$ then $\Gamma \der T =
 \item
    If $\LRSize \Gamma a \alpha$ and $\LRSize \Gamma {b} \beta$ and $\alpha \leq \beta$ then $a \leq b$.
 \item
-   If $\LRT \Gamma T A \ell$ and $\LRT \Gamma {T'} {A'} {\ell'}$ and $A \leq A' \in \TYPE$ then $\Gamma \der T \leq T'$.
+   If $\RG \Gamma T A$ and $\RG \Gamma {T'} {A'}$ and $A \leq A' \in \TYPE$ then $\Gamma \der T \leq T'$.
+   % If $\LRT \Gamma T A \ell$ and $\LRT \Gamma {T'} {A'} {\ell'}$ and $A \leq A' \in \TYPE$ then $\Gamma \der T \leq T'$.
 \end{enumerate}
 \end{lemma}
+\begin{proof}
+  The proof is analogous to the one  for algorithmic subtyping to come (Lemma~\ref{lem:lrasub}).
+\end{proof}
 
 
 \begin{lemma}[Subsumption for the logical relation \cite{fridlenderPagano:tlca13}]
 \label{lem:lrsump}
-   If $\LRT \Gamma T A \ell$ and $\LRT \Gamma {T'} {A'} {\ell'}$ and $A \leq A' \in \TYPE$ then
+   If $\RG \Gamma T A$ and $\RG \Gamma {T'} {A'}$ and $A \leq A' \in \TYPE$ then
    $\LR \Gamma t T f A$ implies $\LR \Gamma t {T'} f {A'}$.
+   % If $\LRT \Gamma T A \ell$ and $\LRT \Gamma {T'} {A'} {\ell'}$ and $A \leq A' \in \TYPE$ then
+   % $\LR \Gamma t T f A$ implies $\LR \Gamma t {T'} f {A'}$.
 \end{lemma}
 
 
@@ -2432,11 +2479,12 @@ Algorithmic subtyping \fbox{$\Gamma \der T \asub T'$}.
 \begin{lemma}[Semantic subtyping implies algorithmic subtyping]
 \label{lem:lrasub}
 \bla
-   If\/ $\LRTS \Gamma T A s$ and $\LRTS \Gamma {T'} {A'} {s'}$ and $A \leq A' \in \TYPE$ then $\Gamma \der T \asub T'$.
+   If\/ $\RG \Gamma T A$ and $\RG \Gamma {T'} {A'}$ and $A \leq A' \in \TYPE$ then $\Gamma \der T \asub T'$.
 \end{lemma}
 \begin{proof}
-By induction on $A_1' \in s_1$ and $A_2' \in s_2$ and cases on the inductive relations
-$\LRTS \Gamma {T_1'} {A_1'} {s_1}$ and $\LRTS \Gamma {T_2'} {A_2'} {s_2}$ and $A_1' \leq A_2' \in \TYPE$
+By induction on % $A_1' \in s_1$ and $A_2' \in s_2$ and cases on the inductive relations
+$\LRTS \Gamma {T_1'} {A_1'} {s_1}$ and $\LRTS \Gamma {T_2'} {A_2'} {s_2}$
+and cases on $A_1' \leq A_2' \in \TYPE$
 we prove $\Gamma \der T_1' \asub T_2'$.
 
 \begin{caselist}
@@ -2623,7 +2671,7 @@ Let $\DD :: \Gamma \der T \asub T'$.
   Let $\sid : \Gamma' \leq \Gamma$.
   \begin{enumerate}
   \item If $\DD :: \Gamma \der t \jchk T$ and $\resurrect\Gamma \der T \leq T'$ then $\Gamma' \der t \jchk T'$.
-  \item If $\DD :: \Gamma \der t \jinf T$ then $\Gamma' \der t \jinf T'$ and $\resurrect\Gamma' \der T \leq T'$.
+  \item If $\DD :: \Gamma \der t \jinf T$ then $\Gamma' \der t \jinf T'$ and $\resurrect{\Gamma'} \der T \leq T'$.
   \end{enumerate}
 \end{lemma}
 \begin{proof}
