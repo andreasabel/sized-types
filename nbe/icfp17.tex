@@ -46,6 +46,16 @@
 \startPage{1}
 \fi
 
+\makeatletter
+\newenvironment{proof*}[1][\proofname]{\par
+  \normalfont \topsep6\p@\@plus6\p@\relax
+  \trivlist
+  \item[\@proofindent\hskip\labelsep
+        {\@proofnamefont #1\@addpunct{.}}]\ignorespaces
+}{%
+  \endtrivlist\@endpefalse
+}
+\makeatother
 
 %% Copyright information
 %% Supplied to authors (based on authors' rights management selection;
@@ -887,7 +897,7 @@ Judgements.
   \ru{t_s\, t \evalsto w
     }{(\suc \alpha t) @ \casett \evalsto w}
 \\[2ex]
-  \ru{t\,\ann \alpha\,(\lambda x.\, x@ \fixtt)\,c \evalsto w
+  \ru{t\,\ann \alpha\,(\lambda x.\, x\, \fixtt)\,c \evalsto w
      }{c @ \fixtt \evalsto w
      }{c\in \{ \zero \alpha, \suc \alpha u \}}
 \end{gather*}
@@ -913,16 +923,17 @@ The rules added for NbE deal with elimination of delayed reflection:
 %       \up{B[\alpha]} (n \ann \alpha) \evalsto w
 %     }{(\up T n) @ \ann \alpha \evalsto w}
 \\[2ex]
-  \ru{T' \evalsto \Nat \beta \qquad
+  \ru{%T' \evalsto \Nat \beta \qquad
     }{(\up {T'} n) @ \case[\ell] T {t_z} {t_s} \evalsto
-      \up{T\,(\up{\Nat \infty} n)}
+      \up{T\,(\up{T'} n)}\,
+      % \up{T\,(\up{\Nat \infty} n)}
          n\,\case[\ell]
-             T %% {(\down {\Set[\infty]} T)}
+             {(\down {\Nat \infty \to \Set[\ell]} T)}
              {(\down {T\,{\zero\infty}} t_z)}
              {(\down {\funS x {\Nat \infty} T\,(\suc \infty x)} t_s)}
     }
 \\[2ex]
-  \ru{T' \evalsto \Nat \beta \qquad
+  \ru{%T' \evalsto \Nat \beta \qquad
     }{(\up {T'} n) @ \fix[\ell] T t \evalsto
       n\,\fix[\ell] {(\down {\FixK} T)} {(\down {\FixT\, T} t)}
     }
@@ -1026,10 +1037,10 @@ Judgements.
   % \ru{\RSize k \alpha b
   %   }{\RElim k {\ann \alpha} {\ann b}}
 \\[2ex]
-  \ru{\RTy k T V \qquad
+  \ru{\R k D V \qquad
       \R k {d_z} {v_z} \qquad
       \R k {d_s} {v_s}
-    }{\RElim k {(\case[\ell] T {d_z} {d_s})} {\case[\ell] V {v_z} {v_s}}}
+    }{\RElim k {(\case[\ell] D {d_z} {d_s})} {\case[\ell] V {v_z} {v_s}}}
 \qquad
   \ru{\R k D V \qquad
       \R k d v
@@ -1136,6 +1147,8 @@ The PERs $\NE$ and $\NF$ characterize (neutral) normalizing terms.
   \item If $D = D' \in \NF$ and $d = d' \in \NF$ then $\fix[\ell] D d = \fix[\ell]{D'}{d'} \in \ELIM$.
   \end{enumerate}
 \end{lemma}
+
+Now we define some PERs and PER constructors on values.  All these PERs $\A$ are closed under weak head equality, meaning if $a = b \in \A$ and $a'$ has the same weak head normal form as $a$, then $a' = b in \A$.  (By symmetry, $\A$ is also closed under weak head equality on the second argument.)
 
 Neutrals in the value world $\D$.
 \[
@@ -1247,7 +1260,7 @@ The rules for \fbox{$T = T' \in \SET[\ell]$} are:
   & \EL[\ell](T) = \FORALL(\alpha \mapsto \EL[\ell](B[\alpha]))
 \end{array}
 \]
-All relations involved here are closed under weak head expansion.
+All relations involved here are closed under weak head equality.
 \begin{lemma}[Well-definedness]
   Let $\DD :: T_1 = T_2 \in \SET[\ell]$.
   \begin{enumerate}
@@ -1521,6 +1534,95 @@ $\down{B_1[u_1]}(t_1\,u_1) = \down{B_2[u_2]}(t_2\,u_2) \in \NF$, which delivers 
   \end{enumerate}
 \end{corollary}
 
+
+\subsection{Computation}
+\label{sec:comp}
+
+The eliminations for natural numbers are acurrately modeled.
+\begin{lemma}[Case]
+  \label{lem:case}
+If $a = a' \in \Nat (\alpha+1)$
+and $B = B' \in \Nat (\alpha+1) \to \Set[\ell]$
+and $f_z = f_z' \in B\,(\zero \beta)$
+and $f_s = f_s' \in \funT x {\Nat \alpha} B\,(\suc \gamma x)$
+then $a\,\case[\ell] B {f_z}{f_s} = a'\,\case[\ell] {B'} {f_z'}{f_s'} \in B\,a$.
+\end{lemma}
+\begin{proof}
+By induction on $a = a' \in \Nat(\alpha+1)$.
+\begin{caselist}
+
+\nextcase $a \evalsto \zero \beta$ and $a' \evalsto \zero{\beta'}$.
+Since our PERs are closed under weak head equality,
+and, for instance, $a\, \case[\ell] B {f_z}{f_s}$ has the same weak head normal form as $f_z$,
+it suffices to show $f_z = f_z' \in B\,(\zero \beta)$, which is one of our assumptions.
+
+\nextcase $a \evalsto \suc \beta b$ and $a' \evalsto \suc {\beta'}{b'}$ with $b = b' \in \Nat \alpha$.
+Again, it suffices to show
+$f_s\,b = f_s'\,b' \in B\,(\suc \beta b)$, which is an instance of our last assumption.
+
+\nextcase $a \evalsto \up T n$ and $a' \evalsto \up {T'} n'$ with $n = n' \in \NE$.
+Let $D = \down{\Nat \infty \to \Set[\ell]} B$
+and $d_z = \down{B\,(\zero \infty)} f_z$
+and $d_s = \down{\funS x {\Nat\,\infty} {B\,(\suc \infty x)}} f_s$
+and $e = \case[\ell] D {d_z}{d_s}$.
+% $e = \case[\ell]
+%   {(\down{\Nat \infty \to \Set[\ell]} B)}
+%   {(\down{B\,(\zero \infty)} f_z)}
+%   {(\down{\funS x {\Nat\,\infty} {B\,(\suc \infty x)} f_s)}$
+Let $D',d_z',d_s',e'$ be defined analogously from $B',f_z',f_s'$.  It suffices to show $e = e' \in \ELIM$, since then we have $n\,e = n'\,e' \in \NE$ by the closure properties of $\NE$ (Lemma~\ref{lem:closne}),
+and $\up{B[a]} (n\,e) = \up{B'[a']} (n'\,e') \in B[a]$ by reflection (Theorem~\ref{thm:rere}).
+The remaining goal $\case[\ell] D {d_z}{d_s} = \case[\ell] {D'} {d_z'}{d_s'} \in \ELIM$ follows by the closure properties for eliminations (Lemma~\ref{lem:closelim}), since $D = D' \in \NF$ and $d_z = d_z' \in \NF$ and $d_s = d_s' \in \NF$ all hold by reification (Theorem~\ref{thm:rere}).
+\end{caselist}
+\end{proof}
+
+\begin{lemma}[$\NAT$ is cocontinuous]
+  \label{lem:limit}
+  $\NAT(\infty) = \bigcup_{\alpha < \infty} \NAT(\alpha)$.
+\end{lemma}
+\begin{proof}
+  By induction on $a = a' \in \NAT(\infty)$, we can easily show $a = a' \in \NAT(\alpha)$ for some $\alpha < \infty$.
+  For instance, $\alpha$ could be number of uses of the successor rule plus one.
+\end{proof}
+
+%A type constructor $B \in \FixK\,\ell$ is \emph{admissible for recursion}, \fbox{$B \in \ADM$}, if
+%$\bigcap_{
+Let us write \fbox{$B = B' \in \Adm\ell$} iff $B = B' \in \FixK\,\ell$ and
+for all $\beta \in \SIZE$ and $a \in \Nat \beta$ we have
+$B\,\beta\, a \leq B\,\infty\,a \in \TYPE$ and
+$B'\,\beta\, a \leq B'\,\infty\,a \in \TYPE$.
+\begin{lemma}[Fix]
+Let $g = a \, \fix[\ell] B f$ and $g' = a'\,\fix[\ell]{B'}{f'}$.
+If $a = a' \in \Nat \alpha$
+and $B = B' \in \Adm\ell$
+and $f = f' \in \FixT\,B$
+then $g = g' \in B\,\alpha\,a$.
+\end{lemma}
+\begin{proof*}
+By wellfounded induction on $\alpha$.
+\begin{caselist}
+
+\nextcase $\alpha < \infty$ and $a \evalsto \up{T}n$ and $a' \evalsto \up{T'}{n'}$ and $n = n' \in \NE$.
+In this case $g$ and $g'$ evaluate to neutral applications of $\tfix$.  The proof proceeds analogously to Lemma~\ref{lem:case}.
+
+\nextcase $\alpha < \infty$ and $a \evalsto c$ and $a' \evalsto c'$.  Then $\alpha = \beta + 1$ with $\beta<\infty$.
+The weak head normal form of $g$ equals the weak head normal form of
+$h := f\,\ann \gamma\,(\lambda x.\,x\,\fix[\ell] B f)\,c$ where $\gamma$ is the size annotation of $c$.
+It suffices to show $h = h' \in B\,\alpha\,a$ for $h'$ defined analogously from $B',f',c'$.
+This follows from the assumption on $f, f'$ if we manage to show
+$(\lambda x.\,x\,\fix[\ell] B f) = (\lambda x.\,x\,\fix[\ell] {B'} {f'}) \in
+\funT x {\Nat\beta} {B\,\beta\,x}$.
+To this end, assume $b = b' \in \Nat\beta$ and show
+$b\,\fix[\ell] B f = b'\,\fix[\ell] {B'} {f'} \in B\,\beta\,b$.
+However, this is an instance of the induction hypothesis thanks to $\beta < \alpha$.
+
+
+\nextcase $\alpha = \infty$.
+Note that $a = a' \in \Nat \alpha$ for some $\alpha < \infty$ by Lemma~\ref{lem:limit}.
+By induction hypothesis, $g = g' \in B\,\alpha\,a$.  Since
+$B\,\alpha\,a \leq B\,\infty\,a$ by assumption, the goal
+$g = g' \in B\,\infty\,a$ follows by subsumption.
+\end{caselist}
+\end{proof*}
 
 \subsection{Fundamental Theorem}
 \label{sec:fund}
