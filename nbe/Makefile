@@ -25,18 +25,18 @@ bibliography=medium.bib
 
 stdlib=$(HOME)/agda/std-lib/src
 
-files=nbe-sized.tex macros.tex
+files=icfp17.tex macros.tex
 
 .PHONY : all debugMake html
 
 .PRECIOUS : %.dvi %.ps %.gz %.pdf %.tex
 
 
-default : nbe-sized.pdf
+default : icfp17.pdf
 
-pack : nbe-sized.zip
+pack : icfp17.zip
 
-nbe-sized.zip : nbe-sized.pdf $(files) jfp1.cls harpoons.sty nbe-sized.bbl jfp.bst auto-nbe-sized.bib
+icfp17.zip : icfp17.pdf $(files) jfp1.cls harpoons.sty icfp17.bbl jfp.bst auto-icfp17.bib
 	zip $@ $^
 
 ship : jfp16-agda.tgz html
@@ -52,36 +52,36 @@ html/Everything.html : $(agdafiles)
 	agda --html $<
 
 
-# nbe-sized
+# icfp17
 ##################################################################
 
 # initially, run latex once to create an .aux file
 # mark .aux file as fresh by creating a stamp _aux
-nbe-sized_aux : nbe-sized.tex $(files)
-	$(pdflatex) nbe-sized.tex;
+icfp17_aux : icfp17.tex $(files)
+	$(pdflatex) icfp17.tex;
 	touch $@;
 
 # then, run bibtex
-nbe-sized.bbl : nbe-sized_aux auto-nbe-sized.bib
-	-bibtex nbe-sized;
+icfp17.bbl : icfp17_aux auto-icfp17.bib
+	-bibtex icfp17;
 
 # finally, finish by running latex twice again
 # this will update .aux, but leave the stamp _aux intact
 # (otherwise we would not converge and make would never
 # return a "Nothing to do")
-nbe-sized.pdf : nbe-sized.bbl
-	$(pdflatex) nbe-sized.tex;
-	$(pdflatex) nbe-sized.tex;
+icfp17.pdf : icfp17.bbl
+	$(pdflatex) icfp17.tex;
+	$(pdflatex) icfp17.tex;
 
-# auto-nbe-sized.bib is only defined if bibtool is present and all.bib exists
+# auto-icfp17.bib is only defined if bibtool is present and all.bib exists
 
 ifneq ($(shell which bibtool),)
 ifneq ($(shell ls $(bibliography)),)
-auto-nbe-sized.bib : nbe-sized_aux $(bibliography)
+auto-icfp17.bib : icfp17_aux $(bibliography)
 	echo "%%%% WARNING! AUTOMATICALLY CREATED BIBFILE" > $@;
 	echo "%%%% DO NOT EDIT! ALL CHANGES WILL BE LOST!" >> $@ ;
 	echo "" >> $@ ;
-	$(bibtool) -x nbe-sized.aux -i $(bibliography) >> $@;
+	$(bibtool) -x icfp17.aux -i $(bibliography) >> $@;
 endif
 endif
 

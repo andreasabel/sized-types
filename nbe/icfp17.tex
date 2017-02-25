@@ -200,7 +200,59 @@ Text of abstract \ldots.
 \section{Introduction}
 \label{sec:intro}
 
-\newpage
+% higher rank sized types
+% Church-style and curry style
+% The problem of size irrelevance
+% Our solution (application rule)
+% Shape-irrelevance middle ground between Pfenning, ICC,
+% Agda's function types
+
+
+Dependently-typed programming languages and proof assistants, such as Agda~\citeyearpar{agdawiki}, Coq~\cite{inria:coq86}, and Idris~\cite{brady:jfp13} require programs to be total, for two reasons.  First, for consistency:  since propositions are just types and proofs of a propositions just programs which inhabit the corresponding type, some types need to be empty; otherwise, each proposition would be true.  However, in a partial language with general recursion, each type is inhabited by the looping program $f = f$.  Secondly, totality is needed for decidability of type checking.  Since types can be the result of a computation, we need computation to terminate during type checking, even for \emph{open terms}, \ie, terms with free variables.
+
+% \cite{boveKraussSozeau:mscs16}
+Consequently, each of the aforementioned languages based on Type Theory comes with a termination checker, which needs to reject all non-terminating programs, and should accept sufficiently many terminating programs to allow the user to express her algorithms.  In the current termination checkers, programs are required to terminate by structural descent \cite{gimenez:guardeddefinitions}; the structural order may be extended to a lexicographic \cite{abelAltenkirch:jfp02} or size-change termination criterion \cite{jones:sizeChange,wahlstedt:PhD}.  This fundamental limitation, since Type Theory allows many functions to be expressed in a structurally recursive manner, if needed by the help of a well-founded relation \cite{nordstrom:genrec}, inductive domain predicates \cite{boveCapretta:mscs05}, or inductive descriptions of the function graph \cite{bove:entcs09}.  However, the syntactic termination check is very sensitive to reformulations of a program and hostile to abstraction \cite{abel:fics12}.
+
+Sized types \cite{hughesParetoSabry:popl96} delegate the checking for structural descent to the type system by annotating data types with a size parameter.  The type checker can then ensure that in recursive calls, the size goes down, certifying termination.  In the simplest setting \cite{gimenez:typeBased,abel:lmcs07}, the size is just an upper bound on the tree height of the data structure; however, more sophisticated size annotations have also been considered \cite{xi:terminationHOSC,blanqui:rta04}.  Most sized type systems are non-dependent \cite{amadio:guardcondition,abelPientka:jfp16,bartheGregoireRiba:lernet08,bartheGregoireRiba:csl08,blanquiRiba:lpar06,dalLagoGrellois:probabilisticSizedTypes2017}, yet the combination of sized and dependent types has been studied as well \cite{blanqui:csl05,bartheGregoirePastawski:lpar06,gregoireSacchini:lpar10,sacchini:lics13,sacchini:flops14}.  However, to the best of our knowledge, no study combines \emph{higher-rank size polymorphism} with full-fledged dependent types (Xi \citeyearpar{xi:terminationHOSC} only has indexed types).
+
+Higher-rank size quantification takes termination checking to the next level; it is necessary for abstraction and generic programming.  For instance, it allows us to write a generic tree traversal which applies a user-given preprocessor on subtrees before recursively descending into these trees.  The condition is that preprocessing does not increase the size of the subtree; otherwise, termination could not be guaranteed.  Concretely, assume a type $\tT\,i$ of trees of size $< i$ with a constructor $\tnode : \forall i.\, \List\,(\tT\,i) \to \tT\,(i+1)$.
+In the following definition of $\ttrav$, the preprocessing $\vpre : \forall i.\, \tT\,i \to \tT\,i$ can be safely applied to input tree $t$ because the type of $\vpre$ bounds the size of $\vpre\,t$ by the size of $t$.
+In case $\vpre\,t = \tnode\,\vts$, the trees in the list $\vts$ are still guaranteed to be of strictly smaller size than $t$, thus, the recursive call to $\ttrav$, communicated via the $\tmap$ function for lists, is safe.
+\[
+\begin{array}{l}
+  \ttrav : (\vpre : \forall i.\, \tT i \to \tT i) (\vpost : \tT \infty \to \tT \infty) \to \forall i.\, \tT\,i \to \tT\,\infty
+  \\
+  \ttrav \; \vpre \; \vpost \; t = \vpost\;(\tcase\;\vpre\,t\;\tof \, \{ \, \tnode\,\vts \to \tnode\,(\tmap \; (\ttrav \, \vpre \, \vpost) \; \vts) \})
+\end{array}
+\]
+This is the \emph{Curry}-style program as accepted from the user, but state-of-the-art type checkers elaborate the program from surface syntax into an internal \emph{Church}-style syntax with explicit type abstractions and type applications.\footnote{Agda, Coq, Idris, and Haskell \cite{sulzmannChakravartyPeythonJonesDonnelly:tldi07} all have Church-style internal languages.}  With implicit type and size applications elaborated, $\ttrav$ would look as follows:
+\[
+\begin{array}{l}
+  \ttrav \; \vpre \; \vpost \; i\; t = \vpost\;(\tcase\;\vpre\,i\,t\;\tof \, \{ \, \tnode\,j\,\vts \to \tnode\,\infty\,(\tmap \; (\tT\,j) \; (\tT\,\infty) \; (\ttrav \, \vpre \, \vpost \, j) \; \vts) \})
+\end{array}
+\]
+From a dependent-type perspective, explicit size applications in terms can be problematic when the type checker compares terms for equality (which is necessary as types can depend on values).  Inferred sizes may not be unique, as we have subtyping $\tT\,i \leq \tT\,j$ for $i \leq j$: we can always weaken an upper bound.  For instance, given $\vts : \List\,(\tT\,i)$, all of $\tnode\,i\,\vts$ and $\tnode\,(i+1)\,\vts$ and $\dots$ and $\tnode\,\infty\,\vts$ have type $\tT\,\infty$.  However, semantically, all these trees are equal, thus, the syntactic equality check should ignore the size argument to $\tnode$.  Similarly, in the application $\vpre\,i\,t$ the size argument $i$ should be ignored by the equality check.  Yet $\vpre\,i : \tT\,i \to \tT\,i$ and $\vpre\,j : \tT\,j \to \tT\,j$ have different types for $i \not= j$, and moreover these function types are not in the subtyping relation due to mixed-variant occurrence of the size parameter.  It seems that during equality checking we have to consider terms of different types, for a while.  Once we apply $\vpre\,i$ and $\vpre\,j$ to the same tree $t : \tT\,k$, which determines $i = j = k$, we are back in safety.  However, allowing types to differ during an equality check can be hazardous, especially when the equality-check is type directed.
+
+Consider the analogous situation for the polymorphic lambda calculus System~F, be it the predicative variant or not, extended by a unit type $\One$.
+For Church-style, we can give a type-directed $\beta\eta$-equality test which equates all term at the unit type.  The most interesting rules would be the $\eta$-rules for unit and function type and the congruence rule for type application:
+\begin{gather*}
+\renewcommand{\jchk}{:}
+\renewcommand{\jinf}{:}
+  \ru{}{\Gamma \der t = t' \jchk \One}
+\qquad
+  \ru{\Gamma, x \of A \der t\,x = t'\,x \jchk B
+    }{\Gamma \der t = t' \jchk A \to B}
+\qquad
+  \ru{\Gamma \der t = t' \jinf \forall X. B
+    }{\Gamma \der t\,A = t'\,A \jinf B[A/X]}
+\end{gather*}
+The Curry-style version would replace the last conclusion by $\Gamma \der t = t' : B[A/X]$ where the type $A$ to instantiate $X$ has to be guessed.  However, in Curry-style more terms are equated than in Church-style, as for instance the Church-style terms $t\,A\,(\lambda x \of A.\, x)$ and $t\,B\,(\lambda x \of B.\, x)$ map to the same Curry-style term $t\,(\lambda x.\,x)$.  How would we adopt the algorithm for Church-style such that it equates all terms that are equal in Curry-style?  The conclusion of the last rule could be changed to $\Gamma \der t\,A = t'\,A' : B[A/X]$, but then the second term $t'\,A'$ does not have the ascribed type $B[A/X]$, and $\eta$-laws applied to this term would be unsound.  For instance, the algorithm would yield $t\,\One\,x = t\,(A \to A)\,y$ even for $x \not= y$.
+We could also consider a heterogeneous check $(\Gamma \der t : A) = (\Gamma' \der t' : A')$ where each term is paired with its own type and context, but this leaves us with the dilemma of explaining the meaning of this judgement when $A$ and $A'$ are incompatible.
+
+Does the literature offer a solution to this problem?
+In fact, a Church-style calculus with Curry-style equality has been studied before, it is ICC$^*$ \cite{barrasBernardo:fossacs08} based on Miquel's Implicit Calculus of Constructions \cite{miquel:tlca01}.
+
+
 
 \section{Syntax}
 
