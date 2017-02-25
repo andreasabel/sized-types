@@ -1459,7 +1459,7 @@ Let $T \in \SET[\ell]$ and $T \shape S_1$ and $T \shape S_2$.
 \item If $t_1 = t_2 \in T$ then $\down{S_1}{t_1} = \down{S_2}{t_2} \in \NF$.
 \end{enumerate}
 \end{theorem}
-\begin{proof}
+\begin{proof*}
 By induction on $T \in \SET[\ell]$ and cases on $T \shape S_1$ and $T \shape S_2$.
 \begin{caselist}
 
@@ -1519,11 +1519,11 @@ $\down{B_1[u_1]}(t_1\,u_1) = \down{B_2[u_2]}(t_2\,u_2) \in \NF$, which delivers 
   $t_1\,\ann{\lev k} = t_2\,\ann{\lev k} \in B[\lev k]$.  Thus, by induction hypothesis,
   $\R{k+1}{\down{B_i[\lev k]}(t_i\,\ann{\lev k})}{v_i}$, and finally
   $\R k {\down{S_i} t_i} {\lambda v_i}$ by definition of read back.
-
+\qed
 \end{enumerate}
 
 \end{caselist}
-\end{proof}
+\end{proof*}
 
 \begin{corollary}
   \label{cor:rere}
@@ -1547,7 +1547,7 @@ and $f_z = f_z' \in B\,(\zero \beta)$
 and $f_s = f_s' \in \funT x {\Nat \alpha} B\,(\suc \gamma x)$
 then $a\,\case[\ell] B {f_z}{f_s} = a'\,\case[\ell] {B'} {f_z'}{f_s'} \in B\,a$.
 \end{lemma}
-\begin{proof}
+\begin{proof*}
 By induction on $a = a' \in \Nat(\alpha+1)$.
 \begin{caselist}
 
@@ -1572,8 +1572,9 @@ and $e = \case[\ell] D {d_z}{d_s}$.
 Let $D',d_z',d_s',e'$ be defined analogously from $B',f_z',f_s'$.  It suffices to show $e = e' \in \ELIM$, since then we have $n\,e = n'\,e' \in \NE$ by the closure properties of $\NE$ (Lemma~\ref{lem:closne}),
 and $\up{B[a]} (n\,e) = \up{B'[a']} (n'\,e') \in B[a]$ by reflection (Theorem~\ref{thm:rere}).
 The remaining goal $\case[\ell] D {d_z}{d_s} = \case[\ell] {D'} {d_z'}{d_s'} \in \ELIM$ follows by the closure properties for eliminations (Lemma~\ref{lem:closelim}), since $D = D' \in \NF$ and $d_z = d_z' \in \NF$ and $d_s = d_s' \in \NF$ all hold by reification (Theorem~\ref{thm:rere}).
+\qed
 \end{caselist}
-\end{proof}
+\end{proof*}
 
 \begin{lemma}[$\NAT$ is cocontinuous]
   \label{lem:limit}
@@ -1621,6 +1622,7 @@ Note that $a = a' \in \Nat \alpha$ for some $\alpha < \infty$ by Lemma~\ref{lem:
 By induction hypothesis, $g = g' \in B\,\alpha\,a$.  Since
 $B\,\alpha\,a \leq B\,\infty\,a$ by assumption, the goal
 $g = g' \in B\,\infty\,a$ follows by subsumption.
+\qed
 \end{caselist}
 \end{proof*}
 
@@ -1692,7 +1694,7 @@ Semantic judgements:
   $\Gamma \models J$
   \end{enumerate}
 \end{theorem}
-\begin{proof}
+\begin{proof*}
 Simultaneously, by induction on the derivation.
 % The soundness of subtyping and the conversion rule is due to subsumption (lemmata \ref{lem:subsump} and \ref{lem:usubsump}).
 
@@ -1754,8 +1756,9 @@ $a \eta  = a  \eta' \in \SIZE$ and
 $a' \eta = a' \eta' \in \SIZE$.
 By resurrection (Lemma~\ref{lem:resenv}) we have $\rho \in \resurrect\Gamma$,
 thus, by induction hypothesis, $b \rho \in \SIZE$.
+\qed
 \end{caselist}
-\end{proof}
+\end{proof*}
 
 
 \subsection{Completeness of NbE}
@@ -1775,7 +1778,7 @@ We set $\rho_{\cempty} = \sempty$ and
   $\rho_\Gamma \in \Gamma$.
   % $\rho_\Gamma = \rho_\Gamma \eeq \rho_\Gamma \in \Gamma$
 \end{lemma}
-\begin{proof}
+\begin{proof*}
 By induction on $\der \Gamma$.
 \begin{caselist}
 
@@ -1797,8 +1800,9 @@ $(\rho_\Gamma, \up A \var\Gamma) \in \cext \Gamma T$.
 \]
 By induction hypothesis $\rho_\Gamma \in \Gamma$.  Since $\var\Gamma \in \SIZE$ we conclude
 $(\rho_\Gamma, \var\Gamma) \in \eext\Gamma \Size)$.
+\qed
 \end{caselist}
-\end{proof}
+\end{proof*}
 
 We can now define the normalization relation
 $\fbox{$\nbe \Gamma T t \evalsto v$} \iff \R {\Gamma} {\down{T \rho_\Gamma} (t \rho_\Gamma)} v$.
@@ -2088,7 +2092,7 @@ Let $\LRTS{\Gamma} T A s$. Then:
 \end{enumerate}
 \end{theorem}
 
-\begin{proof}
+\begin{proof*}
 We prove the propositions for $A'$ and $T'$ (instead of $A$ and $T$)
 simultaneously by induction on $A' \in s$.
 
@@ -2116,9 +2120,10 @@ $\LRTS{\Gamma'}{T(\xi,u)}{B[a]} s$.
 % $\R{\Gamma''} {\down A a} v$ and $\Gamma'' \der u\xi' = v : U\xi\xi'$.
 % However, this follows by induction hypothesis (\ref{it:out}) on
 % assumption $\LR{\Gamma'}{u}{U\xi} a A$ with $\xi'$.
+\qed
 \end{enumerate}
 \end{caselist}
-\end{proof}
+\end{proof*}
 
 \begin{corollary}[One-to-one]
 \label{cor:oneone}
@@ -2251,7 +2256,7 @@ If $\Gamma \der \sigma : \Delta$ then
 $\Gamma \valid \sigma : \Delta$
 \end{enumerate}
 \end{theorem}
-\begin{proof}
+\begin{proof*}
 Each by induction on the derivation.
 
 \begin{caselist}
@@ -2293,17 +2298,17 @@ It suffices to show
   by Lemma~\ref{lem:wklrsub}, part (\ref{it:sizesub}).
 %\item $b\rho \in \SIZE$.
 \item $\LRSize {\resurrect \Delta} {b\tau} {b\rho}$: follows from induction hypothesis on $\resurrect \Gamma \der b : \Size$ via $\LRSub {\resurrect \Delta} \tau \tau {\resurrect\Gamma} \rho \rho$ (from Lemma~\ref{lem:wklrsub}).
+\qed
 \end{enumerate}
-
 \end{caselist}
-\end{proof}
+\end{proof*}
 
 \begin{lemma}[Identity environment]
   \label{lem:idenv}
   If $\der \Gamma$ then
   $\LRS \Gamma \sid \Gamma \rhog$.
 \end{lemma}
-\begin{proof}
+\begin{proof*}
   By induction on $\der \Gamma$.
 \begin{caselist}
 
@@ -2331,12 +2336,9 @@ Thus, the second goal follows by Cor.~\ref{cor:fresh}.
 % $\Gamma' \der \ind 0 \xi = \ind{|\Delta|} : T\xi$.
 % This allows us to apply Thm.~\ref{thm:into} to get $\ind0$ into the logical relation as
 % $\LR {\cext \Gamma T} {\ind0} T f {T\rhog}$.
-
-\nextcase
-
-
+\qed
 \end{caselist}
-\end{proof}
+\end{proof*}
 
 \begin{corollary}[Soundness of NbE]
   \label{cor:soundnbe} \bla
@@ -2348,20 +2350,21 @@ Thus, the second goal follows by Cor.~\ref{cor:fresh}.
   $\Gamma \der t = t' : T$.
   \end{enumerate}
 \end{corollary}
-\begin{proof}
-  \bla
-  \begin{enumerate}
+\begin{proof*}
+\bla
+\begin{enumerate}
 
-  \item For the identity environment $\LRS \Gamma \sid \Gamma \rhog$ (Lemm~\ref{lem:idenv})
-  the Fundamental Theorem for Typing gives $\LR \Gamma t T {t\rhog} {T\rhog}$.
-  This implies $\R \Gamma {\down{(T\rhog)} (t\rhog)} v$ for some normal form $v$ and
-  $\Gamma \der t = v : T$ by Thm.~\ref{thm:into}.
+\item For the identity environment $\LRS \Gamma \sid \Gamma \rhog$ (Lemm~\ref{lem:idenv})
+the Fundamental Theorem for Typing gives $\LR \Gamma t T {t\rhog} {T\rhog}$.
+This implies $\R \Gamma {\down{(T\rhog)} (t\rhog)} v$ for some normal form $v$ and
+$\Gamma \der t = v : T$ by Thm.~\ref{thm:into}.
 
-  \item By transitivity of judgmental equality from (\ref{it:sound}).
-     Here we use that the computed normal forms are identical because
-     we erase all size annotations $\ann\alpha$ to $\ann\infty$ during readback.
-  \end{enumerate}
-\end{proof}
+\item By transitivity of judgmental equality from (\ref{it:sound}).
+   Here we use that the computed normal forms are identical because
+   we erase all size annotations $\ann\alpha$ to $\ann\infty$ during readback.
+\qed
+\end{enumerate}
+\end{proof*}
 
 \begin{corollary}[Decidability of judgemental equality]
   If\/ $\Gamma \der t,t' : T$ then the test whether $\nbe\Gamma T t \equiv \nbe\Gamma T{t'}$
@@ -2583,7 +2586,7 @@ Algorithmic subtyping \fbox{$\Gamma \der T \asub T'$}.
 \bla
    If\/ $\RG \Gamma T A$ and $\RG \Gamma {T'} {A'}$ and $A \leq A' \in \TYPE$ then $\Gamma \der T \asub T'$.
 \end{lemma}
-\begin{proof}
+\begin{proof*}
 By induction on % $A_1' \in s_1$ and $A_2' \in s_2$ and cases on the inductive relations
 $\LRTS \Gamma {T_1'} {A_1'} {s_1}$ and $\LRTS \Gamma {T_2'} {A_2'} {s_2}$
 and cases on $A_1' \leq A_2' \in \TYPE$
@@ -2599,9 +2602,9 @@ From $\LRTS \Gamma {U_i} {A_i} {s_i}$ and $A_2 \leq A_1 \in \TYPE$ we get $\Gamm
 by induction hypothesis on $A_i \in s_i$.
 Let $a := {\up{A_2} \var\Gamma}$.  With $\LR {\cext \Gamma {U_2}} {\ind 0} {(U_2\slift)} a {A_2}$ we get
 $\LRTS {\cext \Gamma {U_2}} {T_i} {B_i[a]} s$ and $B_1[a] \leq B_2[a] \in \TYPE$.  Thus by induction hypothesis on $B_i[a] \in s_i$ we obtain $\cext \Gamma {U_2} \der T_1 \leq T_2$, together $\Gamma \der T_1' \asub T_2'$.
-
+\qed
 \end{caselist}
-\end{proof}
+\end{proof*}
 
 \begin{corollary}[Completeness of algorithmic subtyping]
 \label{cor:complasub}
