@@ -351,8 +351,9 @@ readbackNat = \case
 
 readbackNe  :: MonadEval m => VNe -> ReaderT Int m Term
 readbackNe (VNe x es) = do
-  i <- readback x
-  foldl App (Var i) <$> readback es
+  i            <- readback x
+  es' :: Elims <- readback es
+  return $ foldl App (Var i) es'
 
 readbackSize  :: MonadEval m => Val -> ReaderT Int m Term
 readbackSize = \case

@@ -52,8 +52,6 @@ executable Sit.bin
 
   extensions:       MultiParamTypeClasses
                     FunctionalDependencies
-                    UndecidableInstances
-                    OverlappingInstances
                     TypeSynonymInstances
                     FlexibleInstances
                     FlexibleContexts
