@@ -4,7 +4,7 @@
 -- Types:   T ::= Nat a | Set a | (x : T) -> T | T -> T | forall Bs -> T
 -- Binding: B ::= (x : T) | .i | ..i
 
--- Terms:   t ::= x | t t' | \ xs -> t | zero | suc t | fix l T t n | case n return T of \{ zero -> tz; suc x -> ts }
+-- Terms:   t ::= x | t t | \ xs -> t | zero | suc t | fix l T t n | case n return T of \{ zero -> tz; suc x -> ts }
 --
 -- Sizes:   a ::= Integer | x | x + Integer | w
 
@@ -46,7 +46,7 @@ terminator nonempty IdU   "";
 
 -- Atoms:
 
-Var.   Exp2 ::= Ident;
+Var.   Exp2 ::= IdU;
 Int.   Exp2 ::= Integer;
 Infty. Exp2 ::= "oo";
 Nat.   Exp2 ::= "Nat";
@@ -70,10 +70,10 @@ App.  Exp1 ::= Exp1 Exp2;
 
 Lam.    Exp ::= "\\" [IdU] "->" Exp;
 Forall. Exp ::= "forall" [Bind] "->" Exp;
-Pi.     Exp ::= "(" [IdU] ":" Exp ")" "->" Exp;
+Pi.     Exp ::= "(" Exp ":" Exp ")" "->" Exp;  -- The first Exp should be [IdU], but this conflicts
 Arrow.  Exp ::= Exp1 "->" Exp;
 Case.   Exp ::= "case" Exp "return" Exp "of" Exp;
-Plus.   Exp ::= Ident "+" Integer;
+Plus.   Exp ::= Exp1 "+" Integer;
 ELam.   Exp ::= "\\" "{" "(" "zero" "_" ")" "->" Exp ";" "(" "suc" "_" IdU ")" "->" Exp "}";
 
 coercions Exp 2;

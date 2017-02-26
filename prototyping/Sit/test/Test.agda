@@ -7,7 +7,7 @@ open import Base
 --; --- Leibniz-equality
 
 Eq : forall (A : Set) (a b : A) -> Set1 --;
-Eq = \ A a b -> (P : A -> Set) -> P a -> P b
+Eq = \ A a b -> (P : A -> Set) -> (P a) -> P b
 
 --; --- Reflexivity
 

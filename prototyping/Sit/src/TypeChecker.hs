@@ -155,7 +155,10 @@ inferType e = do
       (t, l2) <- inferType b
       return (Pi (defaultDom u) (NoAbs "_" t) , maxSize l1 l2)
 
-    A.Pi xs a b -> inferPisType (map (, defaultDom a) xs) $ inferType b
+    A.Pi e a b -> do
+      let failure = throwError $ "Expected list of identifiers, found " ++ printTree e
+      xs <- maybe failure return $ parseIdUs e
+      inferPisType (map (, defaultDom a) xs) $ inferType b
 
     A.Forall bs c -> inferPisType (fromBind =<< bs) $ inferType c
       where
@@ -316,12 +319,17 @@ inferExp e0 = case (e0, appView e0) of
 
   (A.Infty, _) -> return (Infty, VSize)
 
-  (A.Plus x k, _) -> do
-    (u, t) <- inferId x
-    subType t VSize
-    return (sPlus u k, t)
+  (A.Plus e k, _) -> do
+    u <- checkSize e
+    return (sPlus u k, VSize)
 
-  (A.Var x, _) -> inferId x
+  -- (A.Plus x k, _) -> do
+  --   (u, t) <- inferId x
+  --   subType t VSize
+  --   return (sPlus u k, t)
+
+  (A.Var A.Under, _) -> throwError "Illegal expression: _"
+  (A.Var (A.Id x), _) -> inferId x
 
   (e0@(A.App f e), _) -> do
     (tf, t) <- inferExp f

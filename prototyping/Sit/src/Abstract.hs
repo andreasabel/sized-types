@@ -7,6 +7,7 @@
 module Abstract where
 
 import Control.Lens
+import Control.Monad
 
 import Sit.Abs as A
 
@@ -70,3 +71,12 @@ fromIdU :: A.IdU -> String
 fromIdU = \case
   A.Id (A.Ident x) -> x
   A.Under -> "_"
+
+-- | Try to convert an expression to a list of A.IdU
+
+parseIdUs :: A.Exp -> Maybe [A.IdU]
+parseIdUs e = do
+  let (f, es) = appView e
+  forM (f : es) $ \case
+    A.Var x -> Just x
+    _ -> Nothing
