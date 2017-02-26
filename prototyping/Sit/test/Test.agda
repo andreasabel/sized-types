@@ -193,7 +193,7 @@ sum123 = refl (Nat oo) six
 --; --- The minimum function on Nat
 --; --- Succeeds in Agda, but fails admissibility test in Sit.
 
---(
+---
 ---
 --- min : forall .i -> Nat i -> Nat i -> Nat i --;
 --- min = \ _ x ->
@@ -207,4 +207,4 @@ sum123 = refl (Nat oo) six
 ---         })
 ---       x
 ---
---)
+---

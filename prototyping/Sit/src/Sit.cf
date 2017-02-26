@@ -1,8 +1,8 @@
 -- Type theory with sized natural numbers and a irrelevant
 -- size quantifier.
 
--- Types:   T ::= Nat a | Set a | (x : T) -> T | T -> T | forall Bs -> T 
--- Binding: B ::= (x : T) | .i | ..i 
+-- Types:   T ::= Nat a | Set a | (x : T) -> T | T -> T | forall Bs -> T
+-- Binding: B ::= (x : T) | .i | ..i
 
 -- Terms:   t ::= x | t t' | \ xs -> t | zero | suc t | fix l T t n | case n return T of \{ zero -> tz; suc x -> ts }
 --
@@ -19,7 +19,7 @@ Prg.    Prg  ::= [Decl];
 
 -- Declarations.
 
-Sig.    Decl ::= Ident ":" Exp; 
+Sig.    Decl ::= Ident ":" Exp;
 Def.    Decl ::= Ident "=" Exp;
 Open.   Decl ::= "open" "import" QualId;
 Blank.  Decl ::= ;
@@ -27,7 +27,7 @@ Blank.  Decl ::= ;
 Sg.     QualId ::= Ident;
 Cons.   QualId ::= QualId "." Ident;
 
-separator Decl "--;" ;
+separator nonempty Decl "--;" ;
 
 -- Identifier which can be _
 

@@ -1,6 +1,7 @@
 *~
 *.agdai
 *.aux
+*_aux
 *.bak
 *.blg
 *.bin
@@ -15,3 +16,4 @@
 *.toc
 old
 /prototyping/size-irrelevance/Sit/
+/prototyping/Sit/src/Sit/

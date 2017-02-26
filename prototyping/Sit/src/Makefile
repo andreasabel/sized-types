@@ -2,11 +2,11 @@
 .PRECIOUS : %.hs %.x %.y
 all : test
 
-test : Sit.bin test/Test.agda
-	Sit.bin test/Test.agda
+test : Sit.bin ../test/Test.agda
+	Sit.bin ../test/Test.agda
 
-loop : Sit.bin test/Loop.agda
-	Sit.bin test/Loop.agda
+loop : Sit.bin ../test/Loop.agda
+	Sit.bin ../test/Loop.agda
 
 Sit.bin : Sit.hs Sit/Abs.hs Sit/Lex.hs Sit/Par.hs \
   undefined.h Impossible.hs \
@@ -15,6 +15,7 @@ Sit.bin : Sit.hs Sit/Abs.hs Sit/Lex.hs Sit/Par.hs \
 
 Sit/Lex.x Sit/Par.y Sit/Abs.hs : Sit.cf
 	bnfc --haskell -d $<
+	touch $@
 
 Sit/Par.hs: Sit/Par.y
 	happy -gcai $<
