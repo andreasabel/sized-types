@@ -1,15 +1,17 @@
 {-# LANGUAGE LambdaCase #-}
 
+{-# OPTIONS_GHC -fno-warn-typed-holes #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 
 -- | Auxiliary functions for abstract syntax.
 
 module Abstract where
 
-import Control.Lens
 import Control.Monad
 
 import Sit.Abs as A
+
+import Lens
 
 -- data AppView
 --   = FixV [Exp]

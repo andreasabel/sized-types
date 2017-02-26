@@ -7,7 +7,6 @@
 module TypeChecker where
 
 import Control.Applicative
-import Control.Lens hiding (Level)
 import Control.Monad
 import Control.Monad.Except
 import Control.Monad.Identity
@@ -31,6 +30,7 @@ import Internal
 import Substitute
 import Evaluation
 
+import Lens
 import Impossible
 #include "undefined.h"
 
@@ -46,7 +46,7 @@ data TCEnv = TCEnv
   , _envEnv :: Env  -- ^ Default environment.
   }
 
-makeLenses ''TCEnv
+makeLens ''TCEnv
 
 -- | Global state
 
@@ -55,7 +55,7 @@ data TCSt = TCSt
   , _stDefs   :: Map Id Val
   }
 
-makeLenses ''TCSt
+makeLens ''TCSt
 
 -- | The type checking monad
 type Check = ReaderT TCEnv (StateT TCSt (Except TypeError))

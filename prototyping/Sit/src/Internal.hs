@@ -8,10 +8,10 @@
 
 module Internal where
 
-import Control.Lens hiding (Level, Index)
-
 import Data.Foldable (Foldable)
 import Data.Traversable (Traversable)
+
+import Lens
 
 -- | Definition names are strings.
 
@@ -118,7 +118,7 @@ data Relevance
   | Irrelevant
   deriving (Eq, Ord, Show)
 
-makeLenses ''Dom
+makeLens ''Dom
 
 -- * Smart constructor.
 

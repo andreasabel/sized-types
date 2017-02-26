@@ -10,8 +10,8 @@
 module Evaluation where
 
 import Control.Applicative
-import Control.Lens hiding (Index, Level)
 import Control.Monad
+import Control.Monad.Identity
 import Control.Monad.Reader
 
 import Data.Maybe
@@ -22,6 +22,7 @@ import Debug.Trace
 import Internal
 import Substitute
 
+import Lens
 import Impossible
 #include "undefined.h"
 
@@ -76,7 +77,7 @@ data VClos = VClos
 
 type Env = [Val]
 
-makeLenses ''VNe
+makeLens ''VNe
 
 -- | Variable
 
