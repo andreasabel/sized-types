@@ -307,7 +307,7 @@ This article is accompanied by a prototypical type checker \texttt{Sit} which im
 But first, we will motivate our type system from a practical perspective: reasoning about programs involving sized types in Agda.
 
 
-\section{Size irrelevance in practice}
+\section{Size Irrelevance in Practice}
 \label{sec:informal}
 
 In this section, we show how the lack of size irrelevance prevents us from reasoning naturally about programs involving sized types in Type Theory.  We focus on Agda, the only mature implementation of Type Theory with an experimental integration of sized types.
@@ -316,7 +316,7 @@ In this section, we show how the lack of size irrelevance prevents us from reaso
 
 \input{latex/SubDiag}
 
-\section{Syntax}
+\section{A Type System WIth Irrelevant Size Application}
 \label{sec:syntax}
 
 Syntax (de Bruijn terms).
@@ -911,7 +911,7 @@ match a part of a judgement.
 
 
 
-\section{Semantics}
+\section{Semantics and Completeness of Normalization by Evaluation}
 \label{sec:sem}
 
 We extend the syntax by de Bruijn levels $\lev k$
@@ -1938,7 +1938,7 @@ Whenever $\nbe \Gamma T t \evalsto v$, we may write $\nbe \Gamma T t$ for $v$.
 
 
 
-\section{Soundness  of NbE}
+\section{Soundness  of Normalization by Evaluation}
 \label{sec:soundnbe}
 
 In this section, we show that NbE is sound for judgemental equality, i.e., that same normal form implies definitional equality.  The proof follows \citet{abelCoquandDybjer:lics07,abel:habil}.  However, the logical relation defined in the following will also yield a weak head normalization theorem.
@@ -2656,7 +2656,7 @@ $\Gamma \der t[a] : T[b]$, thus $\Gamma \der t[a] : T'$ by subsumption.
   on the typing derivation $\DD$. % $\Gamma \der t : T$.
 \end{proof}
 
-\section{Algorithmic subtyping}
+\section{Algorithmic Subtyping}
 \label{sec:asub}
 
 Algorithmic subtyping \fbox{$\Gamma \der T \asub T'$}.
@@ -2939,13 +2939,12 @@ Simultaneously by induction on $\DD$, using (strong) inversion and Lemma~\ref{le
   %% acknowledge financial support and will be used by metadata
   %% extraction tools.
   This material is based upon work supported by the
-  \grantsponsor{GS100000001}{National Science
-    Foundation}{http://dx.doi.org/10.13039/100000001} under Grant
-  No.~\grantnum{GS100000001}{nnnnnnn} and Grant
-  No.~\grantnum{GS100000001}{mmmmmmm}.  Any opinions, findings, and
-  conclusions or recommendations expressed in this material are those
-  of the author and do not necessarily reflect the views of the
-  National Science Foundation.
+  Swedish Research Council (Vetenskapsr\aa{}det)
+  under Grant
+  No.~621-2014-4864 \emph{Termination Certificates for Dependently-Typed Programs and Proofs via Refinement Types}.
+  The first author is grateful for recent discussions with Thierry Coquand, Nils Anders Danielsson, and Sandro Stucki
+  which helped clarifying the thoughts leading to this work.
+  He also acknowledges past discussions with Christoph-Simon Senjak.
 \end{acks}
 
 
@@ -2953,10 +2952,10 @@ Simultaneously by induction on $\DD$, using (strong) inversion and Lemma~\ref{le
 \bibliography{medium}
 
 
-%% Appendix
-\appendix
-\section{Appendix}
+% %% Appendix
+% \appendix
+% \section{Appendix}
 
-Text of appendix \ldots
+% Text of appendix \ldots
 
 \end{document}
