@@ -5,6 +5,23 @@
 %% For final camera-ready submission
 %\documentclass[acmlarge]{acmart}\settopmatter{}
 
+% For having two versions of a paper in one file.
+% Stuff that does not fit into the short version can be encosed in \LONGVERSION{...}
+\ifdefined\LONGVERSION
+  \relax
+\else
+% short version:
+\newcommand{\LONGVERSION}[1]{}
+\newcommand{\SHORTVERSION}[1]{#1}
+% % long version:
+% \newcommand{\LONGVERSION}[1]{#1}
+% \newcommand{\SHORTVERSION}[1]{}
+% \newcommand{\SHORTVERSION}[1]{BEGIN~SHORT\ #1 \ END~SHORT}
+\fi
+\newcommand{\LONGSHORT}[2]{\LONGVERSION{#1}\SHORTVERSION{#2}}
+\newcommand{\SHORTLONG}[2]{\SHORTVERSION{#1}\LONGVERSION{#2}}
+\newcommand{\EXTENDED}[1]{}
+
 \usepackage[right]{showlabels}\renewcommand{\showlabelfont}{\small\ttfamily\color{gray}}
 
 \usepackage{mathtools} %mathrlap
@@ -455,148 +472,41 @@ them by ``$\noterased$''-markers.  Note that, trivially, resurrection is idempot
 Size increment \fbox{$a + o'$} for $o' \in \NN$ extends addition by $\infty + o' = \infty$ and $(\ind i + o) + o' = \ind i + (o + o')$.  Sizes are partially ordered; size comparison \fbox{$a \leq b$} holds as expected if either $b = \infty$ or  $o \leq o'$ where either $a = o$ and $b = o'$ or $a \in \{ o, \ind i + o \}$ and $b = \ind i + o'$.
 Different size variables are incomparable.
 
-Fig.~\ref{fig:judge} lists the inductive and derived judgements of our type theory and
-figures~\ref{fig:ty} and \ref{fig:eq} the inference rules.
-
 \input{figty}
 \input{figeq}
 
-%Our type theory is formulated via the following judgements, which are mutually inductively defined.
+Fig.~\ref{fig:judge} lists the inductive and derived judgements of our type theory and
+figures~\ref{fig:ty} and \ref{fig:eq} the inference rules.
+In the typing judgement $\Gamma \der t : T$, the term $t$ is in scope of
+$\Gamma$, \ie, may not mention irrelevant variables in relevant
+positions.  However, the type $T$ is in scope of the resurrected
+context $\resurrect\Gamma$, hence, can mention all variables declared
+in $\Gamma$.  The other judgements are organized similarly.  To
+understand this distinction, consider judgement
+$i \div \Size \der \Nat i$.  This would mean that $i$ is irrelevant in
+$\Nat i$ and thus, $\Gamma \der \Nat a = \Nat {a'}$ for all sizes
+$\resurrect\Gamma \der a,a' : \Size$.  But this is exactly wrong!  However,
+judgement $i \div \Size \der \zero i : \Nat (i + 1)$ is fine, it
+implies $\Gamma \der \zero a = \zero {a'} : \Nat (b+1)$ for all
+$\resurrect\Gamma \der a,a',b : \Size$.
 
-%In addition, we will refer to the following derived judgements.
-
-
-% Inference rules.
-
-% \fbox{$\der \Gamma$} (implies $\der \resurrect \Gamma$).
-% \[
-%   \ru{}{\der \cempty}
-% \qquad
-%   \ru{\der \Gamma \qquad
-%       \resurrect \Gamma \der T
-%     }{\der \cext \Gamma T}
-% \qquad
-%   \ru{\der \Gamma
-%     }{\der \cext \Gamma \Size}
-% \qquad
-%   \ru{\der \Gamma
-%     }{\der \erext \Gamma \Size}
-% \]
-
-% \fbox{$\Gamma(i) = \eann T$} (implies $\resurrect\Gamma \der T$ if\/ $\der \Gamma$).
-% \[
-%   \ru{}{(\eext \Gamma T)(0) = \eann T \slift}
-% \qquad
-%   \ru{\Gamma(i) = \eann T
-%     }{(\cext \Gamma \_)(i+1) = \eann T \slift}
-% \]
-
-%Note: Size is relevant in $T$ as we would like for instance $T\,i\,x = \Nat i$.
-% \fbox{$\Gamma \mid U \der e : T$}
-% \begin{gather*}
-%   \ru{\cext \Gamma U \der T \qquad \Gamma \der u : U
-%     }{\Gamma \mid \piT U T \der u : T[u]}
-% \qquad
-%   \ru{\cext \Gamma \Size \der T \qquad \Gamma \der a : \Size
-%     }{\Gamma \mid \piT \Size T \der a : T[a]}
-% \qquad
-%   \ru{\cext \Gamma \Size \der T \qquad \Gamma \der a : \Size
-%     }{\Gamma \mid \forallT T \der \ann a : T[a]}
-% \\
-%   \ru{
-%     }{\Gamma \mid \Nat a \der \fix T t : T \ann a n}
-% \end{gather*}
-
-
-
-
-% \fbox{$\Gamma \der t = t' : T$} (implies $\resurrect \Gamma \der T$ and $\Gamma \der t,t' : T$ [and $\resurrect\Gamma \der t = t' : T$].)
-
-
-
-
-
-
-
-% Liftings: $\fbox{$\xi : \Gamma \leq \Delta$}
-%   \defas \Gamma \der \xi : \Delta \mand \xi = \slift^k_m \mforsome k,m$
-% %  \defas \xi = \slift^k_m \mwith \Gamma \der \xi : \Delta$
-% (implies $\der \Gamma$ and $\der \Delta$).
-
-% (implies $\der \Gamma$ and $\der \Delta$ and $\Gamma \der \xi : \Delta$).
-% \begin{gather*}
-%   \ru{\der \Gamma
-%     }{\sempty : \Gamma \leq \cempty}
-% \qquad
-%   \ru{\xi : \Gamma \leq \Delta \qquad
-%       \resurrect\Gamma \der T
-%     }{\xi \slift : \cext \Gamma T \leq \Delta}
-% \qquad
-%   \ru{\xi : \Gamma \leq \Delta \qquad
-%       \resurrect \Delta \der U \qquad
-%       \resurrect\Gamma \der T \leq U \xi
-%     }{(\xi \slift, \ind 0) : \cext \Gamma T \leq \cext \Delta U}
-% \end{gather*}
-
-% Substitution typing. % and equality.
-% \fbox{$\Gamma \der \sigma : \Delta$}
-% (implies $\der \Gamma$ and $\der \Delta$
-%  and $\resurrect\Gamma \der \sigma : \Delta$
-%  and $\resurrect\Gamma \der \sigma : \resurrect \Delta$).
-% % and
-% % \fbox{$\Gamma \der \sigma = \sigma' : \Delta$}.
-
-% \begin{gather*}
-%   \ru{\der \Gamma \qquad
-%     }{\Gamma \der \sempty : \cempty}
-% \qquad
-%   \ru{\Gamma \der \sigma : \Delta \qquad
-%       \resurrect \Delta \der T \qquad
-%       \Gamma \der t : T \sigma
-%     }{\Gamma \der \sext \sigma t : \cext \Delta T}
-% \qquad
-%   \ru{\Gamma \der \sigma : \Delta \qquad
-%       \Gamma \der a : \Size
-%     }{\Gamma \der \sext \sigma a : \eext \Delta \Size}
-% \end{gather*}
-
-% \begin{gather*}
-%   \ru{\der \Gamma \qquad
-%     }{\Gamma \der \sempty = \sempty : \cempty}
-% \qquad
-%   \ru{\Gamma \der \sigma = \sigma': \Delta \qquad
-%       \resurrect \Delta \der T \qquad
-%       \Gamma \der t = t' : T \sigma
-%     }{\Gamma \der \sext \sigma t = \sext {\sigma'} t': \cext \Delta T}
-% \end{gather*}
-
-% Substitution typing and equality.
-% \fbox{$\suty \Gamma \sigma \tau \Delta$} and
-% \begin{gather*}
-%   \ru{\der \Gamma \qquad
-%     }{\suty \Gamma \sempty \sempty \cempty}
-% \qquad
-%   \ru{\suty \Gamma \sigma \tau \Delta \qquad
-%       \resurrect \Delta \der T \qquad
-%       \Gamma \der u = t : T \tau
-%     }{\suty \Gamma {\sext \sigma u} {\sext \tau t} \cext \Delta T}
-% \\[2ex]
-%   \ru{\suty \Gamma \sigma \tau \Delta \qquad
-%       \Gamma \der a = b : \Size
-%     }{\suty \Gamma {\sext \sigma a} {\sext \tau b} \cext \Delta \Size}
-% \qquad
-%   \ru{\suty \Gamma \sigma \tau \Delta \qquad
-%       \Gamma \der a, b : \Size
-%     }{\suty \Gamma {\sext \sigma a} {\sext \tau b} \erext \Delta \Size}
-% \end{gather*}
-
+Our substitution theorem
+needs to reflect the distinct scope of things left of the colon vs.\
+things right of the colon.  In the last example we have applied the
+substitution triple $\Gamma \der [a] = [a'] \eeq [b] : (i \div \Size)$
+to judgement $i \div \Size \der \zero i : \Nat (i + 1)$.
+The first two substitutions apply to the term side while the third
+substitution applies to the type side.  The fact that we replace an
+irrelevant variable $i$ allows $a,a',b$ to refer to irrelevant
+variables from $\Gamma$, thus, they are in scope of $\resurrect\Gamma$.
 
 %% COULD BE A LEMMA INSTEAD OF A RULE
 % \begin{lemma}[Reflexivity]
 %   If\/ $\Gamma \der t : T$ then $\Gamma \der t = t : T$.
 % \end{lemma}
 
-In the following, let $J$ %, $L$, and $R$
+In the following, we list syntactic properties of our judgements.  To
+this end, let $J$ %, $L$, and $R$
 match a part of a judgement.
 
 \begin{lemma}[Context well-formedness]
@@ -607,16 +517,24 @@ match a part of a judgement.
   \end{enumerate}
 \end{lemma}
 
+All types in a context are considered in the resurrected context,
+which justifies the first statement of the following lemma.
+A resurrected context is more permissive, as it brings more variable
+into scope.  As such, it is comparable to an extended context or a
+context where types have been replaced by subtypes.  This intuition
+accounts for the remaining statments but (\ref{it:ressubst}).  The
+latter is a defining property of substitutions: only replacement for
+irrelevant sizes may refer to irrelevant size variables.
 \begin{lemma}[Resurrection]
 \label{lem:res} \bla
 \begin{enumerate}
-\item $\der \Gamma$ iff $\der \resurrect\Gamma$;  then $\resurrect \Gamma \der \sid : \Gamma$.
+\item \label{it:reswf} $\der \Gamma$ iff $\der \resurrect\Gamma$;  then $\resurrect \Gamma \der \sid : \Gamma$.
   % Consequently, if\/ $\Gamma \der J$ then $\resurrect \Gamma \der J$.
   % Further, if\/ $\Gamma \der J : \resurrect\Delta$ then $\Gamma \der J : \Delta$.
 \item If\/ $\Gamma \der J$ then $\resurrect \Gamma \der J$.
 \item If\/ $\Gamma \der J : \resurrect \Delta$ % and $\der \Delta$
   then $\Gamma \der J : \Delta$.
-\item If\/ $\Gamma \der \sigma : \Delta$ % then $\Gamma \der \sigma : \resurrect\Delta$.
+\item \label{it:ressubst} If\/ $\Gamma \der \sigma : \Delta$ % then $\Gamma \der \sigma : \resurrect\Delta$.
   then $\resurrect\Gamma \der \sigma : \resurrect\Delta$.
 \end{enumerate}
 \end{lemma}
@@ -642,6 +560,12 @@ match a part of a judgement.
 \end{enumerate}
 \end{lemma}
 
+The relation $\sueq \Gamma \sigma {\sigma'} \tau \Delta$ is a partial equivalence
+relation (PER) on term-side substitutions $\sigma,\sigma'$. Note that
+we cannot resurrect this judgement to
+$\sueq{\resurrect\Gamma}{\sigma}{\sigma'}\tau \Delta$ in general!
+The type-side substitution $\tau$ can be converted to one that is
+equal in and for resurrected contexts.
 \begin{lemma}[Substitution equality]
 \label{lem:subeq}\bla
 \begin{enumerate}
@@ -660,10 +584,13 @@ match a part of a judgement.
   \end{enumerate}
 \end{enumerate}
 \end{lemma}
+
+\LONGVERSION{
 \begin{corollary}[Partial resurrection for substitution equality]
   If\/ $\sueq \Gamma \sigma {\sigma'} {\tau} \Delta$ then
   $\sueq {\resurrect \Gamma} \tau \tau \tau {\resurrect \Delta}$.
 \end{corollary}
+}
 
 \begin{lemma}[Inversion of typing]
 \label{lem:invty} \bla
