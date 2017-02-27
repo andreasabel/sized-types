@@ -25,7 +25,7 @@ bibliography=medium.bib
 
 stdlib=$(HOME)/agda/std-lib/src
 
-files=icfp17.tex macros.tex
+files=icfp17.tex macros.tex latex/SubDiag.tex latex/SubDiagError.tex
 
 .PHONY : all debugMake html
 
@@ -51,6 +51,8 @@ html : html/Everything.html
 html/Everything.html : $(agdafiles)
 	agda --html $<
 
+latex/%.tex : %.lagda
+	agda --latex $<
 
 # icfp17
 ##################################################################

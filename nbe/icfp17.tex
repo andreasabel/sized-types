@@ -12,6 +12,7 @@
 \usepackage[all]{xy}
 
 \usepackage[cal=boondoxo]{mathalfa}
+\usepackage{latex/agda}
 
 %% Note: Authors migrating a paper from PACMPL format to traditional
 %% SIGPLAN proceedings format should change 'acmlarge' to
@@ -253,9 +254,18 @@ Does the literature offer a solution to this problem?
 In fact, a Church-style calculus with Curry-style equality has been studied before, it is ICC$^*$ \cite{barrasBernardo:fossacs08} based on Miquel's Implicit Calculus of Constructions \cite{miquel:tlca01}.
 In ICC$^*$, equality is checked by erasing all type abstractions and applications, and comparing the remaining untyped terms for $\beta\eta$-equality.  While this works for $\eta$-laws that can be formulated on untyped terms, such as $\eta$-contraction of functions $\lambda x.\,t\,x \redeta t$ (when $x$ not free in $t$), it does not extend to type-directed $\eta$-laws such as extensionality for the unit type.
 
-It has already been observed that for a type-directed equality check the precise type is not necessary, a \emph{shape} or \emph{skeleton} is sufficient that informs the algorithm whether the terms under comparison are functions, inhabitants of the unit type, or something else.  For the Logical Framework (LF), the simplest dependent lambda-calculus, the skeletons are simple types that can be obtained from the original dependent types by erasing all dependencies. \citet{harperpfenning:equivalenceLF} present such an equality check for LF which is directed by simple types, and their technique should scale to all type theories that admit dependency erasure such as the Calculus of Constructions \cite{geuvers:shortFlexibleSNCC}.
+It has already been observed that for a type-directed equality check the precise type is not necessary, a \emph{shape} or \emph{skeleton} is sufficient that informs the algorithm whether the terms under comparison are functions, inhabitants of the unit type, or something else.  For the Logical Framework (LF), the simplest dependent lambda-calculus, the skeletons are simple types that can be obtained from the original dependent types by erasing all dependencies. \citet{harperpfenning:equivalenceLF} present such an equality check for LF which is directed by simple types, and their technique should scale to all type theories that admit dependency erasure.
+\footnote{For instance, the types of the Calculus of Constructions erase to F$^\omega$-types \cite{geuvers:shortFlexibleSNCC}, and the latter could be used to direct the equality check.}
+In the presence of large eliminations, which we have in type theories that feature both universes and data types, dependency erasure fails, and it is not clear what the skeleton of a dependent type should be.
+
+
+\section{Informal presentation}
+\label{sec:informal}
+
+\input{latex/SubDiagError}
 
 \section{Syntax}
+\label{sec:syntax}
 
 Syntax (de Bruijn terms).
 \[
