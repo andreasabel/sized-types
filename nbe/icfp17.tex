@@ -242,7 +242,7 @@ The display shows the \emph{Curry}-style program as provided by the user, but st
   \ttrav \; \vpre \; \vpost \; i\; t = \vpost\;(\tcase\;\vpre\,i\,t\;\tof \, \{ \, \tnode\,j\,\vts \to \tnode\,\infty\,(\tmap \; (\tT\,j) \; (\tT\,\infty) \; (\ttrav \, \vpre \, \vpost \, j) \; \vts) \})
 \end{array}
 \]
-Church-style syntax is the basis for all program analyses and transformations to follow and show be considered as the \emph{true} syntax.
+Church-style syntax is the basis for all program analyses and transformations to follow and should be considered as the \emph{true} syntax.
 However, from a dependent-type perspective, explicit size applications
 in terms can be problematic when the type checker compares terms for
 equality---which is necessary as types can depend on values.  Inferred
@@ -279,7 +279,7 @@ For Church-style, we can give a type-directed $\beta\eta$-equality test which eq
   \ru{\Gamma \der t = t' \jinf \forall X. B
     }{\Gamma \der t\,A = t'\,A \jinf B[A/X]}
 \end{gather*}
-The Curry-style version replaces the last conclusion by $\Gamma \der t = t' : B[A/X]$ where the type $A$ to instantiate $X$ has to be guessed.  However, in Curry-style more terms are equated than in Church-style, as for instance the Church-style terms $t\,A\,(\lambda x \of A.\, x)$ and $t\,B\,(\lambda x \of B.\, x)$ map to the same Curry-style term $t\,(\lambda x.\,x)$.  How would we adopt the algorithm for Church-style such that it equates all terms that are equal in Curry-style?  The conclusion of the last rule could be changed to $\Gamma \der t\,A = t'\,A' : B[A/X]$, but then the second term $t'\,A'$ does not have the ascribed type $B[A/X]$, and $\eta$-laws applied to this term would be unsound.  For instance, the algorithm would yield $t\,\One\,x = t\,(A \to A)\,y$ even for $x \not= y$.
+The Curry-style version replaces the last conclusion by $\Gamma \der t = t' : B[A/X]$ where the type $A$ to instantiate $X$ has to be guessed.  However, in Curry-style more terms are equated than in Church-style, as for instance the Church-style terms $t\,A\,(\lambda x \of A.\, x)$ and $t\,B\,(\lambda x \of B.\, x)$ map to the same Curry-style term $t\,(\lambda x.\,x)$.  How would we adapt the algorithm for Church-style such that it equates all terms that are equal in Curry-style?  The conclusion of the last rule could be changed to $\Gamma \der t\,A = t'\,A' : B[A/X]$, but then the second term $t'\,A'$ does not have the ascribed type $B[A/X]$, and $\eta$-laws applied to this term would be unsound.  For instance, the algorithm would yield $t\,\One\,x = t\,(A \to A)\,y$ even for $x \not= y$.
 We could also consider a heterogeneous check $(\Gamma \der t : A) = (\Gamma' \der t' : A')$ where each term is paired with its own type and context, but this leaves us with the dilemma of explaining the meaning of this judgement when $A$ and $A'$ are incompatible.
 
 Does the literature offer a solution to this problem?
@@ -304,7 +304,7 @@ We managed, while not introducing a new syntax for shapes, to define a relation 
 Shapes unfold dynamically during reflection and reification.
 For example, when reflecting a variable $x$ into the polymorphic function type $\forall i.\, F\,i$ where $F\,i = \Nat\,i \to \Nat\,i$, we obtain
 $(\up{\forall i.\/ F\,i}x)\,i = \up{F\,i} (x\,i)$ for size $i$ and
-$(\up{\forall i.\/ F\,i}x)\,j = \up{F\,j} (x\,j)$ for size $j$.  The new types $F\,i$ and $F\,j$ we reflect at are no longer equal (and they are not subtypes of each other), but they still have the same shape, $\Nat\_ \to \Nat\_$.  This means they will still move in lock-step what $\eta$-expansion concerns, which is sufficient to prove NbE correct for judgmental equality.
+$(\up{\forall i.\/ F\,i}x)\,j = \up{F\,j} (x\,j)$ for size $j$.  The new types $F\,i$ and $F\,j$ we reflect at are no longer equal (and they are not subtypes of each other), but they still have the same shape, $\Nat\_ \to \Nat\_$.  This means they will still move in lock-step in respect to $\eta$-expansion, which is sufficient to prove NbE correct for judgmental equality.
 We call the enabling property of $F$ \emph{shape irrelevance}, meaning that for any pair $i$, $j$ of legal arguments, $F\,i$ and $F\,j$ have the same shape.  Whenever we form a irrelevant function type $\forall x \of U.\, T[x]$, we require $T[x]$ to be shape-irrelevant in $x$.  This is the middle ground between ICC$^*$, where no restriction is placed on $T$ but $\eta$ for unit types is out of reach (at least for the moment), and Pfenning's \citeyearpar{pfenning:intextirr} irrelevance modality, adapted to full dependent types by \citet{abelScherer:types10}, which requires $T$ to be irrelevant in $x$ and, thus, has type equality $T[i] = T[j]$.
 
 For the time being, we do not (and cannot) develop a general theory of shape irrelevance.  We confine ourselves to size-irrelevant function types $\forall i.\, T[i]$.  This relieves us from defining a special shape-irrelevance modality, since all size-indexed types $T[i]$ \emph{are} shape irrelevant in $i$, simply because there is no case distinction on size, and sizes appear relevantly only under a sized type constructor such as $\tNat$.  Our technique would not extend to the polymorphic types $\forall X.\,B[X]$ of System~F.  Even though there is no case distinction on types, shape irrelevance of $B[X]$ fails in general, as $X$ could appear as a type on the top-level, e.g. in %$B[X] = X$ or
@@ -357,7 +357,13 @@ In this section, we show how the lack of size irrelevance prevents us from reaso
 \section{A Type System With Irrelevant Size Application}
 \label{sec:syntax}
 
-Syntax (de Bruijn terms).
+In this section, we give syntax and \emph{declarative} typing, equality, and subtyping judgements.  The typing relation $\Gamma \der t : T$ will \emph{not} be decidable; instead, we present algorithmic typing $\Gamma \der t \jchk T$ in Section~\ref{sec:tycheck}.  However, equality and subtyping will be decidable for well-formed input, see sections~\ref{sec:sem}--\ref{sec:asub}.
+
+We present our type theory as \emph{pure type system} \cite{barendregt:lambdacube} with extra structure.
+\emph{Sorts} $s$ are drawn from an infinite predicative hierarchy of universes $\Set[\ell]$ for $\ell \in \NN$.  Universes provide us with polymorphism and the capability to define types by recursion on values.  Whether we have just two universes $\Set[0]$ and $\Set[1]$ or infinitely many, does not matter for the technical difficulty of the meta theory.  The present setup have the advantage that every sort has again a sort since $\Set[\ell] : \Set[\ell+1]$, thus, we do not have to introduce a separate judgement $\Gamma \der T$ for well-formedness of types, we can define it as $\exists s.\ \Gamma \der T : s$.
+
+\begin{figure}[htbp]
+  \centering
 \[
 \begin{array}{lllrl@{\qquad}l}
 \Sort & \ni & s
@@ -376,7 +382,7 @@ Syntax (de Bruijn terms).
 \Ne & \ni & n
     & ::= & \ind i \mid n \, e & \mbox{neutral expressions} \\
 \Elim & \ni & e
-    & ::= & t \mid a \mid \ann a \mid \case[\ell] T {t_1} t_2 \mid \fix[\ell] T t & \mbox{eliminations} \\
+    & ::= & t \mid a \mid \ann a \mid \case[\ell] T {t_z} {t_s} \mid \fix[\ell] T t & \mbox{eliminations} \\
 \SizeExp & \ni & a,b & ::= & \infty \mid o \mid \ind i + o ~(o \in \NN) & \mbox{size expressions} \\
 \Cxt & \ni & \Gamma, \Delta & ::= & \cempty \mid \erext[\noterased] \Gamma T \mid \erext \Gamma \Size
    & \mbox{contexts} \\
@@ -384,9 +390,19 @@ Syntax (de Bruijn terms).
   & \mbox{substitutions} \\
 \end{array}
 \]
+  \caption{Syntax.}
+  \label{fig:syntax}
+\end{figure}
+
+For the expression syntax (see Fig.~\ref{fig:syntax}), we use de~Bruijn \citeyearpar{deBruijn:nameless} indices $\ind i$ to represent variables.  Binders are lambda abstraction $\lambda t$ and dependent function types $\epiT U T$, which bind the $0$th index in $t$ and $T$, resp.  The notation $\epiT U T$ is an umbrella for three kinds of function types, where $\evar \in \{ \erased, \noterased \}$ is a relevance annotation borrowed from \citet{pfenning:intextirr}: $\erpiT[\noterased] U T$, the ordinary dependent function type, $\erpiT[\noterased] \Size T$ for relevant size quantification, and $\erpiT \Size T$ for irrelevant size quantification.
+We omit the ``$\noterased$''-markers from $\Gamma$ and $\Pi$ by default and write $\forallT T$ for $\erpiT \Size T$.
+%
+Examples for relevant size quantification $\piT \Size T$, in syntax with named variables, are $\Size \to \Set[0]$ or $\funT i \Size \Nat i \to \Set[0]$.  An instance of irrelevant quantification $\forall T$ would be $\forall i.\, \Nat i \to \Nat i$.  Herein, $\Nat i$ denotes the type of natural numbers below $i$. The expression $\Size$ is a possible instance of $U$ in $\epiT U T$, or a possible type of a variable in a typing context $\Gamma$, but not a first-class type, \ie, we cannot construct our own function on sizes.
+
+Canonical natural numbers $c$ are constructed by $\zero a$ and $\suc a t$.  Size expression $a$ is either a constant $o \in \NN$, a variable $\ind i + o$ possibly with increment $o$, or the limit ordinal $\infty$ which stands for $\omega$.  The size expression $s$ in the constructors is a suggestion for the type checker but bears no semantic significance.  For example, in the declarative typing presented here, we can have $\der \zero 5 : \Nat 1$; in the algorithmic typing however, $\der \zero 5 \jchk \Nat 1$ will be an error.
 
 %We write $\sigma$ and $\tau$ for substitutions, which are lists of terms, and
-We write $t \sigma$ for the application of substitution $\sigma$ to term $t$ which is defined as usual.  We write $\slift^k_m$ for the substitution $(\ind{k+m-1},\dots,\ind{k+1},\ind k)$ which applies to a term with $m$ free indices and increases all of them by $k$.  We write $\slift_m$ for the lifting $\slift^1_m$ and $\sid_m$ for the identity substitution $ \slift^0_m$. In general, we refer to liftings by letter $\xi$.
+Substitutions $\sigma$ are simply lists of terms which provide one term as replacement for each free de Bruijn index in a term $t$. We write $t \sigma$ for the application of substitution $\sigma$ to term $t$ which is defined as usual.  We write $\slift^k_m$ for the substitution $(\ind{k+m-1},\dots,\ind{k+1},\ind k)$ which applies to a term with $m$ free indices and increases all of them by $k$.  We write $\slift_m$ for the lifting $\slift^1_m$ and $\sid_m$ for the identity substitution $ \slift^0_m$. In general, we refer to liftings by letter $\xi$.
 The substitution $[u]_m = (\sid_m, u)$ replaces free index $\ind 0$ by term $u$ and decrements all other free indices by $1$. We drop subscript $m$ when clear from the context.
 Substitution composition $\sigma\tau$ is the pointwise application of substitution $\tau$ to the list of terms $\sigma$.  In the proofs to follow, we freely use the following identities:
 \begin{gather*}
@@ -410,7 +426,6 @@ Substitution composition $\sigma\tau$ is the pointwise application of substituti
 %  (\sigma\slift)[t] \equiv \sigma
 \end{gather*}
 
-We omit the ``$\noterased$''-markers from $\Gamma$ and $\Pi$ by default.  We write $\forallT T$ for $\erpiT \Size T$.
 For concrete function types, we may use a named dependent function type notation as syntactic sugar for the corresponding de Bruijn representation.  For instance, $\funT i \Size \Nat i \to \Set[\ell]$ is sugar for $\piT \Size \piT {(\Nat\,\ind 0)} \Set[\ell]$.  We abbreviate this type by \fbox{$\FixK\,\ell$}, and let \fbox{$\FixT\,T$} stand for $\allT i \Size (\funT x {\Nat i} T\, i\, x) \to \funT x {\Nat (i + 1)} T \,(i+1)\, x$. Similar as for $\Pi$, we use named lambda abstraction as sugar for de Bruijn abstraction.  Named abstract takes care of proper lifting of de Bruijn indices, for instance, $\lambda x.\, t x = \lambda. (t \slift)\,\ind 0$ if $t$ is outside the scope of $x$.
 We may also use names when we construct concrete contexts, for instance, if $T$ is well-formed in context $\Gamma$, we may write $T\,i\,x$ in context $\Gamma.i\of\Size.x\of\Nat i$ to mean $T\slift^2\,\ind 1\,\ind 0$ in context
 $\Gamma.\Size.\Nat \ind 0$.
