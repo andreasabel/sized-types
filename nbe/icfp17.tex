@@ -1204,29 +1204,29 @@ For the logical framework, the shape of a dependent type is just its underlying 
 
 \fbox{$T \shape S$} for $T \in \SET[\ell]$.  We call $T$ the \emph{template} and $S$ one of its possible \emph{shapes}.
 \begin{gather*}
-  \ru{T \evalsto \Nat \alpha \qquad
-      S \evalsto \Nat \beta
-    }{T \shape S}
-\qquad
   \ru{T \evalsto N \qquad
       S \evalsto N'
     }{T \shape S}
 \qquad
-   \ru{T \evalsto \Set[\ell] \qquad
-       S \evalsto \Set[\ell]
-    }{T \shape S}
-\\[2ex]
   \ru{T \evalsto \piT A B \qquad
       S \evalsto \piT{A'}{B'} \qquad
       A \shape A' \qquad
       B[u] \shape B'[u'] \mforall u = u' \in A
     }{T \shape S}
 \\[2ex]
+   \ru{T \evalsto \Set[\ell] \qquad
+       S \evalsto \Set[\ell]
+    }{T \shape S}
+\qquad
   \ru{T \evalsto \piT \Size B \qquad
       S \evalsto \piT{\Size}{B'} \qquad
       B[\alpha] \shape B'[\alpha] \mforall \alpha \in \SIZE
     }{T \shape S}
 \\[2ex]
+  \ru{T \evalsto \Nat \alpha \qquad
+      S \evalsto \Nat \beta
+    }{T \shape S}
+\qquad
   \ru{T \evalsto \forallT B \qquad
       S \evalsto \forallT{B'} \qquad
       B[\alpha] \shape B'[\alpha'] \mforall \alpha,\alpha' \in \SIZE
@@ -1291,12 +1291,13 @@ Let $T \in \SET[\ell]$ and $T \shape S_1$ and $T \shape S_2$.
 By induction on $T \in \SET[\ell]$ and cases on $T \shape S_1$ and $T \shape S_2$.
 \begin{caselist}
 
-\nextcase $T \evalsto \piT A B$
+\nextcase $T \evalsto \piT A B$ with $A \in \SET[\ell]$ and
+      $B[u] = B[u'] \in \SET[\ell] \mforall u = u' \in A$
 \begin{gather*}
-  \ru{A \in \SET[\ell] \qquad
-      B[u] = B[u'] \in \SET[\ell] \mforall u = u' \in A
-    }{T \in \SET[\ell]}
-\\[2ex]
+%   \ru{A \in \SET[\ell] \qquad
+%       B[u] = B[u'] \in \SET[\ell] \mforall u = u' \in A
+%     }{T \in \SET[\ell]}
+% \\[2ex]
   \ru{S_1 \evalsto \piT{A_1}{B_1} \qquad
       A \shape A_1 \qquad
       B[u] \shape B_1[u'] \mforall u = u' \in A
@@ -1323,15 +1324,16 @@ By definition of $\EL(T)$ we have $t_1\,u_1 = t_2\,u_2 \in B[u_1]$, thus, by ind
 $\down{B_1[u_1]}(t_1\,u_1) = \down{B_2[u_2]}(t_2\,u_2) \in \NF$, which delivers $v_1$ and $v_2$ for $k+1$.
 \end{enumerate}
 
-\nextcase $T \evalsto \forallT B$
+\nextcase $T \evalsto \forallT B$ with $B[\alpha] \in \SET[\ell] \mforall \alpha \in \SIZE$
 \begin{gather*}
-  \ru{B[\alpha] \in \SET[\ell] \mforall \alpha \in \SIZE
-    }{T \in \SET[\ell]}
-\\[2ex]
+%   \ru{B[\alpha] \in \SET[\ell] \mforall \alpha \in \SIZE
+%     }{T \in \SET[\ell]}
+% \\[2ex]
   \ru{S_1 \evalsto \forallT{B_1} \qquad
       B[\alpha] \shape B_1[\alpha'] \mforall \alpha, \alpha' \in \SIZE
     }{T \shape S_1}
-\\[2ex]
+%\\[2ex]
+\qquad
   \ru{S_2 \evalsto \forallT{B_2} \qquad
       B[\alpha] \shape B_2[\alpha'] \mforall \alpha, \alpha' \in \SIZE
     }{T \shape S_2}
@@ -1789,56 +1791,56 @@ by induction on ${A'} \in s$.
 
 \noindent
 $\LRTS \Gamma {T'} {A'} s$ iff
-\[
-\begin{array}{l}
+\(
+\begin{array}[t]{l}
 \Gamma \der T' \evalsto \piT U T : s \mforsome U, T \mand \LRTS \Gamma U A s \mand \\
 \forall \xi : \Gamma' \leq \Gamma.\ \
 \LR {\Gamma'} u {U\xi} a A \implies \LRTS {\Gamma'} {T(\xi,u)} {B[a]} s
 . \\
 \end{array}
-\]
+\) \\
 $\LR \Gamma t {T'} f {A'}$ iff
-\[
-\begin{array}{l}
+\(
+\begin{array}[t]{l}
 \resurrect\Gamma \der T' \evalsto \piT U T : s \mforsome U, T \mand \LRTS {\resurrect\Gamma} U A s \mand \\
 \forall \xi : \Gamma' \leq \Gamma.\ \
 \LR {\Gamma'} u {U\xi} a A \implies \LR {\Gamma'} {t\xi\,u} {T(\xi,u)} {f\,a} {B[a]}
 .
 \end{array}
-\]
+\)
 
 \vspace{2ex}
 \nextcase $A' \evalsto \piT \Size B$.
 
 \noindent
 $\LRTS \Gamma {T'} {A'} s$ iff
-\[
-\begin{array}{l}
+\(
+\begin{array}[t]{l}
 \Gamma \der T' \evalsto \piT \Size T : s \mforsome T\\
 \forall \xi : \Gamma' \leq \Gamma.\ \
 \LRSize {\Gamma'} a \alpha
 \implies \LRTS {\Gamma'} {T(\xi,a)} {B[\alpha]} s
 .
 \end{array}
-\]
+\) \\
 $\LR \Gamma t {T'} f {A'}$ iff
-\[
-\begin{array}{l}
+\(
+\begin{array}[t]{l}
 \resurrect\Gamma \der T' \evalsto \piT \Size T : s \mforsome T\\
 \forall \xi : \Gamma' \leq \Gamma.\ \
 \LRSize {\Gamma'} a \alpha
 \implies \LR {\Gamma'} {t\xi\,a} {T(\xi,a)} {f\,\alpha} {B[\alpha]}
 .
 \end{array}
-\]
+\)
 
 \vspace{2ex}
 \nextcase $A' \evalsto \forallT B$.
 
 \noindent
 $\LRTS \Gamma {T'} {A'} s$ iff
-\[
-\begin{array}{l}
+\(
+\begin{array}[t]{l}
 \Gamma \der T' \evalsto \forallT T : s \mforsome T\\
 \forall \xi : \Gamma' \leq \Gamma,\
 {\Gamma'} \der b : \Size,\
@@ -1847,10 +1849,10 @@ $\LRTS \Gamma {T'} {A'} s$ iff
 \implies \LRTS {\Gamma'} {T(\xi,b)} {B[\beta]} s
 .
 \end{array}
-\]
+\) \\
 $\LR \Gamma t {T'} f {A'}$ iff
-\[
-\begin{array}{l}
+\(
+\begin{array}[t]{l}
 \resurrect\Gamma \der T' \evalsto \forallT T : s \mforsome T\\
 \forall \xi : \Gamma' \leq \Gamma,\
 %\Gamma' \der a : \Size,\
@@ -1860,7 +1862,7 @@ $\LR \Gamma t {T'} f {A'}$ iff
 \implies \LR {\Gamma'} {t\xi\,\ann a} {T(\xi,b)} {f\,\ann\alpha} {B[\beta]}
 .
 \end{array}
-\]
+\)
 \end{caselist}
 We may prove theorems ``by induction on $\LRTS \Gamma T A s$'', even if in reality this will be proofs by induction on $A \in s$ and cases on $\LRTS \Gamma T A s$.
 We write \fbox{$\RG \Gamma T A$} if\/ $\LRTS \Gamma T A s$ for some sort $s$.
@@ -2011,14 +2013,7 @@ Logical relation for substitutions.
 \begin{gather*}
   \ru{\der \Gamma
     }{\LRSub \Gamma {\sempty} {\sempty} {\cempty} {\sempty} {\sempty}}
-\\[2ex]
-  \ru{\LRSub \Gamma \sigma \tau \Delta \eta \rho \qquad
-      \resurrect \Delta \der T \qquad
-      \Gamma \der u = t : T\tau \qquad
-      \LR \Gamma t {T \tau} f {T \rho} \qquad
-      f = g \in T\rho
-    }{\LRSub \Gamma {(\sigma,u)} {(\tau,t)} {\cext \Delta T} {(\eta,f)} {(\rho,q)}}
-\\[2ex]
+\qquad
   \ru{\LRSub \Gamma \sigma \tau \Delta \eta \rho \qquad
       \Gamma \der a : \Size \qquad
       \LRSize \Gamma a \alpha
@@ -2029,6 +2024,13 @@ Logical relation for substitutions.
       \alpha,\beta \in \SIZE \qquad
       \LRSize {\resurrect\Gamma} b \beta
     }{\LRSub \Gamma {(\sigma,a)} {(\tau,b)} {\erext \Delta \Size} {(\eta,\alpha)} {(\rho,\beta)}}
+\\[2ex]
+  \ru{\LRSub \Gamma \sigma \tau \Delta \eta \rho \qquad
+      \resurrect \Delta \der T \qquad
+      \Gamma \der u = t : T\tau \qquad
+      \LR \Gamma t {T \tau} f {T \rho} \qquad
+      f = g \in T\rho
+    }{\LRSub \Gamma {(\sigma,u)} {(\tau,t)} {\cext \Delta T} {(\eta,f)} {(\rho,q)}}
 \end{gather*}
 We write \fbox{$\LRS \Gamma \tau \Delta \rho$} for $\LRSub \Gamma \tau \tau \Delta \rho \rho$.
 
@@ -2384,17 +2386,17 @@ Algorithmic subtyping \fbox{$\Gamma \der T \asub T'$}.
     }{\Gamma \der T \asub T'
     }{\ell \leq \ell'}
 \qquad
-  \ru{T \evalsto \Nat a \qquad
-      T' \evalsto \Nat a'
-    }{\Gamma \der T \asub T'
-    }{a \leq a'}
-\\[2ex]
   \ru{T_1' \evalsto \piT{U_1}{T_1} \qquad
       T_2' \evalsto \piT{U_2}{T_2} \qquad
       \Gamma \der U_2 \asub U_1 \qquad
       \cext \Gamma {U_2} \der T_1 \asub T_2
     }{\Gamma \der T_1' \asub T_2'}
 \\[2ex]
+  \ru{T \evalsto \Nat a \qquad
+      T' \evalsto \Nat a'
+    }{\Gamma \der T \asub T'
+    }{a \leq a'}
+\qquad
   \ru{T_1' \evalsto \epiT\Size{T_1} \qquad
       T_2' \evalsto \epiT\Size{T_2} \qquad
       \cext \Gamma {\Size} \der T_1 \asub T_2
@@ -2495,14 +2497,14 @@ Checking \fbox{$\Gamma \der t \jchk T$}.
   \ru{T' \evalsto s \qquad
       \cext \Gamma \Size \der T \jchk s
     }{\Gamma \der \epiT \Size T \jchk T'}
-\\[2ex]
-  \ru{T' \evalsto \piT U T \qquad
-      \cext \Gamma U \der t \jchk T
-    }{\Gamma \der \lambda t \jchk T'}
-\qquad
-  \ru{T' \evalsto \epiT \Size T \qquad
-      \eext \Gamma \Size \der t \jchk T
-    }{\Gamma \der \lambda t \jchk T'}
+%\\[2ex]
+%   \ru{T' \evalsto \piT U T \qquad
+%       \cext \Gamma U \der t \jchk T
+%     }{\Gamma \der \lambda t \jchk T'}
+% \qquad
+%   \ru{T' \evalsto \epiT \Size T \qquad
+%       \eext \Gamma \Size \der t \jchk T
+%     }{\Gamma \der \lambda t \jchk T'}
 \\[2ex]
   \ru{T' \evalsto \Nat b \qquad
       \resurrect \Gamma \der a+1 \leq b : \Size
@@ -2513,6 +2515,10 @@ Checking \fbox{$\Gamma \der t \jchk T$}.
       \Gamma \der t \jchk \Nat a
     }{\Gamma \der \suc a t \jchk T'}
 \\[2ex]
+  \ru{T' \evalsto \epiT U T \qquad
+      \eext \Gamma U \der t \jchk T
+    }{\Gamma \der \lambda t \jchk T'}
+\qquad
   \ru{\Gamma \der t \jinf T \qquad \Gamma \der T \asub T'
     }{\Gamma \der t \jchk T'}
 \end{gather*}
