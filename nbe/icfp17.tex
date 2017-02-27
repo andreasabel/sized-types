@@ -108,9 +108,9 @@
 
 %% Author with single affiliation.
 \author{Andreas Abel}
-\authornote{with author1 note}          %% \authornote is optional;
+%\authornote{with author1 note}          %% \authornote is optional;
                                         %% can be repeated if necessary
-\orcid{nnnn-nnnn-nnnn-nnnn}             %% \orcid is optional
+\orcid{0000-0003-0420-4492}             %% \orcid is optional
 \affiliation{
   \department{Department of Computer Science and Engineering}
   \institution{Gothenburg University}
@@ -123,33 +123,23 @@
 \email{andreas.abel@gu.se}          %% \email is recommended
 
 %% Author with two affiliations and emails.
-\author{First2 Last2}
-\authornote{with author2 note}          %% \authornote is optional;
-                                        %% can be repeated if necessary
-\orcid{nnnn-nnnn-nnnn-nnnn}             %% \orcid is optional
+\author{Andreas Vezzosi}
 \affiliation{
-  \position{Position2a}
-  \department{Department2a}             %% \department is recommended
-  \institution{Institution2a}           %% \institution is required
-  \streetaddress{Street2a Address2a}
-  \city{City2a}
-  \state{State2a}
-  \postcode{Post-Code2a}
-  \country{Country2a}
+  \department{Department of Computer Science and Engineering}
+  \institution{Chalmers}
+  \streetaddress{Rännvägen 6b}
+  \city{Göteborg}
+%  \state{State1}
+  \postcode{41296}
+  \country{Sweden}
 }
-\email{first2.last2@inst2a.com}         %% \email is recommended
-\affiliation{
-  \position{Position2b}
-  \department{Department2b}             %% \department is recommended
-  \institution{Institution2b}           %% \institution is required
-  \streetaddress{Street3b Address2b}
-  \city{City2b}
-  \state{State2b}
-  \postcode{Post-Code2b}
-  \country{Country2b}
-}
-\email{first2.last2@inst2b.org}         %% \email is recommended
+\email{vezzosi@chalmers.se}          %% \email is recommended
 
+\author{Theo Winterhalter}
+\affiliation{
+  \institution{École Normale Supérieure de Cachan}
+}
+\email{theo.winterhalter@gmail.com}
 
 %% Paper note
 %% The \thanks command may be used to create a "paper note" ---
@@ -171,29 +161,42 @@ Text of abstract \ldots.
 
 %% 2012 ACM Computing Classification System (CSS) concepts
 %% Generate at 'http://dl.acm.org/ccs/ccs.cfm'.
-\begin{CCSXML}
+ \begin{CCSXML}
 <ccs2012>
 <concept>
-<concept_id>10011007.10011006.10011008</concept_id>
-<concept_desc>Software and its engineering~General programming languages</concept_desc>
+<concept_id>10003752.10003790.10011740</concept_id>
+<concept_desc>Theory of computation~Type theory</concept_desc>
 <concept_significance>500</concept_significance>
 </concept>
 <concept>
-<concept_id>10003456.10003457.10003521.10003525</concept_id>
-<concept_desc>Social and professional topics~History of programming languages</concept_desc>
+<concept_id>10003752.10010124.10010125.10010130</concept_id>
+<concept_desc>Theory of computation~Type structures</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10003752.10010124.10010138.10010142</concept_id>
+<concept_desc>Theory of computation~Program verification</concept_desc>
 <concept_significance>300</concept_significance>
+</concept>
+<concept>
+<concept_id>10003752.10010124.10010131.10010134</concept_id>
+<concept_desc>Theory of computation~Operational semantics</concept_desc>
+<concept_significance>100</concept_significance>
 </concept>
 </ccs2012>
 \end{CCSXML}
 
-\ccsdesc[500]{Software and its engineering~General programming languages}
-\ccsdesc[300]{Social and professional topics~History of programming languages}
+\ccsdesc[500]{Theory of computation~Type theory}
+\ccsdesc[500]{Theory of computation~Type structures}
+\ccsdesc[300]{Theory of computation~Program verification}
+\ccsdesc[100]{Theory of computation~Operational semantics}
 %% End of generated code
 
 
 %% Keywords
 %% comma separated list
-\keywords{keyword1, keyword2, keyword3}  %% \keywords is optional
+\keywords{dependent types, normalization-by-evaluation, proof irrelevance, sized types, subtyping, universes}  %% \keywords is optional
+%\keywords{Dependent Types, Normalization-by-Evaluation, Proof Irrelevance, Sized Types, Subtyping, Universes}  %% \keywords is optional
 
 
 %% \maketitle
@@ -256,15 +259,55 @@ The Curry-style version would replace the last conclusion by $\Gamma \der t = t'
 We could also consider a heterogeneous check $(\Gamma \der t : A) = (\Gamma' \der t' : A')$ where each term is paired with its own type and context, but this leaves us with the dilemma of explaining the meaning of this judgement when $A$ and $A'$ are incompatible.
 
 Does the literature offer a solution to this problem?
-In fact, a Church-style calculus with Curry-style equality has been studied before, it is ICC$^*$ \cite{barrasBernardo:fossacs08} based on Miquel's Implicit Calculus of Constructions \cite{miquel:tlca01}.
-In ICC$^*$, equality is checked by erasing all type abstractions and applications, and comparing the remaining untyped terms for $\beta\eta$-equality.  While this works for $\eta$-laws that can be formulated on untyped terms, such as $\eta$-contraction of functions $\lambda x.\,t\,x \redeta t$ (when $x$ not free in $t$), it does not extend to type-directed $\eta$-laws such as extensionality for the unit type.
+In fact, a Church-style calculus with Curry-style equality has been studied before, it is ICC$^*$ \cite{barrasBernardo:fossacs08,mishraLingerSheard:fossacs08} based on Miquel's Implicit Calculus of Constructions \cite{miquel:tlca01}.
+In ICC$^*$, equality is checked by erasing all type abstractions and applications, and comparing the remaining untyped terms for $\beta\eta$-equality.  While this works for $\eta$-laws that can be formulated on untyped terms, such as $\eta$-contraction of functions $\lambda x.\,t\,x \redeta t$ (when $x$ not free in $t$), it does not extend to type-directed $\eta$-laws such as extensionality for the unit type.  Further, ICC$^*$ is not a type theory formulated with a typed equality judgement, which makes it hard to define its models \cite{miquel:lics00}---we wish not to go there, but stay within the framework of Martin-L\"of Type Theory \cite{martinlof:predicative75}.
 
-It has already been observed that for a type-directed equality check the precise type is not necessary, a \emph{shape} or \emph{skeleton} is sufficient that informs the algorithm whether the terms under comparison are functions, inhabitants of the unit type, or something else.  For the Logical Framework (LF), the simplest dependent lambda-calculus, the skeletons are simple types that can be obtained from the original dependent types by erasing all dependencies. \citet{harperpfenning:equivalenceLF} present such an equality check for LF which is directed by simple types, and their technique should scale to all type theories that admit dependency erasure.
-\footnote{For instance, the types of the Calculus of Constructions erase to F$^\omega$-types \cite{geuvers:shortFlexibleSNCC}, and the latter could be used to direct the equality check.}
-In the presence of large eliminations, which we have in type theories that feature both universes and data types, dependency erasure fails, and it is not clear what the skeleton of a dependent type should be.
+How can we have our cake and eat it, too?
+It has already been observed that for a type-directed equality check the precise type is not necessary, a \emph{shape} or \emph{skeleton} is sufficient that informs the algorithm whether the terms under comparison are functions, inhabitants of the unit type, or something else.  For the Logical Framework (LF), the simplest dependent lambda-calculus, the skeletons are simple types that can be obtained from the original dependent types by erasing all dependencies. \citet{harperpfenning:equivalenceLF} present such an equality check for LF which is directed by simple types, and their technique should scale to all type theories that admit dependency erasure.\footnote{For instance, the types of the Calculus of Constructions erase to F$^\omega$-types \cite{geuvers:shortFlexibleSNCC}, and the latter could be used to direct the equality check. \cite{lovasPfenning:lmcs10} consider also \emph{refinement types for logical frameworks} which can be erased to simple types.}
+In the presence of large eliminations, which we have in type theories that feature both universes and data types, dependency erasure fails, and it is not clear what the skeleton of a dependent type should be.  For instance consider the type $\funT n \NN \underbrace{A \to \dots \to A}_n \to A$ of $n$-ary functions; its shape is dependent on the value of $n$, thus cannot be determined statically.  In the solution we present in this article, we do not introduce a new syntax for shapes, just a relation $T \shape S$ stating that type $S$ qualifies as shape for type $T$.  We use a normalization function inspired by normalization-by-evaluation (NbE) that computes the $\eta$-long normal form of the terms under comparison, which we then check for identity.  NbE \cite{bergerSchwichtenberg:lics91,danvy:tdpe} has proven a robust method to decide equality in powerful type theories with non-trivial $\eta$-laws.  It scales to universes and large eliminations \cite{abelCoquandDybjer:lics07}, topped with singleton types or proof irrelevance \cite{abelCoquandPagano:lmcs11}, and even impredicativity \cite{abel:flops10}.  At its hard there are reflection $\up T$ and reification $\down T$ functions directed by type $T$ and orchestrating just-in-time $\eta$-expansion.  Reflection $\up T x$ maps variables $x$ into the realm of values of type $T$ and let's us compute with open terms.  Reification $\down T a$ takes a value $a$ of type $T$ and computes its long normal form.  For instance, the normal form of a closed function $f : U \to T$ would be $\lambda x.\,\down{T} (f\,(\up U x))$, and for its dependently-typed variant $f : \funT x U T[x]$ it would be $\lambda x.\,\down{T[\up U x]} (f\,(\up U x))$.
+
+The central technical observation is that reflection and reification do not need the precise type $T$, they work the same for any shape $S$ of $T$.  For example, when reflecting a variable $x$ into the polymorphic function type $\forall i.\, F\,i$ where $F\,i = \Nat\,i \to \Nat\,i$, we obtain
+$(\up{\forall i.\/ F\,i}x)\,i = \up{F\,i} (x\,i)$ for size $i$ and
+$(\up{\forall i.\/ F\,i}x)\,j = \up{F\,j} (x\,j)$ for size $j$.  The new types $F\,i$ and $F\,j$ we reflect at are no longer equal (and they are not subtypes of each other), but they still have the same shape, $\Nat\_ \to \Nat\_$.  This means they will still move in lock-step what $\eta$-expansion concerns, which is sufficient to prove NbE correct for judgmental equality.
+We call the enabling property of $F$ \emph{shape irrelevance}, meaning that for any pair $i$, $j$ of legal arguments, $F\,i$ and $F\,j$ have the same shape.  Whenever we form a irrelevant function type $\forall x \of U.\, T[x]$, we require $T[x]$ to be shape-irrelevant in $x$.  This is the middle ground between ICC$^*$, where no restriction is placed on $T$ but $\eta$ for unit types is (at least, currently) out of reach, and Pfenning's \citeyearpar{pfenning:intextirr} irrelevance modality, adapted to full dependent types by \citet{abelScherer:types10}, which requires $T$ to be irrelevant in $x$ and, thus, has type equality $T[i] = T[j]$.
+
+For the time being, we do not (and cannot) develop a general theory of shape irrelevance.  We confine ourselves to size-irrelevant function types $\forall i.\, T[i]$.  This relieves us from defining a special shape-irrelevance modality, since all size-indexed types $T[i]$ are shape irrelevant in $i$, simply because there is no case distinction on size, and sizes appear relevantly only under a sized type constructor such as $\tNat$.  Our technique would not extend to the polymorphic types $\forall X.\,B[X]$ of System~F.  Even though there is no case distinction on types, shape irrelevance of $B[X]$ fails in general, as $X$ could appear as a type on the top-level, e.g. in $B[X] = X$ or $B[X] = X \to X$.
+
+This article makes the following novel contributions:
+\begin{enumerate}
+
+\item We present a dependent type theory \`a la Martin-L\"of with dependent function types, cumulative universes, subtyping, a judgmental equality with $\eta$-laws, a sized type of natural numbers and two size quantifiers: an irrelevant one $(\forall)$ for binding of sizes in irrelevant positions, and a relevant one $(\Pi)$ for binding of sizes in shape-irrelevant positions (Section~\ref{sec:syntax}).  Judgmental equality features a ``Curry-style'' rule for irrelevant size application which ignores the size arguments, and consequently, the corresponding typing rule will also ignore the size argument.
+\[
+\ru{\Gamma \der t = t' : \forall i.\, T
+  }{\Gamma \der t\,a = t\,a' : T[b/i]}
+\qquad
+\ru{\Gamma \der t : \forall i.\, T
+  }{\Gamma \der t\,a : T[b/i]}
+\qquad
+\qquad
+\ru{\Gamma \der t = t' : \Pi i.\, T
+  }{\Gamma \der t\,a = t\,a : T[a/i]}
+\qquad
+\ru{\Gamma \der t : \Pi i.\, T
+  }{\Gamma \der t\,a : T[a/i]}
+\]
+
+\item We adapt normalization-by-evaluation (NbE) to sized types and size quantification and show that it decides judgmental equality (sections~\ref{sec:sem} and \ref{sec:soundnbe}).  The novel technical tool is a relation $T \shape S$ which relates a type $T$ to its possible shapes $S$.  This approximation relation allows reflection and reification at size-polymorphic types $\forall i.\, T$.
+As usual for the meta-theory of Type Theory with large eliminations, the machinery is involved, but just require the usual two logical relations:  First, a PER model to define the semantics of types and prove the completeness of NbE (Section~\ref{sec:sem}).  Secondly, a relation between syntax and semantics to prove soundness of NbE (Section~\ref{sec:soundnbe}).
+
+\item We present an bidirectional type checking algorithm \cite{coquand:type} which takes the irrelevant size argument as reliable hint for the type checker (sections~\ref{sec:asub} and \ref{sec:tycheck}).  It is complete for normal forms which can be typed with the restricted rule for $\forall$-elimination:
+\[
+\ru{\Gamma \der t : \forall i.\, T
+  }{\Gamma \der t\,a : T[a/i]}
+\]
+The algorithm employs the usual lazy reduction for types (just-in-time weak-head evaluation) in type and sub-type checker
+\cite{huet:wsscs89}.  In this, it improves on \citet{fridlenderPagano:tlca13} which instruments full normalization (NbE) at every step.
+\end{enumerate}
+This article is accompanied by a prototypical type checker \texttt{Sit} which implements the type system and type checking algorithm as described in the remainder of the paper.
+But first, we will motivate our type system from a practical perspective: reasoning about programs involving sized types in Agda.
 
 
-\section{Informal presentation}
+\section{Size irrelevance in practice}
 \label{sec:informal}
 
 \input{latex/SubDiagError}
@@ -1894,7 +1937,7 @@ Whenever $\nbe \Gamma T t \evalsto v$, we may write $\nbe \Gamma T t$ for $v$.
 
 
 \section{Soundness  of NbE}
-\label{sec:compl}
+\label{sec:soundnbe}
 
 In this section, we show that NbE is sound for judgemental equality, i.e., that same normal form implies definitional equality.  The proof follows \citet{abelCoquandDybjer:lics07,abel:habil}.  However, the logical relation defined in the following will also yield a weak head normalization theorem.
 \begin{alignat*}{8}
