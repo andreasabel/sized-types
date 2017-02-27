@@ -399,12 +399,23 @@ We omit the ``$\noterased$''-markers from $\Gamma$ and $\Pi$ by default and writ
 %
 Examples for relevant size quantification $\piT \Size T$, in syntax with named variables, are $\Size \to \Set[0]$ or $\funT i \Size \Nat i \to \Set[0]$.  An instance of irrelevant quantification $\forall T$ would be $\forall i.\, \Nat i \to \Nat i$.  Herein, $\Nat i$ denotes the type of natural numbers below $i$. The expression $\Size$ is a possible instance of $U$ in $\epiT U T$, or a possible type of a variable in a typing context $\Gamma$, but not a first-class type, \ie, we cannot construct our own function on sizes.
 
-Canonical natural numbers $c$ are constructed by $\zero a$ and $\suc a t$.  Size expression $a$ is either a constant $o \in \NN$, a variable $\ind i + o$ possibly with increment $o$, or the limit ordinal $\infty$ which stands for $\omega$.  The size expression $s$ in the constructors is a suggestion for the type checker but bears no semantic significance.  For example, in the declarative typing presented here, we can have $\der \zero 5 : \Nat 1$; in the algorithmic typing however, $\der \zero 5 \jchk \Nat 1$ will be an error.
+Canonical natural numbers $c$ are constructed by $\zero a$ and $\suc a t$.
+Size expression $a$ is either a constant $o \in \NN$, a variable
+$\ind i + o$ possibly with increment $o$, or the limit ordinal
+$\infty$ which stands for $\omega$.  The size argument $a$ in the
+constructors is a suggestion for the type checker but bears no
+semantic significance.  For example, in the declarative typing
+presented here, we can have $\der \zero 5 : \Nat 1$.
+In the algorithmic typing however, $\der \zero 5 \jchk \Nat 1$ will be an error.
+
+Besides with regular application $t\,u$, relevant size application $t\,a$, and irrelevant size application $t \, \ann a$,
+we can eliminate a term $t$ by a case distinction $e = \case[\ell] T {t_z}{t_s}$ or a recursive function application $e' = \fix[\ell'] {T'} {t'}$.  In both cases, the term should denote a natural number.  Application of case distinction $\zero a \, e$ will reduce to the zero-branch $t_z$, and $\suc a t \,e$ to the instantiation of the successor branch $t_s\,t$.  The type annotation $T$ in $\tcase$ allows us to infer the type of the whole case statement $t\,e$ as $T\,t$.  The function call $c\,e'$ for a canonical number reduces to $f'\,(\lambda x.\,x\,e')\,c$ where we allowed ourself the use of a named abstraction in the presentation to the reader.  The unfolding of fixed-points is thus restricted to application to canonical numbers; this is the usual reduction strategy which converges for terminating functions \cite{gimenez:typeBased}.
 
 %We write $\sigma$ and $\tau$ for substitutions, which are lists of terms, and
-Substitutions $\sigma$ are simply lists of terms which provide one term as replacement for each free de Bruijn index in a term $t$. We write $t \sigma$ for the application of substitution $\sigma$ to term $t$ which is defined as usual.  We write $\slift^k_m$ for the substitution $(\ind{k+m-1},\dots,\ind{k+1},\ind k)$ which applies to a term with $m$ free indices and increases all of them by $k$.  We write $\slift_m$ for the lifting $\slift^1_m$ and $\sid_m$ for the identity substitution $ \slift^0_m$. In general, we refer to liftings by letter $\xi$.
-The substitution $[u]_m = (\sid_m, u)$ replaces free index $\ind 0$ by term $u$ and decrements all other free indices by $1$. We drop subscript $m$ when clear from the context.
-Substitution composition $\sigma\tau$ is the pointwise application of substitution $\tau$ to the list of terms $\sigma$.  In the proofs to follow, we freely use the following identities:
+For ordinary $\beta$-reduction we employ
+\emph{substitutions} $\sigma$.  These are simply lists of terms that provide one term as replacement for each free de Bruijn index in a term $t$. We write \fbox{$t \sigma$} for the application of substitution $\sigma$ to term $t$ which is defined as usual.  Let \emph{lifting} \fbox{$\slift^k_m$} be the substitution $(\ind{k+m-1},\dots,\ind{k+1},\ind k)$ which accepts a term with $m$ free indices and increases each of them by $k$.  We write $\slift_m$ for the lifting $\slift^1_m$ and \fbox{$\sid_m$} for the identity substitution $ \slift^0_m$. In general, we refer to liftings by letter $\xi$.
+The substitution \fbox{$[u]_m$}${} = (\sid_m, u)$ replaces free index $\ind 0$ by term $u$ and decrements the other $m$ free indices by $1$. We drop subscript $m$ from liftings when clear from the context.
+Substitution composition \fbox{$\sigma\tau$} is the pointwise application of substitution $\tau$ to the list of terms $\sigma$.  In the proofs to follow, we freely use the following identities:
 \begin{gather*}
   t\sid \equiv t
 \quad
@@ -426,17 +437,23 @@ Substitution composition $\sigma\tau$ is the pointwise application of substituti
 %  (\sigma\slift)[t] \equiv \sigma
 \end{gather*}
 
-For concrete function types, we may use a named dependent function type notation as syntactic sugar for the corresponding de Bruijn representation.  For instance, $\funT i \Size \Nat i \to \Set[\ell]$ is sugar for $\piT \Size \piT {(\Nat\,\ind 0)} \Set[\ell]$.  We abbreviate this type by \fbox{$\FixK\,\ell$}, and let \fbox{$\FixT\,T$} stand for $\allT i \Size (\funT x {\Nat i} T\, i\, x) \to \funT x {\Nat (i + 1)} T \,(i+1)\, x$. Similar as for $\Pi$, we use named lambda abstraction as sugar for de Bruijn abstraction.  Named abstract takes care of proper lifting of de Bruijn indices, for instance, $\lambda x.\, t x = \lambda. (t \slift)\,\ind 0$ if $t$ is outside the scope of $x$.
+For concrete function types and terms, we may use a named dependent function type notation as syntactic sugar for the corresponding de Bruijn representation.  For instance, $\funT i \Size \Nat i \to \Set[\ell]$ is sugar for $\piT \Size \piT {(\Nat\,\ind 0)} \Set[\ell]$.  We abbreviate this type by \fbox{$\FixK\,\ell$}, and let \fbox{$\FixT\,T$} stand for
+$\forall i.\ (\funT x {\Nat i} T\, i\, x) \to \funT x {\Nat (i + 1)} T \,(i+1)\, x$.
+% $\allT i \Size (\funT x {\Nat i} T\, i\, x) \to \funT x {\Nat (i + 1)} T \,(i+1)\, x$.
+Similar as for $\Pi$, we use named lambda abstraction as sugar for de Bruijn abstraction.  Named abstraction takes care of proper lifting of de Bruijn indices, for instance, $\lambda x.\, t x = \lambda. (t \slift)\,\ind 0$ if $t$ is outside the scope of $x$.
 We may also use names when we construct concrete contexts, for instance, if $T$ is well-formed in context $\Gamma$, we may write $T\,i\,x$ in context $\Gamma.i\of\Size.x\of\Nat i$ to mean $T\slift^2\,\ind 1\,\ind 0$ in context
 $\Gamma.\Size.\Nat \ind 0$.
 
-Resurrection\cite{pfenning:lics01} \fbox{$\resurrect\Gamma$} removes
-the ``$\erased$''-markers from all bindings in $\Gamma$ (\ie, replaces
-them by ``$\noterased$''-markers).  Note that, trivially, resurrection is idempotent: $\resurrecttwice\Gamma = \resurrect{\Gamma}$.
+In typing contexts $\Gamma$, we distinguish relevant $(\noterased)$ and irrelevant $(\erased)$ bindings.
+When type checking a variable, it needs to be bound in the context relevantly.  However, when entering a irrelevant position, for instance when checking size $a$ in term $\suc a t$ we declare previously irrelevant variables as relevant.
+This operation on the context has been coined
+\emph{resurrection} by \citet{pfenning:lics01}; formally \fbox{$\resurrect\Gamma$} removes
+the ``$\erased$''-markers from all bindings in $\Gamma$, \ie, replaces
+them by ``$\noterased$''-markers.  Note that, trivially, resurrection is idempotent: $\resurrecttwice\Gamma = \resurrect{\Gamma}$.
 
-Size increment \fbox{$a + o'$} for $o' \in \NN$ extends addition by $\infty + o' = \infty$ and $(\ind i + o) + o' = \ind i + (o + o')$.  Size comparison \fbox{$a \leq b$} holds if either $b = \infty$ or  $o \leq o'$ where either $a = o$ and $b = o'$ or $a \in \{ o, \ind i + o \}$ and $b = \ind i + o'$.
+Size increment \fbox{$a + o'$} for $o' \in \NN$ extends addition by $\infty + o' = \infty$ and $(\ind i + o) + o' = \ind i + (o + o')$.  Sizes are partially ordered; size comparison \fbox{$a \leq b$} holds as expected if either $b = \infty$ or  $o \leq o'$ where either $a = o$ and $b = o'$ or $a \in \{ o, \ind i + o \}$ and $b = \ind i + o'$.
 
-Judgements.
+Our type theory is formulated via the following judgements, which are mutually inductively defined.
 \[
 \begin{array}{l@{\qquad}l}
   \der \Gamma & \mbox{context $\Gamma$ is well-formed} \\
@@ -452,23 +469,23 @@ Judgements.
   \sueq \Gamma \sigma {\sigma'} \tau \Delta & \mbox{$\sigma$/$\sigma'$/$\tau$ are a equal term/term/type-level substitutions for $\Delta$} \\
 \end{array}
 \]
-Derived judgements.
+In addition, we will refer to the following derived judgements.
 \[
-\begin{array}{l@{~~}l@{~~}l@{~}l@{\qquad}l}
+\begin{array}{l@{\quad}l@{\quad}l@{~}l@{~~}l}
   \Gamma \der T & \defas & \Gamma \der T : s & \mforsome s
     & \mbox{in context $\Gamma$, type $T$ is well-formed} \\
   \Gamma \der T = T' & \defas & \Gamma \der T = T' : s & \mforsome s
     & \mbox{in context $\Gamma$, types $T$ and $T'$ are equal} \\
   \Gamma \der a = b : \Size & \defas &
-    \multicolumn 2 {@{}l@{\qquad}} {\Gamma \der a : \Size \mand a = b}
-    & \mbox{sizes $a$ and $b$ are well-formed and identical} \\
+    \multicolumn 2 {@{}l@{\quad}} {\Gamma \der a : \Size \mand a = b}
+    & \mbox{sizes $a$, $b$ are well-formed and identical} \\
   \Gamma \der a \leq b : \Size & \defas &
-     \multicolumn 2 {@{}l@{\qquad}} {\Gamma \der a : \Size \mand \Gamma \der b : \Size \mand a \leq b}
+     \multicolumn 2 {@{}l@{\quad}} {\Gamma \der a : \Size \mand \Gamma \der b : \Size \mand a \leq b}
 %     \multicolumn 2 {l@{\qquad}} {\Gamma \der a : \Size \mand \Gamma \der b : \Size \mand a \leq b}
-    & \mbox{sizes $a$ and $b$ are well-formed and comparable} \\
+    & \mbox{sizes $a$, $b$ are well-formed and comparable} \\
 %    & \mbox{in context $\Gamma$, well-formed size $a$ is less or equal than well-formed size $b$} \\
   \Gamma \der T : \Adm \ell & \defas &
-     \multicolumn 2 {@{}l@{\qquad}}
+     \multicolumn 2 {@{}l@{\quad}}
        {\Gamma \der T : \FixK \mand \Gamma.i\of\Size.x\of\Nat i \der T\,i\,x \leq T\,\infty\,x}
     & \mbox{% in context $\Gamma$
             type constructor $T$ is admissible for recursion} \\
