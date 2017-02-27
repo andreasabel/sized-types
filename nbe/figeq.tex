@@ -1,6 +1,5 @@
 \begin{figure}[htbp]
 \flushleft
-
 Computation rules.
 \begin{gather*}
   \ru{\cext \Gamma U \der t : T \qquad
@@ -117,8 +116,11 @@ Congruence rules.
       \resurrect\Gamma \der T \leq T'
      }{\Gamma \der t = t' : T'}
 \end{gather*}
-Equivalence rules.  (Reflexivity is admissible.)
+Equivalence rules.  %(Reflexivity is admissible.)
 \begin{gather*}
+  \ru{\Gamma \der t : T
+    }{\Gamma \der t = t : T}
+\qquad
   \ru{\Gamma \der t = t' : T
     }{\Gamma \der t' = t : T}
 \qquad
@@ -126,6 +128,7 @@ Equivalence rules.  (Reflexivity is admissible.)
       \Gamma \der t_2 = t_3 : T
     }{\Gamma \der t_1 = t_3 : T}
 \end{gather*}
+\vspace{-3ex}
   \caption{Definitional equality \fbox{$\Gamma \der t = t' : T$}
     (implies $\resurrect \Gamma \der T$ and $\Gamma \der t,t' : T$
     [and $\resurrect\Gamma \der t = t' : T$]).}

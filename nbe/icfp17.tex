@@ -440,7 +440,7 @@ For concrete function types and terms, we may use a named dependent function typ
 $\forall i.\ (\funT x {\Nat i} T\, i\, x) \to \funT x {\Nat (i + 1)} T \,(i+1)\, x$.
 % $\allT i \Size (\funT x {\Nat i} T\, i\, x) \to \funT x {\Nat (i + 1)} T \,(i+1)\, x$.
 Similar as for $\Pi$, we use named lambda abstraction as sugar for de Bruijn abstraction.  Named abstraction takes care of proper lifting of de Bruijn indices, for instance, $\lambda x.\, t x = \lambda. (t \slift)\,\ind 0$ if $t$ is outside the scope of $x$.
-We may also use names when we construct concrete contexts, for instance, if $T$ is well-formed in context $\Gamma$, we may write $T\,i\,x$ in context $\Gamma.i\of\Size.x\of\Nat i$ to mean $T\slift^2\,\ind 1\,\ind 0$ in context
+We may also use names when we construct concrete contexts, for instance, if\/ $T$ is well-formed in context $\Gamma$, we may write $T\,i\,x$ in context $\Gamma.i\of\Size.x\of\Nat i$ to mean $T\slift^2\,\ind 1\,\ind 0$ in context
 $\Gamma.\Size.\Nat \ind 0$.
 
 \input{figjudge}
@@ -455,15 +455,16 @@ them by ``$\noterased$''-markers.  Note that, trivially, resurrection is idempot
 Size increment \fbox{$a + o'$} for $o' \in \NN$ extends addition by $\infty + o' = \infty$ and $(\ind i + o) + o' = \ind i + (o + o')$.  Sizes are partially ordered; size comparison \fbox{$a \leq b$} holds as expected if either $b = \infty$ or  $o \leq o'$ where either $a = o$ and $b = o'$ or $a \in \{ o, \ind i + o \}$ and $b = \ind i + o'$.
 Different size variables are incomparable.
 
-Fig.~\ref{fig:judge} lists the inductive and derived judgements of our type theory.
+Fig.~\ref{fig:judge} lists the inductive and derived judgements of our type theory and
+figures~\ref{fig:ty} and \ref{fig:eq} the inference rules.
+
+\input{figty}
+\input{figeq}
 
 %Our type theory is formulated via the following judgements, which are mutually inductively defined.
 
 %In addition, we will refer to the following derived judgements.
 
-\clearpage
-
-\input{figty}
 
 % Inference rules.
 
@@ -482,7 +483,7 @@ Fig.~\ref{fig:judge} lists the inductive and derived judgements of our type theo
 %     }{\der \erext \Gamma \Size}
 % \]
 
-% \fbox{$\Gamma(i) = \eann T$} (implies $\resurrect\Gamma \der T$ if $\der \Gamma$).
+% \fbox{$\Gamma(i) = \eann T$} (implies $\resurrect\Gamma \der T$ if\/ $\der \Gamma$).
 % \[
 %   \ru{}{(\eext \Gamma T)(0) = \eann T \slift}
 % \qquad
@@ -490,7 +491,7 @@ Fig.~\ref{fig:judge} lists the inductive and derived judgements of our type theo
 %     }{(\cext \Gamma \_)(i+1) = \eann T \slift}
 % \]
 
-Note: Size is relevant in $T$ as we would like for instance $T\,i\,x = \Nat i$.
+%Note: Size is relevant in $T$ as we would like for instance $T\,i\,x = \Nat i$.
 % \fbox{$\Gamma \mid U \der e : T$}
 % \begin{gather*}
 %   \ru{\cext \Gamma U \der T \qquad \Gamma \der u : U
@@ -511,7 +512,6 @@ Note: Size is relevant in $T$ as we would like for instance $T\,i\,x = \Nat i$.
 
 % \fbox{$\Gamma \der t = t' : T$} (implies $\resurrect \Gamma \der T$ and $\Gamma \der t,t' : T$ [and $\resurrect\Gamma \der t = t' : T$].)
 
-\input{figeq}
 
 
 
@@ -591,9 +591,10 @@ Note: Size is relevant in $T$ as we would like for instance $T\,i\,x = \Nat i$.
 % \end{gather*}
 
 
-\begin{lemma}[Reflexivity]
-  If\/ $\Gamma \der t : T$ then $\Gamma \der t = t : T$.
-\end{lemma}
+%% COULD BE A LEMMA INSTEAD OF A RULE
+% \begin{lemma}[Reflexivity]
+%   If\/ $\Gamma \der t : T$ then $\Gamma \der t = t : T$.
+% \end{lemma}
 
 In the following, let $J$ %, $L$, and $R$
 match a part of a judgement.
@@ -601,7 +602,7 @@ match a part of a judgement.
 \begin{lemma}[Context well-formedness]
 \label{lem:cxtwf}\bla
   \begin{enumerate}
-  \item If $\der \cext \Gamma \Delta$ then $\der \Gamma$
+  \item If\/ $\der \cext \Gamma \Delta$ then $\der \Gamma$
   \item If\/ $\Gamma \der J$ then $\der \Gamma$.
   \end{enumerate}
 \end{lemma}
@@ -611,7 +612,7 @@ match a part of a judgement.
 \begin{enumerate}
 \item $\der \Gamma$ iff $\der \resurrect\Gamma$;  then $\resurrect \Gamma \der \sid : \Gamma$.
   % Consequently, if\/ $\Gamma \der J$ then $\resurrect \Gamma \der J$.
-  % Further, if $\Gamma \der J : \resurrect\Delta$ then $\Gamma \der J : \Delta$.
+  % Further, if\/ $\Gamma \der J : \resurrect\Delta$ then $\Gamma \der J : \Delta$.
 \item If\/ $\Gamma \der J$ then $\resurrect \Gamma \der J$.
 \item If\/ $\Gamma \der J : \resurrect \Delta$ % and $\der \Delta$
   then $\Gamma \der J : \Delta$.
@@ -634,10 +635,10 @@ match a part of a judgement.
 \begin{lemma}[Specific substitutions]
 \label{lem:specsub}\bla
 \begin{enumerate}
-\item If $\der \cext \Gamma \Delta$ then $\cext \Gamma \Delta \der \slift_{|\Gamma|}^{|\Delta|} : \Gamma$.
-      If $\der \cext \Gamma T$ then $\cext \Gamma T \der \slift : \Gamma$.
-\item If $\der \Gamma$ then $\Gamma \der \sid : \Gamma$.
-\item If $\Gamma \der u : U$ then $\Gamma \der \sg u : \cext \Gamma U$.
+\item If\/ $\der \cext \Gamma \Delta$ then $\cext \Gamma \Delta \der \slift_{|\Gamma|}^{|\Delta|} : \Gamma$.
+      If\/ $\der \cext \Gamma T$ then $\cext \Gamma T \der \slift : \Gamma$.
+\item If\/ $\der \Gamma$ then $\Gamma \der \sid : \Gamma$.
+\item If\/ $\Gamma \der u : U$ then $\Gamma \der \sg u : \cext \Gamma U$.
 \end{enumerate}
 \end{lemma}
 
@@ -651,11 +652,11 @@ match a part of a judgement.
 \item Functionality: Let $\sueq \Gamma \sigma {\sigma'} \tau \Delta$.
   \begin{enumerate}
   \item
-  If $\Delta \der t : T$ then $\Gamma \der t\sigma = t\sigma' : T\tau$.
+  If\/ $\Delta \der t : T$ then $\Gamma \der t\sigma = t\sigma' : T\tau$.
   \item
-  If $\Delta \der t = t' : T$ then $\Gamma \der t\sigma = t'\sigma' : T\tau$.
+  If\/ $\Delta \der t = t' : T$ then $\Gamma \der t\sigma = t'\sigma' : T\tau$.
   \item
-  Corollary: If $\Delta \der T \leq T'$ then $\Gamma \der T\sigma \leq T\sigma'$.
+  Corollary: If\/ $\Delta \der T \leq T'$ then $\Gamma \der T\sigma \leq T\sigma'$.
   \end{enumerate}
 \end{enumerate}
 \end{lemma}
@@ -667,12 +668,12 @@ match a part of a judgement.
 \begin{lemma}[Inversion of typing]
 \label{lem:invty} \bla
 \begin{enumerate}
-\item If $\Gamma \der \Nat a : T'$ then $\Gamma \der a : \Size$ and $\resurrect\Gamma \der \Set[0] \leq T'$.
-\item If $\Gamma \der \Set[\ell] : T'$ then $\resurrect\Gamma \der \Set[\ell+1] \leq T'$.
-\item If $\Gamma \der \piT U T : T'$ then $\Gamma \der U : s$ and $\cext \Gamma U \der T : s$ and $\resurrect\Gamma \der s \leq T'$ for some $s$.
-\item If $\Gamma \der \epiT \Size T : T'$ then $\cext\Gamma \Size \der T : s$ and $\resurrect\Gamma \der s \leq T'$.
-\item If $\Gamma \der \ind i : T'$ then $\Gamma(i) = \erann[\noterased] T$ and $\resurrect\Gamma \der T \leq T'$ for some $T$.
-\item If $\Gamma \der \lambda t : T'$ then either
+\item If\/ $\Gamma \der \Nat a : T'$ then $\Gamma \der a : \Size$ and $\resurrect\Gamma \der \Set[0] \leq T'$.
+\item If\/ $\Gamma \der \Set[\ell] : T'$ then $\resurrect\Gamma \der \Set[\ell+1] \leq T'$.
+\item If\/ $\Gamma \der \piT U T : T'$ then $\Gamma \der U : s$ and $\cext \Gamma U \der T : s$ and $\resurrect\Gamma \der s \leq T'$ for some $s$.
+\item If\/ $\Gamma \der \epiT \Size T : T'$ then $\cext\Gamma \Size \der T : s$ and $\resurrect\Gamma \der s \leq T'$.
+\item If\/ $\Gamma \der \ind i : T'$ then $\Gamma(i) = \erann[\noterased] T$ and $\resurrect\Gamma \der T \leq T'$ for some $T$.
+\item If\/ $\Gamma \der \lambda t : T'$ then either
   $\cext \Gamma U \der t : T$
   and
   $\resurrect\Gamma \der \piT U T \leq T'$
@@ -681,13 +682,13 @@ match a part of a judgement.
   and
   $\resurrect\Gamma \der \epiT\Size T \leq T'$
   for some $T$.
-\item If $\Gamma \der t\,u : T'$ then $\Gamma \der t : \piT U T$ and $\Gamma \der u : U$ and $\resurrect\Gamma \der T[u] \leq T'$ for some $U$, $T$.
-\item If $\Gamma \der t\,a : T'$ then $\Gamma \der t : \piT \Size T$ and $\Gamma \der a : \Size$ and $\resurrect\Gamma \der T[a] \leq T'$ for some $T$.
-\item If $\Gamma \der t\,\ann a : T'$ then $\Gamma \der t : \forallT T$ and $\resurrect\Gamma \der a : \Size$ and $\resurrect\Gamma \der T[a] \leq T'$ for some $T$.
-\item If $\Gamma \der \zero a : T'$ then $\resurrect \Gamma \der a,b : \Size$ and $\resurrect\Gamma \der \Nat (b + 1) \leq T'$ for some $b$.
-\item If $\Gamma \der \suc a t : T'$ then $\resurrect \Gamma \der a,b : \Size$ and $\Gamma \der t : \Nat b$ and $\resurrect\Gamma \der \Nat(b+1) \leq T'$.
-\item If $\Gamma \der u \case[\ell] T {t_z} {t_s} : T'$ then $\Gamma \der u : \Nat (a+1)$ and $\Gamma \der T : \Nat(a+1) \to \Set[\ell]$ and $\Gamma \der t_z : T\,(\zero a)$ and $\Gamma \der t_s : \funT x {\Nat a} {T\,(\suc a x)}$ and $\resurrect\Gamma \der T\,u \leq T'$ for some $a$.
-\item If $\Gamma \der u \fix[\ell] T t : T'$ then $\Gamma \der u : \Nat a$ and $\Gamma \der T : \Adm\,\ell$ and $\Gamma \der t : \FixT\,T$ and $\resurrect\Gamma \der T\,a\,u \leq T'$.
+\item If\/ $\Gamma \der t\,u : T'$ then $\Gamma \der t : \piT U T$ and $\Gamma \der u : U$ and $\resurrect\Gamma \der T[u] \leq T'$ for some $U$, $T$.
+\item If\/ $\Gamma \der t\,a : T'$ then $\Gamma \der t : \piT \Size T$ and $\Gamma \der a : \Size$ and $\resurrect\Gamma \der T[a] \leq T'$ for some $T$.
+\item If\/ $\Gamma \der t\,\ann a : T'$ then $\Gamma \der t : \forallT T$ and $\resurrect\Gamma \der a : \Size$ and $\resurrect\Gamma \der T[a] \leq T'$ for some $T$.
+\item If\/ $\Gamma \der \zero a : T'$ then $\resurrect \Gamma \der a,b : \Size$ and $\resurrect\Gamma \der \Nat (b + 1) \leq T'$ for some $b$.
+\item If\/ $\Gamma \der \suc a t : T'$ then $\resurrect \Gamma \der a,b : \Size$ and $\Gamma \der t : \Nat b$ and $\resurrect\Gamma \der \Nat(b+1) \leq T'$.
+\item If\/ $\Gamma \der u \case[\ell] T {t_z} {t_s} : T'$ then $\Gamma \der u : \Nat (a+1)$ and $\Gamma \der T : \Nat(a+1) \to \Set[\ell]$ and $\Gamma \der t_z : T\,(\zero a)$ and $\Gamma \der t_s : \funT x {\Nat a} {T\,(\suc a x)}$ and $\resurrect\Gamma \der T\,u \leq T'$ for some $a$.
+\item If\/ $\Gamma \der u \fix[\ell] T t : T'$ then $\Gamma \der u : \Nat a$ and $\Gamma \der T : \Adm\,\ell$ and $\Gamma \der t : \FixT\,T$ and $\resurrect\Gamma \der T\,a\,u \leq T'$.
 \end{enumerate}
 \end{lemma}
 \begin{proof}
@@ -1031,7 +1032,7 @@ The PERs $\NE$ and $\NF$ characterize (neutral) normalizing terms.
   \bla
   \begin{enumerate}
   \item $\lev k = \lev k \in \NE$.
-  \item If $n = n' \in \NE$ and $e = e' \in \ELIM$ then $n\,e = n'\,e' \in \NE$.
+  \item If\/ $n = n' \in \NE$ and $e = e' \in \ELIM$ then $n\,e = n'\,e' \in \NE$.
   \end{enumerate}
 \end{lemma}
 
@@ -1039,12 +1040,12 @@ The PERs $\NE$ and $\NF$ characterize (neutral) normalizing terms.
   \label{lem:closelim}
   \bla
   \begin{enumerate}
-  \item If $d = d' \in \NF$ then $d = d' \in \ELIM$.
-  \item If $\alpha \in \SIZE$ then $\alpha = \alpha \in \ELIM$.
+  \item If\/ $d = d' \in \NF$ then $d = d' \in \ELIM$.
+  \item If\/ $\alpha \in \SIZE$ then $\alpha = \alpha \in \ELIM$.
   \item $\ann \alpha = \ann{\alpha'} \in \ELIM$.
-  \item If $A = A' \in \TY$ and $d_z = d_z' \in \NF$ and $d_s = d_s' \in \NF$
+  \item If\/ $A = A' \in \TY$ and $d_z = d_z' \in \NF$ and $d_s = d_s' \in \NF$
         then $\case[\ell] A {d_z}{d_s} = \case[\ell]{A'}{d_z'}{d_s'} \in \ELIM$.
-  \item If $D = D' \in \NF$ and $d = d' \in \NF$ then $\fix[\ell] D d = \fix[\ell]{D'}{d'} \in \ELIM$.
+  \item If\/ $D = D' \in \NF$ and $d = d' \in \NF$ then $\fix[\ell] D d = \fix[\ell]{D'}{d'} \in \ELIM$.
   \end{enumerate}
 \end{lemma}
 
@@ -1106,9 +1107,9 @@ For a family $\F$ over $\SIZE$ we also have the irrelevant function space
 % \begin{lemma}[PER Subsumption]
 % \label{lem:subsump} \hfill
 % \begin{enumerate}
-% \item If $\alpha \leq \beta$ then $\NAT(\alpha) \subseteq \NAT(\beta)$.
-% \item If $\F(\alpha) \leq \F'(\alpha)$ for all $\alpha \in \SIZE$, then $\FORALL \F \subseteq \FORALL \F'$.
-% \item IF $\A' \subseteq \A$ and $\F(u) \subseteq \F'(u)$ for all $u \in \A'$, then $\PIAF \subseteq \PI\,\A'\,\F'$.
+% \item If\/ $\alpha \leq \beta$ then $\NAT(\alpha) \subseteq \NAT(\beta)$.
+% \item If\/ $\F(\alpha) \leq \F'(\alpha)$ for all $\alpha \in \SIZE$, then $\FORALL \F \subseteq \FORALL \F'$.
+% \item IF\/ $\A' \subseteq \A$ and $\F(u) \subseteq \F'(u)$ for all $u \in \A'$, then $\PIAF \subseteq \PI\,\A'\,\F'$.
 % \end{enumerate}
 % \end{lemma}
 
@@ -1165,7 +1166,7 @@ All relations involved here are closed under weak head equality.
   Let $\DD :: T_1 = T_2 \in \SET[\ell]$.
   \begin{enumerate}
   \item Symmetry: $T_2 = T_1 \in \SET[\ell]$.
-  \item Transitivity: If $T_2 = T_3 \in \SET[\ell]$ then $T_1 = T_3 \in \SET[\ell]$.
+  \item Transitivity: If\/ $T_2 = T_3 \in \SET[\ell]$ then $T_1 = T_3 \in \SET[\ell]$.
   \item Extension: $\EL[\ell](T_1) = \EL[\ell](T_2)$ and ``both'' are PERs.
   \end{enumerate}
 \end{lemma}
@@ -1176,7 +1177,7 @@ All relations involved here are closed under weak head equality.
 % The PER model has the usual properties, one of them being that $\EL[\ell](T)$ does not depend $\ell$ nor the derivation that introduced $T = T' \in \SET[\ell]$.  Thus, we simply write $t = t' \in \EL(T)$ or even $t = t' \in T$.
 \begin{lemma}[Derivation independence of extension]
 \label{lem:indep}
-  If $\DD_1 :: T = T_1 \in \SET[\ell_1]$
+  If\/ $\DD_1 :: T = T_1 \in \SET[\ell_1]$
   and $\DD_2 :: T_2 = T \in \SET[\ell_2]$ then $\EL[\ell_1](T) = \EL[\ell_2](T)$.
 \end{lemma}
 \begin{proof}
@@ -1193,10 +1194,10 @@ The semantic types (PERs) admit subsumption:
 \begin{lemma}[Subsumption]
 \label{lem:subsump} \hfill
 \begin{enumerate}
-\item \label{it:natsub} If $\alpha \leq \beta$ then $\NAT(\alpha) \subseteq \NAT(\beta)$.
-\item \label{it:allsub} If $\F(\alpha) \subseteq \F'(\alpha)$ for all $\alpha \in \SIZE$, then $\FORALL \F \subseteq \FORALL \F'$.
-\item \label{it:pisub}  If $\A' \subseteq \A$ and $\F(u) \subseteq \F'(u)$ for all $u \in \A'$, then $\PIAF \subseteq \PI\,\A'\,\F'$.
-\item \label{it:usub}  If $\ell \leq \ell'$ then $\SET[\ell] \subseteq \SET[\ell']$.
+\item \label{it:natsub} If\/ $\alpha \leq \beta$ then $\NAT(\alpha) \subseteq \NAT(\beta)$.
+\item \label{it:allsub} If\/ $\F(\alpha) \subseteq \F'(\alpha)$ for all $\alpha \in \SIZE$, then $\FORALL \F \subseteq \FORALL \F'$.
+\item \label{it:pisub}  If\/ $\A' \subseteq \A$ and $\F(u) \subseteq \F'(u)$ for all $u \in \A'$, then $\PIAF \subseteq \PI\,\A'\,\F'$.
+\item \label{it:usub}  If\/ $\ell \leq \ell'$ then $\SET[\ell] \subseteq \SET[\ell']$.
 \end{enumerate}
 \end{lemma}
 \begin{proof}
@@ -1251,7 +1252,7 @@ Simultaneously, we need to prove correctness, namely that $T \leq T' in \TYPE$ i
 
 % \begin{lemma}[Universe subsumption]
 %   \label{lem:usubsump}
-%   If $\ell \leq \ell'$ then $\SET[\ell] \subseteq \SET[\ell']$.
+%   If\/ $\ell \leq \ell'$ then $\SET[\ell] \subseteq \SET[\ell']$.
 % \end{lemma}
 % \begin{proof}
 %   Prove $T = T' \in \SET[\ell']$ by induction on $T = T' \in \SET[\ell]$.
@@ -1355,8 +1356,8 @@ Shapes are used to direct $\eta$-expansion when we reflect neutrals into semanti
 \label{thm:rere}
 Let $T \in \SET[\ell]$ and $T \shape S_1$ and $T \shape S_2$.
 \begin{enumerate}
-\item If $n_1 = n_2 \in \NE$ then $\up{S_1}{n_1} = \up{S_2}{n_2} \in T$.
-\item If $t_1 = t_2 \in T$ then $\down{S_1}{t_1} = \down{S_2}{t_2} \in \NF$.
+\item If\/ $n_1 = n_2 \in \NE$ then $\up{S_1}{n_1} = \up{S_2}{n_2} \in T$.
+\item If\/ $t_1 = t_2 \in T$ then $\down{S_1}{t_1} = \down{S_2}{t_2} \in \NF$.
 \end{enumerate}
 \end{theorem}
 \begin{proof*}
@@ -1429,8 +1430,8 @@ $\down{B_1[u_1]}(t_1\,u_1) = \down{B_2[u_2]}(t_2\,u_2) \in \NF$, which delivers 
   \label{cor:rere}
   Let\/ $T \in \SET[\ell]$.
   \begin{enumerate}
-  \item If $n = n' \in \NE$ then $\up T n = \up T n' \in T$.
-  \item If $t = t' \in T$ then $\down T t = \down T {t'} \in \NF$.
+  \item If\/ $n = n' \in \NE$ then $\up T n = \up T n' \in T$.
+  \item If\/ $t = t' \in T$ then $\down T t = \down T {t'} \in \NF$.
   \end{enumerate}
 \end{corollary}
 
@@ -1441,7 +1442,7 @@ $\down{B_1[u_1]}(t_1\,u_1) = \down{B_2[u_2]}(t_2\,u_2) \in \NF$, which delivers 
 The eliminations for natural numbers are accurately modeled.
 \begin{lemma}[Case]
   \label{lem:case}
-If $a = a' \in \Nat (\alpha+1)$
+If\/ $a = a' \in \Nat (\alpha+1)$
 and $B = B' \in \Nat (\alpha+1) \to \Set[\ell]$
 and $f_z = f_z' \in B\,(\zero \beta)$
 and $f_s = f_s' \in \funT x {\Nat \alpha} B\,(\suc \gamma x)$
@@ -1493,7 +1494,7 @@ $B\,\beta\, a \leq B\,\infty\,a \in \TYPE$ and
 $B'\,\beta\, a \leq B'\,\infty\,a \in \TYPE$.
 \begin{lemma}[Fix]
 Let $g = a \, \fix[\ell] B f$ and $g' = a'\,\fix[\ell]{B'}{f'}$.
-If $a = a' \in \Nat \alpha$
+If\/ $a = a' \in \Nat \alpha$
 and $B = B' \in \Adm\ell$
 and $f = f' \in \FixT\,B$
 then $g = g' \in B\,\alpha\,a$.
@@ -1549,7 +1550,7 @@ PER of substitutions
 We write $\rho \in \Gamma$ for $\rho = \rho \eeq \rho \in \Gamma$.
 \begin{lemma}[Resurrection]
   \label{lem:resenv}
-  If $\eta = \eta' \eeq \rho \in \Gamma$ then $\rho \in \resurrect\Gamma$.
+  If\/ $\eta = \eta' \eeq \rho \in \Gamma$ then $\rho \in \resurrect\Gamma$.
 \end{lemma}
 
 Semantic judgements:
@@ -1588,9 +1589,9 @@ Semantic judgements:
   \bla
   \begin{enumerate}
   \item
-  If $\der \Gamma$ then $\models \Gamma$.
+  If\/ $\der \Gamma$ then $\models \Gamma$.
   \item
-  If $\Gamma \der J$ then % $\models \Gamma$ and
+  If\/ $\Gamma \der J$ then % $\models \Gamma$ and
   $\Gamma \models J$
   \end{enumerate}
 \end{theorem}
@@ -1674,7 +1675,7 @@ We set $\rho_{\cempty} = \sempty$ and
 \end{array}
 \]
 \begin{lemma}[Identity environment]
-  If $\der \Gamma$ then
+  If\/ $\der \Gamma$ then
   $\rho_\Gamma \in \Gamma$.
   % $\rho_\Gamma = \rho_\Gamma \eeq \rho_\Gamma \in \Gamma$
 \end{lemma}
@@ -1791,8 +1792,8 @@ In this section, we show that NbE is sound for judgmental equality, i.e., that s
 %   % \Gamma' \der a\xi = a' : \Size
 % \]
 By definitions, these relations are closed under subsumption and
-weakening, e.g., if $\RD \Gamma t d T$ and $\Gamma \der T \leq T'$ then $\RD \Gamma t d T'$,
-and if $\xi : \Gamma \leq \Gamma'$ then $\RD{\Gamma'}{t\xi}d{T\xi}$.
+weakening, e.g., if\/ $\RD \Gamma t d T$ and $\Gamma \der T \leq T'$ then $\RD \Gamma t d T'$,
+and if\/ $\xi : \Gamma \leq \Gamma'$ then $\RD{\Gamma'}{t\xi}d{T\xi}$.
 
 \begin{lemma}[Closure properties for neutrals]
 \label{lem:rclosne}
@@ -1935,7 +1936,7 @@ $\LR \Gamma t {T'} f {A'}$ iff
 \]
 \end{caselist}
 We may prove theorems ``by induction on $\LRTS \Gamma T A s$'', even if in reality this will be proofs by induction on $A \in s$ and cases on $\LRTS \Gamma T A s$.
-We write \fbox{$\RG \Gamma T A$} if $\LRTS \Gamma T A s$ for some sort $s$.
+We write \fbox{$\RG \Gamma T A$} if\/ $\LRTS \Gamma T A s$ for some sort $s$.
 
 
 \begin{lemma}[Weakening]
@@ -2030,15 +2031,15 @@ $\LRTS{\Gamma'}{T(\xi,u)}{B[a]} s$.
 \bla
 \begin{enumerate}
 \item
-If $\LRSize \Gamma a \alpha$ and $\LRSize \Gamma {a'} \alpha$ then $a = a'$.
+If\/ $\LRSize \Gamma a \alpha$ and $\LRSize \Gamma {a'} \alpha$ then $a = a'$.
 \item
-If $\LRT \Gamma T A \ell$ and $\LRT \Gamma {T'} A {\ell'}$ then $\Gamma \der T = T'$.
+If\/ $\LRT \Gamma T A \ell$ and $\LRT \Gamma {T'} A {\ell'}$ then $\Gamma \der T = T'$.
 \end{enumerate}
 \end{corollary}
 
 \begin{corollary}[Fresh variable]
   \label{cor:fresh}
-  If $\der \cext \Gamma T$ and %$A \in \SET[\ell]$
+  If\/ $\der \cext \Gamma T$ and %$A \in \SET[\ell]$
   $\RG \Gamma T A$
   then $\LR {\cext \Gamma T} {\ind 0} {(T \slift)} {(\up A \var\Gamma)} A$.
 \end{corollary}
@@ -2058,10 +2059,10 @@ If $\LRT \Gamma T A \ell$ and $\LRT \Gamma {T'} A {\ell'}$ then $\Gamma \der T =
 \bla
 \begin{enumerate}
 \item
-   If $\LRSize \Gamma a \alpha$ and $\LRSize \Gamma {b} \beta$ and $\alpha \leq \beta$ then $a \leq b$.
+   If\/ $\LRSize \Gamma a \alpha$ and $\LRSize \Gamma {b} \beta$ and $\alpha \leq \beta$ then $a \leq b$.
 \item
-   If $\RG \Gamma T A$ and $\RG \Gamma {T'} {A'}$ and $A \leq A' \in \TYPE$ then $\Gamma \der T \leq T'$.
-   % If $\LRT \Gamma T A \ell$ and $\LRT \Gamma {T'} {A'} {\ell'}$ and $A \leq A' \in \TYPE$ then $\Gamma \der T \leq T'$.
+   If\/ $\RG \Gamma T A$ and $\RG \Gamma {T'} {A'}$ and $A \leq A' \in \TYPE$ then $\Gamma \der T \leq T'$.
+   % If\/ $\LRT \Gamma T A \ell$ and $\LRT \Gamma {T'} {A'} {\ell'}$ and $A \leq A' \in \TYPE$ then $\Gamma \der T \leq T'$.
 \end{enumerate}
 \end{lemma}
 \begin{proof}
@@ -2071,9 +2072,9 @@ If $\LRT \Gamma T A \ell$ and $\LRT \Gamma {T'} A {\ell'}$ then $\Gamma \der T =
 
 \begin{lemma}[Subsumption for the logical relation \cite{fridlenderPagano:tlca13}]
 \label{lem:lrsump}
-   If $\RG \Gamma T A$ and $\RG \Gamma {T'} {A'}$ and $A \leq A' \in \TYPE$ then
+   If\/ $\RG \Gamma T A$ and $\RG \Gamma {T'} {A'}$ and $A \leq A' \in \TYPE$ then
    $\LR \Gamma t T f A$ implies $\LR \Gamma t {T'} f {A'}$.
-   % If $\LRT \Gamma T A \ell$ and $\LRT \Gamma {T'} {A'} {\ell'}$ and $A \leq A' \in \TYPE$ then
+   % If\/ $\LRT \Gamma T A \ell$ and $\LRT \Gamma {T'} {A'} {\ell'}$ and $A \leq A' \in \TYPE$ then
    % $\LR \Gamma t T f A$ implies $\LR \Gamma t {T'} f {A'}$.
 \end{lemma}
 
@@ -2112,13 +2113,13 @@ We write \fbox{$\LRS \Gamma \tau \Delta \rho$} for $\LRSub \Gamma \tau \tau \Del
    and $\Gamma \der \sigma = \sigma \eeq \tau : \Delta$
    [which in turn implies $\Gamma \der \tau : \Delta$].
   \item Weakening:
-  If $\xi : \Gamma' \leq \Gamma$ then
+  If\/ $\xi : \Gamma' \leq \Gamma$ then
   $\LRSub{\Gamma'}{\sigma\xi}{\tau\xi}{\Delta}\eta\rho$.
   \item Resurrection:
   $\LRS {\resurrect\Gamma} \tau {\resurrect\Delta} \rho$.
   % $\LRSub {\resurrect\Gamma} \tau \tau {\resurrect\Delta} \rho \rho$.
   \item \label{it:sizesub} Size substitution:
-  If $\resurrect\Delta \der a : \Size$ then $a\eta \in \SIZE$.
+  If\/ $\resurrect\Delta \der a : \Size$ then $a\eta \in \SIZE$.
   \end{enumerate}
 \end{lemma}
 \begin{proof}
@@ -2150,9 +2151,9 @@ Validity judgements.
 \bla
 \begin{enumerate}
 \item
-If $\Gamma \der t : T$ then $\Gamma \valid t : T$.
+If\/ $\Gamma \der t : T$ then $\Gamma \valid t : T$.
 \item
-If $\Gamma \der \sigma : \Delta$ then
+If\/ $\Gamma \der \sigma : \Delta$ then
 $\Gamma \valid \sigma : \Delta$
 \end{enumerate}
 \end{theorem}
@@ -2205,7 +2206,7 @@ It suffices to show
 
 \begin{lemma}[Identity environment]
   \label{lem:idenv}
-  If $\der \Gamma$ then
+  If\/ $\der \Gamma$ then
   $\LRS \Gamma \sid \Gamma \rhog$.
 \end{lemma}
 \begin{proof*}
@@ -2281,7 +2282,7 @@ Analogously, we show that the test $\Nbe \Gamma T \equiv \Nbe \Gamma T'$
 decides type equality $\Gamma \der T = T'$.
 
 \begin{corollary}[Type weak head normalization]
-  If $\Gamma \der T$ then $T \evalsto W$ for some $W$.
+  If\/ $\Gamma \der T$ then $T \evalsto W$ for some $W$.
 \end{corollary}
 \begin{proof}
   By the fundamental theorem of typing, $\RG \Gamma T {T\rhog}$,
@@ -2293,15 +2294,15 @@ decides type equality $\Gamma \der T = T'$.
 \bla
 \begin{enumerate}
 \item \label{it:setinj}
-  If $\Gamma \der \Set[\ell] = \Set[\ell'] : s$ then $\ell = \ell'$.
+  If\/ $\Gamma \der \Set[\ell] = \Set[\ell'] : s$ then $\ell = \ell'$.
 \item \label{it:natinj}
-  If $\Gamma \der \Nat a = \Nat b : s$ then $a = b$.
+  If\/ $\Gamma \der \Nat a = \Nat b : s$ then $a = b$.
 \item \label{it:piinj}
-  If $\Gamma \der \piT U T = \piT{U'}{T'} : s$ then
+  If\/ $\Gamma \der \piT U T = \piT{U'}{T'} : s$ then
   $\Gamma \der U = U' : s$ and
   $\cext \Gamma U \der T = T' : s$.
 \item \label{it:allinj}
-  If $\Gamma \der \epiT \Size T = \piT{\Size}{T'} : s$ then
+  If\/ $\Gamma \der \epiT \Size T = \piT{\Size}{T'} : s$ then
   $\cext \Gamma \Size \der T = T' : s$.
 \end{enumerate}
 \end{corollary}
@@ -2352,15 +2353,15 @@ $T\rhogu = T' \rhogu \in s$, which analogously gives us $\cext\Gamma U \der T = 
 \bla
 \begin{enumerate}
 \item \label{it:setinvsub}
-  If $\Gamma \der \Set[\ell] \leq \Set[\ell'] : s$ then $\ell \leq \ell'$.
+  If\/ $\Gamma \der \Set[\ell] \leq \Set[\ell'] : s$ then $\ell \leq \ell'$.
 \item \label{it:natinvsub}
-  If $\Gamma \der \Nat a \leq \Nat b : s$ then $a \leq b$.
+  If\/ $\Gamma \der \Nat a \leq \Nat b : s$ then $a \leq b$.
 \item \label{it:piinvsub}
-  If $\Gamma \der \piT U T \leq \piT{U'}{T'} : s$ then
+  If\/ $\Gamma \der \piT U T \leq \piT{U'}{T'} : s$ then
   $\Gamma \der U' \leq U : s$ and
   $\cext \Gamma {U'} \der T \leq T' : s$.
 \item \label{it:allinvsub}
-  If $\Gamma \der \epiT \Size T \leq \piT{\Size}{T'} : s$ then
+  If\/ $\Gamma \der \epiT \Size T \leq \piT{\Size}{T'} : s$ then
   $\cext \Gamma \Size \der T \leq T' : s$.
 \end{enumerate}
 \end{lemma}
@@ -2390,9 +2391,9 @@ $\cext \Gamma {U'} \der T \leq T' : s$.
   \label{lem:invabs}
   \bla
   \begin{enumerate}
-  \item   If $\Gamma \der \lambda t : \piT U T$ then
+  \item   If\/ $\Gamma \der \lambda t : \piT U T$ then
   $\cext \Gamma U \der t : T$.
-  \item   If $\Gamma \der \lambda t : \epiT \Size T$ then
+  \item   If\/ $\Gamma \der \lambda t : \epiT \Size T$ then
   $\eext \Gamma \Size \der t : T$.
   \end{enumerate}
 \end{lemma}
@@ -2407,14 +2408,14 @@ $\cext \Gamma {U'} \der T \leq T' : s$.
   \label{lem:stronginv}
   \bla
   \begin{enumerate}
-  \item   If $\Gamma \der (\lambda t)\,u : T'$ then
+  \item   If\/ $\Gamma \der (\lambda t)\,u : T'$ then
   $\cext \Gamma U \der t : T$ and $\Gamma \der u : U$ and $\Gamma \der T[u] \leq T'$
   for some $U,T$.
-  \item   If $\Gamma \der (\lambda t)\,a : T'$ then
+  \item   If\/ $\Gamma \der (\lambda t)\,a : T'$ then
   $\cext \Gamma \Size \der t : T$ and $\Gamma \der a : \Size$ and $\Gamma \der T[a] \leq T'$
   for some $T$.
   \item \label{it:sinvall}
-  If $\Gamma \der (\lambda t)\,\ann a : T'$ then
+  If\/ $\Gamma \der (\lambda t)\,\ann a : T'$ then
   $\erext \Gamma \Size \der t : T$ and $\resurrect \Gamma \der a : \Size$ and $\Gamma \der T[a] \leq T'$
   for some $T$.
   \end{enumerate}
@@ -2429,9 +2430,9 @@ $\Gamma \der t[a] : T[b]$, thus $\Gamma \der t[a] : T'$ by subsumption.
   \bla
   \begin{enumerate}
   \item
-  If $\DD :: \Gamma \der t : T$ and $\DD' :: t \evalsto w$ then $\Gamma \der t = w : T$.
+  If\/ $\DD :: \Gamma \der t : T$ and $\DD' :: t \evalsto w$ then $\Gamma \der t = w : T$.
   \item
-  If $\DD :: \Gamma \der w\, e : T$ and $\DD' :: w @ e \evalsto w'$ then $\Gamma \der w\,e = w : T$.
+  If\/ $\DD :: \Gamma \der w\, e : T$ and $\DD' :: w @ e \evalsto w'$ then $\Gamma \der w\,e = w : T$.
   \end{enumerate}
 \end{theorem}
 \begin{proof}
@@ -2475,7 +2476,7 @@ Algorithmic subtyping \fbox{$\Gamma \der T \asub T'$}.
 
 \begin{lemma}[Soundness of algorithmic subtyping]
   \label{lem:asubsound}
-  If $\Gamma \der T \asub T'$ then $\Gamma \der T \leq T'$.
+  If\/ $\Gamma \der T \asub T'$ then $\Gamma \der T \leq T'$.
 \end{lemma}
 \begin{proof}
   By induction on $\Gamma \der T \asub T'$, using soundness of NbE and subject reduction (Thm.~\ref{thm:sr}).
@@ -2508,7 +2509,7 @@ $\LRTS {\cext \Gamma {U_2}} {T_i} {B_i[a]} s$ and $B_1[a] \leq B_2[a] \in \TYPE$
 
 \begin{corollary}[Completeness of algorithmic subtyping]
 \label{cor:complasub}
-If $\Gamma \der T \leq T'$ then $\Gamma \der T \asub T'$.
+If\/ $\Gamma \der T \leq T'$ then $\Gamma \der T \asub T'$.
 \end{corollary}
 \begin{proof}
   By the fundamental theorems $\RG \Gamma T {T\rhog}$ and $\RG \Gamma {T'} {T'\rhog}$ and $T\rhog \leq T'\rhog \in \TYPE$.
@@ -2519,14 +2520,14 @@ Since the algorithmic subtyping relation is equivalent to the declarative one, w
 
 \begin{lemma}[Termination of algorithmic subtyping]
   \label{lem:termasub}
-  If $\RG \Gamma T A$ and $\RG \Gamma {T'} {A'}$ then the query $\Gamma \der T \asub T'$ terminates.
+  If\/ $\RG \Gamma T A$ and $\RG \Gamma {T'} {A'}$ then the query $\Gamma \der T \asub T'$ terminates.
 \end{lemma}
 \begin{proof}
   By induction on $A \in s$ and $A' \in s'$ and cases on $\RG \Gamma T A$ and $\RG \Gamma {T'} {A'}$.
 \end{proof}
 
 \begin{theorem}[Decidability of subtyping]
-  If $\Gamma \der T,T'$, then $\Gamma \der T \leq T'$ is decided by the query $\Gamma \der T \asub T'$.
+  If\/ $\Gamma \der T,T'$, then $\Gamma \der T \leq T'$ is decided by the query $\Gamma \der T \asub T'$.
 \end{theorem}
 \begin{proof}
   By the fundamental theorem of typing, $\RG \Gamma T A$ and $\RG \Gamma {T'} {A'}$,
@@ -2546,7 +2547,7 @@ In this section, we show that type checking for normal forms is decidable, and s
     }{\Gamma \ders t\, \ann a : T[a]}
 \]
 We will refer to the restricted typing judgement as \fbox{$\Gamma \ders t : T$}, and obviously,
-if $\Gamma \ders t : T$ then $\Gamma \der t : T$.
+if\/ $\Gamma \ders t : T$ then $\Gamma \der t : T$.
 
 Bidirectional typing of normal forms.
 
@@ -2634,8 +2635,8 @@ We could go beyond normal forms, by adding inference rules for the $\Nat$-constr
 \begin{theorem}[Soundness of type checking]
   Let $\der \Gamma$.
   \begin{enumerate}
-  \item If $\resurrect\Gamma \der T$ and $\DD :: \Gamma \der t \jchk T$ then $\Gamma \ders t : T$.
-  \item If $\DD :: \Gamma \der t \jinf T$ then $\resurrect\Gamma \der T$ and $\Gamma \ders t : T$.
+  \item If\/ $\resurrect\Gamma \der T$ and $\DD :: \Gamma \der t \jchk T$ then $\Gamma \ders t : T$.
+  \item If\/ $\DD :: \Gamma \der t \jinf T$ then $\resurrect\Gamma \der T$ and $\Gamma \ders t : T$.
   \end{enumerate}
 \end{theorem}
 \begin{proof}
@@ -2647,11 +2648,11 @@ We could go beyond normal forms, by adding inference rules for the $\Nat$-constr
 \label{lem:whdsub}
 Let $\DD :: \Gamma \der T \asub T'$.
 \begin{enumerate}
-\item If $T' \evalsto \Nat a'$ then $T \evalsto \Nat a$ and $\Gamma \der a \asub a' : \Size$.
-\item If $T' \evalsto \Set[\ell']$ then $T \evalsto \Set[\ell]$ and $\ell \asub \ell'$.
-\item If $T' \evalsto \piT{A'}{B'}$ then $T \evalsto \piT {A} {B}$ and
+\item If\/ $T' \evalsto \Nat a'$ then $T \evalsto \Nat a$ and $\Gamma \der a \asub a' : \Size$.
+\item If\/ $T' \evalsto \Set[\ell']$ then $T \evalsto \Set[\ell]$ and $\ell \asub \ell'$.
+\item If\/ $T' \evalsto \piT{A'}{B'}$ then $T \evalsto \piT {A} {B}$ and
       $\Gamma \der A' \asub A$ and $\cext \Gamma {A'} \der B \asub B'$.
-\item If $T' \evalsto \epiT \Size {B'}$ and $T \evalsto \epiT \Size B$ and $\cext \Gamma \Size \der B \asub B'$.
+\item If\/ $T' \evalsto \epiT \Size {B'}$ and $T \evalsto \epiT \Size B$ and $\cext \Gamma \Size \der B \asub B'$.
 \end{enumerate}
 \end{lemma}
 \begin{proof}
@@ -2661,11 +2662,11 @@ Let $\DD :: \Gamma \der T \asub T'$.
 \label{lem:whdsuper}
 Let $\DD :: \Gamma \der T \asub T'$.
 \begin{enumerate}
-\item If $T \evalsto \Nat a$ then $T' \evalsto \Nat a'$ and $\Gamma \der a \asub a' : \Size$.
-\item If $T \evalsto \Set[\ell]$ then $T' \evalsto \Set[\ell']$ and $\ell \asub \ell'$.
-\item If $T \evalsto \piT A B$ then $T' \evalsto \piT {A'} {B'}$ and
+\item If\/ $T \evalsto \Nat a$ then $T' \evalsto \Nat a'$ and $\Gamma \der a \asub a' : \Size$.
+\item If\/ $T \evalsto \Set[\ell]$ then $T' \evalsto \Set[\ell']$ and $\ell \asub \ell'$.
+\item If\/ $T \evalsto \piT A B$ then $T' \evalsto \piT {A'} {B'}$ and
       $\Gamma \der A' \asub A$ and $\cext \Gamma {A'} \der B \asub B'$.
-\item If $T \evalsto \epiT \Size B$ and $T' \evalsto \epiT \Size B'$ and $\cext \Gamma \Size \der B \asub B'$.
+\item If\/ $T \evalsto \epiT \Size B$ and $T' \evalsto \epiT \Size B'$ and $\cext \Gamma \Size \der B \asub B'$.
 \end{enumerate}
 \end{lemma}
 \begin{proof}
@@ -2675,8 +2676,8 @@ Let $\DD :: \Gamma \der T \asub T'$.
   \label{lem:subtc}
   Let $\sid : \Gamma' \leq \Gamma$.
   \begin{enumerate}
-  \item If $\DD :: \Gamma \der t \jchk T$ and $\resurrect\Gamma \der T \leq T'$ then $\Gamma' \der t \jchk T'$.
-  \item If $\DD :: \Gamma \der t \jinf T$ then $\Gamma' \der t \jinf T'$ and $\resurrect{\Gamma'} \der T \leq T'$.
+  \item If\/ $\DD :: \Gamma \der t \jchk T$ and $\resurrect\Gamma \der T \leq T'$ then $\Gamma' \der t \jchk T'$.
+  \item If\/ $\DD :: \Gamma \der t \jinf T$ then $\Gamma' \der t \jinf T'$ and $\resurrect{\Gamma'} \der T \leq T'$.
   \end{enumerate}
 \end{lemma}
 \begin{proof}
@@ -2687,8 +2688,8 @@ Let $\DD :: \Gamma \der T \asub T'$.
 \begin{theorem}[Completeness of type checking for normal terms]
 \bla
 \begin{enumerate}
-\item If $\DD :: \Gamma \ders v : T$ then $\Gamma \der v \jchk T$.
-\item If $\DD :: \Gamma \ders m : T$ then $\Gamma \der m \jinf U$ and $\resurrect\Gamma \der U \leq T$.
+\item If\/ $\DD :: \Gamma \ders v : T$ then $\Gamma \der v \jchk T$.
+\item If\/ $\DD :: \Gamma \ders m : T$ then $\Gamma \der m \jinf U$ and $\resurrect\Gamma \der U \leq T$.
 \end{enumerate}
 \end{theorem}
 \begin{proof}
@@ -2699,7 +2700,7 @@ Simultaneously by induction on $\DD$, using (strong) inversion and Lemma~\ref{le
   Let $\der \Gamma$.
   \begin{enumerate}
   \item The query $\Gamma \der t \jinf \mbox{?}$ terminates.
-  \item If $\resurrect\Gamma \der T$ then the query $\Gamma \der t \jchk T$ terminates.
+  \item If\/ $\resurrect\Gamma \der T$ then the query $\Gamma \der t \jchk T$ terminates.
   \end{enumerate}
 \end{lemma}
 \begin{proof}
