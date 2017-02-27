@@ -977,7 +977,7 @@ Judgements.
 \subsection{Partial equivalence relations}
 \label{sec:per}
 
-A type $T$ will be interpreted as a partial equivalence relation (PER) $\A$ on terms, \ie, a relation which is symmetric and transitive. The domain $\dom(\A)$ of the relation can be thought of the set of terms which define the extension of the type; on $\dom(\A) = \{a \mid \exists a'.\ (a,a') \in \A \}$ the relation $\A$ is in fact an equivalence relation.  We write $a = a' \in \A$ for relatedness in $\A$ and $a \in \A$ if $a \in \dom(\A)$.
+A type $T$ will be interpreted as a partial equivalence relation (PER) $\A$ on terms, \ie, a relation which is symmetric and transitive. The domain $\dom(\A)$ of the relation can be thought of as the set of terms which define the extension of the type; on $\dom(\A) = \{a \mid \exists a'.\ (a,a') \in \A \}$ the relation $\A$ is in fact an equivalence relation.  We write $a = a' \in \A$ for relatedness in $\A$ and $a \in \A$ if $a \in \dom(\A)$.
 
 The PERs $\NE$ characterizes neutral reifiable terms.
 % \[
@@ -1121,7 +1121,7 @@ For a family $\F$ over $\SIZE$ we also have the irrelevant function space
 By induction on $\ell \in \NN$ we define the PER family
 $\_ = \_ \in \Set[\ell]$ of types
 together with the extension $\EL[\ell] T$ (for $T = T' \in \Set[\ell]$)
-which is PER of values of type $A$.
+which is a PER of values of type $A$.
 The rules for \fbox{$T = T' \in \SET[\ell]$} are:
 \[
 \begin{array}{l@{\qquad}l}
@@ -1214,7 +1214,7 @@ The semantic types (PERs) admit subsumption:
   By induction hypothesis, $A = A' \in \SET[\ell']$, and we have $\EL[\ell'](A) = \EL[\ell](A)$ by Lemma~\ref{lem:indep}.  Assuming $u = u' \in \EL(A)$, we get $B[u] = B'[u'] \in \SET[\ell']$ by induction hypothesis on $B[u] = B'[u'] \in \SET[\ell]$.
 \end{proof}
 We can define subtyping of type values \fbox{$T \leq T' \in \TYPE$} by induction on $T \in \SET[\ell]$ and $T' \in \SET[\ell']$.
-Simultaneously, we need to prove correctness, namely that $T \leq T' in \TYPE$ implies $\EL(T) \subseteq \EL(T')$.  The correctness follows from Lemma~\ref{lem:subsump} and we do not spell it out here.
+Simultaneously, we need to prove correctness, namely that $T \leq T' \in \TYPE$ implies $\EL(T) \subseteq \EL(T')$.  The correctness follows from Lemma~\ref{lem:subsump} and we do not spell it out here.
 \begin{gather*}
   \ru{T = T' \in \NEE
     }{T \leq T' \in \TYPE}
@@ -1312,7 +1312,7 @@ Type shapes are not well-defined types in general.
 For instance, assume a term $F : \Nat 0 \to \Set[0]$ which diverges if applied to a successor term.
 Then $T := \funT x {\Nat 0} {F\,x}$ is a well-defined type; we have $T \in \SET[0]$.
 Now consider $S := \funT x {\Nat \infty} {F\,x}$.
-We have $T \shape S$, but not $S$ is not well-defined; $S \not\in \SET[0]$.
+We have $T \shape S$, but $S$ is not well-defined; $S \not\in \SET[0]$.
 % $\funT x {\Nat 0} {F\,x} \shape , but the latter one is not a well-defined type.
 
 \begin{lemma}[Types are their own shapes]
