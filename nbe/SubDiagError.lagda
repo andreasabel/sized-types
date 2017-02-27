@@ -18,6 +18,7 @@ s + suc n = (s + n) +1
 \end{code}
 }
 
+\newcommand{\apred}{\AgdaFunction{pred}}
 \newcommand{\amonus}{\AgdaFunction{monus}}
 \newcommand{\azero}{\AgdaInductiveConstructor{zero}}
 \newcommand{\asuc}{\AgdaInductiveConstructor{suc}}
@@ -39,6 +40,7 @@ pred .(i + 1) (zero i)   =  zero i
 pred .(i + 1) (suc i x)  =  x
 \end{code}
 Note that in the second clause, we have applied subtyping to cast $x : \aNat\,i$ to $\aNat\,(i + 1)$.
+The dot on the left hand side, preceding $(i + 1)$, marks an \emph{inaccessible} pattern.  Its value is determined by the subsequent match on the natural number argument, no actual matching has to be carried out on this argument.
 
 We now define subtraction $x \dotminus y$ on natural numbers, sometimes called the \emph{monus} function, which computes $\max(0, x-y)$.  It is defined by induction on the size $j$ of the second argument $y$, while the output is bounded by size $i$ of the first argument $x$.  There are several ways to implement it, we have chosen the tail-recursive variant which treats the first argument as accumulator.  It computes the result by applying the predecessor function $y$-times to $x$.
 

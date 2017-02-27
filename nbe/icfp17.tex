@@ -12,7 +12,12 @@
 \usepackage[all]{xy}
 
 \usepackage[cal=boondoxo]{mathalfa}
+
 \usepackage{latex/agda}
+
+% NO EFFECT:
+% \renewcommand{\AgdaOperator}    [1]
+%     {\AgdaNoSpaceMath{\AgdaFontStyle{\textcolor{AgdaOperator}{\mathbf{#1}}}}}
 
 %% Note: Authors migrating a paper from PACMPL format to traditional
 %% SIGPLAN proceedings format should change 'acmlarge' to
@@ -263,6 +268,8 @@ In the presence of large eliminations, which we have in type theories that featu
 \label{sec:informal}
 
 \input{latex/SubDiagError}
+
+\input{latex/SubDiag}
 
 \section{Syntax}
 \label{sec:syntax}
