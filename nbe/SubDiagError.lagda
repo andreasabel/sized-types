@@ -33,6 +33,7 @@ data Nat : Size → Set where
 \end{code}
 
 The predecessor function is \emph{size preserving}, \ie, the output can be assigned the same upper bound $i$ as the input.
+In the code to follow, the dot on the left hand side, preceding $(i + 1)$, marks an \emph{inaccessible} pattern.  Its value is determined by the subsequent match on the natural number argument, no actual matching has to be carried out on this argument.
 
 \begin{code}
 pred : ∀ i → Nat i → Nat i
@@ -40,7 +41,6 @@ pred .(i + 1) (zero i)   =  zero i
 pred .(i + 1) (suc i x)  =  x
 \end{code}
 Note that in the second clause, we have applied subtyping to cast $x : \aNat\,i$ to $\aNat\,(i + 1)$.
-The dot on the left hand side, preceding $(i + 1)$, marks an \emph{inaccessible} pattern.  Its value is determined by the subsequent match on the natural number argument, no actual matching has to be carried out on this argument.
 
 We now define subtraction $x \dotminus y$ on natural numbers, sometimes called the $\amonus$ function, which computes $\max(0, x-y)$.  It is defined by induction on the size $j$ of the second argument $y$, while the output is bounded by size $i$ of the first argument $x$.  The input-output relation of $\amonus$ is needed for a natural implementation of Eucledian divison.
 

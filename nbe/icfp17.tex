@@ -348,7 +348,7 @@ But before going into the technical details, we will motivate our type system fr
 \section{Size Irrelevance in Practice}
 \label{sec:informal}
 
-In this section, we show how the lack of size irrelevance prevents us from reasoning naturally about programs involving sized types in Type Theory.  We focus on Agda, the only mature implementation of Type Theory with an experimental integration of sized types.
+In this section, we show how the lack of size irrelevance prevents us from reasoning naturally about programs involving sized types in Type Theory.  We focus on Agda, at the time of writing the only mature implementation of Type Theory with an experimental integration of sized types.
 
 \input{latex/SubDiagError}
 
@@ -2969,18 +2969,19 @@ Simultaneously by induction on $\DD$, using (strong) inversion and Lemma~\ref{le
 \section{Discussion and Conclusions}
 \label{sec:concl}
 
-In this article, we have described the first successful integration of higher-rank size polymorphism into a core type theory with dependent function types, a sized type of natural numbers, a predicative hierarchy of universes, subtyping, and $\eta$-equality.
+In this article, we have described the first successful integration of higher-rank size polymorphism into a core type theory with dependent function types, a sized type of natural numbers, a predicative hierarchy of universes, subtyping, and $\eta$-equality.  This is an important stepping stone for the smooth integration of sized types into dependently-typed proof assistants.
+In the final paragraphs, we discuss some questions and insights that follow from our work and go beyond it.
 
 It is now straightforward to add a unit type $\One$ with extensional equality $t = {*} : \One$ for all $t : \One$.  We simply extend reification such that $\down\One a = {*}$.  Further, $\One$ is a new type shape with rule $\One \shape \One$.
 
-Reification erases all irrelevant size arguments to $\infty$.  We also considered keeping the sizes, and define equality $v \approx v'$ of normal forms modulo differences in erased arguments.  However, it seems difficult to prove that equal normal forms are judgmentally equal, \ie, if $\Gamma \der v,v' : T$ and $v \approx v'$ then $\Gamma \der v = v' : T$.  Proving this statement seems to be the key to an incremental equality check; but
+Reification erases all irrelevant size arguments to $\infty$.  We have also considered to keep the sizes there, and define equality $v \approx v'$ of normal forms up to differences in erased arguments.  However, it seems difficult to prove that equal normal forms are judgmentally equal, \ie, that $\Gamma \der v,v' : T$ and $v \approx v'$ imply $\Gamma \der v = v' : T$.  Proving this statement seems to be the key to an incremental equality check; but
 the usual bidirectional argument \cite{abelScherer:types10} does not seem to go through as we lack uniqueness of types.
 In the long run, we wish for an incremental type-directed equality check, which is also at the heart of Agda's type checker, as this check can generate constraints for meta variables involved in type reconstruction \cite{norell:PhD}.
 
-For now, we have exploited shape-irrelevance of sized types, but this directly extends to universe levels.  If we consider all universes as a single shape $\Set[\ell_1] \shape \Set[\ell_2]$, we can quantify over levels irrelevantly, as $\Set$ is a shape-irrelevant type constructor.  This is a stepping stone for integrating universe cumulativity with Agda's explicit universe-polymorphism.  If levels are no longer unique (because of subsumption), they will get in the way of proofs, analogously to sizes.  With an irrelevant quantifier we can ignore levels where they do not matter.  We will still respect them where they matter, thus, we keep consistency.
+For now, we have only exploited shape-irrelevance of sized types, but this directly extends to universe levels.  If we consider all universes as a single shape $\Set[\ell_1] \shape \Set[\ell_2]$, we can quantify over levels irrelevantly, as $\Set$ is a shape-irrelevant type constructor.  This is a stepping stone for integrating universe cumulativity with Agda's explicit universe-polymorphism.  If levels are no longer unique (because of subsumption), they will get in the way of proofs, analogously to sizes.  With an irrelevant quantifier we can ignore levels where they do not matter.  We will still respect them where they matter, thus, we keep consistency.
 
-The reflections on level irrelevance lead us to the question: can a type theory $T$ with a stratified universe hierarchy be understood as a sort of refinement of the inconsistent System~$U$ (Type:Type)?  Intuitively, when checking two terms of $T$ for equality, could we ignore the stratification in the type $A$ which directs the equality check (thus, consider $A$ coming from $U$)?
-Such a perspective would put stratification in one pot with size assignment:  Size annotations and levels are both just annotations for the termination checker, but do not bear semantic relevance.  We could switch the universe checker temporarily off as we do with the termination checker (see also the work of \citet{stumpSjobergWeirich:par10} on \emph{termination casts}).
+Our reflections on level irrelevance lead us to the question: can a type theory $T$ with a stratified universe hierarchy be understood as a sort of refinement of the inconsistent System~$U$ (Type:Type)?  Intuitively, when checking two terms of $T$ for equality, could we ignore the stratification in the type $A$ which directs the equality check (thus, consider $A$ coming from $U$)?
+Such a perspective would put stratification in one pot with size assignment:  Size annotations and levels are both just annotations for the termination checker, but do not bear semantic relevance.  We could switch the universe checker temporarily off as we do with the termination checker---cf.\ the work of \citet{stumpSjobergWeirich:par10} on \emph{termination casts}.
 
 Finally, we would like a general theory of shape-irrelevance that extends beyond size-indexed types.  For instance, any data type constructor could be considered shape-irrelevant in all its parameters.  However, the current reification algorithm which erases irrelevant size arguments to $\infty$ would need some patching.  \citet{abelCoquandPagano:lmcs11} erase all proofs of a proposition $P$ to a canonical element $\star$ which inhabits any proposition $P$ that is already inhabited.  A similar technique could work in our setting and would be necessary unless we can justify the incremental equality check (see above).
 
