@@ -36,7 +36,7 @@ data Nat : ..(i : Size) → Set where
   suc   :  ∀ .i → Nat i → Nat (i + 1)
 \end{code}
 
-Similarly, ``type'' argument $i$ to $\apred$ is irrelevant.  Agda checks that it only occurs shape-irrelevantly in the type and irrelevantly in the term.  It succeeds since $i$ is also an irrelevant argument to the constructors $\azero$ and $\asuc$; otherwise, we would get a type error.
+Similarly, ``type'' argument $i$ to $\apred$ is irrelevant.  Agda checks that it only occurs shape-irrelevantly in the type and irrelevantly in the term.  This is the case since $i$ is also an irrelevant argument to the constructors $\azero$ and $\asuc$; otherwise, we would get a type error.
 
 \begin{code}
 pred : ∀ .i → Nat i → Nat i
@@ -44,7 +44,7 @@ pred .(i + 1) (zero i)   =  zero i
 pred .(i + 1) (suc i x)  =  x
 \end{code}
 
-The two size arguments $i$ and $j$ to $\amonus$ are also irrelevant.  In this case, we succeed since the size argument to $\apred$ has been declared irrelevant.
+The two size arguments $i$ and $j$ to $\amonus$ are also irrelevant.  In this case, type checking succeeds since the size argument to $\apred$ has been declared irrelevant.
 
 \begin{code}
 monus : ∀ .i → Nat i → ∀ .j → Nat j → Nat i
