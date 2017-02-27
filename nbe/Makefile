@@ -32,7 +32,7 @@ files=icfp17.tex macros.tex latex/SubDiag.tex latex/SubDiagError.tex figjudge.te
 .PRECIOUS : %.dvi %.ps %.gz %.pdf %.tex
 
 
-default : icfp17.pdf
+default : icfp17.pdf icfp17-long.pdf
 
 pack : icfp17.zip
 
@@ -84,6 +84,39 @@ auto-icfp17.bib : icfp17_aux $(bibliography)
 	echo "%%%% DO NOT EDIT! ALL CHANGES WILL BE LOST!" >> $@ ;
 	echo "" >> $@ ;
 	$(bibtool) -x icfp17.aux -i $(bibliography) >> $@;
+endif
+endif
+
+# icfp17-long
+##################################################################
+
+# initially, run latex once to create an .aux file
+# mark .aux file as fresh by creating a stamp _aux
+icfp17-long_aux : icfp17-long.tex $(files)
+	$(pdflatex) icfp17-long.tex;
+	touch $@;
+
+# then, run bibtex
+icfp17-long.bbl : icfp17-long_aux auto-icfp17-long.bib
+	-bibtex icfp17-long;
+
+# finally, finish by running latex twice again
+# this will update .aux, but leave the stamp _aux intact
+# (otherwise we would not converge and make would never
+# return a "Nothing to do")
+icfp17-long.pdf : icfp17-long.bbl
+	$(pdflatex) icfp17-long.tex;
+	$(pdflatex) icfp17-long.tex;
+
+# auto-icfp17-long.bib is only defined if bibtool is present and all.bib exists
+
+ifneq ($(shell which bibtool),)
+ifneq ($(shell ls $(bibliography)),)
+auto-icfp17-long.bib : icfp17-long_aux $(bibliography)
+	echo "%%%% WARNING! AUTOMATICALLY CREATED BIBFILE" > $@;
+	echo "%%%% DO NOT EDIT! ALL CHANGES WILL BE LOST!" >> $@ ;
+	echo "" >> $@ ;
+	$(bibtool) -x icfp17-long.aux -i $(bibliography) >> $@;
 endif
 endif
 

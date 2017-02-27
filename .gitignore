@@ -3,6 +3,7 @@
 *.aux
 *_aux
 *.bak
+*.bbl
 *.blg
 *.bin
 *.dyn_hi
@@ -12,6 +13,7 @@
 *.o
 *.out
 *.pdf
+*.ptb
 *.snm
 *.toc
 old

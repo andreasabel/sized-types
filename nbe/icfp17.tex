@@ -2483,183 +2483,22 @@ Since the algorithmic subtyping relation is equivalent to the declarative one, w
 \section{Type Checking}
 \label{sec:tycheck}
 
-In this section, we show that type checking for normal forms is decidable, and succeeds for those which can be type via the restricted rule for size polymorphism elimination:
+\LONGVERSION{
+\input{sec-tycheck}
+} % END LONG VERSION
+\SHORTVERSION{
+It is now straightforward to define a bidirectional type-checking
+algorithm which decides typing for normal forms, and succeeds for
+those that rely only on the following restricted rule for irrelevant
+size application:
 \[
   \ru{\Gamma \ders t : \forall T \qquad
       \resurrect\Gamma \der a : \Size
     }{\Gamma \ders t\, \ann a : T[a]}
 \]
-We will refer to the restricted typing judgement as \fbox{$\Gamma \ders t : T$}, and obviously,
-if\/ $\Gamma \ders t : T$ then $\Gamma \der t : T$.
-
-Bidirectional typing of normal forms.
-
-Checking \fbox{$\Gamma \der t \jchk T$}.
-\begin{gather*}
-  \ru{T' \evalsto s \qquad
-      \Gamma \der a : \Size
-    }{\Gamma \der \Nat a \jchk T'}
-\qquad
-  \ru{T' \evalsto \Set[\ell'] \qquad \ell < \ell'
-    }{\Gamma \der \Set[\ell] \jchk T'}
-\\[2ex]
-  \ru{T' \evalsto s \qquad
-      \Gamma \der U \jchk s \qquad
-      \cext \Gamma U \der T \jchk s
-    }{\Gamma \der \piT U T \jchk T'}
-\qquad
-  \ru{T' \evalsto s \qquad
-      \cext \Gamma \Size \der T \jchk s
-    }{\Gamma \der \epiT \Size T \jchk T'}
-%\\[2ex]
-%   \ru{T' \evalsto \piT U T \qquad
-%       \cext \Gamma U \der t \jchk T
-%     }{\Gamma \der \lambda t \jchk T'}
-% \qquad
-%   \ru{T' \evalsto \epiT \Size T \qquad
-%       \eext \Gamma \Size \der t \jchk T
-%     }{\Gamma \der \lambda t \jchk T'}
-\\[2ex]
-  \ru{T' \evalsto \Nat b \qquad
-      \resurrect \Gamma \der a+1 \leq b : \Size
-    }{\Gamma \der \zero a \jchk T'}
-\qquad
-  \ru{T' \evalsto \Nat b \qquad
-      \resurrect \Gamma \der a+1 \leq b : \Size \qquad
-      \Gamma \der t \jchk \Nat a
-    }{\Gamma \der \suc a t \jchk T'}
-\\[2ex]
-  \ru{T' \evalsto \epiT U T \qquad
-      \eext \Gamma U \der t \jchk T
-    }{\Gamma \der \lambda t \jchk T'}
-\qquad
-  \ru{\Gamma \der t \jinf T \qquad \Gamma \der T \asub T'
-    }{\Gamma \der t \jchk T'}
-\end{gather*}
-
-Inference \fbox{$\Gamma \der t \jinf T$}.
-\begin{gather*}
-  \ru{\Gamma(i) = \erann[\noterased] T
-    }{\Gamma \der \ind i \jinf T}
-\qquad
-  \ru{\Gamma \der t \jinf T' \qquad
-      T' \evalsto \piT U T \qquad
-      \Gamma \der u \jchk U
-    }{\Gamma \der t\, u \jinf T[u]}
-\\[2ex]
-  \ru{\Gamma \der t \jinf T' \qquad
-      T' \evalsto \piT \Size T \qquad
-      \Gamma \der a : \Size
-    }{\Gamma \der t\,a \jinf T[a]}
-\qquad
-  \ru{\Gamma \der t \jinf T' \qquad
-      T' \evalsto \erpiT \Size T \qquad
-      \resurrect\Gamma \der a : \Size
-    }{\Gamma \der t\,\ann a \jinf T[a]}
-\\[2ex]
-  \ru{\Gamma \der u \jinf \Nat (a+1) \qquad
-      \Gamma \der T \jchk \Nat (a+1) \to \Set[\ell] \qquad
-      \Gamma \der t_z \jchk T\,(\zero a) \qquad
-      \Gamma \der t_s \jchk \funT x {\Nat a} {T\,(\suc a x)}
-    }{\Gamma \der u\, \case[\ell] T {t_z} {t_s} \jinf T\,u}
-\\[2ex]
-  \ru{\Gamma \der u \jinf \Nat a \qquad
-      \Gamma \der T \jchk \FixK\,\ell \qquad
-      \Gamma \der t \jchk \FixT\,T
-    }{\Gamma \der u\, \fix[\ell] T t \jinf T\,a\,u}
-\end{gather*}
-
-We could go beyond normal forms, by adding inference rules for the $\Nat$-constructors:
-\begin{gather*}
-  \ru{\resurrect \Gamma \der a : \Size
-    }{\Gamma \der \zero a \jinf \Nat(a+1)}
-\qquad
-  \ru{\resurrect \Gamma \der a : \Size \qquad
-      \Gamma \der t \jchk \Nat a
-    }{\Gamma \der \suc a t \jinf \Nat(a+1)}
-\end{gather*}
-
-\begin{theorem}[Soundness of type checking]
-  Let $\der \Gamma$.
-  \begin{enumerate}
-  \item If\/ $\resurrect\Gamma \der T$ and $\DD :: \Gamma \der t \jchk T$ then $\Gamma \ders t : T$.
-  \item If\/ $\DD :: \Gamma \der t \jinf T$ then $\resurrect\Gamma \der T$ and $\Gamma \ders t : T$.
-  \end{enumerate}
-\end{theorem}
-\begin{proof}
-  Simultaneously by induction on $\DD$, using subject reduction (Thm.~\ref{thm:sr})
-  and soundness of algorithmic subtyping (Lemma~\ref{lem:asubsound}).
-\end{proof}
-
-\begin{lemma}[Weak head reduction of subtypes]
-\label{lem:whdsub}
-Let $\DD :: \Gamma \der T \asub T'$.
-\begin{enumerate}
-\item If\/ $T' \evalsto \Nat a'$ then $T \evalsto \Nat a$ and $\Gamma \der a \asub a' : \Size$.
-\item If\/ $T' \evalsto \Set[\ell']$ then $T \evalsto \Set[\ell]$ and $\ell \asub \ell'$.
-\item If\/ $T' \evalsto \piT{A'}{B'}$ then $T \evalsto \piT {A} {B}$ and
-      $\Gamma \der A' \asub A$ and $\cext \Gamma {A'} \der B \asub B'$.
-\item If\/ $T' \evalsto \epiT \Size {B'}$ and $T \evalsto \epiT \Size B$ and $\cext \Gamma \Size \der B \asub B'$.
-\end{enumerate}
-\end{lemma}
-\begin{proof}
-  By cases on $\DD$, since weak head evaluation is deterministic.
-\end{proof}
-\begin{lemma}[Weak head reduction of supertypes]
-\label{lem:whdsuper}
-Let $\DD :: \Gamma \der T \asub T'$.
-\begin{enumerate}
-\item If\/ $T \evalsto \Nat a$ then $T' \evalsto \Nat a'$ and $\Gamma \der a \asub a' : \Size$.
-\item If\/ $T \evalsto \Set[\ell]$ then $T' \evalsto \Set[\ell']$ and $\ell \asub \ell'$.
-\item If\/ $T \evalsto \piT A B$ then $T' \evalsto \piT {A'} {B'}$ and
-      $\Gamma \der A' \asub A$ and $\cext \Gamma {A'} \der B \asub B'$.
-\item If\/ $T \evalsto \epiT \Size B$ and $T' \evalsto \epiT \Size B'$ and $\cext \Gamma \Size \der B \asub B'$.
-\end{enumerate}
-\end{lemma}
-\begin{proof}
-  By cases on $\DD$, since weak head evaluation is deterministic.
-\end{proof}
-\begin{lemma}[Subsumption for type checking]
-  \label{lem:subtc}
-  Let $\sid : \Gamma' \leq \Gamma$.
-  \begin{enumerate}
-  \item If\/ $\DD :: \Gamma \der t \jchk T$ and $\resurrect\Gamma \der T \leq T'$ then $\Gamma' \der t \jchk T'$.
-  \item If\/ $\DD :: \Gamma \der t \jinf T$ then $\Gamma' \der t \jinf T'$ and $\resurrect{\Gamma'} \der T \leq T'$.
-  \end{enumerate}
-\end{lemma}
-\begin{proof}
-  Simultaneously by induction on $\DD$, using % weak head normalization of types,
-  lemmata \ref{lem:whdsub} and \ref{lem:whdsuper},
-  and soundness and completeness of algorithmic subtyping.
-\end{proof}
-\begin{theorem}[Completeness of type checking for normal terms]
-\bla
-\begin{enumerate}
-\item If\/ $\DD :: \Gamma \ders v : T$ then $\Gamma \der v \jchk T$.
-\item If\/ $\DD :: \Gamma \ders m : T$ then $\Gamma \der m \jinf U$ and $\resurrect\Gamma \der U \leq T$.
-\end{enumerate}
-\end{theorem}
-\begin{proof}
-Simultaneously by induction on $\DD$, using (strong) inversion and Lemma~\ref{lem:subtc}.
-\end{proof}
-
-\begin{lemma}[Termination of type checking]
-  Let $\der \Gamma$.
-  \begin{enumerate}
-  \item The query $\Gamma \der t \jinf \mbox{?}$ terminates.
-  \item If\/ $\resurrect\Gamma \der T$ then the query $\Gamma \der t \jchk T$ terminates.
-  \end{enumerate}
-\end{lemma}
-\begin{proof}
-  By induction on $t$, using type weak head normalization and soundness of type checking, to maintain well-formedness of types.
-  And, of course, decidability of subtyping.
-\end{proof}
-
-\begin{theorem}[Decidability of type checking for normal terms]
-  Let $\der \Gamma$ and $\resurrect \Gamma \der T$.
-  Then $\Gamma \ders v : T$ is decided by $\Gamma \der v \jchk T$.
-\end{theorem}
-
+For lack of space, we delegate definition and soundness proof to the
+long version of this article.
+}
 
 \section{Discussion and Conclusions}
 \label{sec:concl}
