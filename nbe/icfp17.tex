@@ -1524,6 +1524,12 @@ Semantic judgements:
   $\Gamma \models J$
   \end{enumerate}
 \end{theorem}
+\SHORTVERSION{
+\begin{proof}
+Simultaneously, by induction on the derivation.
+\end{proof}
+}
+\LONGVERSION{  % BEGIN LONGVERSION
 \begin{proof*}
 Simultaneously, by induction on the derivation.
 % The soundness of subtyping and the conversion rule is due to subsumption (lemmata \ref{lem:subsump} and \ref{lem:usubsump}).
@@ -1589,7 +1595,7 @@ thus, by induction hypothesis, $b \rho \in \SIZE$.
 \qed
 \end{caselist}
 \end{proof*}
-
+} % END LONGVERSION
 
 \subsection{Completeness of NbE}
 \label{sec:compl}
@@ -2051,10 +2057,11 @@ We write \fbox{$\LRS \Gamma \tau \Delta \rho$} for $\LRSub \Gamma \tau \tau \Del
   If\/ $\resurrect\Delta \der a : \Size$ then $a\eta \in \SIZE$.
   \end{enumerate}
 \end{lemma}
+\LONGVERSION{
 \begin{proof}
   For part (\ref{it:sizesub}), the only interesting case $a = \ind i + o$ can be proved by observing that $\eta(i) \in \SIZE$.
 \end{proof}
-
+} % END LONGVERSION
 % \begin{lemma}[Typing of constructed data]
 % \label{lem:invdata} \bla
 % If\/ $\Gamma \der c : \Nat b$ then $\resurrect\Gamma \der b : \Size$ and $b > 0$.
@@ -2088,7 +2095,7 @@ $\Gamma \valid \sigma : \Delta$
 \end{theorem}
 \begin{proof*}
 Each by induction on the derivation.
-
+\SHORTLONG{\qed}{ % LONGVERSION
 \begin{caselist}
 
 \nextcase $\forall$-introduction.
@@ -2131,6 +2138,7 @@ It suffices to show
 \qed
 \end{enumerate}
 \end{caselist}
+} % END LONGVERSION
 \end{proof*}
 
 \begin{lemma}[Identity environment]
@@ -2140,6 +2148,7 @@ It suffices to show
 \end{lemma}
 \begin{proof*}
   By induction on $\der \Gamma$.
+\SHORTLONG{\qed}{ % LONGVERSION
 \begin{caselist}
 
 \nextcase
@@ -2168,6 +2177,7 @@ Thus, the second goal follows by Cor.~\ref{cor:fresh}.
 % $\LR {\cext \Gamma T} {\ind0} T f {T\rhog}$.
 \qed
 \end{caselist}
+} % END LONGVERSION
 \end{proof*}
 
 \begin{corollary}[Soundness of NbE]
@@ -2201,10 +2211,11 @@ $\Gamma \der t = v : T$ by Thm.~\ref{thm:into}.
   terminates and
   decides $\Gamma \der t = t' : T$.
 \end{corollary}
+\LONGVERSION{
 \begin{proof}
   Follows directly from soundness (which includes termination) and completeness of NbE.
 \end{proof}
-
+} % END LONGVERSION
 For normalization of types, we introduce \fbox{$\Nbe \Gamma T$}
 via the relation $\Nbe \Gamma T \evalsto V \defas \RTy \Gamma {T\rhog} V$.
 Analogously, we show that the test $\Nbe \Gamma T \equiv \Nbe \Gamma T'$
@@ -2213,11 +2224,13 @@ decides type equality $\Gamma \der T = T'$.
 \begin{corollary}[Type weak head normalization]
   If\/ $\Gamma \der T$ then $T \evalsto W$ for some $W$.
 \end{corollary}
+\LONGVERSION{
 \begin{proof}
   By the fundamental theorem of typing, $\RG \Gamma T {T\rhog}$,
-  which implies $T \evalsto W$ by definition of the logical relation..
+  which implies $T \evalsto W$ by definition of the logical relation.
 \end{proof}
-
+} % END LONGVERSION
+\LONGVERSION{ % BEGIN LONGVERSION
 \begin{corollary}[Type constructor injectivity]
 \label{cor:piinj}
 \bla
@@ -2257,7 +2270,7 @@ Since by inversion we have $\Gamma \der U,U' : s$ we get $\Gamma \der U = U' : s
 Now, choosing $u := u' := \up {U\rhog} \var\Gamma \in U$, we obtain
 $T\rhogu = T' \rhogu \in s$, which analogously gives us $\cext\Gamma U \der T = T' : s$.
 \end{proof}
-
+} % END LONGVERSION
 \begin{lemma}[Type constructor discrimination]
   \label{lem:discr}
   Different type constructors are not related by subtyping.  For instance,
@@ -2295,7 +2308,8 @@ $T\rhogu = T' \rhogu \in s$, which analogously gives us $\cext\Gamma U \der T = 
 \end{enumerate}
 \end{lemma}
 \begin{proof}
-Similar to the proof of Cor.~\ref{cor:piinj}, using Lemma~\ref{lem:lrsub}.
+\LONGVERSION{Similar to the proof of Cor.~\ref{cor:piinj}, using
+  Lemma~\ref{lem:lrsub}.} % END LONGVERSION
 We recapitulate the proof for (\ref{it:piinvsub}).
 By the fundamental theorems, we get
 $\RG \Gamma {\piT U T} {(\piT U T)\rhog}$ and
