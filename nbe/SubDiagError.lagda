@@ -42,7 +42,9 @@ pred .(i + 1) (suc i x)  =  x
 Note that in the second clause, we have applied subtyping to cast $x : \aNat\,i$ to $\aNat\,(i + 1)$.
 The dot on the left hand side, preceding $(i + 1)$, marks an \emph{inaccessible} pattern.  Its value is determined by the subsequent match on the natural number argument, no actual matching has to be carried out on this argument.
 
-We now define subtraction $x \dotminus y$ on natural numbers, sometimes called the \emph{monus} function, which computes $\max(0, x-y)$.  It is defined by induction on the size $j$ of the second argument $y$, while the output is bounded by size $i$ of the first argument $x$.  There are several ways to implement it, we have chosen the tail-recursive variant which treats the first argument as accumulator.  It computes the result by applying the predecessor function $y$-times to $x$.
+We now define subtraction $x \dotminus y$ on natural numbers, sometimes called the $\amonus$ function, which computes $\max(0, x-y)$.  It is defined by induction on the size $j$ of the second argument $y$, while the output is bounded by size $i$ of the first argument $x$.  The input-output relation of $\amonus$ is needed for a natural implementation of Eucledian divison.
+
+There are several ways to implement $\amonus$, we have chosen a tail-recursive variant which treats the first argument as accumulator.  It computes the result by applying the predecessor function $y$ times to $x$.
 
 \begin{code}
 monus : ∀ i → Nat i → ∀ j → Nat j → Nat i
@@ -65,7 +67,7 @@ monus-diag .(i + 1) (zero i)   =  prove zero ∞ ≡ zero i               by {! 
 monus-diag .(i + 1) (suc i x)  =  prove zero ∞ ≡ monus (i + 1) x i x  by {! monus-diag i x !}
 \end{code}
 
-Unfortunately, in Agda our proof does not go through, as sizes get in the way.
-In the first goal, there is a mismatch between size $\infty$ and size $i$ coming from the computation of $\amonus\,(i + 1)\,(\azero\,i)\,(i + 1)\,(\azero\,i)$.  In the first goal, there is a mismatch betwenn size $i + 1$ in term $\amonus\,(i + 1)\,x\,i\,x$ of the reduced goal and size $i$ of the respective term $\amonus\,i\,x\,i\,x$ from the induction hypothesis we wish to apply.
+Unfortunately, in Agda our proof is not accepted, as sizes get in the way.
+In the first goal, there is a mismatch between size $\infty$ and size $i$ coming from the computation of $\amonus\,(i + 1)\,(\azero\,i)\,(i + 1)\,(\azero\,i)$.  In the second goal, there is a mismatch between size $i + 1$ in term $\amonus\,(i + 1)\,x\,i\,x$ of the reduced goal and size $i$ of the respective term $\amonus\,i\,x\,i\,x$ from the induction hypothesis we wish to apply.
 
-The proof would go through if Agda ignored sized where they act as \emph{type argument}, \ie, in constructors and term-level function applications, but not in types where they act as regular argument, \eg, in $\aNat\,i$.
+The proof would go through if Agda ignored sizes where they act as \emph{type argument}, \ie, in constructors and term-level function applications, but not in types where they act as regular argument, \eg, in $\aNat\,i$.

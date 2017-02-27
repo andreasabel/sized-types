@@ -1,6 +1,6 @@
 The solution we present in this article already works in current Agda,\footnote{%
 \url{https://github.com/agda/agda}, development version of 2017-02-27.}
-but the implementation is not perfect.  It has to be switched on by a flag explicitly:
+but the implementation is not perfect.  Thus, it is hidden under a scarcely documented flag
 
 \begin{code}
 {-# OPTIONS --experimental-irrelevance #-}
@@ -8,7 +8,6 @@ but the implementation is not perfect.  It has to be switched on by a flag expli
 
 \AgdaHide{
 \begin{code}
-{-# OPTIONS --experimental-irrelevance #-}
 {-# OPTIONS --show-irrelevant #-}
 
 open import Agda.Builtin.Size
