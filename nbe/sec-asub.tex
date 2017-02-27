@@ -1,0 +1,98 @@
+% Section on algorithmic subtyping delegated to long version
+
+Algorithmic subtyping \fbox{$\Gamma \der T \asub T'$}.
+\begin{gather*}
+  \ru{T \evalsto n \qquad
+      T' \evalsto n' \qquad
+      \Nbe \Gamma n \equiv \Nbe \Gamma n'
+    }{\Gamma \der T \asub T'}
+\\[2ex]
+  \rux{T \evalsto \Set[\ell] \qquad
+      T' \evalsto \Set[\ell']
+    }{\Gamma \der T \asub T'
+    }{\ell \leq \ell'}
+\qquad
+  \ru{T_1' \evalsto \piT{U_1}{T_1} \qquad
+      T_2' \evalsto \piT{U_2}{T_2} \qquad
+      \Gamma \der U_2 \asub U_1 \qquad
+      \cext \Gamma {U_2} \der T_1 \asub T_2
+    }{\Gamma \der T_1' \asub T_2'}
+\\[2ex]
+  \ru{T \evalsto \Nat a \qquad
+      T' \evalsto \Nat a'
+    }{\Gamma \der T \asub T'
+    }{a \leq a'}
+\qquad
+  \ru{T_1' \evalsto \epiT\Size{T_1} \qquad
+      T_2' \evalsto \epiT\Size{T_2} \qquad
+      \cext \Gamma {\Size} \der T_1 \asub T_2
+    }{\Gamma \der T_1' \asub T_2'}
+\end{gather*}
+
+\begin{lemma}[Soundness of algorithmic subtyping]
+  \label{lem:asubsound}
+  If\/ $\Gamma \der T \asub T'$ then $\Gamma \der T \leq T'$.
+\end{lemma}
+\begin{proof}
+  By induction on $\Gamma \der T \asub T'$, using soundness of NbE and subject reduction (Thm.~\ref{thm:sr}).
+\end{proof}
+
+\begin{lemma}[Semantic subtyping implies algorithmic subtyping]
+\label{lem:lrasub}
+\bla
+   If\/ $\RG \Gamma T A$ and $\RG \Gamma {T'} {A'}$ and $A \leq A' \in \TYPE$ then $\Gamma \der T \asub T'$.
+\end{lemma}
+\begin{proof*}
+By induction on % $A_1' \in s_1$ and $A_2' \in s_2$ and cases on the inductive relations
+$\LRTS \Gamma {T_1'} {A_1'} {s_1}$ and $\LRTS \Gamma {T_2'} {A_2'} {s_2}$
+and cases on $A_1' \leq A_2' \in \TYPE$
+we prove $\Gamma \der T_1' \asub T_2'$.
+
+\begin{caselist}
+
+\nextcase $A_i' \evalsto N_i$ and $T_i' \evalsto n_i$ and $N_1 = N_2 \in \NE$ and $\RTY \Gamma {n_i} {N_i} {s_i}$.
+By Cor.~\ref{cor:oneone} $\Gamma \der n_1 = n_2$, thus, by completeness of NbE, $\Nbe\Gamma n_1 \equiv \Nbe\Gamma n_2$, which entails $\Gamma \der T_1' \asub T_2'$.
+
+\nextcase $A_i' \evalsto \piT {A_i} {B_i}$ and  $T_i' \evalsto \piT{U_i}{T_i}$.
+From $\LRTS \Gamma {U_i} {A_i} {s_i}$ and $A_2 \leq A_1 \in \TYPE$ we get $\Gamma \der U_2 \asub U_1$
+by induction hypothesis on $A_i \in s_i$.
+Let $a := {\up{A_2} \var\Gamma}$.  With $\LR {\cext \Gamma {U_2}} {\ind 0} {(U_2\slift)} a {A_2}$ we get
+$\LRTS {\cext \Gamma {U_2}} {T_i} {B_i[a]} s$ and $B_1[a] \leq B_2[a] \in \TYPE$.  Thus by induction hypothesis on $B_i[a] \in s_i$ we obtain $\cext \Gamma {U_2} \der T_1 \leq T_2$, together $\Gamma \der T_1' \asub T_2'$.
+\qed
+\end{caselist}
+\end{proof*}
+
+\begin{corollary}[Completeness of algorithmic subtyping]
+\label{cor:complasub}
+If\/ $\Gamma \der T \leq T'$ then $\Gamma \der T \asub T'$.
+\end{corollary}
+\begin{proof}
+  By the fundamental theorems $\RG \Gamma T {T\rhog}$ and $\RG \Gamma {T'} {T'\rhog}$ and $T\rhog \leq T'\rhog \in \TYPE$.
+  By Lemma~\ref{lem:lrasub}, $\Gamma \der T \asub T'$.
+\end{proof}
+
+Since the algorithmic subtyping relation is equivalent to the declarative one, we can freely swap one relation for the other.
+
+\begin{lemma}[Termination of algorithmic subtyping]
+  \label{lem:termasub}
+  If\/ $\RG \Gamma T A$ and $\RG \Gamma {T'} {A'}$ then the query $\Gamma \der T \asub T'$ terminates.
+\end{lemma}
+\begin{proof}
+  By induction on $A \in s$ and $A' \in s'$ and cases on $\RG \Gamma T A$ and $\RG \Gamma {T'} {A'}$.
+\end{proof}
+
+\begin{theorem}[Decidability of subtyping]
+  If\/ $\Gamma \der T,T'$, then $\Gamma \der T \leq T'$ is decided by the query $\Gamma \der T \asub T'$.
+\end{theorem}
+\begin{proof}
+  By the fundamental theorem of typing, $\RG \Gamma T A$ and $\RG \Gamma {T'} {A'}$,
+  thus, the query  $\Gamma \der T \asub T'$ terminates by Lemma~\ref{lem:termasub}.
+  If successfully, then $\Gamma \der T \leq T'$ by soundness of algorithmic equality.
+  If unsuccessfully, then $\Gamma \der T \leq T'$ is impossible by completeness of algorithmic equality.
+\end{proof}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "icfp17-long"
+%%% End:
