@@ -461,6 +461,8 @@ Fig.~\ref{fig:judge} lists the inductive and derived judgements of our type theo
 
 %In addition, we will refer to the following derived judgements.
 
+\clearpage
+
 Inference rules.
 
 \fbox{$\der \Gamma$} (implies $\der \resurrect \Gamma$).
@@ -578,127 +580,14 @@ Note: Size is relevant in $T$ as we would like for instance $T\,i\,x = \Nat i$.
 % \end{gather*}
 
 
-\fbox{$\Gamma \der t = t' : T$} (implies $\resurrect \Gamma \der T$ and $\Gamma \der t,t' : T$ [and $\resurrect\Gamma \der t = t' : T$].)
 
-Computation rules.
-\begin{gather*}
-  \ru{\cext \Gamma U \der t : T \qquad
-      \Gamma \der u : U
-    }{\Gamma \der (\lambda t)\,u = t[u] : T[u]}
-\qquad
-  \ru{\cext \Gamma \Size \der t : T \qquad
-      \Gamma \der a : \Size
-    }{\Gamma \der (\lambda t)\,a = t[a] : T[a]}
-\qquad
-  \ru{\erext \Gamma \Size \der t : T \qquad
-      % \Gamma \der a : \Size \qquad
-      \resurrect \Gamma \der a, b : \Size
-    }{\Gamma \der (\lambda t)\,\ann a = t[a] : T[b]}
-\\[2ex]
-  \ru{\resurrect\Gamma \der a, b : \Size \qquad
-      \Gamma \der T : \Nat (b + 1) \to \Set[\ell] \qquad
-      % \Gamma \der a : \Size \qquad
-      \Gamma \der t_z : T\,\zero{b} \qquad
-      \Gamma \der t_s : (x : \Nat b) \to T\,(\suc{b}x)
-    }{\Gamma \der (\zero{a})\,\case[\ell] T {t_z} {t_s} = t_z : T\,\zero{b}}
-\\[2ex]
-  \ru{\resurrect\Gamma \der a : \Size \qquad
-      \Gamma \der t : \Nat b \qquad
-      \Gamma \der T : \Nat (b + 1) \to \Set[\ell] \qquad
-      \Gamma \der t_z : T\,\zero{b} \qquad
-      \Gamma \der t_s : (x : \Nat b) \to T\,(\suc{b}x)
-    }{\Gamma \der (\suc{a} t)\,\case[\ell] T {t_z} {t_s} = t_s\,t : T\,(\suc{b} t)}
-\\[2ex]
-  \ru{\Gamma \der c : \Nat b \qquad
-      \resurrect\Gamma \der a : \Size \qquad
-      \Gamma \der T : \Adm\,\ell \qquad %% \funT i \Size \Nat i \to \Set[\ell] \\
-      \Gamma \der t : \FixT\,T %% \allT i \Size (\funT x {\Nat i} T\, i\, x) \to \funT x {\Nat (i + 1)} T \,(i+1)\, x
-     }{\Gamma \der c\,\fix[\ell] T t = t\ann a (\lambda x. x\,\fix[\ell] T t)\, c : T \,b \, c
-     }%{c \in \{\zero a, \suc a t'\}}
-\end{gather*}
-Extensionality rules.
-\begin{gather*}
-  \ru{\Gamma \der t : \piT U T
-    }{\Gamma \der t = \lambda x. t\,x : \piT U T}
-\qquad
-  \ru{\Gamma \der t : \forallT T \qquad
-      \cext {\resurrect\Gamma} \Size \der a : \Size
-      %\erext \Gamma \Size \der a : \Size
-    }{\Gamma \der t = \lambda x. t \ann a : \forallT T}
-\end{gather*}
-Congruence rules.
-\begin{gather*}
-  \ru{\der \Gamma
-    }{\Gamma \der \Set[\ell] = \Set[\ell]: \Set[\ell']
-    }{\ell {<} \ell'}
-\qquad
-  \ru{\Gamma \der U = U' : s \qquad
-      \cext \Gamma U \der T = T' : s
-    }{\Gamma \der \piT U T = \piT{U'}{T'}: s}
-\qquad
-  \ru{\cext \Gamma \Size \der T = T' : s
-    }{\Gamma \der \epiT \Size T = \epiT \Size T' : s}
-\\[2ex]
-  \ru{%\der \Gamma \qquad
-      \Gamma \der a : \Size
-    }{\Gamma \der \Nat a = \Nat a : \Set[0]}
-\\[2ex]
-  \rux{\der \Gamma \qquad \Gamma(i) = \erann[\noterased] T
-    }{\Gamma \der \ind i = \ind i : T
-    }{T \not= \Size}
-\qquad
-  \ru{\eext \Gamma U \der t = t' : T
-    }{\Gamma \der \lambda t = \lambda t' : \epiT U T}
-\qquad
-  \ru{\Gamma \der t = t' : \piT U T \qquad
-      \Gamma \der u = u' : U
-    }{\Gamma \der t\,u = t'\,u' : T[u]}
-% \qquad
-%   \ru{\Gamma \der t : T \qquad
-%       \Gamma \mid T \der e : T'
-%     }{\Gamma \der t\,e : T'}
-\\[2ex]
-  \ru{\Gamma \der t = t' : \piT \Size T \qquad
-      \Gamma \der a : \Size
-    }{\Gamma \der t\,a = t'\,a : T[a]}
-\qquad
-  \ru{\Gamma \der t = t' : \forallT T \qquad
-      % \Gamma \der a, a' : \Size \qquad
-      \resurrect\Gamma \der a,a',b : \Size
-    }{\Gamma \der t \ann a = t' \ann{a'} : T[b]}
-\\[2ex] % \qquad
-  \ru{%\Gamma \der a, a' : \Size \qquad
-      \resurrect\Gamma \der a, a', b : \Size
-    }{\Gamma \der \zero a = \zero {a'}: \Nat (b + 1)}
-\qquad
-  \ru{\resurrect \Gamma \der a, a' : \Size \qquad
-      \Gamma \der t = t' : \Nat b
-    }{\Gamma \der \suc a t = \suc {a'} t' : \Nat (b + 1)}
-\\[2ex]
-  \ru{\Gamma \der u = u' : \Nat (a + 1) \qquad
-      \Gamma \der T = T' : \Nat (a + 1) \to \Set[\ell] \\
-      \Gamma \der t_z = t_z' : T \, (\zero a) \qquad
-      \Gamma \der t_s = t_s' : (x : \Nat a) \to T \, (\suc a x)
-    }{\Gamma \der u\,\case[\ell] T {t_z} t_s = u'\,\case[\ell] {T'} {t_z'} t_s' : T \, u}
-\\[2ex]
-  \ru{\Gamma \der u = u' : \Nat a \qquad
-      \Gamma \der T = T' : \Adm\,\ell \qquad %% \funT i \Size \Nat i \to \Set[\ell] \\
-      \Gamma \der t = t' : \FixT\,T \qquad %% \allT i \Size (\funT x {\Nat i} T \,i\, x) \to \funT x {\Nat (i + 1)} T \,{i+1}\, x
-     }{\Gamma \der u\,\fix[\ell] T t = u'\,\fix[\ell] {T'} t' : T \, a \, u}
-\qquad
-  \ru{\Gamma \der t = t' : T \qquad
-      \resurrect\Gamma \der T \leq T'
-     }{\Gamma \der t = t' : T'}
-\end{gather*}
-Equivalence rules.  (Reflexivity is admissible.)
-\begin{gather*}
-  \ru{\Gamma \der t = t' : T
-    }{\Gamma \der t' = t : T}
-\qquad
-  \ru{\Gamma \der t_1 = t_2 : T \qquad
-      \Gamma \der t_2 = t_3 : T
-    }{\Gamma \der t_1 = t_3 : T}
-\end{gather*}
+
+% \fbox{$\Gamma \der t = t' : T$} (implies $\resurrect \Gamma \der T$ and $\Gamma \der t,t' : T$ [and $\resurrect\Gamma \der t = t' : T$].)
+
+\input{figeq}
+
+
+
 
 
 \fbox{$\Gamma \der T \leq T'$} (implies $\Gamma \der T,T'$)
