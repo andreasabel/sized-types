@@ -5,8 +5,7 @@
 %% For final camera-ready submission
 %\documentclass[acmlarge]{acmart}\settopmatter{}
 
-\usepackage[right]{showlabels}
-\renewcommand{\showlabelfont}{\small\ttfamily\color{gray}}
+\usepackage[right]{showlabels}\renewcommand{\showlabelfont}{\small\ttfamily\color{gray}}
 
 \usepackage{mathtools} %mathrlap
 \usepackage[all]{xy}
@@ -444,6 +443,8 @@ Similar as for $\Pi$, we use named lambda abstraction as sugar for de Bruijn abs
 We may also use names when we construct concrete contexts, for instance, if $T$ is well-formed in context $\Gamma$, we may write $T\,i\,x$ in context $\Gamma.i\of\Size.x\of\Nat i$ to mean $T\slift^2\,\ind 1\,\ind 0$ in context
 $\Gamma.\Size.\Nat \ind 0$.
 
+\input{figjudge}
+
 In typing contexts $\Gamma$, we distinguish relevant $(\noterased)$ and irrelevant $(\erased)$ bindings.
 When type checking a variable, it needs to be bound in the context relevantly.  However, when entering a irrelevant position, for instance when checking size $a$ in term $\suc a t$ we declare previously irrelevant variables as relevant.
 This operation on the context has been coined
@@ -454,45 +455,12 @@ them by ``$\noterased$''-markers.  Note that, trivially, resurrection is idempot
 Size increment \fbox{$a + o'$} for $o' \in \NN$ extends addition by $\infty + o' = \infty$ and $(\ind i + o) + o' = \ind i + (o + o')$.  Sizes are partially ordered; size comparison \fbox{$a \leq b$} holds as expected if either $b = \infty$ or  $o \leq o'$ where either $a = o$ and $b = o'$ or $a \in \{ o, \ind i + o \}$ and $b = \ind i + o'$.
 Different size variables are incomparable.
 
-Our type theory is formulated via the following judgements, which are mutually inductively defined.
-\[
-\begin{array}{l@{\qquad}l}
-  \der \Gamma & \mbox{context $\Gamma$ is well-formed} \\
-  \Gamma(i) = \eann T & \mbox{in context $\Gamma$, de Bruijn index $i$ has type $T$ and annotation $\evar$} \\
-  \Gamma \der a : \Size & \mbox{in context $\Gamma$, size expression $a$ is well-formed} \\
-  \Gamma \der t : T & \mbox{in context $\Gamma$, term $t$ has type $T$} \\
-  \Gamma \der t = t' : T & \mbox{in context $\Gamma$, terms $t$ and $t'$ are equal of type $T$} \\
-%  \Gamma \mid U \der e : T & \mbox{in context $\Gamma$, elimination $e$ goes from $U$ to $T$} \\
-%  \Gamma \mid U \der e = e' : T & \mbox{in context $\Gamma$, eliminations $e$ and $e'$ are equal} \\
-  \Gamma \der T \leq T' & \mbox{in context $\Gamma$, type $T$ is a subtype of $T'$} \\
-%  \Gamma \der T : \Adm \ell & \mbox{in context $\Gamma$ type constructor $T$ is admissible for recursion} \\
-  \suty \Gamma \sigma \tau \Delta & \mbox{$\sigma$/$\tau$ is a valid term/type-level substitution for $\Delta$} \\
-  \sueq \Gamma \sigma {\sigma'} \tau \Delta & \mbox{$\sigma$/$\sigma'$/$\tau$ are a equal term/term/type-level substitutions for $\Delta$} \\
-\end{array}
-\]
-In addition, we will refer to the following derived judgements.
-\[
-\begin{array}{l@{\quad}l@{\quad}l@{~}l@{~~}l}
-  \Gamma \der T & \defas & \Gamma \der T : s & \mforsome s
-    & \mbox{in $\Gamma$, type $T$ is well-formed} \\
-  \Gamma \der T = T' & \defas & \Gamma \der T = T' : s & \mforsome s
-    & \mbox{in $\Gamma$, types $T$ and $T'$ are equal} \\
-  \Gamma \der a = b : \Size & \defas &
-    \multicolumn 2 {@{}l@{\quad}} {\Gamma \der a : \Size \mand a = b}
-    & \mbox{$a$, $b$ are identical sizes} \\
-  \Gamma \der a \leq b : \Size & \defas &
-     \multicolumn 2 {@{}l@{\quad}} {\Gamma \der a : \Size \mand \Gamma \der b : \Size \mand a \leq b}
-%     \multicolumn 2 {l@{\qquad}} {\Gamma \der a : \Size \mand \Gamma \der b : \Size \mand a \leq b}
-    & \mbox{$a$, $b$ are comparable sizes} \\
-%    & \mbox{in context $\Gamma$, well-formed size $a$ is less or equal than well-formed size $b$} \\
-  \Gamma \der T : \Adm \ell & \defas &
-     \multicolumn 2 {@{}l@{\quad}}
-       {\Gamma \der T : \FixK \mand \Gamma.i\of\Size.x\of\Nat i \der T\,i\,x \leq T\,\infty\,x}
-    & \mbox{% in context $\Gamma$
-            % type constructor
-            $T$ is admissible for recursion} \\
-\end{array}
-\]
+Fig.~\ref{fig:judge} lists the inductive and derived judgements of our type theory.
+
+%Our type theory is formulated via the following judgements, which are mutually inductively defined.
+
+%In addition, we will refer to the following derived judgements.
+
 Inference rules.
 
 \fbox{$\der \Gamma$} (implies $\der \resurrect \Gamma$).
@@ -784,10 +752,11 @@ Substitution typing. % and equality.
     }{\Gamma \der \sext \tau a : \erext \Delta \Size}
 \end{gather*}
 
-Liftings: $\fbox{$\xi : \Gamma \leq \Delta$}
-  \defas \Gamma \der \xi : \Delta \mand \xi = \slift^k_m \mforsome k,m$
-%  \defas \xi = \slift^k_m \mwith \Gamma \der \xi : \Delta$
-(implies $\der \Gamma$ and $\der \Delta$).
+% Liftings: $\fbox{$\xi : \Gamma \leq \Delta$}
+%   \defas \Gamma \der \xi : \Delta \mand \xi = \slift^k_m \mforsome k,m$
+% %  \defas \xi = \slift^k_m \mwith \Gamma \der \xi : \Delta$
+% (implies $\der \Gamma$ and $\der \Delta$).
+
 % (implies $\der \Gamma$ and $\der \Delta$ and $\Gamma \der \xi : \Delta$).
 % \begin{gather*}
 %   \ru{\der \Gamma
