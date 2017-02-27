@@ -463,106 +463,33 @@ Fig.~\ref{fig:judge} lists the inductive and derived judgements of our type theo
 
 \clearpage
 
-Inference rules.
+\input{figty}
 
-\fbox{$\der \Gamma$} (implies $\der \resurrect \Gamma$).
-\[
-  \ru{}{\der \cempty}
-\qquad
-  \ru{\der \Gamma \qquad
-      \resurrect \Gamma \der T
-    }{\der \cext \Gamma T}
-\qquad
-  \ru{\der \Gamma
-    }{\der \cext \Gamma \Size}
-\qquad
-  \ru{\der \Gamma
-    }{\der \erext \Gamma \Size}
-\]
+% Inference rules.
 
-\fbox{$\Gamma(i) = \eann T$} (implies $\resurrect\Gamma \der T$).
-\[
-  \ru{}{(\eext \Gamma T)(0) = \eann T \slift}
-\qquad
-  \ru{\Gamma(i) = \eann T
-    }{(\cext \Gamma \_)(i+1) = \eann T \slift}
-\]
-
-\fbox{$\Gamma \der a : \Size$}  (implies $\der \Gamma$ and $\resurrect \Gamma \der a : \Size$).
-\[
-  \ru{\der \Gamma}{\Gamma \der \infty : \Size}
-\qquad
-  \rux{\der \Gamma}{\Gamma \der o : \Size}{o \in \NN}
-\qquad
-  \ru{\der \Gamma \qquad \Gamma(i) = \erann[\noterased]\Size
-    }{\Gamma \der \ind i + o : \Size
-    }
-\]
-
-\fbox{$\Gamma \der t : T$}  (implies $\der \Gamma$ and $\resurrect \Gamma \der T$ [and $\resurrect \Gamma \der t : T$]. Note: no rule for $\Gamma \der \Size : s$.)
-\begin{gather*}
-  \ru{\der \Gamma
-    }{\Gamma \der \Set[\ell] : \Set[\ell']
-    }{\ell {<} \ell'}
-\qquad
-  \ru{\Gamma \der U : s \qquad
-      \cext \Gamma U \der T : s
-    }{\Gamma \der \piT U T : s}
-\qquad
-  \ru{\cext \Gamma \Size \der T : s
-    }{\Gamma \der \epiT \Size T : s}
-\qquad
-  \ru{%\der \Gamma \qquad
-      \Gamma \der a : \Size
-    }{\Gamma \der \Nat a : \Set[0]}
-\\[2ex]
-  \rux{\der \Gamma \qquad \Gamma(i) = \erann[\noterased] T
-    }{\Gamma \der \ind i : T
-    }{T \not= \Size}
-\qquad
-  \ru{\eext \Gamma U \der t : T
-    }{\Gamma \der \lambda t : \epiT U T}
-\qquad
-  \ru{\Gamma \der t : \piT U T \qquad
-      \Gamma \der u : U
-    }{\Gamma \der t\,u : T[u]}
+% \fbox{$\der \Gamma$} (implies $\der \resurrect \Gamma$).
+% \[
+%   \ru{}{\der \cempty}
 % \qquad
-%   \ru{\Gamma \der t : T \qquad
-%       \Gamma \mid T \der e : T'
-%     }{\Gamma \der t\,e : T'}
-\qquad
-  \ru{\Gamma \der t : \piT \Size T \qquad
-      \Gamma \der a : \Size
-    }{\Gamma \der t\,a : T[a]}
-\\[2ex] % \qquad
-  \ru{%\Gamma \der a : \Size \qquad
-      \resurrect\Gamma \der a, b : \Size
-    }{\Gamma \der \zero{a} : \Nat (b + 1)}
-\qquad
-  \ru{\resurrect\Gamma \der a : \Size \qquad
-      \Gamma \der t : \Nat b
-    }{\Gamma \der \suc a t : \Nat (b + 1)}
-\qquad
-  \ru{\Gamma \der t : \forallT T \qquad
-      %\Gamma \der a : \Size \qquad
-      \resurrect\Gamma \der a,b : \Size
-    }{\Gamma \der t \ann a : T[b]}
-\\[2ex]
-  \ru{\Gamma \der u : \Nat (a + 1) \qquad
-      \Gamma \der T : \Nat (a + 1) \to \Set[\ell] \qquad
-      \Gamma \der t_z : T \, (\zero{a}) \qquad
-      \Gamma \der t_s : (x : \Nat a) \to T \, (\suc{a} x)
-    }{\Gamma \der u\,\case[\ell] T {t_z} t_s : T \, u}
-\\[2ex]
-  \ru{\Gamma \der u : \Nat a \qquad
-      \Gamma \der T : \Adm\,\ell \qquad %% \funT i \Size \Nat i \to \Set[\ell] \\
-      \Gamma \der t : \FixT\, T
-     }{\Gamma \der u\,\fix[\ell] T t : T \,a \, u}
-\qquad
-  \ru{\Gamma \der t : T \qquad
-      \resurrect\Gamma \der T \leq T'
-     }{\Gamma \der t : T'}
-\end{gather*}
+%   \ru{\der \Gamma \qquad
+%       \resurrect \Gamma \der T
+%     }{\der \cext \Gamma T}
+% \qquad
+%   \ru{\der \Gamma
+%     }{\der \cext \Gamma \Size}
+% \qquad
+%   \ru{\der \Gamma
+%     }{\der \erext \Gamma \Size}
+% \]
+
+% \fbox{$\Gamma(i) = \eann T$} (implies $\resurrect\Gamma \der T$ if $\der \Gamma$).
+% \[
+%   \ru{}{(\eext \Gamma T)(0) = \eann T \slift}
+% \qquad
+%   \ru{\Gamma(i) = \eann T
+%     }{(\cext \Gamma \_)(i+1) = \eann T \slift}
+% \]
+
 Note: Size is relevant in $T$ as we would like for instance $T\,i\,x = \Nat i$.
 % \fbox{$\Gamma \mid U \der e : T$}
 % \begin{gather*}
@@ -590,56 +517,6 @@ Note: Size is relevant in $T$ as we would like for instance $T\,i\,x = \Nat i$.
 
 
 
-\fbox{$\Gamma \der T \leq T'$} (implies $\Gamma \der T,T'$)
-% (implies $\resurrect \Gamma \der T,T'$)
-\begin{gather*}
-  \ru{\der \Gamma \qquad \ell {\leq} \ell'
-    }{\Gamma \der \Set[\ell] \leq \Set[\ell']}
-\qquad
-  \ru{\Gamma \der a \leq b : \Size
-    }{\Gamma \der \Nat a \leq \Nat b}
-\qquad
-  \ru{\Gamma \der T = T'
-    }{\Gamma \der T \leq T'}
-\\[2ex]
-  \ru{\Gamma \der U' \leq U \qquad
-      \cext \Gamma {U'} \der T \leq T'
-    }{\Gamma \der \piT U T \leq \piT {U'} {T'}}
-\qquad
-  \ru{\cext \Gamma {\Size} \der T \leq T'
-    }{\Gamma \der \epiT \Size T \leq \epiT {\Size} {T'}}
-\qquad
-  \ru{\Gamma \der T_1 \leq T_2 \qquad
-      \Gamma \der T_2 \leq T_3
-    }{\Gamma \der T_1 \leq T_3}
-\qquad
-\end{gather*}
-
-
-Substitution typing. % and equality.
-\fbox{$\Gamma \der \tau : \Delta$}
-(implies $\der \Gamma$ and $\der \Delta$
- %% and $\Gamma \der \tau : \resurrect \Delta$  %NO
- [and $\resurrect\Gamma \der \tau : \Delta$]
- and $\resurrect\Gamma \der \tau : \resurrect \Delta$).
-
-\begin{gather*}
-  \ru{\der \Gamma \qquad
-    }{\Gamma \der \sempty : \cempty}
-\qquad
-  \ru{\Gamma \der \tau : \Delta \qquad
-      \resurrect \Delta \der T \qquad
-      \Gamma \der t : T \tau
-    }{\Gamma \der \sext \tau t : \cext \Delta T}
-\qquad
-  \ru{\Gamma \der \tau : \Delta \qquad
-      \Gamma \der a : \Size
-    }{\Gamma \der \sext \tau a : \cext \Delta \Size}
-\qquad
-  \ru{\Gamma \der \tau : \Delta \qquad
-      \resurrect\Gamma \der a : \Size
-    }{\Gamma \der \sext \tau a : \erext \Delta \Size}
-\end{gather*}
 
 % Liftings: $\fbox{$\xi : \Gamma \leq \Delta$}
 %   \defas \Gamma \der \xi : \Delta \mand \xi = \slift^k_m \mforsome k,m$
@@ -695,11 +572,6 @@ Substitution typing. % and equality.
 
 % Substitution typing and equality.
 % \fbox{$\suty \Gamma \sigma \tau \Delta$} and
-
-Substitution equality
-\fbox{$\sueq \Gamma \sigma {\sigma'} \tau \Delta$}
-(implies $\der \Gamma$ and $\der \Delta$ and $\Gamma \der \tau : \Delta$ and $\sueq \Gamma {\sigma'} {\sigma} \tau \Delta$).
-
 % \begin{gather*}
 %   \ru{\der \Gamma \qquad
 %     }{\suty \Gamma \sempty \sempty \cempty}
@@ -718,23 +590,6 @@ Substitution equality
 %     }{\suty \Gamma {\sext \sigma a} {\sext \tau b} \erext \Delta \Size}
 % \end{gather*}
 
-\begin{gather*}
-  \ru{\der \Gamma \qquad
-    }{\sueq \Gamma \sempty \sempty \sempty \cempty}
-\qquad
-  \ru{\sueq \Gamma \sigma {\sigma'} \tau \Delta \qquad
-      \resurrect \Delta \der T \qquad
-      \Gamma \der u = u' = t : T \tau
-    }{\sueq \Gamma {\sext \sigma u } {\sext {\sigma'} {u'}} {\sext \tau t} {\cext \Delta T}}
-\\[2ex]
-  \ru{\sueq \Gamma \sigma {\sigma'} \tau \Delta \qquad
-      \Gamma \der a = a' = b : T \tau
-    }{\sueq \Gamma {\sext \sigma a } {\sext {\sigma'} {a'}} {\sext \tau b} {\cext \Delta \Size}}
-\qquad
-  \ru{\sueq \Gamma \sigma {\sigma'} \tau \Delta \qquad
-      \resurrect\Gamma \der a, a', b : T \tau
-    }{\sueq \Gamma {\sext \sigma a } {\sext {\sigma'} {a'}} {\sext \tau b} {\erext \Delta \Size}}
-\end{gather*}
 
 \begin{lemma}[Reflexivity]
   If\/ $\Gamma \der t : T$ then $\Gamma \der t = t : T$.

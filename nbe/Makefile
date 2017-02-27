@@ -25,7 +25,7 @@ bibliography=medium.bib
 
 stdlib=$(HOME)/agda/std-lib/src
 
-files=icfp17.tex macros.tex latex/SubDiag.tex latex/SubDiagError.tex figjudge.tex figeq.tex
+files=icfp17.tex macros.tex latex/SubDiag.tex latex/SubDiagError.tex figjudge.tex figeq.tex figty.tex
 
 .PHONY : all debugMake html
 
