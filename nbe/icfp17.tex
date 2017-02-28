@@ -1833,14 +1833,16 @@ Whenever $\nbe \Gamma T t \evalsto v$, we may write $\nbe \Gamma T t$ for $v$.
 \label{sec:soundnbe}
 
 In this section, we show that NbE is sound for judgmental equality,
-i.e., that same normal form implies definitional equality.  The proof
+i.e., that \emph{same normal form} implies \emph{definitional equality}.  The proof
 follows \citet{abelCoquandDybjer:lics07} and
 \citet{fridlenderPagano:tlca13} and defines a Kripke logical relation
 $\LR \Gamma t T f A$ between a well-typed term $\Gamma \der t : T$ and
 a value $f \in A$.
+\LONGVERSION{
 However, in contrast to the cited works,
 the logical relation defined in the following will also yield a weak
 head normalization theorem.
+} % END LONG VERSION
 
 First, let us define some auxiliary judgements that relate a
 well-formed syntactic object to a value, via read back.
