@@ -395,7 +395,7 @@ We present our type theory as \emph{pure type system} \cite{barendregt:lambdacub
     \mid \Nat a \mid c & \mbox{weak head normal forms} \\ % \mbox{natural numbers} \\
 \Data & \ni & c
    & ::= & \zero a \mid \suc a t & \mbox{constructed data} \\
-\Ne & \ni & n
+\NeExp & \ni & n
     & ::= & \ind i \mid n \, e & \mbox{neutral expressions} \\
 \Elim & \ni & e
     & ::= & t \mid a \mid \ann a \mid \case[\ell] T {t_z} {t_s} \mid \fix[\ell] T t & \mbox{eliminations} \\
@@ -627,22 +627,75 @@ equal in and for resurrected contexts.
 \section{Semantics and Completeness of Normalization by Evaluation}
 \label{sec:sem}
 
-We extend the syntax by de Bruijn levels $\lev k$
-to be used as generic values (unknowns) and type annotations
-$\up T t$ and $\down T t$ for lazy realizations of the
+In this section we present an operational semantics of our language,
+define the NbE algorithm, construct a PER model, and demonstrate that
+NbE is complete for definitional equality, \ie, if
+$\Gamma \der t = t' : T$, then $t$ and $t'$ have the same normal form.
+\[
+\begin{array}{lllll@{\qquad}l}
+  \Ne & \ni &
+  m & ::= & \ind i \mid m\,v \mid m\,a \mid m\,\ann a \mid
+            m\,\case[\ell] V{v_z}{v_s} \mid m\,\fix[\ell] V v
+    & \mbox{normal neutral term} \\
+  \Nf & \ni &
+  v & ::= & m \mid \lambda v \mid \zero a \mid \suc a v \mid
+            \Set[\ell] \mid \Nat a \mid \piT {V_u}{V_t} \mid
+            \epiT\Size V
+    & \mbox{normal form} \\
+\end{array}
+\]
+For the operational semantics,
+instead of defining a separate language of values,
+we extend the syntax of expressions by de Bruijn levels $\lev k$
+to be used as generic values (unknowns), and type annotations
+$\up A n$ and $\down A t$ for lazy realizations of the
 reflection and reification operations of NbE.
+\emph{Terms} are expressions that do not contain these new expression
+forms. \emph{Values} \fbox{$f,g,A,B,F \in \D$} are expressions with no free de Bruijn
+indices, where each neutral $n$ is under a reflection marker $\up A n$.
+The types $A$ that direct reflection $\up A n$ and reification
+$\down A f$ also live in the value world.
 \[
 \begin{array}{lllrl@{\qquad}l}
 %  \Exp  & \ni & t & ::= & \dots \mid \lev k \mid \up T t \mid \down T t \\
-  \Ne   & \ni & n & ::= & \dots \mid \lev k \\
-  \tUp  & \ni & N & ::= & \up T n \\
-  \Whnf & \ni & w & ::= & \dots \mid N \\
-  \tDown & \ni & d & ::= & \down T t \\
-  \Exp  & \ni & t & ::= & \dots \mid d \\
+  \tUp  & \ni & N & ::= & \up A n
+     & \mbox{reflection of neutral term $n$ into the value world $\D$, at
+       type $A$} \\
+  \tDown & \ni & d & ::= & \down A f
+     & \mbox{reification of value $f$ at type $A$} \\
+  \NeExp & \ni & n & ::= & \dots \mid \lev k
+    & \mbox{de Bruijn level $k$} \\
+  \Whnf & \ni & w & ::= & \dots \mid N
+    & \mbox{reflected neutral are weak head normal} \\
+  \Exp  & \ni & t & ::= & \dots \mid d
+    & \mbox{reified values may occur in expressions} \\
 %  \Whnf & \ni & w,d,f,g,A,B,F,G & ::= & \dots \mid  \up T n \mid \down T t \\
 \end{array}
 \]
+\emph{De~Bruijn levels} are the mirror images of de Bruijn indices.  While de Bruijn
+indices index the context from the right, \ie, $\ind 0$ refers the
+last type that entered the context, de Bruijn levels index it from the
+left, \ie, $\lev 0$ refers to the first type in the context.  This
+way, de Bruijn levels are stable under context extensions, and
+suitable to represent unknowns.
 
+\emph{Size values} \fbox{$\alpha, \beta \in \SIZE$} are size
+expressions that use de Bruijn levels instead of de Bruijn
+indices. Comparison for size values $\alpha \leq \beta$ is the
+analogue of the one for size terms $a \leq b$.  In the following, we
+will reuse letter $a$ for a value if it cannot be confused with a size
+term.
+\[
+\begin{array}{lllll@{\qquad}l}
+  \DNe & \ni &
+  n & ::= & \ind i \mid n\,d \mid n\,\alpha \mid n\,\ann \alpha \mid
+            n\,\case[\ell] D{d_z}{d_s} \mid n\,\fix[\ell] D d
+    & \mbox{unreflected neutral value} \\
+  \DNf & \ni &
+  d & ::= & \down A f
+    & \mbox{reified value} \\
+\end{array}
+\]
 
 \begin{figure}
 $$
@@ -670,10 +723,10 @@ $$
 Figure~\ref{fig:typedchart}, adapted from \citet{abel:habil} shows the syntactic categories and main operations involved in NbE in what we call \emph{locally nameless style}.  The red path $\Exp \to \D \to \Dnf \to \Nf$ decomposes $\beta\eta$-normalization into three steps.
 \begin{enumerate}
 \item
-First, we close the term $t$ with an environment $\eta$ that maps the free de Bruijn indices of $t$ to reflected de Bruijn levels.  Reflection of de Bruijn levels follows the blue path $\Level \to \Dne \to \D$: Levels embed via constructor $\var{}$ into semantic neutrals $\DNe$ which are labeled with their type $A \in \D$ to become and element $\up A \lev j \in \D$.
+First, we close the term $t$ with an environment $\eta$ that maps the free de Bruijn indices of $t$ to reflected de Bruijn levels.  Reflection of de Bruijn levels follows the blue path $\Level \to \DNe \to \D$: Levels embed via constructor $\var{}$ into semantic neutrals $\DNe$ which are labeled with their type $A \in \D$ to become and element $\up A \lev j \in \D$.
 
 \item
-Then, we label value $t \eta \in \D$ with its type $A$ to obtain $\down A t \eta \in \Dnf$.
+Then, we label value $t \eta \in \D$ with its type $A$ to obtain $\down A t \eta \in \DNf$.
 \item
 Finally, \emph{read back} %% $\tR_k$
 $\tR_k \down{A} t\eta$ produces a long normal form $v \in \Nf$, converting de Bruijn levels back to indices.
