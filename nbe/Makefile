@@ -21,7 +21,7 @@ bibtool=bibtool -- 'preserve.key.case = ON' \
 catcfg=sed -e "s/%.*//g" <
 latex=latex
 pdflatex=pdflatex
-bibliography=medium.bib
+bibliography=all.bib
 
 stdlib=$(HOME)/agda/std-lib/src
 
