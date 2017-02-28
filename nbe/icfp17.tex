@@ -425,7 +425,7 @@ presented here, we can have $\der \zero 5 : \Nat 1$.
 In the algorithmic typing however, $\der \zero 5 \jchk \Nat 1$ will be an error.
 
 Besides with regular application $t\,u$, relevant size application $t\,a$, and irrelevant size application $t \, \ann a$,
-we can eliminate a term $t$ by a case distinction $e = \case[\ell] T {t_z}{t_s}$ or a recursive function application $e' = \fix[\ell'] {T'} {t'}$.  In both cases, the term should denote a natural number.  Application of case distinction $\zero a \, e$ will reduce to the zero-branch $t_z$, and $\suc a t \,e$ to the instantiation of the successor branch $t_s\,t$.  The type annotation $T$ in $\tcase$ allows us to infer the type of the whole case statement $t\,e$ as $T\,t$.  The function call $c\,e'$ for a canonical number reduces to $f'\,(\lambda x.\,x\,e')\,c$ where we allowed ourself the use of a named abstraction in the presentation to the reader.  The unfolding of fixed-points is thus restricted to application to canonical numbers; this is the usual reduction strategy which converges for terminating functions \cite{gimenez:typeBased}.
+we can eliminate a term $t$ by a case distinction $e = \case[\ell] T {t_z}{t_s}$ or a recursive function application $e' = \fix[\ell'] {T'} {t'}$.  In both cases, the term should denote a natural number.  Application of case distinction $\zero a \, e$ will reduce to the zero-branch $t_z$, and $\suc a t \,e$ to the instantiation of the successor branch $t_s\,t$.  The type annotation $T$ in $\tcase$ allows us to infer the type of the whole case statement $t\,e$ as $T\,t$.  The function call $c\,e'$ for a canonical number reduces to $f'\,(\lambda x.\,x\,e')\,c$ where we allowed ourselves the use of a named abstraction in the presentation to the reader.  The unfolding of fixed-points is thus restricted to application to canonical numbers; this is the usual reduction strategy which converges for terminating functions \cite{gimenez:typeBased}.
 
 %We write $\sigma$ and $\tau$ for substitutions, which are lists of terms, and
 For ordinary $\beta$-reduction we employ
@@ -463,7 +463,7 @@ $\Gamma.\Size.\Nat \ind 0$.
 \input{figjudge}
 
 In typing contexts $\Gamma$, we distinguish relevant $(\noterased)$ and irrelevant $(\erased)$ bindings.
-When type checking a variable, it needs to be bound in the context relevantly.  However, when entering a irrelevant position, for instance when checking size $a$ in term $\suc a t$ we declare previously irrelevant variables as relevant.
+When type checking a variable, it needs to be bound in the context relevantly.  However, when entering an irrelevant position, for instance when checking size $a$ in term $\suc a t$ we declare previously irrelevant variables as relevant.
 This operation on the context has been coined
 \emph{resurrection} by \citet{pfenning:lics01}; formally \fbox{$\resurrect\Gamma$} removes
 the ``$\erased$''-markers from all bindings in $\Gamma$, \ie, replaces
@@ -532,8 +532,8 @@ irrelevant sizes may refer to irrelevant size variables.
   % Consequently, if\/ $\Gamma \der J$ then $\resurrect \Gamma \der J$.
   % Further, if\/ $\Gamma \der J : \resurrect\Delta$ then $\Gamma \der J : \Delta$.
 \item If\/ $\Gamma \der J$ then $\resurrect \Gamma \der J$.
-\item If\/ $\Gamma \der J : \resurrect \Delta$ % and $\der \Delta$
-  then $\Gamma \der J : \Delta$.
+\item If\/ $\Gamma \der \sigma : \resurrect \Delta$ % and $\der \Delta$
+  then $\Gamma \der \sigma : \Delta$.
 \item \label{it:ressubst} If\/ $\Gamma \der \sigma : \Delta$ % then $\Gamma \der \sigma : \resurrect\Delta$.
   then $\resurrect\Gamma \der \sigma : \resurrect\Delta$.
 \end{enumerate}
