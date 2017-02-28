@@ -373,7 +373,7 @@ In this section, we show how the lack of size irrelevance prevents us from reaso
 \section{A Type System With Irrelevant Size Application}
 \label{sec:syntax}
 
-In this section, we give syntax and \emph{declarative} typing, equality, and subtyping judgements.  The typing relation $\Gamma \der t : T$ will \emph{not} be decidable; instead, we present algorithmic typing $\Gamma \der t \jchk T$ in Section~\ref{sec:tycheck}.  However, equality and subtyping will be decidable for well-formed input, see sections~\ref{sec:sem}--\ref{sec:asub}.
+In this section, we give the syntax and the \emph{declarative} typing, equality, and subtyping judgements.  The typing relation $\Gamma \der t : T$ will \emph{not} be decidable; instead, we present algorithmic typing $\Gamma \der t \jchk T$ in Section~\ref{sec:tycheck}.  However, equality and subtyping will be decidable for well-formed input, see sections~\ref{sec:sem}--\ref{sec:asub}.
 
 We present our type theory as \emph{pure type system} \cite{barendregt:lambdacube} with extra structure.
 \emph{Sorts} $s$ are drawn from an infinite predicative hierarchy of universes $\Set[\ell]$ for $\ell \in \NN$.  Universes provide us with polymorphism and the capability to define types by recursion on values.  Whether we have just two universes $\Set[0]$ and $\Set[1]$ or infinitely many, does not matter for the technical difficulty of the meta theory.  The present setup have the advantage that every sort has again a sort since $\Set[\ell] : \Set[\ell+1]$, thus, we do not have to introduce a separate judgement $\Gamma \der T$ for well-formedness of types, we can define it as $\exists s.\ \Gamma \der T : s$.
