@@ -872,7 +872,7 @@ The number $k$, will be instantiated by the length of the context
 $\Gamma$ later.  It allows us to transform a de Bruijn level $l$ into a de
 Bruijn index $i$, via the law $i + l + 1 = k$.  At this point, we do
 not ensure that the $k$ is large enough to accommodate the de Bruijn
-levels in $d$.  Levels $l \geq k$ which are to big will simply mapped
+levels in $d$.  Levels $l \geq k$ which are to big will simply be mapped
 to de Bruijn index $0$.  The correct $k$ is later ensured by our
 logical relation (Section~\ref{sec:soundnbe}).
 % Judgements.
@@ -885,7 +885,7 @@ logical relation (Section~\ref{sec:soundnbe}).
 % \end{array}
 % \]
 Even though read back operates on values in practice, formally it is
-simply defined on expressions.
+defined on expressions.
 
 \noindent
 \fbox{$\R k d v$}\ \ Read back reified value $d$.
@@ -1019,7 +1019,7 @@ simply defined on expressions.
 \subsection{Partial equivalence relations}
 \label{sec:per}
 
-A type $T$ will be interpreted as a partial equivalence relation (PER) $\A$ on terms, \ie, a relation which is symmetric and transitive. The domain $\dom(\A)$ of the relation can be thought of as the set of terms which define the extension of the type; on $\dom(\A) = \{a \mid \exists a'.\ (a,a') \in \A \}$ the relation $\A$ is in fact an equivalence relation.  We write $a = a' \in \A$ for relatedness in $\A$ and $a \in \A$ if $a \in \dom(\A)$.
+A type $T$ will be interpreted as a partial equivalence relation (PER) $\A$ on terms, \ie, a relation which is symmetric and transitive. The domain $\dom(\A)$ of the relation can be thought of as the set of terms which denotes the extension of the type; on $\dom(\A) = \{a \mid \exists a'.\ (a,a') \in \A \}$ the relation $\A$ is in fact an equivalence relation.  We write $a = a' \in \A$ for relatedness in $\A$ and $a \in \A$ if $a \in \dom(\A)$.
 
 The PERs $\NE$ characterizes neutral reifiable terms.
 % \[
@@ -1111,6 +1111,7 @@ PER $\NEE$ interprets all neutral types.
 \fbox{$t = t' \in \NEE$} \defas
   t \evalsto \up T n \mand t' \evalsto \up{T'}{n'} \mand
   n = n' \in \NE
+  .
 % \fbox{$\NEE$} \defas \{ (\up T n, \up{T'}{n'})
 %   % \msuchthat T \evalsto N \mand T' \evalsto N' \mand
 %   \mid n = n' \in \NE \}
@@ -1348,8 +1349,14 @@ underlying simple type.  Of course, we can take a type as its own
 shape, but we want at least that $\Nat \alpha$ and $\Nat \beta$ have
 the same shape even for different $\alpha, \beta$.
 Also all neutral types can be summarized under a single shape.
+
 We make our intuition precise by defining a relation $T \shape S$
-between type values, to express that $S$ is a possible shape of type $T$.
+between type values, to express that $S$ is a possible shape of type
+$T$.  The asymmetry of this relation stems from the case for function
+types.  At function types
+$\piT A B \shape \piT R S$, we take $S$ to be a family over domain
+$A$, not $R$!  We cannot take $R$ since we have to compare families $B$ and $S$
+at a common domain, and $A$ and $R$ are not equal.
 
 \fbox{$T \shape S$} for $T \in \SET[\ell]$.  We call $T$ the \emph{template} and $S$ one of its possible \emph{shapes}.
 \begin{gather*}
@@ -1403,7 +1410,7 @@ However, templates are not closed under subtyping in either direction because of
 
 Further, it is not true that equal types make equally good shapes.  We do not have that
 $T \shape S$ and $S = S' \in \SET[\ell]$ imply $T \shape S'$.  This property fails for function types.
-Given $\piT U T \shape \piT R S$ and $\piT R S = \piT {R'}{S'} \in \SET[\ell]$ we would need to show that $T[u] \shape S'[u']$ for all $u = u' \in U$, but we only have $S[u] = S'[u'] \in \SET[\ell]$ for all $u = u' \in R$, thus the induction does not go through.  The fact that $U \shape R$ does not give us a handle on their inhabitants, we would need $U \leq R \in \TYPE$.
+Given $\piT U T \shape \piT R S$ and $\piT R S = \piT {R'}{S'} \in \SET[\ell]$ we would need to show that $T[u] \shape S'[u']$ for all $u = u' \in U$, but we only have $S[u] = S'[u'] \in \SET[\ell]$ for all $u = u' \in R$, thus the induction does not go through.  The fact that $U \shape R$ does not give us a handle on their inhabitants, we would need a stronger relation such as $U \leq R \in \TYPE$.
 It is possible to construct an actual counterexample, using
 $\piT {R'} S' =  \funT x {\Nat 0} {F\,x}$ from above and $\piT R S = \funT x {\Nat 0} {G\,x}$
 such that $G$ is defined on all of $\Nat \infty$ but agrees with $F$ only on $x \in \Nat 0$.
@@ -1599,7 +1606,7 @@ However, this is an instance of the induction hypothesis thanks to $\beta < \alp
 \nextcase $\alpha = \infty$.
 Note that $a = a' \in \Nat \alpha$ for some $\alpha < \infty$ by Lemma~\ref{lem:limit}.
 By induction hypothesis, $g = g' \in B\,\alpha\,a$.  Since
-$B\,\alpha\,a \leq B\,\infty\,a$ by assumption, the goal
+$B\,\alpha\,a \leq B\,\infty\,a$ by admissibility of $B$, the goal
 $g = g' \in B\,\infty\,a$ follows by subsumption.
 \qed
 \end{caselist}
@@ -1756,7 +1763,7 @@ thus, by induction hypothesis, $b \rho \in \SIZE$.
 From the fundamental theorem, we harvest completeness of NbE in this
 section, \ie, we show that definitionally equal terms have the same
 normal form.
-We may write simply $\Gamma$ for the length $|\Gamma|$ where there is no
+We may write simply $\Gamma$ for its length $|\Gamma|$ when there is no
 danger of confusion, for instance in de Bruijn level $\var\Gamma$ or
 in read back $\tR_{\Gamma}$.
 %We write $\var\Gamma$ for $\var{|\Gamma|}$.
