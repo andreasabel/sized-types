@@ -685,7 +685,7 @@ $\down A f$ also live in the value world.
      & \mbox{reflection of neutral term $n$ into the value world $\D$, at
        type $A$} \\
   \Whnf & \ni & w & ::= & \dots \mid N
-    & \mbox{reflected neutral are weak head normal} \\
+    & \mbox{reflected neutral is weak head normal} \\
   \Exp  & \ni & t & ::= & \dots \mid \down A f
      & \mbox{reification of value $f$ at type $A$} \\
 \end{array}
@@ -716,9 +716,9 @@ suitable to represent unknowns.
 
 \emph{Size values} \fbox{$\alpha, \beta \in \SIZE$} are size
 expressions that use de Bruijn levels instead of de Bruijn
-indices. Comparison for size values $\alpha \leq \beta$ is the
-analogue of the one for size terms $a \leq b$.  In the following, we
-will reuse letter $a$ for a value if it cannot be confused with a size
+indices. Comparison of size values $\alpha \leq \beta$ is
+analoguous to comparison of size terms $a \leq b$.  In the following, we
+will reuse letter $a$ for a value if it cannot be confused for a size
 term.
 
 Finally, we identify two expression classes for NbE. Neutrals
@@ -785,7 +785,7 @@ If this is the case, each de Bruijn level encountered during read back is below 
 
 We define the operational semantics of our language by the weak head
 evaluation relation \fbox{$t \evalsto w$} which is defined on
-expressions, thus works on values as on terms.  It is defined mutually
+expressions, thus works on values as well as on terms.  It is defined mutually
 with auxiliary relation \fbox{$w @ e \evalsto w'$} stating that weak
 head normal form $w$ is eliminated by $e$ into weak head normal form $w'$.
 % \[
@@ -837,39 +837,28 @@ head normal form $w$ is eliminated by $e$ into weak head normal form $w'$.
 %The rules added for NbE deal with elimination of delayed reflection:
 For NbE, we add evaluation rules that deal with elimination of delayed reflection:
 \begin{gather*}
-  \ru{T' \evalsto \piT U T
-    }{(\up {T'} n) @ u \evalsto \up{T[u]} (n \, \down U u) }
+  \ru{A' \evalsto \piT A B
+    }{(\up {A'} n) @ u \evalsto \up{B[u]} (n \, \down A u) }
 \qquad
-  \ru{T' \evalsto \piT \Size T
-    }{(\up {T'} n) @ \alpha \evalsto \up{T[\alpha]} (n \, \alpha)}
+  \ru{A \evalsto \piT \Size B
+    }{(\up {A} n) @ \alpha \evalsto \up{B[\alpha]} (n \, \alpha)}
 \qquad
-  \ru{T' \evalsto \forallT T
-    }{(\up {T'} n) @ \ann \alpha \evalsto \up{T[\alpha]} (n \ann \alpha)}
-%   \ru{T \evalsto \piT A B \qquad
-%       \up{B[u]} (n \, \down A u) \evalsto w
-%     }{(\up T n) @ u \evalsto w}
-% \qquad
-%   \ru{T \evalsto \piT \Size B \qquad
-%       \up{B[u]} (n \, \alpha) \evalsto w
-%     }{(\up T n) @ \alpha \evalsto w}
-% \qquad
-%   \ru{T \evalsto \forallT B \qquad
-%       \up{B[\alpha]} (n \ann \alpha) \evalsto w
-%     }{(\up T n) @ \ann \alpha \evalsto w}
+  \ru{A \evalsto \forallT B
+    }{(\up {A} n) @ \ann \alpha \evalsto \up{B[\alpha]} (n \ann \alpha)}
 \\[2ex]
-  \ru{%T' \evalsto \Nat \beta \qquad
-    }{(\up {T'} n) @ \case[\ell] T {t_z} {t_s} \evalsto
-      \up{T\,(\up{T'} n)}\,
-      % \up{T\,(\up{\Nat \infty} n)}
+  \ru{%A \evalsto \Nat \beta \qquad
+    }{(\up {A} n) @ \case[\ell] B {f_z} {f_s} \evalsto
+      \up{B\,(\up{A} n)}\,
+      % \up{B\,(\up{\Nat \infty} n)}
          n\,\case[\ell]
-             {(\down {\Nat \infty \to \Set[\ell]} T)}
-             {(\down {T\,{\zero\infty}} t_z)}
-             {(\down {\funS x {\Nat \infty} T\,(\suc \infty x)} t_s)}
+             {(\down {\Nat \infty \to \Set[\ell]} B)}
+             {(\down {B\,{\zero\infty}} f_z)}
+             {(\down {\funS x {\Nat \infty} B\,(\suc \infty x)} f_s)}
     }
 \\[2ex]
-  \ru{%T' \evalsto \Nat \beta \qquad
-    }{(\up {T'} n) @ \fix[\ell] T t \evalsto
-      n\,\fix[\ell] {(\down {\FixK} T)} {(\down {\FixT\, T} t)}
+  \ru{%A \evalsto \Nat \beta \qquad
+    }{(\up {A} n) @ \fix[\ell] B f \evalsto
+      n\,\fix[\ell] {(\down {\FixK} B)} {(\down {\FixT\, B} f)}
     }
 \end{gather*}
 
