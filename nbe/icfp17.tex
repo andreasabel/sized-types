@@ -22,7 +22,7 @@
 \newcommand{\SHORTLONG}[2]{\SHORTVERSION{#1}\LONGVERSION{#2}}
 \newcommand{\EXTENDED}[1]{}
 
-\usepackage[right]{showlabels}\renewcommand{\showlabelfont}{\small\ttfamily\color{gray}}
+%\usepackage[right]{showlabels}\renewcommand{\showlabelfont}{\small\ttfamily\color{gray}}
 
 \usepackage{mathtools} %mathrlap
 \usepackage[all]{xy}
@@ -406,6 +406,7 @@ We present our type theory as \emph{pure type system} \cite{barendregt:lambdacub
   & \mbox{substitutions} \\
 \end{array}
 \]
+\vspace{-4ex}
   \caption{Syntax.}
   \label{fig:syntax}
 \end{figure}
@@ -477,6 +478,12 @@ Different size variables are incomparable.
 
 Fig.~\ref{fig:judge} lists the inductive and derived judgements of our type theory and
 figures~\ref{fig:ty} and \ref{fig:eq} the inference rules.
+Judgement $\Gamma \der T : \Adm \ell$ characterizes the valid type
+annotations $T$ in recursion $\fix[\ell] T t$.  The type constructor $T$
+has to be monotone in the size argument; this is a technical condition
+for type-based termination \cite{gimenez:typeBased}.  We will make use
+of it in Section~\ref{sec:comp}.
+
 In the typing judgement $\Gamma \der t : T$, the term $t$ is in scope of
 $\Gamma$, \ie, may not mention irrelevant variables in relevant
 positions.  However, the type $T$ is in scope of the resurrected
@@ -595,10 +602,13 @@ equal in and for resurrected contexts.
 \begin{lemma}[Inversion of typing]
 \label{lem:invty} \bla
 \begin{enumerate}
+\LONGVERSION{
 \item If\/ $\Gamma \der \Nat a : T'$ then $\Gamma \der a : \Size$ and $\resurrect\Gamma \der \Set[0] \leq T'$.
 \item If\/ $\Gamma \der \Set[\ell] : T'$ then $\resurrect\Gamma \der \Set[\ell+1] \leq T'$.
 \item If\/ $\Gamma \der \piT U T : T'$ then $\Gamma \der U : s$ and $\cext \Gamma U \der T : s$ and $\resurrect\Gamma \der s \leq T'$ for some $s$.
-\item If\/ $\Gamma \der \epiT \Size T : T'$ then $\cext\Gamma \Size \der T : s$ and $\resurrect\Gamma \der s \leq T'$.
+\item If\/ $\Gamma \der \epiT \Size T : T'$ then
+  $\cext\Gamma \Size \der T : s$ and $\resurrect\Gamma \der s \leq T'$.
+}
 \item If\/ $\Gamma \der \ind i : T'$ then $\Gamma(i) = \erann[\noterased] T$ and $\resurrect\Gamma \der T \leq T'$ for some $T$.
 \item If\/ $\Gamma \der \lambda t : T'$ then either
   $\cext \Gamma U \der t : T$
@@ -611,11 +621,23 @@ equal in and for resurrected contexts.
   for some $T$.
 \item If\/ $\Gamma \der t\,u : T'$ then $\Gamma \der t : \piT U T$ and $\Gamma \der u : U$ and $\resurrect\Gamma \der T[u] \leq T'$ for some $U$, $T$.
 \item If\/ $\Gamma \der t\,a : T'$ then $\Gamma \der t : \piT \Size T$ and $\Gamma \der a : \Size$ and $\resurrect\Gamma \der T[a] \leq T'$ for some $T$.
-\item If\/ $\Gamma \der t\,\ann a : T'$ then $\Gamma \der t : \forallT T$ and $\resurrect\Gamma \der a : \Size$ and $\resurrect\Gamma \der T[a] \leq T'$ for some $T$.
+\item If\/ $\Gamma \der t\,\ann a : T'$ then
+   $\Gamma \der t : \forallT T$ and
+   $\resurrect\Gamma \der a,b : \Size$ and
+   $\resurrect\Gamma \der T[b] \leq T'$ for some $T$, $b$.
+\LONGVERSION{
 \item If\/ $\Gamma \der \zero a : T'$ then $\resurrect \Gamma \der a,b : \Size$ and $\resurrect\Gamma \der \Nat (b + 1) \leq T'$ for some $b$.
 \item If\/ $\Gamma \der \suc a t : T'$ then $\resurrect \Gamma \der a,b : \Size$ and $\Gamma \der t : \Nat b$ and $\resurrect\Gamma \der \Nat(b+1) \leq T'$.
 \item If\/ $\Gamma \der u\,\case[\ell] T {t_z} {t_s} : T'$ then $\Gamma \der u : \Nat (a+1)$ and $\Gamma \der T : \Nat(a+1) \to \Set[\ell]$ and $\Gamma \der t_z : T\,(\zero a)$ and $\Gamma \der t_s : \funT x {\Nat a} {T\,(\suc a x)}$ and $\resurrect\Gamma \der T\,u \leq T'$ for some $a$.
-\item If\/ $\Gamma \der u\,\fix[\ell] T t : T'$ then $\Gamma \der u : \Nat a$ and $\Gamma \der T : \Adm\,\ell$ and $\Gamma \der t : \FixT\,T$ and $\resurrect\Gamma \der T\,a\,u \leq T'$.
+\item If\/ $\Gamma \der u\,\fix[\ell] T t : T'$ then
+  $\Gamma \der u : \Nat a$ and
+  $\Gamma \der T : \Adm\,\ell$ and
+  $\Gamma \der t : \FixT\,T$ and
+  $\resurrect\Gamma \der T\,a\,u \leq T'$.
+} % END LONGVERSION
+\SHORTVERSION{
+\item ... Analogous properties for the remaining term and type constructors.
+}
 \end{enumerate}
 \end{lemma}
 \begin{proof}
