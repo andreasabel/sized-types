@@ -614,8 +614,8 @@ equal in and for resurrected contexts.
 \item If\/ $\Gamma \der t\,\ann a : T'$ then $\Gamma \der t : \forallT T$ and $\resurrect\Gamma \der a : \Size$ and $\resurrect\Gamma \der T[a] \leq T'$ for some $T$.
 \item If\/ $\Gamma \der \zero a : T'$ then $\resurrect \Gamma \der a,b : \Size$ and $\resurrect\Gamma \der \Nat (b + 1) \leq T'$ for some $b$.
 \item If\/ $\Gamma \der \suc a t : T'$ then $\resurrect \Gamma \der a,b : \Size$ and $\Gamma \der t : \Nat b$ and $\resurrect\Gamma \der \Nat(b+1) \leq T'$.
-\item If\/ $\Gamma \der u \case[\ell] T {t_z} {t_s} : T'$ then $\Gamma \der u : \Nat (a+1)$ and $\Gamma \der T : \Nat(a+1) \to \Set[\ell]$ and $\Gamma \der t_z : T\,(\zero a)$ and $\Gamma \der t_s : \funT x {\Nat a} {T\,(\suc a x)}$ and $\resurrect\Gamma \der T\,u \leq T'$ for some $a$.
-\item If\/ $\Gamma \der u \fix[\ell] T t : T'$ then $\Gamma \der u : \Nat a$ and $\Gamma \der T : \Adm\,\ell$ and $\Gamma \der t : \FixT\,T$ and $\resurrect\Gamma \der T\,a\,u \leq T'$.
+\item If\/ $\Gamma \der u\,\case[\ell] T {t_z} {t_s} : T'$ then $\Gamma \der u : \Nat (a+1)$ and $\Gamma \der T : \Nat(a+1) \to \Set[\ell]$ and $\Gamma \der t_z : T\,(\zero a)$ and $\Gamma \der t_s : \funT x {\Nat a} {T\,(\suc a x)}$ and $\resurrect\Gamma \der T\,u \leq T'$ for some $a$.
+\item If\/ $\Gamma \der u\,\fix[\ell] T t : T'$ then $\Gamma \der u : \Nat a$ and $\Gamma \der T : \Adm\,\ell$ and $\Gamma \der t : \FixT\,T$ and $\resurrect\Gamma \der T\,a\,u \leq T'$.
 \end{enumerate}
 \end{lemma}
 \begin{proof}
