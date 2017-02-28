@@ -657,21 +657,34 @@ The types $A$ that direct reflection $\up A n$ and reification
 $\down A f$ also live in the value world.
 \[
 \begin{array}{lllrl@{\qquad}l}
-%  \Exp  & \ni & t & ::= & \dots \mid \lev k \mid \up T t \mid \down T t \\
+  \NeExp & \ni & n & ::= & \dots \mid \lev k
+    & \mbox{de Bruijn level $k$} \\
   \tUp  & \ni & N & ::= & \up A n
      & \mbox{reflection of neutral term $n$ into the value world $\D$, at
        type $A$} \\
-  \tDown & \ni & d & ::= & \down A f
-     & \mbox{reification of value $f$ at type $A$} \\
-  \NeExp & \ni & n & ::= & \dots \mid \lev k
-    & \mbox{de Bruijn level $k$} \\
   \Whnf & \ni & w & ::= & \dots \mid N
     & \mbox{reflected neutral are weak head normal} \\
-  \Exp  & \ni & t & ::= & \dots \mid d
-    & \mbox{reified values may occur in expressions} \\
-%  \Whnf & \ni & w,d,f,g,A,B,F,G & ::= & \dots \mid  \up T n \mid \down T t \\
+  \Exp  & \ni & t & ::= & \dots \mid \down A f
+     & \mbox{reification of value $f$ at type $A$} \\
 \end{array}
 \]
+% \[
+% \begin{array}{lllrl@{\qquad}l}
+% %  \Exp  & \ni & t & ::= & \dots \mid \lev k \mid \up T t \mid \down T t \\
+%   \tUp  & \ni & N & ::= & \up A n
+%      & \mbox{reflection of neutral term $n$ into the value world $\D$, at
+%        type $A$} \\
+%   \tDown & \ni & d & ::= & \down A f
+%      & \mbox{reification of value $f$ at type $A$} \\
+%   \NeExp & \ni & n & ::= & \dots \mid \lev k
+%     & \mbox{de Bruijn level $k$} \\
+%   \Whnf & \ni & w & ::= & \dots \mid N
+%     & \mbox{reflected neutral are weak head normal} \\
+%   \Exp  & \ni & t & ::= & \dots \mid d
+%     & \mbox{reified values may occur in expressions} \\
+% %  \Whnf & \ni & w,d,f,g,A,B,F,G & ::= & \dots \mid  \up T n \mid \down T t \\
+% \end{array}
+% \]
 \emph{De~Bruijn levels} are the mirror images of de Bruijn indices.  While de Bruijn
 indices index the context from the right, \ie, $\ind 0$ refers the
 last type that entered the context, de Bruijn levels index it from the
@@ -685,6 +698,11 @@ indices. Comparison for size values $\alpha \leq \beta$ is the
 analogue of the one for size terms $a \leq b$.  In the following, we
 will reuse letter $a$ for a value if it cannot be confused with a size
 term.
+
+Finally, we identify two expression classes for NbE. Neutrals
+$n \in \DNe$ are the ones that will appear in values under the
+reflection marker $\up{A}$.  Reified values $d \in \DNf$ are values
+under a reification marker $\down{A}$.
 \[
 \begin{array}{lllll@{\qquad}l}
   \DNe & \ni &
@@ -720,10 +738,17 @@ $$
     style.\label{fig:typedchart}}
 \end{figure}
 
-Figure~\ref{fig:typedchart}, adapted from \citet{abel:habil} shows the syntactic categories and main operations involved in NbE in what we call \emph{locally nameless style}.  The red path $\Exp \to \D \to \Dnf \to \Nf$ decomposes $\beta\eta$-normalization into three steps.
+\newcommand{\redto}{\mathrel{\color{red}{\to}}}
+\newcommand{\blueto}{\mathrel{\color{blue}{\to}}}
+
+Figure~\ref{fig:typedchart}, adapted from \citet{abel:habil} summarized the syntactic categories and main operations involved in NbE in what is called \emph{locally nameless style}.  The \textcolor{red}{red path} $\Exp \redto \D \redto \Dnf \redto \Nf$ decomposes $\beta\eta$-normalization into three steps.
 \begin{enumerate}
 \item
-First, we close the term $t$ with an environment $\eta$ that maps the free de Bruijn indices of $t$ to reflected de Bruijn levels.  Reflection of de Bruijn levels follows the blue path $\Level \to \DNe \to \D$: Levels embed via constructor $\var{}$ into semantic neutrals $\DNe$ which are labeled with their type $A \in \D$ to become and element $\up A \lev j \in \D$.
+First, we close the term $t$ with an environment \textcolor{blue}{$\eta$} that maps the
+free de Bruijn indices of $t$ to reflected de Bruijn levels.
+Reflection of de Bruijn levels follows the \textcolor{blue}{blue path}
+$\Level \blueto \DNe \blueto \D$: Levels embed via constructor $\var{}$
+into semantic neutrals $\DNe$ which are labeled with their type $A \in \D$ to become and element $\up A \lev j \in \D$.
 
 \item
 Then, we label value $t \eta \in \D$ with its type $A$ to obtain $\down A t \eta \in \DNf$.
@@ -734,18 +759,23 @@ Herein, $k$ should be the length of the context the original term $t$ lived in.
 If this is the case, each de Bruijn level encountered during read back is below $k$ and can be safely converted to a de Bruijn index.
 \end{enumerate}
 
-\subsection{Operational semantics}
+\subsection{Weak head reduction}
 
-Judgements.
-\[
-\begin{array}{l@{\qquad}l}
-  t \evalsto w & \mbox{term $t$ evaluates to weak head normal form $w$} \\
-  w @ e \evalsto w' & \mbox{eliminating $w$ with $e$ evaluates to $w'$} \\
-%  w @ \vec e \evalsto w' & \mbox{applying $w$ to eliminations $\vec e$ evaluates to $w'$} \\
-\end{array}
-\]
+We define the operational semantics of our language by the weak head
+evaluation relation \fbox{$t \evalsto w$} which is defined on
+expressions, thus works on values as on terms.  It is defined mutually
+with auxiliary relation \fbox{$w @ e \evalsto w'$} stating that weak
+head normal form $w$ is eliminated by $e$ into weak head normal form $w'$.
+% \[
+% \begin{array}{l@{\qquad}l}
+%   t \evalsto w & \mbox{term $t$ evaluates to weak head normal form $w$} \\
+%   w @ e \evalsto w' & \mbox{eliminating $w$ with $e$ evaluates to $w'$} \\
+% %  w @ \vec e \evalsto w' & \mbox{applying $w$ to eliminations $\vec e$ evaluates to $w'$} \\
+% \end{array}
+% \]
 
 \fbox{$t \evalsto w$}
+\vspace{-4ex}
 \begin{gather*}
   \ru{}{w \evalsto w}
 \qquad
@@ -771,18 +801,19 @@ Judgements.
 \qquad
   \ru{t[\alpha] \evalsto w
     }{(\lambda t) @ \ann \alpha \evalsto w}
-\\[2ex]
+\qquad
   \ru{t_z \evalsto w
     }{(\zero \alpha) @ \casett \evalsto w}
-\qquad
+\\[2ex]
   \ru{t_s\, t \evalsto w
     }{(\suc \alpha t) @ \casett \evalsto w}
-\\[2ex]
+\qquad
   \ru{t\,\ann \alpha\,(\lambda x.\, x\, \fixtt)\,c \evalsto w
      }{c @ \fixtt \evalsto w
      }{c\in \{ \zero \alpha, \suc \alpha u \}}
 \end{gather*}
-The rules added for NbE deal with elimination of delayed reflection:
+%The rules added for NbE deal with elimination of delayed reflection:
+For NbE, we add evaluation rules that deal with elimination of delayed reflection:
 \begin{gather*}
   \ru{T' \evalsto \piT U T
     }{(\up {T'} n) @ u \evalsto \up{T[u]} (n \, \down U u) }
@@ -823,16 +854,30 @@ The rules added for NbE deal with elimination of delayed reflection:
 \subsection{Read back}
 \label{sec:read}
 
-Judgements.
-\[
-\begin{array}{l@{\qquad}l}
-   \R k d  v     & \mbox{} \\
-   \RTy k T  V  & \mbox{} \\
-   \RNat k t  v & \mbox{} \\
-   \RNe k t  m  & \mbox{} \\
-\end{array}
-\]
-\fbox{$\R k d v$}
+The \emph{read back} phase of NbE \cite{gregoireLeroy:icfp02}
+transforms a reified value $d$ into a normal form $v$.  It is
+specified via an inductively defined relation $\R k d v$ and several auxiliary relations.
+The number $k$, will be instantiated by the length of the context
+$\Gamma$ later.  It allows us to transform a de Bruijn level $l$ into a de
+Bruijn index $i$, via the law $i + l + 1 = k$.  At this point, we do
+not ensure that the $k$ is large enough to accommodate the de Bruijn
+levels in $d$.  Levels $l \geq k$ which are to big will simply mapped
+to de Bruijn index $0$.  The correct $k$ is later ensured by our
+logical relation (Section~\ref{sec:soundnbe}).
+% Judgements.
+% \[
+% \begin{array}{l@{\qquad}l}
+%    \R k d  v     & \mbox{} \\
+%    \RTy k T  V  & \mbox{} \\
+%    \RNat k t  v & \mbox{} \\
+%    \RNe k t  m  & \mbox{} \\
+% \end{array}
+% \]
+Even though read back operates on values in practice, formally it is
+simply defined on expressions.
+
+\noindent
+\fbox{$\R k d v$}\ \ Read back reified value $d$.
 \begin{gather*}
   \ru{U \evalsto s \qquad
       \RTy k T V
@@ -860,14 +905,16 @@ Judgements.
     }{\R k {\down{U} f} {\lambda v}}
 \end{gather*}
 
-\fbox{$\RUp k t m$}\ \  Read back neutrals under annotation, which is ignored.
+\noindent
+\fbox{$\RUp k t m$}\ \  Read back neutrals under annotation.  (The annotation is ignored.)
 \begin{gather*}
   \ru{t \evalsto \up T n \qquad
       \RNe k n m
     }{\RUp k t m}
 \end{gather*}
 
-\fbox{$\RNat k t v $}
+\noindent
+\fbox{$\RNat k t v $}\ \ Read back natural number value.
 \begin{gather*}
   \ru{% t \evalsto \up {\Nat \alpha} n \qquad
       %t \evalsto \up {T} n \qquad \RNe k n m
@@ -884,7 +931,8 @@ Judgements.
     }{\RNat k t {\suc a v}}
 \end{gather*}
 
-\fbox{$\RSize k {\alpha} a$}
+\noindent
+\fbox{$\RSize k {\alpha} a$}\ \ Read back size value $\alpha$.
 \begin{gather*}
   \ru{
     }{\RSize k \infty \infty}
@@ -896,7 +944,8 @@ Judgements.
     }{\RSize k {\lev j + o} {\ind{k\dotminus(1+j)} + o}}
 \end{gather*}
 
-\fbox{$\RNe k n m$} and \fbox{$\RElim k e e^v$}
+\noindent
+\fbox{$\RNe k n m$} and \fbox{$\RElim k e e^v$}\ \ Read back unreflected neutral.
 \begin{gather*}
 %   \ru{t \evalsto \lev j
 %     }{\RNe k t {\ind{k-1-j}}}
@@ -927,7 +976,9 @@ Judgements.
       \R k d v
     }{\RElim k {(\fix[\ell] D d)} {\fix[\ell] V v}}
 \end{gather*}
-\fbox{$\RTy k T V$}
+
+\noindent
+\fbox{$\RTy k T V$} \ \ Read back type value.
 \begin{gather*}
   \ru{T \evalsto \Set[\ell]
     }{\RTy k T {\Set[\ell]}}
