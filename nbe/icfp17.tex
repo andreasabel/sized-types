@@ -1024,18 +1024,30 @@ The PERs $\NE$ characterizes neutral reifiable terms.
 The PERs $\NE$ and $\NF$ characterize (neutral) normalizing terms.
 \[
 \begin{array}{l@{\quad}l@{\quad}l@{~}l@{~}l@{~}l@{~}l@{~}l}
-  \fbox{$n = n' \in \NE$}
+  n = n' \in \NE
     & \defas &
     \RNe k n m &\mand& \RNe k {n'} {m} &\mforall k \\
-  \fbox{$d = d' \in \NF$}
+  d = d' \in \NF
     & \defas &
     \R k d v &\mand& \R k {d'} {v} &\mforall k \\
-  \fbox{$e = e' \in \ELIM$}
+  e = e' \in \ELIM
     & \defas &
     \RElim k e e_v &\mand& \R k {e'} {e_v} &\mforall k \\
-  \fbox{$A = A' \in \TY$}
+  A = A' \in \TY
     & \defas &
     \RTy k A V &\mand& \RTy k {A'} {V} &\mforall k \\
+  % \fbox{$n = n' \in \NE$}
+  %   & \defas &
+  %   \RNe k n m &\mand& \RNe k {n'} {m} &\mforall k \\
+  % \fbox{$d = d' \in \NF$}
+  %   & \defas &
+  %   \R k d v &\mand& \R k {d'} {v} &\mforall k \\
+  % \fbox{$e = e' \in \ELIM$}
+  %   & \defas &
+  %   \RElim k e e_v &\mand& \R k {e'} {e_v} &\mforall k \\
+  % \fbox{$A = A' \in \TY$}
+  %   & \defas &
+  %   \RTy k A V &\mand& \RTy k {A'} {V} &\mforall k \\
 \end{array}
 % \begin{array}{l@{\quad}l@{\quad}l@{~}l@{~}l@{~}l@{~}l@{~}l}
 %   \fbox{$n = n' \in \NE$}
@@ -1080,9 +1092,10 @@ The PERs $\NE$ and $\NF$ characterize (neutral) normalizing terms.
   \end{enumerate}
 \end{lemma}
 
-Now we define some PERs and PER constructors on values.  All these PERs $\A$ are closed under weak head equality, meaning if $a = b \in \A$ and $a'$ has the same weak head normal form as $a$, then $a' = b in \A$.  (By symmetry, $\A$ is also closed under weak head equality on the second argument.)
+Now we define some PERs and PER constructors on values.  All these PERs $\A$ are closed under weak head equality, meaning if $a = b \in \A$ and $a'$ has the same weak head normal form as $a$, then $a' = b \in \A$.  (By symmetry, $\A$ is also closed under weak head equality on the second argument.)
 
-Neutrals in the value world $\D$.
+%Neutrals in the value world $\D$.
+PER $\NEE$ interprets all neutral types.
 \[
 \fbox{$t = t' \in \NEE$} \defas
   t \evalsto \up T n \mand t' \evalsto \up{T'}{n'} \mand
@@ -1091,25 +1104,27 @@ Neutrals in the value world $\D$.
 %   % \msuchthat T \evalsto N \mand T' \evalsto N' \mand
 %   \mid n = n' \in \NE \}
 \]
-\fbox{$\NAT(\alpha)$}
+
+\fbox{$\NAT(\alpha)$} interprets $\Nat \alpha$ and is defined inductively by the following rules.
 \begin{gather*}
   \ru{% t \evalsto \up{\Nat \alpha} n \qquad
       % t' \evalsto \up{\Nat \alpha'} n' \qquad
       % n = n' \in \NE
       t = t' \in \NEE
     }{t = t' \in \NAT(\beta)}
-\qquad
+\quad
   \ru{t \evalsto \zero \alpha \qquad
       t' \evalsto \zero{\alpha'}
     }{t = t' \in \NAT(\beta+1)}
-\qquad
+\quad
   \ru{t \evalsto \suc \alpha u \qquad
       t' \evalsto \suc {\alpha'} {u'} \qquad
       u = u' \in \NAT(\beta)
     }{t = t' \in \NAT(\beta+1)}
 \end{gather*}
 
-\fbox{$\SIZE$} is a discrete PER of size values:
+\fbox{$\SIZE$} interprets $\Size$ and is a discrete PER of size values:
+\vspace{-1ex}
 \begin{gather*}
   \ru{
     }{\infty = \infty \in \SIZE}
@@ -1121,13 +1136,14 @@ Neutrals in the value world $\D$.
     }{\lev k + o = \lev k + o \in \SIZE}
 \end{gather*}
 
-Let $\A$ be a PER and $\F$ a family of PERs over $\A$ such that
+Let $\A$ be a PER (including $\A = \SIZE$) and $\F$ a family of PERs over $\A$ such that
 $\F(u) = \F(u')$ whenever $u = u' \in \A$.  We define
 \[
   \fbox{$\PIAF$} \defas \{(t,t') \mid t\,u = t'\,u' \in \F(u) \mforall u = u' \in \A \}
   .
 \]
-This works also for $\A = \SIZE$.
+%This works also for $\A = \SIZE$.
+
 For a family $\F$ over $\SIZE$ we also have the irrelevant function space
 \[
   \fbox{$\FORALL\,\F$} \defas
@@ -1147,7 +1163,11 @@ For a family $\F$ over $\SIZE$ we also have the irrelevant function space
 
 
 \subsection{PER model}
-\label{sec:permode}
+\label{sec:permodel}
+
+Semantic types and their interpretation as PERs are now defined via a
+family of inductive-recursive definitions \cite{dybjer:jsl00}, one for
+each universe level $\ell$.  The construction follows \citet{abelCoquandDybjer:lics07}.
 
 By induction on $\ell \in \NN$ we define the PER family
 $\_ = \_ \in \Set[\ell]$ of types
@@ -1201,9 +1221,11 @@ All relations involved here are closed under weak head equality.
   \item Extension: $\EL[\ell](T_1) = \EL[\ell](T_2)$ and ``both'' are PERs.
   \end{enumerate}
 \end{lemma}
+\LONGVERSION{
 \begin{proof}
   Simultaneously by induction on $\DD$.
 \end{proof}
+}
 
 % The PER model has the usual properties, one of them being that $\EL[\ell](T)$ does not depend $\ell$ nor the derivation that introduced $T = T' \in \SET[\ell]$.  Thus, we simply write $t = t' \in \EL(T)$ or even $t = t' \in T$.
 \begin{lemma}[Derivation independence of extension]
@@ -1211,10 +1233,12 @@ All relations involved here are closed under weak head equality.
   If\/ $\DD_1 :: T = T_1 \in \SET[\ell_1]$
   and $\DD_2 :: T_2 = T \in \SET[\ell_2]$ then $\EL[\ell_1](T) = \EL[\ell_2](T)$.
 \end{lemma}
+\LONGVERSION{
 \begin{proof}
   By induction on $\DD_1$ and cases on $\DD_2$.
 \end{proof}
-Sine $\EL[\ell](T)$ does not depend $\ell$ nor the derivation that introduced $T = T' \in \SET[\ell]$,  we may simply write $t = t' \in \EL(T)$ or even $t = t' \in T$.
+}
+Since $\EL[\ell](T)$ does not depend $\ell$ nor the derivation that introduced $T = T' \in \SET[\ell]$,  we may simply write $t = t' \in \EL(T)$ or even $t = t' \in T$.
 
 
 \subsection{Subtyping}
@@ -1231,6 +1255,7 @@ The semantic types (PERs) admit subsumption:
 \item \label{it:usub}  If\/ $\ell \leq \ell'$ then $\SET[\ell] \subseteq \SET[\ell']$.
 \end{enumerate}
 \end{lemma}
+\LONGVERSION{
 \begin{proof}
   Propositions (\ref{it:natsub}--\ref{it:pisub}) are clear.
   For (\ref{it:usub}), prove $T = T' \in \SET[\ell']$ by induction on $T = T' \in \SET[\ell]$.
@@ -1244,7 +1269,8 @@ The semantic types (PERs) admit subsumption:
 \]
   By induction hypothesis, $A = A' \in \SET[\ell']$, and we have $\EL[\ell'](A) = \EL[\ell](A)$ by Lemma~\ref{lem:indep}.  Assuming $u = u' \in \EL(A)$, we get $B[u] = B'[u'] \in \SET[\ell']$ by induction hypothesis on $B[u] = B'[u'] \in \SET[\ell]$.
 \end{proof}
-We can define subtyping of type values \fbox{$T \leq T' \in \TYPE$} by induction on $T \in \SET[\ell]$ and $T' \in \SET[\ell']$.
+}
+We define subtyping of type values \fbox{$T \leq T' \in \TYPE$} by induction on $T \in \SET[\ell]$ and $T' \in \SET[\ell']$.
 Simultaneously, we need to prove correctness, namely that $T \leq T' \in \TYPE$ implies $\EL(T) \subseteq \EL(T')$.  The correctness follows from Lemma~\ref{lem:subsump} and we do not spell it out here.
 \begin{gather*}
   \ru{T = T' \in \NEE
@@ -1304,7 +1330,15 @@ Simultaneously, we need to prove correctness, namely that $T \leq T' \in \TYPE$ 
 \label{sec:shape}
 
 Reflection and reification perform $\eta$-expansion such that we arrive at an $\eta$-long $\beta$-normal form.  To perform the $\eta$-expansion, not the precise type is needed, just the approximate shape, in particular, whether it is a function type (do expand) or a base type (do not expand).
-For the logical framework, the shape of a dependent type is just its underlying simple type \cite{harperPfenning:equivalenceLF}. However, in the presence of universes and large eliminations, there is no underlying simple type.  Of course, we can take a type as its own shape, but we want at least that $\Nat \alpha$ and $\Nat \beta$ have the same shape even for different $\alpha, \beta$.  Thus, we define a relation $T \shape S$ to express that $S$ is a possible shape of type $T$.
+For the logical framework, the shape of a dependent type is just its
+underlying simple type \cite{harperPfenning:equivalenceLF}. However,
+in the presence of universes and large eliminations, there is no
+underlying simple type.  Of course, we can take a type as its own
+shape, but we want at least that $\Nat \alpha$ and $\Nat \beta$ have
+the same shape even for different $\alpha, \beta$.
+Also all neutral types can be summarized under a single shape.
+We make our intuition precise by defining a relation $T \shape S$
+between type values, to express that $S$ is a possible shape of type $T$.
 
 \fbox{$T \shape S$} for $T \in \SET[\ell]$.  We call $T$ the \emph{template} and $S$ one of its possible \emph{shapes}.
 \begin{gather*}
@@ -1472,7 +1506,7 @@ $\down{B_1[u_1]}(t_1\,u_1) = \down{B_2[u_2]}(t_2\,u_2) \in \NF$, which delivers 
 \subsection{Computation}
 \label{sec:comp}
 
-The eliminations for natural numbers are accurately modeled.
+In this section we show that the eliminations for natural numbers are accurately modeled.
 \begin{lemma}[Case]
   \label{lem:case}
 If\/ $a = a' \in \Nat (\alpha+1)$
@@ -1563,6 +1597,10 @@ $g = g' \in B\,\infty\,a$ follows by subsumption.
 \subsection{Fundamental Theorem}
 \label{sec:fund}
 
+In this section we show that the declarative judgements are sound, in
+particular, well-formed syntactic types map to semantic types, and
+definitionally equal terms map to related values in the PER model.
+The proof is standard.  First, we define inductively a
 PER of substitutions
 \fbox{$\eta = \eta' \eeq \rho \in \Gamma$}.
 \begin{gather*}
@@ -1586,7 +1624,7 @@ We write $\rho \in \Gamma$ for $\rho = \rho \eeq \rho \in \Gamma$.
   If\/ $\eta = \eta' \eeq \rho \in \Gamma$ then $\rho \in \resurrect\Gamma$.
 \end{lemma}
 
-Semantic judgements:
+Then, we define semantic counterparts of our declarative judgements:
 \[
 \begin{array}{l@{\quad}l@{\quad}l}
   \models () & \defas & \mtrue \\
@@ -1704,15 +1742,23 @@ thus, by induction hypothesis, $b \rho \in \SIZE$.
 \subsection{Completeness of NbE}
 \label{sec:compl}
 
-We write $\var\Gamma$ for $\var{|\Gamma|}$.
-We define the identity environment $\rho_\Gamma$ by induction on $\Gamma$.
-We set $\rho_{\cempty} = \sempty$ and
-\[
-\begin{array}{lll}
-  \rho_{\cext \Gamma T} & = & (\rho_\Gamma, \up{T\rho_\Gamma} \var\Gamma) \\
-  \rho_{\eext \Gamma \Size} & = & (\rho_\Gamma, \var\Gamma) \\
-\end{array}
-\]
+From the fundamental theorem, we harvest completeness of NbE in this
+section, \ie, we show that definitionally equal terms have the same
+normal form.
+We may write simply $\Gamma$ for the length $|\Gamma|$ where there is no
+danger of confusion, for instance in de Bruijn level $\var\Gamma$ or
+in read back $\tR_{\Gamma}$.
+%We write $\var\Gamma$ for $\var{|\Gamma|}$.
+We define the \emph{identity environment} \fbox{$\rho_\Gamma$} by induction on $\Gamma$,
+setting $\rho_{\cempty} = \sempty$ and
+$\rho_{\eext \Gamma \Size} = (\rho_\Gamma, \var\Gamma)$ and
+$\rho_{\cext \Gamma T} = (\rho_\Gamma, \up{T\rho_\Gamma} \var\Gamma)$.
+% \[
+% \begin{array}{lll}
+%   \rho_{\cext \Gamma T} & = & (\rho_\Gamma, \up{T\rho_\Gamma} \var\Gamma) \\
+%   \rho_{\eext \Gamma \Size} & = & (\rho_\Gamma, \var\Gamma) \\
+% \end{array}
+% \]
 \begin{lemma}[Identity environment]
   If\/ $\der \Gamma$ then
   $\rho_\Gamma \in \Gamma$.
@@ -1723,6 +1769,7 @@ By induction on $\der \Gamma$.
 \begin{caselist}
 
 \nextcase
+\vspace{-3ex}
 \[
   \ru{\der \Gamma \qquad \resurrect\Gamma \der T
     }{\der \cext\Gamma T}
@@ -1734,6 +1781,7 @@ By reflection (Cor.~\ref{cor:rere}) it follows that $\up A \var\Gamma \in A$, th
 $(\rho_\Gamma, \up A \var\Gamma) \in \cext \Gamma T$.
 
 \nextcase
+\vspace{-3ex}
 \[
   \ru{\der \Gamma
     }{\der \eext\Gamma \Size}
@@ -1744,8 +1792,8 @@ $(\rho_\Gamma, \var\Gamma) \in \eext\Gamma \Size)$.
 \end{caselist}
 \end{proof*}
 
-We can now define the normalization relation
-$\fbox{$\nbe \Gamma T t \evalsto v$} \iff \R {\Gamma} {\down{T \rho_\Gamma} (t \rho_\Gamma)} v$.
+We now define the normalization relation
+$\fbox{$\nbe \Gamma T t \evalsto v$} \defas \R {\Gamma} {\down{T \rho_\Gamma} (t \rho_\Gamma)} v$.
 Whenever $\nbe \Gamma T t \evalsto v$, we may write $\nbe \Gamma T t$ for $v$.
 
 \begin{theorem}[Completeness of NbE]
@@ -1766,7 +1814,20 @@ Whenever $\nbe \Gamma T t \evalsto v$, we may write $\nbe \Gamma T t$ for $v$.
 \section{Soundness  of Normalization by Evaluation}
 \label{sec:soundnbe}
 
-In this section, we show that NbE is sound for judgmental equality, i.e., that same normal form implies definitional equality.  The proof follows \citet{abelCoquandDybjer:lics07,abel:habil}.  However, the logical relation defined in the following will also yield a weak head normalization theorem.
+In this section, we show that NbE is sound for judgmental equality,
+i.e., that same normal form implies definitional equality.  The proof
+follows \citet{abelCoquandDybjer:lics07} and
+\citet{fridlenderPagano:tlca13} and defines a Kripke logical relation
+$\LR \Gamma t T f A$ between a well-typed term $\Gamma \der t : T$ and
+a value $f \in A$.
+However, in contrast to the cited works,
+the logical relation defined in the following will also yield a weak
+head normalization theorem.
+
+First, let us define some auxiliary judgements that relate a
+well-formed syntactic object to a value, via read back.
+They will constitute the logical relation for base types,
+yet, are not general enough for function types.
 \begin{alignat*}{8}
 & \Gamma \der a && \doteq \tRsize\, \alpha
   && \quad\defas\quad
@@ -2032,11 +2093,15 @@ Let $\LRTS{\Gamma} T A s$. Then:
 
 \end{enumerate}
 \end{theorem}
-
+\SHORTVERSION{
+\begin{proof}
+Simultaneously by induction on $\LRTS \Gamma T A s$.
+\end{proof}
+} % END SHORT VERSION
+\LONGVERSION{
 \begin{proof*}
 We prove the propositions for $A'$ and $T'$ (instead of $A$ and $T$)
 simultaneously by induction on $A' \in s$.
-\SHORTLONG{\qed}{ % LONG VERSION
 \begin{caselist}
 
 \nextcase $A' \evalsto \piT A B$ and $\resurrect\Gamma \der T' = \piT U T$.
@@ -2064,8 +2129,8 @@ $\LRTS{\Gamma'}{T(\xi,u)}{B[a]} s$.
 \qed
 \end{enumerate}
 \end{caselist}
-} % END LONGVERSION
 \end{proof*}
+} % END LONGVERSION
 
 \LONGVERSION{
 \begin{corollary}[One-to-one]
