@@ -34,6 +34,11 @@ files=icfp17.tex macros.tex latex/SubDiag.tex latex/SubDiagError.tex figjudge.te
 
 default : icfp17.pdf icfp17-long.pdf
 
+add : additional-material.tgz
+
+additional-material.tgz : README-additional-material.txt icfp17-long.pdf Sit-0.2017.2.26.tar.gz
+	tar czhf $@ $^
+
 pack : icfp17.zip
 
 icfp17.zip : icfp17.pdf $(files) jfp1.cls harpoons.sty icfp17.bbl jfp.bst auto-icfp17.bib
