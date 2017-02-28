@@ -1,0 +1,176 @@
+% Proof of subject reduction delegated to long version
+
+
+For normalization of types, we introduce \fbox{$\Nbe \Gamma T$}
+via the relation $\Nbe \Gamma T \evalsto V \defas \RTy \Gamma {T\rhog} V$.
+Analogously, we show that the test $\Nbe \Gamma T \equiv \Nbe \Gamma T'$
+decides type equality $\Gamma \der T = T'$.
+
+\begin{corollary}[Type weak head normalization]
+  If\/ $\Gamma \der T$ then $T \evalsto W$ for some $W$.
+\end{corollary}
+\LONGVERSION{
+\begin{proof}
+  By the fundamental theorem of typing, $\RG \Gamma T {T\rhog}$,
+  which implies $T \evalsto W$ by definition of the logical relation.
+\end{proof}
+} % END LONGVERSION
+\LONGVERSION{ % BEGIN LONGVERSION
+\begin{corollary}[Type constructor injectivity]
+\label{cor:piinj}
+\bla
+\begin{enumerate}
+\item \label{it:setinj}
+  If\/ $\Gamma \der \Set[\ell] = \Set[\ell'] : s$ then $\ell = \ell'$.
+\item \label{it:natinj}
+  If\/ $\Gamma \der \Nat a = \Nat b : s$ then $a = b$.
+\item \label{it:piinj}
+  If\/ $\Gamma \der \piT U T = \piT{U'}{T'} : s$ then
+  $\Gamma \der U = U' : s$ and
+  $\cext \Gamma U \der T = T' : s$.
+\item \label{it:allinj}
+  If\/ $\Gamma \der \epiT \Size T = \piT{\Size}{T'} : s$ then
+  $\cext \Gamma \Size \der T = T' : s$.
+\end{enumerate}
+\end{corollary}
+\begin{proof}
+\bla
+Statement (\ref{it:setinj}) follows by inversion on  $\Set[\ell] = \Set[\ell'] \in s$, which is a direct consequence of the fundamental theorem (Thm.~\ref{thm:fund}).
+
+For (\ref{it:natinj}), observe that $\Nat (a\rhog) = \Nat (b\rhog) \in s$
+by the fundamental theorem (Thm.~\ref{thm:fund}), which by definition implies $a\rhog = b\rhog$. % \in \SIZE$.
+By the fundamental theorem of typing (Thm.~\ref{thm:fundty}), $\LRTS \Gamma {\Nat a} {\Nat (a\rhog)} s$
+which by definition implies $\LRSize \Gamma a {a\rhog}$.  Analogously, we get $\LRSize \Gamma b {b\rhog}$.
+By Cor.~\ref{cor:oneone}, $a = b$.
+
+
+Last, we prove statement (\ref{it:piinj}), the last statement follows analogously.
+By the fundamental theorem,
+$(\piT U T)\rhog = (\piT{U'}{T'})\rhog \in s$ which by definition means
+$U\rhog = U'\rhog \in s$ and $T(\rhog,u) = T'(\rhog,u') \in s$ for all $u = u' \in s$.
+By reification (Thm.~\ref{thm:rere}),
+$\RTy\Gamma {U\rhog} V$ and $\RTy\Gamma {U'\rhog} V$ for some normal form
+$V$.
+Since by inversion we have $\Gamma \der U,U' : s$ we get $\Gamma \der U = U' : s$ by soundness of NbE.
+Now, choosing $u := u' := \up {U\rhog} \var\Gamma \in U$, we obtain
+$T\rhogu = T' \rhogu \in s$, which analogously gives us $\cext\Gamma U \der T = T' : s$.
+\end{proof}
+} % END LONGVERSION
+\begin{lemma}[Type constructor discrimination]
+  \label{lem:discr}
+  Different type constructors are not related by subtyping.  For instance,
+  $\Gamma \der \Nat a \leq \piT U T$ and
+  $\Gamma \der \erpiT \Size T \leq \piT \Size T'$ are both impossible.
+%  There are $4\times4 = 16$ statements of that sort.
+  % The following judgments are \emph{not} derivable.
+  % \begin{enumerate}
+  % \item $\Gamma \der \Nat a \leq \Set[\ell]$ and $\Gamma \der \
+  % \end{enumerate}
+\end{lemma}
+\begin{proof}
+  Follows directly by the fundamental theorem (Thm.~\ref{thm:fund}) and inversion on semantic subtyping.
+\end{proof}
+% \section{Algorithmic Subtyping}
+% \label{sec:algosub}
+
+
+
+\begin{lemma}[Inversion of subtyping \cite{fridlenderPagano:tlca13}]
+\label{lem:invsubty}
+\bla
+\begin{enumerate}
+\item \label{it:setinvsub}
+  If\/ $\Gamma \der \Set[\ell] \leq \Set[\ell'] : s$ then $\ell \leq \ell'$.
+\item \label{it:natinvsub}
+  If\/ $\Gamma \der \Nat a \leq \Nat b : s$ then $a \leq b$.
+\item \label{it:piinvsub}
+  If\/ $\Gamma \der \piT U T \leq \piT{U'}{T'} : s$ then
+  $\Gamma \der U' \leq U : s$ and
+  $\cext \Gamma {U'} \der T \leq T' : s$.
+\item \label{it:allinvsub}
+  If\/ $\Gamma \der \epiT \Size T \leq \piT{\Size}{T'} : s$ then
+  $\cext \Gamma \Size \der T \leq T' : s$.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+\LONGVERSION{Similar to the proof of Cor.~\ref{cor:piinj}, using
+  Lemma~\ref{lem:lrsub}.} % END LONGVERSION
+We recapitulate the proof for (\ref{it:piinvsub}).
+By the fundamental theorems, we get
+$\RG \Gamma {\piT U T} {(\piT U T)\rhog}$ and
+$\RG \Gamma {\piT {U'} {T'}} {(\piT {U'} {T'})\rhog}$ and
+${(\piT U T)\rhog} \leq {(\piT {U'} {T'})\rhog} \in \TYPE$.
+By inversion, first
+$\RG \Gamma U {U\rhog}$ and
+$\RG \Gamma {U'} {U'\rhog}$ and
+$U'\rhog \leq U\rhog \in \TYPE$ which imply $\Gamma \der U' \leq U$ by Lemma~\ref{lem:lrsub}.
+Recall that
+$\rhogup = (\rhog, u)$ where
+$u = \up{U'\rhog} \var\Gamma \in U'\rhog$ and
+$\LR {\cext \Gamma U'} {\ind0} {U'\slift} {u} {U'\rhog}$ by Cor.~\ref{cor:fresh}.
+From
+$\LRTS {\cext \Gamma U'} T {T(\rhogup)} s$ and
+$\LRTS {\cext \Gamma U'} {T'} {T'(\rhogup)} s$ and
+$T(\rhogup) \leq T'(\rhogup) \in s$, again by Lemma~\ref{lem:lrsub},
+$\cext \Gamma {U'} \der T \leq T' : s$.
+\end{proof}
+
+\begin{lemma}[Strong inversion for abstraction]
+  \label{lem:invabs}
+  \bla
+  \begin{enumerate}
+  \item   If\/ $\Gamma \der \lambda t : \piT U T$ then
+  $\cext \Gamma U \der t : T$.
+  \item   If\/ $\Gamma \der \lambda t : \epiT \Size T$ then
+  $\eext \Gamma \Size \der t : T$.
+  \end{enumerate}
+\end{lemma}
+\begin{proof}
+  By inversion of typing (Lemma~\ref{lem:invty}), type constructor discrimination (Lemma~\ref{lem:discr})
+  and inversion of subtyping (Lemma~\ref{lem:invsubty}).
+
+  For instance, inversion on $\Gamma \der \lambda t : \piT U T$ gives us $\cext \Gamma {U'} \der t : {T'}$ with $\Gamma \der \piT{U'}{T'} \leq \piT U T$ (the other case, $\epiT \Size T$ is excluded by discrimination).  By inversion of subtyping, $\Gamma \der U \leq U'$ and $\cext \Gamma {U} \der T' \leq T$.  Since $\sid : \cext \Gamma U \leq \cext \Gamma {U'}$, we have $\cext \Gamma U \der t : T'$ by weakening, and our goal follows by subsumption.
+\end{proof}
+
+\begin{lemma}[Strong inversion of redexes]
+  \label{lem:stronginv}
+  \bla
+  \begin{enumerate}
+  \item   If\/ $\Gamma \der (\lambda t)\,u : T'$ then
+  $\cext \Gamma U \der t : T$ and $\Gamma \der u : U$ and $\Gamma \der T[u] \leq T'$
+  for some $U,T$.
+  \item   If\/ $\Gamma \der (\lambda t)\,a : T'$ then
+  $\cext \Gamma \Size \der t : T$ and $\Gamma \der a : \Size$ and $\Gamma \der T[a] \leq T'$
+  for some $T$.
+  \item \label{it:sinvall}
+  If\/ $\Gamma \der (\lambda t)\,\ann a : T'$ then
+  $\erext \Gamma \Size \der t : T$ and $\resurrect \Gamma \der a : \Size$ and $\Gamma \der T[a] \leq T'$
+  for some $T$.
+  \end{enumerate}
+\end{lemma}
+\begin{proof}
+  For (\ref{it:sinvall}), from $\Gamma \der (\lambda t) \ann a : T'$ we get $\Gamma \der \lambda t : \forall T$ and $\resurrect \Gamma \der a,b : \Size$ and $\Gamma \der T[b] \leq T'$.  Strong inversion for abstraction gives us $\erext \Gamma \Size \der t : T$.  Since $\Gamma \der [a] = [a] \eeq [b] : \erext \Gamma \Size$,  the substitution lemma yields
+$\Gamma \der t[a] : T[b]$, thus $\Gamma \der t[a] : T'$ by subsumption.
+\end{proof}
+
+\begin{theorem}[Subject reduction]
+  \label{thm:sr}
+  \bla
+  \begin{enumerate}
+  \item
+  If\/ $\DD :: \Gamma \der t : T$ and $\DD' :: t \evalsto w$ then $\Gamma \der t = w : T$.
+  \item
+  If\/ $\DD :: \Gamma \der w\, e : T$ and $\DD' :: w @ e \evalsto w'$ then $\Gamma \der w\,e = w : T$.
+  \end{enumerate}
+\end{theorem}
+\begin{proof}
+  Simultaneously by induction on $\DD'$
+  % By induction on $t \evalsto w$,
+  using inversion (Lemma~\ref{lem:invty}) and strong inversion (Lemma~\ref{lem:stronginv})
+  on the typing derivation $\DD$. % $\Gamma \der t : T$.
+\end{proof}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "icfp17-long"
+%%% End:
