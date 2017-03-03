@@ -23,3 +23,7 @@ old
 /nbe/latex/
 /nbe/trash-syntax.tex
 /nbe/BugSizePolarity.lagda
+/nbe/acmart-pacmpl-template.tex
+/nbe/acmart.cls
+/nbe/icfp17.fdb_latexmk
+/nbe/icfp17.fls
