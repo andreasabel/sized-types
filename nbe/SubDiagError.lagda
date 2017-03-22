@@ -42,7 +42,7 @@ pred .(i + 1) (suc i x)  =  x
 \end{code}
 Note that in the second clause, we have applied subtyping to cast $x : \aNat\,i$ to $\aNat\,(i + 1)$.
 
-We now define subtraction $x \dotminus y$ on natural numbers, sometimes called the $\amonus$ function, which computes $\max(0, x-y)$.  It is defined by induction on the size $j$ of the second argument $y$, while the output is bounded by size $i$ of the first argument $x$.  The input-output relation of $\amonus$ is needed for a natural implementation of Eucledian divison.
+We now define subtraction $x \dotminus y$ on natural numbers, sometimes called the $\amonus$ function, which computes $\max(0, x-y)$.  It is defined by induction on the size $j$ of the second argument $y$, while the output is bounded by size $i$ of the first argument $x$.  The input-output relation of $\amonus$ is needed for a natural implementation of Euclidean divison.
 
 There are several ways to implement $\amonus$, we have chosen a tail-recursive variant which treats the first argument as accumulator.  It computes the result by applying the predecessor function $y$ times to $x$.
 
