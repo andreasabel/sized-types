@@ -242,12 +242,18 @@ Consequently, each of the aforementioned languages based on Type Theory comes wi
 
 Sized types \cite{hughesParetoSabry:popl96} delegate the checking for structural descent to the type system by annotating data types with a size parameter.  The type checker can then ensure that in recursive calls the size goes down, certifying termination.  In the simplest setting \cite{gimenez:typeBased,abel:lmcs07}, the size is just an upper bound on the tree height of the data structure; however, more sophisticated size annotations have also been considered \cite{xi:terminationHOSC,blanqui:rta04}.  Most sized type systems are non-dependent \cite{amadio:guardcondition,abelPientka:jfp16,bartheGregoireRiba:lernet08,bartheGregoireRiba:csl08,blanquiRiba:lpar06,dalLagoGrellois:probabilisticSizedTypes2017}, yet the combination of sized and dependent types has been studied as well \cite{blanqui:csl05,bartheGregoirePastawski:lpar06,gregoireSacchini:lpar10,sacchini:lics13,sacchini:flops14}.  However, to the best of our knowledge, no study combines \emph{higher-rank size polymorphism} with full-fledged dependent types.\footnote{\citet{xi:terminationHOSC} has first-class size polymorphism, but only indexed types, no universes or large eliminations.}
 
-Higher-rank size quantification takes termination checking to the next level; it is necessary for abstraction and generic programming.  For instance, it allows us to write a generic tree traversal which applies a user-given preprocessor on subtrees before recursively descending into these trees.  The condition is that preprocessing does not increase the size of the subtree; otherwise, termination could not be guaranteed.  Concretely, assume a type $\tT\,i$ of trees of size $< i$ with a constructor $\tnode : \forall i.\, \List\,(\tT\,i) \to \tT\,(i+1)$ which takes a finite list of subtrees to form a new tree.
+Higher-rank size quantification takes termination checking to the next
+level; it is necessary for abstraction and generic programming.  For
+instance, it allows us to write a generic tree traversal which applies
+a user-given preprocessor on subtrees before recursively descending
+into these trees, and a postprocessor after surfacing from the
+descent.
+The condition is that preprocessing does not increase the size of the subtree; otherwise, termination could not be guaranteed.  Concretely, assume a type $\tT\,i$ of trees of size $< i$ with a constructor $\tnode : \forall i.\, \List\,(\tT\,i) \to \tT\,(i+1)$ which takes a finite list of subtrees to form a new tree.
 In the following definition of $\ttrav$, the preprocessing $\vpre : \forall i.\, \tT\,i \to \tT\,i$ can be safely applied to input tree $t$ because the type of $\vpre$ bounds the size of $\vpre\,t$ by the size of $t$.
 In case $\vpre\,t = \tnode\,\vts$, the trees in the list $\vts$ are still guaranteed to be of strictly smaller size than $t$, thus, the recursive call to $\ttrav$, communicated via the $\tmap$ function for lists, is safe.
 \[
 \begin{array}{l}
-  \ttrav : (\vpre : \forall i.\, \tT i \to \tT i) (\vpost : \tT \infty \to \tT \infty) \to \forall i.\, \tT\,i \to \tT\,\infty
+  \ttrav : (\vpre : \forall i.\, \tT i \to \tT i)\; (\vpost : \tT \infty \to \tT \infty) \to \forall i.\, \tT\,i \to \tT\,\infty
   \\
   \ttrav \; \vpre \; \vpost \; t = \vpost\;(\tcase\;\vpre\,t\;\tof \, \{ \, \tnode\,\vts \to \tnode\,(\tmap \; (\ttrav \, \vpre \, \vpost) \; \vts)\, \})
 \end{array}
