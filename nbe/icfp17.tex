@@ -247,15 +247,15 @@ In the following definition of $\ttrav$, the preprocessing $\vpre : \forall i.\,
 In case $\vpre\,t = \tnode\,\vts$, the trees in the list $\vts$ are still guaranteed to be of strictly smaller size than $t$, thus, the recursive call to $\ttrav$, communicated via the $\tmap$ function for lists, is safe.
 \[
 \begin{array}{l}
-  \ttrav : (\vpre : \forall i.\, \tT i \to \tT i) \to \forall i.\, \tT\,i \to \tT\,\infty
+  \ttrav : (\vpre : \forall i.\, \tT i \to \tT i) (\vpost : \tT \infty \to \tT \infty) \to \forall i.\, \tT\,i \to \tT\,\infty
   \\
-  \ttrav \; \vpre \; t = \tcase\;\vpre\,t\;\tof \, \{ \, \tnode\,\vts \to \tnode\,(\tmap \; (\ttrav \, \vpre) \; \vts)\, \}
+  \ttrav \; \vpre \; \vpost \; t = \vpost\;(\tcase\;\vpre\,t\;\tof \, \{ \, \tnode\,\vts \to \tnode\,(\tmap \; (\ttrav \, \vpre \, \vpost) \; \vts)\, \})
 \end{array}
 \]
 The display shows the \emph{Curry}-style program as provided by the user, but state-of-the-art type checkers elaborate the program from surface syntax into an internal \emph{Church}-style syntax with explicit type abstractions and type applications.\footnote{Agda, Coq, Idris, and Haskell \cite{sulzmannChakravartyPeythonJonesDonnelly:tldi07} all have Church-style internal languages.}  With implicit type and size applications elaborated, $\ttrav$ would look as follows:
 \[
 \begin{array}{l}
-  \ttrav \; \vpre \; i\; t = \tcase\;\vpre\,i\,t\;\tof \, \{ \, \tnode\,j\,\vts \to \tnode\,\infty\,(\tmap \; (\tT\,j) \; (\tT\,\infty) \; (\ttrav \, \vpre \, j) \; \vts) \}
+  \ttrav \; \vpre \; \vpost \; i\; t = \vpost\;(\tcase\;\vpre\,i\,t\;\tof \, \{ \, \tnode\,j\,\vts \to \tnode\,\infty\,(\tmap \; (\tT\,j) \; (\tT\,\infty) \; (\ttrav \, \vpre \, \vpost \, j) \; \vts) \})
 \end{array}
 \]
 Church-style syntax is the basis for all program analyses and transformations to follow and should be considered as the \emph{true} syntax.
