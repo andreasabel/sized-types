@@ -1,0 +1,142 @@
+% !TEX encoding = UTF-8 Unicode
+\documentclass[a4paper]{easychair}
+
+\usepackage[T1]{fontenc} %
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+
+\usepackage{amsmath, amssymb, amsfonts, stmaryrd}
+\usepackage{pifont}
+\PrerenderUnicode{é} % For the author names in the heading
+
+% Add some colors
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+ linktocpage,
+ colorlinks,
+ citecolor=BlueViolet,
+ filecolor=red,
+ linkcolor=Blue,
+ urlcolor=BrickRed
+}
+
+\usepackage{latex/agda}
+
+\usepackage{graphicx}
+\usepackage{placeins}
+
+% Meta comment
+\newcommand\meta[1]{\textcolor{blue}{\emph{#1}}}
+
+% Include the macro file
+\input{macros}
+
+\title{Normalization by Evaluation for Sized Dependent Types}
+\titlerunning{NbE for Sized Types}
+
+\author{
+  Andreas Abel\inst{1}
+  \and
+  Andrea Vezzosi\inst{1}
+  \and
+  Th\'{e}o Winterhalter\inst{2}
+}
+\authorrunning{Abel and Winterhalter}
+
+\institute{
+  Department of Computer Science and Eng., Gothenburg
+  University, Sweden \\
+  \texttt{\{abela,vezzosi\}@chalmers.se}
+  \and
+  \' Ecole Normale Supérieure de Cachan, France \\
+  \texttt{theo.winterhalter@ens-cachan.fr}
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Sized types have been developed to make termination checking more perspicuous, more powerful, and more modular by integrating termination into type checking.  In dependently-typed proof assistants where proofs by induction are just recursive functional programs, the termination checker is an integral component of the trusted core, as validity of proofs depend on termination.  However, a rigorous integration of full-fledged sized types into dependent type theory is lacking so far.  Such an integration is non-trivial, as explicit sizes in proof terms might get in the way of equality checking, making terms appear distinct that should have the same semantics.
+%
+In this work, we integrate dependent types and sized types with
+higher-rank size polymorphism, which is essential for generic
+programming and abstraction.  We introduce a size quantifier $\forall$
+which lets us ignore sizes in terms for equality checking, alongside
+with a second quantifier $\Pi$ for abstracting over sizes that do
+affect the semantics of types and terms.  Judgmental equality is
+decided by an adaptation of normalization-by-evaluation. % for our new type theory, which features \emph{type shape}-directed reflection and reification.
+\end{abstract}
+
+
+\medskip
+%\section{The Need for an Irrelevant Size Quantifier}
+
+Agda \cite{agdawiki} features first class size polymorphism
+\cite{abel:fics12} in contrast to theoretical accounts of sized
+dependent types
+\cite{bartheGregoirePastawski:lpar06,blanqui:rta04,sacchini:lics13}
+who typically just have prenex (ML-style) size quantification.
+Consequently, Agda's internal language contains size expressions in
+terms wherever a size quantifier is instantiated.  However, these
+size expressions, which are not unique due to subtyping, can get in
+the way of reasoning about sizeful programs.
+Consider the type of sized natural numbers.
+
+\input{latex/SubDiagError}
+
+%\section{Relevant and Irrelevant Size Quantification}
+
+The problem is solved by distinguishing relevant ($\Pi$) from irrelevant
+($\forall$) size quantification.  The relevant quantifier is the usual
+dependent function space over sizes.  In particular, the congruence
+rule for size application requires matching size arguments:
+\[
+  \ru{\Gamma \der t = t' : \Pi i.\, T \qquad
+      \Gamma \der a : \Size
+    }{\Gamma \der t\,a = t'\,a : T[a/i]}
+\]
+Typically, the relevant quantifier is used in types of types, for
+instance, in its non-dependent form, in $\Nat : \aSize \to \Set$.
+In contrast, the irrelevant size quantifier is used in types of
+programs and ignores sizes in size applications.  The rules for
+application, while Church-style, \textit{de facto} implement Curry-style
+quantification:
+\[
+  \ru{\Gamma \der t = t' : \forall i.\, T \qquad
+      \resurrect\Gamma \der a,a',b : \Size
+    }{\Gamma \der t\,a = t'\,a' : T[b/i]}
+\qquad
+  \ru{\Gamma \der t : \forall i.\, T \qquad
+      \resurrect\Gamma \der a,b : \Size
+    }{\Gamma \der t\,a : T[b/i]}
+\]
+Further, the size arguments are scoped in the \emph{resurrected}
+\cite{pfenning:lics01} context
+$\resurrect \Gamma$ and, thus, are allowed to mention irrelevant size
+variables.  Those are introduced by irrelevant size abstraction and
+marked by the $\div$-symbol in the context.
+In contrast, the quantified size variable may occur relevantly in the
+\emph{type}.
+\[
+  \ru{\Gamma, i \erof \Size \der t : T
+    }{\Gamma \der \lambda i.\, t : \forall i.\, T}
+\qquad
+  \ru{\Gamma, i \of \Size \der T : \Set
+    }{\Gamma \der \forall i.\, T : \Set}
+\]
+
+The lack of type unicity arising from the size application rule has
+prevented us from adopting the usual incremental algorithm for
+equality checking
+\cite{harperPfenning:equivalenceLF,abelScherer:types10}.
+However, we have succeeded to employ normalization by evaluation
+%\cite{bergerSchwichtenberg:lics91,abelCoquandDybjer:lics07}
+\cite{abelCoquandDybjer:lics07}
+for deciding judgmental equality \cite{abelVezzosiWinterhalter:icfp17}.
+
+\bibliographystyle{plain}
+\bibliography{auto-types17} % ../article/biblio,
+
+\end{document}

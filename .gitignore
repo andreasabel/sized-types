@@ -27,3 +27,6 @@ old
 /nbe/acmart.cls
 /nbe/icfp17.fdb_latexmk
 /nbe/icfp17.fls
+/types17/medium.bib
+/types17/short.bib
+/types17/Bug-Split-Variable.lagda
