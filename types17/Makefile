@@ -20,14 +20,14 @@ bibliography=short.bib
 
 stdlib=$(HOME)/agda/std-lib/src
 
-gentex=latex/SubDiagError.tex
+gentex=latex/SubDiagError.tex latex/agda.sty
 files=Makefile types17.tex $(gentex) macros.tex easychair.cls
 
-default : $(gentex) types17.pdf
+# default : $(gentex) types17.pdf
 
 pack : types17.zip
 
-types17.zip : types17.tex auto-types17.bib $(files)
+types17.zip : types17.tex auto-types17.bib $(files) types17.bbl
 	zip $@ $^
 
 latex/%.tex : %.lagda
