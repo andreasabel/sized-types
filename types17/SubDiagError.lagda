@@ -31,7 +31,12 @@ data Nat : Size → Set where
   suc   :  ∀ i → Nat i → Nat (i + 1)
 \end{code}
 
-We define subtraction $x \dotminus y$ on natural numbers, sometimes called the $\amonus$ function, which computes $\max(0, x-y)$.  It is defined by induction on the size $j$ of the second argument $y$, while the output is bounded by size $i$ of the first argument $x$.  (The input-output relation of $\amonus$ is needed for a natural implementation of Euclidean divison.)
+We define subtraction $x \dotminus y$ on natural numbers, sometimes
+called the $\amonus$ function, which computes $\max(0, x-y)$.  It is
+defined by induction on the size $j$ of the second argument $y$, while
+the output is bounded by size $i$ of the first argument $x$.  (The
+input-output relation of $\amonus$ is needed for a natural
+implementation of Euclidean divison.)
 
 \begin{code}
 monus : ∀ i → Nat i → ∀ j → Nat j → Nat i
@@ -40,13 +45,21 @@ monus .(i + 1)  (zero i)   .(j + 1) (suc j y)  =  zero i
 monus .(i + 1)  (suc i x)  .(j + 1) (suc j y)  =  monus i x j y
 \end{code}
 
-We wish to prove that subtracting $x$ from itself yields $0$, by induction on $x$.  The case $x = 0$ should be trivial, as $x \dotminus 0 = x$ by definition, hence, $0 \dotminus 0 = 0$.  As simple proof by reflexivity should suffice.  However, the goal shows a mismatch between size $\infty$ and size $i$ coming from the computation of $\amonus\,(i + 1)\,(\azero\,i)\,(i + 1)\,(\azero\,i)$.
+We wish to prove that subtracting $x$ from itself yields $0$, by
+induction on $x$.  The case $x = 0$ should be trivial, as $x \dotminus
+0 = x$ by definition, hence, $0 \dotminus 0 = 0$.  A simple proof by
+reflexivity should suffice.  However, the goal shows a mismatch
+between size $\infty$ and size $i$ coming from the computation of
+$\amonus\,(i + 1)\,(\azero\,i)\,(i + 1)\,(\azero\,i)$.
 
 
 \begin{code}
 monus-diag : ∀ i → (x : Nat i) → zero ∞ ≡ monus i x i x
-monus-diag .(i + 1) (zero i)   =  {! zero ∞ ≡ zero i !}
+monus-diag .(i + 1) (zero i)   =  {! zero ∞ ≡ zero i !}  -- goal
 monus-diag .(i + 1) (suc i x)  =  monus-diag i x
 \end{code}
 
-The proof could be completed by an application of reflexivity if Agda ignored sizes where they act as \emph{type argument}, \ie, in constructors and term-level function applications, but not in types where they act as regular argument, \eg, in $\aNat\,i$.
+The proof could be completed by an application of reflexivity if Agda
+ignored sizes where they act as \emph{type argument}, \ie, in
+constructors and term-level function applications, but not in types
+where they act as regular argument, \eg, in $\aNat\,i$.

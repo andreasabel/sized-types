@@ -58,7 +58,18 @@
 \maketitle
 
 \begin{abstract}
-Sized types have been developed to make termination checking more perspicuous, more powerful, and more modular by integrating termination into type checking.  In dependently-typed proof assistants where proofs by induction are just recursive functional programs, the termination checker is an integral component of the trusted core, as validity of proofs depend on termination.  However, a rigorous integration of full-fledged sized types into dependent type theory is lacking so far.  Such an integration is non-trivial, as explicit sizes in proof terms might get in the way of equality checking, making terms appear distinct that should have the same semantics.
+
+Sized types have been developed to make termination checking more
+perspicuous, more powerful, and more modular by integrating
+termination into type checking.  In dependently-typed proof
+assistants where proofs by induction are just recursive functional
+programs, the termination checker is an integral component of the
+trusted core, as validity of proofs depends on termination.
+However, a rigorous integration of full-fledged sized types into
+dependent type theory is lacking so far.  Such an integration is
+non-trivial, as explicit sizes in proof terms might get in the way
+of equality checking, making terms appear distinct that should have
+the same semantics.
 %
 In this work, we integrate dependent types and sized types with
 higher-rank size polymorphism, which is essential for generic
@@ -66,14 +77,15 @@ programming and abstraction.  We introduce a size quantifier $\forall$
 which lets us ignore sizes in terms for equality checking, alongside
 with a second quantifier $\Pi$ for abstracting over sizes that do
 affect the semantics of types and terms.  Judgmental equality is
-decided by an adaptation of normalization-by-evaluation. % for our new type theory, which features \emph{type shape}-directed reflection and reification.
+decided by an adaptation of normalization-by-evaluation.
+% for our new type theory, which features \emph{type shape}-directed reflection and reification.
 \end{abstract}
 
 
 \medskip
 %\section{The Need for an Irrelevant Size Quantifier}
 
-Agda \cite{agdawiki} features first class size polymorphism
+Agda \cite{agdawiki} features first-class size polymorphism
 \cite{abel:fics12} in contrast to theoretical accounts of sized
 dependent types
 \cite{bartheGregoirePastawski:lpar06,blanqui:rta04,sacchini:lics13}
