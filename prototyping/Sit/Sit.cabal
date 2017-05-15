@@ -4,8 +4,8 @@ build-type:      Simple
 cabal-version:   >= 1.8
 license:         OtherLicense
 license-file:    LICENSE
-author:          Anonymous
-maintainer:      Anonymous
+author:          Andreas Abel <andreas.abel@gu.se>
+maintainer:      Andreas Abel <andreas.abel@gu.se>
 homepage:        NONE
 category:        Dependent types
 synopsis:        Prototypical type checker for Type Theory with Sized Natural Numbers
