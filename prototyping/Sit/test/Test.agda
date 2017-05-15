@@ -18,7 +18,6 @@ refl = \ A a P pa -> pa
 
 sym : forall (A : Set) (a b : A) -> Eq A a b -> Eq A b a --;
 sym = \ A a b eq P pb ->  eq (\ x -> P x -> P a) (\ pa -> pa) pb
---- sym = \ A a b eq -> eq (\ x -> Eq A x a) (refl A a)
 
 --; --- Transitivity
 
@@ -36,7 +35,6 @@ plus : forall .i -> Nat i -> Nat oo -> Nat oo --;
 plus = \ i x y ->
   fix (\ i x -> Nat oo)
       (\ _ f -> \
----      (\ _ f x -> case x return (\ _ -> Nat oo) of \
               { (zero _)   -> y
               ; (suc _ x) -> suc oo (f x)
               })
@@ -106,7 +104,6 @@ plus_suc = \ i x y ->
 plus' : forall .i -> Nat i -> Nat oo -> Nat oo  --;
 plus' = \ i x ->
   fix (\ i x -> Nat oo -> Nat oo)
----           (\ f x -> case x return (\ _ -> Nat oo -> Nat oo) of \
       (\ _ f -> \
          { (zero _)  -> \ y -> y
          ; (suc _ x) -> \ y -> suc oo (f x y)
@@ -115,9 +112,6 @@ plus' = \ i x ->
 
 --; --- Predecessor
 
---- pred  : forall .i -> Nat i -> Nat i  --;
---- pred = \ _ -> \{ (zero _) -> zero _ ; (suc _ y) -> y }
-
 pred  : forall .i -> Nat i -> Nat i  --;
 pred = \ i n ->
   fix (\ i _ -> Nat i)
@@ -125,16 +119,6 @@ pred = \ i n ->
       n
 
 --; --- Subtraction
-
---- {- {- Agda does not like the following -}
---- minus : forall .i -> Nat i -> forall .j -> Nat j -> Nat i --;
---- minus = \ i x j y ->
----   fix (\ _ _ -> Nat i -> Nat i)  --- Variable i is declared irrelevant, so it cannot be used here
----       (\ _ f -> \{ (zero _) -> \ x -> x; (suc _ y) -> \ x -> f y (pred i x) })
----       y
----       x
----   --;
---- --- -}
 
 sub : forall .j -> Nat j -> forall .i -> Nat i -> Nat i  --;
 sub = \ j y ->
@@ -189,22 +173,3 @@ sum = \ _ n ->
 
 sum123 : Eq (Nat oo) (sum oo three (zero oo) one two three) six --;
 sum123 = refl (Nat oo) six
-
---; --- The minimum function on Nat
---; --- Succeeds in Agda, but fails admissibility test in Sit.
-
----
----
---- min : forall .i -> Nat i -> Nat i -> Nat i --;
---- min = \ _ x ->
----   fix (\ i _ -> Nat i -> Nat i)
----       (\ i f -> \
----         { (zero _) -> \ y -> y
----         ; (suc _ x) -> \
----           { (zero _) -> suc i x
----           ; (suc _ y) -> f x y
----           }
----         })
----       x
----
----
