@@ -9,7 +9,7 @@ It is a proof of concept that we can have a dependently typed language with size
 where type checking is decidable and termination is instrumented by sizes.
 The main new feature is the shape-irrelevant quantifier
 `..(i : Size) -> T` to be used in types of types, distinguished from
-irrelevant size quantification `..(i : Size) -> T` to be used in types of programs.
+irrelevant size quantification `.(i : Size) -> T` to be used in types of programs.
 
 Installation with docker
 ------------------------
