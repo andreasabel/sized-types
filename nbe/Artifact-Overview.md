@@ -3,6 +3,14 @@ Artifact accompanying ICFP paper __Normalization by Evaluation for Sized Depende
 Sit -- Checking dependent types with sized natural numbers
 ==========================================================
 
+The __Sit__ (size-irrelevant types) checker is a prototype coming with the ICFP 2017 paper
+__Normalization by Evaluation for Sized Dependent Types__ by Abel, Vezzosi, and Winterhalter.
+It is a proof of concept that we can have a dependently typed language with sized types
+where type checking is decidable and termination is instrumented by sizes.
+The main new feature is the shape-irrelevant quantifier
+`..(i : Size) -> T` to be used in types of types, distinguished from
+irrelevant size quantification `..(i : Size) -> T` to be used in types of programs.
+
 Installation with docker
 ------------------------
 
@@ -35,7 +43,7 @@ If you have `ghc >= 7.8` and `cabal >= 1.24`, you can install `Sit` from `hackag
 ```shell
 cabal update
 cabal install Sit
-cd $HOME/.cabal/share/x86_64-linux-ghc-7.10.3/Sit-0.2017.5.1/test
+cd $HOME/.cabal/share/x86_64-linux-ghc-7.10.3/Sit-0.2017.5.2/test
 Sit.bin Test.agda
 ```
 This assumes that your `.cabal/bin` is in the `PATH`.
@@ -50,3 +58,37 @@ tar xzf Sit-0.2017.2.26.tar.gz
 cd Sit-0.2017.2.26
 make
 ```
+
+Programming with Sit
+--------------------
+
+The syntax is summarized on the github page
+https://github.com/andreasabel/Sit
+but to get started, look at the file
+`test/Test.agda`
+coming with Sit.
+Note that the syntax is a subset of the Agda syntax,
+you can compare the result of type checking with Sit to Agda's answer.
+(You need to get the latest stable version of Agda from github.com).
+The predefined types and combinators of Sit are defined in
+`test/Base.agda`.
+
+The type checker is called via
+```
+Sit.bin <myfile>.agda
+```
+
+Evaluating the artifact
+-----------------------
+
+Reading the supplied examples, understand the difference between ordinary quantification,
+irrelevant quantification (`.(i : Size)`) and shape-irrelevant quantification
+(`..(i : Size)`).
+
+Check your own examples.
+
+Read the source code on
+https://github.com/andreasabel/Sit
+or
+https://hackage.haskell.org/package/Sit
+.
