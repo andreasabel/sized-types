@@ -32,7 +32,7 @@ files=icfp17.tex macros.tex latex/SubDiag.tex latex/SubDiagError.tex figjudge.te
 .PRECIOUS : %.dvi %.ps %.gz %.pdf %.tex
 
 
-default : icfp17.pdf icfp17-long.pdf
+default : talkTYPES17.pdf # icfp17.pdf icfp17-long.pdf
 
 add : additional-material.tgz
 
@@ -58,6 +58,9 @@ html/Everything.html : $(agdafiles)
 
 latex/%.tex : %.lagda
 	agda --latex $<
+
+talkTYPES17.pdf : talkTYPES17.tex macros.tex latex/MonusDiagError.tex
+	pdflatex $<
 
 # icfp17
 ##################################################################
