@@ -8,14 +8,17 @@
 *.bin
 *.dyn_hi
 *.dyn_o
+*.gz
 *.hi
 *.log
+*.nav
 *.o
 *.out
 *.pdf
 *.ptb
 *.snm
 *.toc
+*.tgz
 old
 /prototyping/size-irrelevance/Sit/
 /prototyping/Sit/src/Sit/
