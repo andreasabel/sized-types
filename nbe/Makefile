@@ -59,7 +59,7 @@ html/Everything.html : $(agdafiles)
 latex/%.tex : %.lagda
 	agda --latex $<
 
-talkTYPES17.pdf : talkTYPES17.tex macros.tex latex/MonusDiagError.tex
+talkTYPES17.pdf : talkTYPES17.tex macros.tex latex/MonusDiagError.tex latex/MonusDiag.tex
 	pdflatex $<
 
 # icfp17

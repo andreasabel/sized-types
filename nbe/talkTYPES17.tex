@@ -31,7 +31,7 @@
     \end{center}
   }
   % plus red emphasis
-  \setbeamercolor{alerted text}{fg=red}
+  \setbeamercolor{alerted text}{fg=red!80!black}
 
   % More space between items
   %\defbeamertemplate*{itemize/enumerate body begin}{default}{\itemsep1ex}
@@ -353,7 +353,8 @@
 \renewcommand{\erhyp}[3][\irr]{#1#2 \of #3}
 \newcommand{\shirrhyp}{\erhyp[\shirr]}
 \renewcommand{\erfunT}[4][\irr]{(\erhyp[#1]{#2}{#3}) \to #4}
-\renewcommand{\resurrect}[1]{\irr^{-1}#1}
+\newcommand{\serfunT}[4][\irr]{(#1#2 : #3) \to #4}
+\renewcommand{\resurrect}[1]{\irr^{-1}(#1)}
 
 \begin{document}
 
@@ -386,7 +387,7 @@
   \begin{itemize}
   \item $\Set : \Set$ (meaning $\Type : \Type$) inconsistent.
   \item Stratification $\Set_0 : \Set_1 : \Set_2 : \dots$
-  \item Subtyping $\Set_0 \leq \Set_1 \leq \Set_2 \leq \dots$
+  \item Subtyping $\Set_0 \subset \Set_1 \subset \Set_2 \subset \dots$
   \item Polymorphism $f : \forall \ell \to (A : \Set_\ell) \to A \to A$.
   \item Level expressions are not unique: $f\,0\,\Nat\,x$ vs. $f\,1\,Nat\,x$.
   \item Get in the way of equality: $f\,0\,\Nat\,x = f\,1\,Nat\,x$?
@@ -398,12 +399,12 @@
   \begin{itemize}
   \item $\tfix : ((\Nat \to C) \to (\Nat \to C)) \to \Nat \to C$
     inconsistent
-  \item Stratification $\Nat^0 < \Nat^1 < \Nat^2 < \dots < \Nat^\infty$ \\
+  \item Stratification $\Nat^0 \subset \Nat^1 \subset \Nat^2 \subset \dots \subset \Nat^\infty$ \\
     $\tfix : (\forall i \to (\Nat^i \to C) \to (\Nat^{i+1} \to C))
     \to \forall i \to \Nat^i \to C$
   \item Polymorphism $t : (\forall i \to \Tree^i \to \Tree^i) \to
     \forall i \to \Tree^i \to \Tree^\infty$
-  \item Size expression are not unique.
+  \item Size expressions are not unique.
   \item Get in the way of equality proofs.
   \end{itemize}
 \end{frame}
@@ -516,7 +517,7 @@
   \item These are \emph{not} shape-irrelevant:
 \[
 \begin{array}{@{\shirr}l@{~\not\der~}l}
-  b \of \Bool  & \tifthenelse b \Set_0 {\Set_0 \to \Set_0}
+  b \of \Bool  & \tifthenelse b {\Set_0} {\Set_0 \to \Set_0}
 \\
   X \of \Set_0 & X
 \\
@@ -551,7 +552,7 @@
   \mathit{template} \shape \mathit{shape}
 \]
 \vspace{-2ex}
-  \item No syntactic judgement for \emph{same shape}. :(
+  \item No syntactic judgement for \textit{same shape}. :(
   \end{itemize}
 \end{frame}
 
@@ -565,8 +566,10 @@
   \item Relations $a \in A$ and $a = a' \in A$ between whnfs.
   \item Reflecting neutral term $u$ as value $\up A u \in A$:
 \[
-\begin{array}{lll}
+\begin{array}{rll}
    (\up {\sfunT x A B(x)} u)(a) & = & \up {B(a)} (u\,\down A a)
+\\
+   (\up {\serfunT x A B(x)} u)(a) & = & \up {B(a)} (u \ann{\down A a})
 \end{array}
 \]
 \vspace{-2ex}
@@ -586,10 +589,29 @@
   \begin{theorem}
     Let $A \shape A_1$ and $A \shape A_2$.
     \begin{enumerate}
-    \item If $u$ neutral then $\up {A_1} u = \up {A_2} u \in A$.
-    \item If $a_1 = a_2 \in A$ then $\down {A_1} a_1$ and $\down {A_2} a_2$ are the same normal form.
+    \item If $u_1$ and $u_2$ are equal neutrals then $\up {A_1} u_1 = \up {A_2} u_2 \in A$.
+    \item If $a_1 = a_2 \in A$ then $\down {A_1} a_1$ and $\down {A_2} a_2$ are equal normal forms.
     \end{enumerate}
   \end{theorem}
+  \begin{proof}
+    \begin{itemize}
+    \item
+    Goal $\up{\color{darkred}\serfunT x {A_1}{B_1(x)}} u_1 = \up{\color{darkred}\serfunT x {A_2}{B_2(x)}} u_2 \in \color{darkred}\erfunT x A {B(x)}$.
+    \item
+    Assume $a_1 \in A$ and $a_2 \in A$.
+    \item
+    Show $(\up{\serfunT x {A_1}{B_1(x)}} u_1)(a_1) = (\up{\serfunT x {A_2}{B_2(x)}} u_2)(a_2) \in B(a_1)$.
+    \item
+    Show $\up{\color{darkred}B_1(a_1)} (u_1 \ann {\down{A_1} a_1}) = \up{\color{darkred}B_2(a_2)} (u_2 \ann {\down{A_2}a_2}) \in \color{darkred}B(a_1)$.
+    \end{itemize}
+    Since $B_1(x)$ and $B_2(x)$ are shape-irrelevant in $x$, we apply the induction hypothesis with
+    $B(a_1) \shape B_1(a_1)$ and $B(a_1) \shape B_2(a_2)$.
+  \end{proof}
+\end{frame}
+
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{Decidability}
   \begin{itemize}
   \item NbE decides definitional equality.
   \item Type checking (bidirectional) decidable with rule:
@@ -601,6 +623,17 @@
   \end{itemize}
 \end{frame}
 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Sizes out of the Way!}
+\vspace{-3ex}
+\input{latex/MonusDiag}
+\aOpt \\[1ex]
+\aNat \\[2ex]
+
+\aPredTy \\[2ex]
+
+\aMonus
+\end{frame}
 
 \begin{frame}%[fragile=singleslide]
   \frametitle{Conclusions}
