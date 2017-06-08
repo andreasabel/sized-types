@@ -32,7 +32,7 @@ files=icfp17.tex macros.tex latex/SubDiag.tex latex/SubDiagError.tex figjudge.te
 .PRECIOUS : %.dvi %.ps %.gz %.pdf %.tex
 
 
-default : talkTYPES17.pdf # icfp17.pdf icfp17-long.pdf
+default : icfp17-long.pdf # icfp17.pdf
 
 add : additional-material.tgz
 

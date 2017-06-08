@@ -1919,7 +1919,7 @@ yet, are not general enough for function types.
 % \]
 By definitions, these relations are closed under subsumption and
 weakening, e.g., if\/ $\RD \Gamma t d T$ and $\Gamma \der T \leq T'$ then $\RD \Gamma t d T'$,
-and if\/ $\xi : \Gamma \leq \Gamma'$ then $\RD{\Gamma'}{t\xi}d{T\xi}$.
+and if\/ $\xi : \Gamma' \leq \Gamma$ then $\RD{\Gamma'}{t\xi}d{T\xi}$.
 
 \begin{lemma}[Closure properties for neutrals]
 \label{lem:rclosne}
@@ -2087,17 +2087,17 @@ We write \fbox{$\RG \Gamma T A$} if\/ $\LRTS \Gamma T A s$ for some sort $s$.
 \begin{theorem}[Into and out of the logical relation]
 \label{thm:into}
 \bla
-Let $\LRTS{\Gamma} T A s$. Then:
+Let $\LRTS{\Gamma} T A s$ and $A \shape S$. Then:
 %Let $A \in s$.
 \begin{enumerate}
 
 \item \label{it:into}
    If\/ $\Gamma \der t \doteq \tRne\,n : T$ then
-   $\LR \Gamma t T {\up A n} A$.
+   $\LR \Gamma t T {\up S n} A$.
 
 \item \label{it:out}
   If\/ $\LR \Gamma t T f A$ then
-  $\Gamma \der t \doteq \tR\,\down A f : T$.
+  $\Gamma \der t \doteq \tR\,\down S f : T$.
 
 \item \label{it:outty}
    %If\/ $\LRTS{\Gamma} T A s$ then
@@ -2126,20 +2126,22 @@ Simultaneously by induction on $\LRTS \Gamma T A s$.
 } % END SHORT VERSION
 \LONGVERSION{
 \begin{proof*}
-We prove the propositions for $A'$ and $T'$ (instead of $A$ and $T$)
+We prove the propositions for $A'$, $S'$, and $T'$ (instead of $A$, $S$, and $T$)
 simultaneously by induction on $A' \in s$.
 \begin{caselist}
 
-\nextcase $A' \evalsto \piT A B$ and $\resurrect\Gamma \der T' = \piT U T$.
+\nextcase $A' \evalsto \piT A B$ and $S' \evalsto \piT R S$
+and $\resurrect\Gamma \der T' = \piT U T$.
+
 \begin{enumerate}
 \item
 The premise is, after type conversion, $\Gamma \der t \doteq \tRne\, n : \piT U T$.
-To demonstrate $\LR \Gamma t {T'} {\up {A'} n} {A'}$ we assume
+To demonstrate $\LR \Gamma t {T'} {\up {S'} n} {A'}$ we assume
 $\xi : \Gamma' \leq \Gamma$ and $\LR{\Gamma'}{u}{U\xi} a A$ and show
-$\LR{\Gamma'} {(t\xi\,u)} {T(\xi,u)} {\up{B[a]}(n\,\down A a)} {B[a]}$.
-By induction hypothesis (\ref{it:out}) we have $\RD {\Gamma'} u {\down A a} {U\xi}$, and
+$\LR{\Gamma'} {(t\xi\,u)} {T(\xi,u)} {\up{S[a]}(n\,\down A a)} {B[a]}$.
+By induction hypothesis (\ref{it:out}) we have $\RD {\Gamma'} u {\down R a} {U\xi}$, and
 together with the weakened premise $\Gamma' \der t\xi \doteq \tRne\, n : (\piT U T) \xi$ we get
-$\Gamma' \der t\xi\, u \doteq \tRne\, (n\,\down A a) : T(\xi,u)$.
+$\Gamma' \der t\xi\, u \doteq \tRne\, (n\,\down R a) : T(\xi,u)$.
 The goal follows by induction hypothesis (\ref{it:into}) for
 % $B[a] \in s$.
 $\LRTS{\Gamma'}{T(\xi,u)}{B[a]} s$.
@@ -2154,6 +2156,38 @@ $\LRTS{\Gamma'}{T(\xi,u)}{B[a]} s$.
 % assumption $\LR{\Gamma'}{u}{U\xi} a A$ with $\xi'$.
 \qed
 \end{enumerate}
+
+\nextcase $A' \evalsto \forallT A$ and $S' \evalsto \forallT S$ and
+$\resurrect\Gamma \der T' = \forallT T$.
+
+\begin{enumerate}
+\item We assume $\xi : \Gamma' \leq \Gamma$ and
+$\resurrect{\Gamma'} \der a, b : \Size$ and $\alpha,\beta \in \SIZE$ with
+$\LRSize {\resurrect{\Gamma'}} b \beta$ and show
+$\LR {\Gamma'} {t\xi\ann a} {T(\xi,b)} {(\up {S'} n) \ann \alpha} {A[\beta]}$.
+By the evaluation rules for reflection, it is sufficient to show
+% It is sufficient to show
+$\LR {\Gamma'} {t\xi\ann a} {T(\xi,b)} {\up {S[\alpha]} (n \ann \alpha)} {A[\beta]}$.
+This follows by induction hypothesis (\ref{it:into}) if
+$\LRTS {\Gamma'} {T(\xi,b)} {A[\beta]} s$ and $A[\beta] \shape S[\alpha]$ and
+$\RNE {\Gamma'} {t\xi\ann a} {n \ann \alpha} {T(\xi,b)}$.
+The first two of these subgoals are immediate.  For the third, assume
+$\xi' : \Gamma'' \leq \Gamma'$.
+We have to show that there exists a neutral normal form $m'$ such that
+$\RNe {\Gamma''} {n \ann \alpha} m'$ and
+$\Gamma'' \der (t\xi \ann a)\xi' = m' : (T(\xi,b))\xi'$.
+Sizes can always be read back, thus, let $\RSize {\Gamma''} \alpha {a_0}$.
+By assmption $\RNE \Gamma t n {T'}$, there is an $m$ with
+$\RNe {\Gamma''} n m$ and
+$\Gamma'' \der t\xi\xi' = m : T'\xi\xi'$.
+The latter equation implies
+$\Gamma'' \der t\xi\xi' \ann {a\xi'} = m \ann {a_0} : T(\xi\xi',b\xi')$
+by irrelevant size application to
+$\resurrect{\Gamma''} \der a\xi', a_0, b \xi' : \Size$,
+thus we are done by choosing $m' : = m \ann{a_0}$.
+
+\end{enumerate}
+
 \end{caselist}
 \end{proof*}
 } % END LONGVERSION
@@ -2517,3 +2551,8 @@ Finally, we would like a general theory of shape-irrelevance that extends beyond
 % Text of appendix \ldots
 
 \end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "icfp17-long"
+%%% End:
