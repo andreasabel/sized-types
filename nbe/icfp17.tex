@@ -1927,9 +1927,31 @@ and if\/ $\xi : \Gamma' \leq \Gamma$ then $\RD{\Gamma'}{t\xi}d{T\xi}$.
 \begin{enumerate}
 \item If\/ $\RNE \Gamma t n \piT U T$ and $\RD \Gamma u d U$ then $\RNE \Gamma {t\,u} {n\,d} {T[u]}$.
 \item If\/ $\RNE \Gamma t n \piT \Size T$ and $\RSIZE \Gamma a \alpha$ then $\RNE \Gamma {t\,a} {n\,\alpha} {T[a]}$.
-\item If\/ $\RNE \Gamma t n \forallT T$ and $\RSIZE {\resurrect\Gamma} a \alpha$ then $\RNE \Gamma {t\,\ann a} {n\,\ann \alpha} {T[a]}$.
+\item \label{it:closneall}
+If\/ $\RNE \Gamma t n \forallT T$ and $\resurrect\Gamma \der a,b : \Size$ and $\alpha \in \SIZE$ then $\RNE \Gamma {t\,\ann a} {n\,\ann \alpha} {T[b]}$.
+%% TOO WEAK:
+% \item If\/ $\RNE \Gamma t n \forallT T$ and $\RSIZE {\resurrect\Gamma} a \alpha$ then $\RNE \Gamma {t\,\ann a} {n\,\ann \alpha} {T[a]}$.
 \end{enumerate}
 \end{lemma}
+\LONGVERSION{
+\begin{proof*}
+For (\ref{it:closneall}), assume
+$\xi : \Gamma' \leq \Gamma$.
+We have to show that there exists a neutral normal form $m'$ such that
+$\RNe {\Gamma'} {n\, \ann \alpha} m'$ and
+$\Gamma' \der (t\, \ann a)\xi = m' : T[b]\xi$.
+Sizes can always be read back, thus, let $\RSize {\Gamma'} \alpha {a_0}$.
+By assumption $\RNE \Gamma t n {\forallT T}$, there is an $m$ with
+$\RNe {\Gamma'} n m$ and
+$\Gamma' \der t\xi = m : (\forallT T)\xi$.
+The latter equation implies
+$\Gamma' \der t\xi \ann {a\xi} = m \ann {a_0} : T(\xi,b\xi)$
+by irrelevant size application to
+$\resurrect{\Gamma'} \der a\xi, a_0, b \xi : \Size$,
+thus we are done with $m' := m \ann{a_0}$.
+\qed
+\end{proof*}
+} % END LONGVERSION
 
 Let \fbox{$\Gamma \der T \evalsto W : s$} denote the conjunction of $T \evalsto W$ and $\Gamma \der T = W : s$.
 We simultaneously define
@@ -2154,7 +2176,6 @@ $\LRTS{\Gamma'}{T(\xi,u)}{B[a]} s$.
 % $\R{\Gamma''} {\down A a} v$ and $\Gamma'' \der u\xi' = v : U\xi\xi'$.
 % However, this follows by induction hypothesis (\ref{it:out}) on
 % assumption $\LR{\Gamma'}{u}{U\xi} a A$ with $\xi'$.
-\qed
 \end{enumerate}
 
 \nextcase $A' \evalsto \forallT A$ and $S' \evalsto \forallT S$ and
@@ -2171,23 +2192,28 @@ $\LR {\Gamma'} {t\xi\ann a} {T(\xi,b)} {\up {S[\alpha]} (n \ann \alpha)} {A[\bet
 This follows by induction hypothesis (\ref{it:into}) if
 $\LRTS {\Gamma'} {T(\xi,b)} {A[\beta]} s$ and $A[\beta] \shape S[\alpha]$ and
 $\RNE {\Gamma'} {t\xi\ann a} {n \ann \alpha} {T(\xi,b)}$.
-The first two of these subgoals are immediate.  For the third, assume
-$\xi' : \Gamma'' \leq \Gamma'$.
-We have to show that there exists a neutral normal form $m'$ such that
-$\RNe {\Gamma''} {n \ann \alpha} m'$ and
-$\Gamma'' \der (t\xi \ann a)\xi' = m' : (T(\xi,b))\xi'$.
-Sizes can always be read back, thus, let $\RSize {\Gamma''} \alpha {a_0}$.
-By assmption $\RNE \Gamma t n {T'}$, there is an $m$ with
-$\RNe {\Gamma''} n m$ and
-$\Gamma'' \der t\xi\xi' = m : T'\xi\xi'$.
-The latter equation implies
-$\Gamma'' \der t\xi\xi' \ann {a\xi'} = m \ann {a_0} : T(\xi\xi',b\xi')$
-by irrelevant size application to
-$\resurrect{\Gamma''} \der a\xi', a_0, b \xi' : \Size$,
-thus we are done by choosing $m' : = m \ann{a_0}$.
-
+The first two of these subgoals are immediate.
+The third follows by Lemma~\ref{lem:rclosne} (\ref{it:closneall}) from the
+weakened assumption
+ $\RNE {\Gamma'} {t\xi} n {T'\xi}$.
+% For the third, assume
+% $\xi' : \Gamma'' \leq \Gamma'$.
+% We have to show that there exists a neutral normal form $m'$ such that
+% $\RNe {\Gamma''} {n \ann \alpha} m'$ and
+% $\Gamma'' \der (t\xi \ann a)\xi' = m' : (T(\xi,b))\xi'$.
+% Sizes can always be read back, thus, let $\RSize {\Gamma''} \alpha {a_0}$.
+% By assmption $\RNE \Gamma t n {T'}$, there is an $m$ with
+% $\RNe {\Gamma''} n m$ and
+% $\Gamma'' \der t\xi\xi' = m : T'\xi\xi'$.
+% The latter equation implies
+% $\Gamma'' \der t\xi\xi' \ann {a\xi'} = m \ann {a_0} : T(\xi\xi',b\xi')$
+% by irrelevant size application to
+% $\resurrect{\Gamma''} \der a\xi', a_0, b \xi' : \Size$,
+% thus we are done by choosing $m' : = m \ann{a_0}$.
+%
+\qed
 \end{enumerate}
-
+%
 \end{caselist}
 \end{proof*}
 } % END LONGVERSION
