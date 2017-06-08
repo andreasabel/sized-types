@@ -1920,7 +1920,18 @@ yet, are not general enough for function types.
 By definitions, these relations are closed under subsumption and
 weakening, e.g., if\/ $\RD \Gamma t d T$ and $\Gamma \der T \leq T'$ then $\RD \Gamma t d T'$,
 and if\/ $\xi : \Gamma' \leq \Gamma$ then $\RD{\Gamma'}{t\xi}d{T\xi}$.
-
+\begin{lemma}[Fresh variable readback]
+  \label{lem:freshread}
+  If\/ $\Gamma \der U$ then $\RNE{\cext \Gamma U} {\ind 0} {\var \Gamma} {U \slift}$.
+\end{lemma}
+\begin{proof}
+  Assume $\xi : \Gamma' \leq \cext \Gamma U$.
+  Note that $\RNe{\Gamma'} {\var\Gamma} {\ind i}$ where
+  $i = |\Gamma'| - |\cext \Gamma U|$ is the length of the context extension.
+  Since $\ind 0 \xi = \ind i$, we conclude
+  $\Gamma' \der \ind 0 \xi = \ind i : U \slift \xi$
+  by weakening of the judgement $\cext \Gamma U \der \ind 0 = \ind 0 : U \slift$.
+\end{proof}
 \begin{lemma}[Closure properties for neutrals]
 \label{lem:rclosne}
 \bla
@@ -1940,7 +1951,8 @@ $\xi : \Gamma' \leq \Gamma$.
 We have to show that there exists a neutral normal form $m'$ such that
 $\RNe {\Gamma'} {n\, \ann \alpha} m'$ and
 $\Gamma' \der (t\, \ann a)\xi = m' : T[b]\xi$.
-Sizes can always be read back, thus, let $\RSize {\Gamma'} \alpha {a_0}$.
+Sizes can always be read back, thus, let $\RSize {\Gamma'} \alpha {a_0}$,
+which guarantees $\resurrect{\Gamma'} \der a_0 : \Size$.
 By assumption $\RNE \Gamma t n {\forallT T}$, there is an $m$ with
 $\RNe {\Gamma'} n m$ and
 $\Gamma' \der t\xi = m : (\forallT T)\xi$.
@@ -2156,7 +2168,7 @@ simultaneously by induction on $A' \in s$.
 and $\resurrect\Gamma \der T' = \piT U T$.
 
 \begin{enumerate}
-\item
+\item % into
 The premise is, after type conversion, $\Gamma \der t \doteq \tRne\, n : \piT U T$.
 To demonstrate $\LR \Gamma t {T'} {\up {S'} n} {A'}$ we assume
 $\xi : \Gamma' \leq \Gamma$ and $\LR{\Gamma'}{u}{U\xi} a A$ and show
@@ -2182,7 +2194,8 @@ $\LRTS{\Gamma'}{T(\xi,u)}{B[a]} s$.
 $\resurrect\Gamma \der T' = \forallT T$.
 
 \begin{enumerate}
-\item We assume $\xi : \Gamma' \leq \Gamma$ and
+\item % into
+We assume $\xi : \Gamma' \leq \Gamma$ and
 $\resurrect{\Gamma'} \der a, b : \Size$ and $\alpha,\beta \in \SIZE$ with
 $\LRSize {\resurrect{\Gamma'}} b \beta$ and show
 $\LR {\Gamma'} {t\xi\ann a} {T(\xi,b)} {(\up {S'} n) \ann \alpha} {A[\beta]}$.
@@ -2217,6 +2230,25 @@ weakened assumption
 \end{caselist}
 \end{proof*}
 } % END LONGVERSION
+\begin{corollary}[Fresh variable injection]
+  \label{cor:fresh}
+  If\/ $\der \cext \Gamma T$ and %$A \in \SET[\ell]$
+  $\RG \Gamma T A$
+  then $\LR {\cext \Gamma T} {\ind 0} {(T \slift)} {(\up A \var\Gamma)} A$.
+\end{corollary}
+\begin{proof}
+  Since $\RNE {\cext \Gamma T} {\ind 0} {\var \Gamma} {T \slift}$
+  by Lemma~\ref{lem:freshread},
+  the goal follows from Thm.~\ref{thm:into} part (\ref{it:into}).
+  % Assume $\xi : \Gamma' \leq \cext \Gamma T$.
+  % Note that for the length
+  % $i = |\Gamma'| - |\cext \Gamma T|$ of the context extension
+  % we have $\ind i = \ind 0 \xi$, thus
+  % $\Gamma' \der \ind 0 \xi = \ind i : T \slift \xi$.
+  % Since $\RNe{\Gamma'} {\var\Gamma} {\ind i}$,
+  % the goal follows now from Thm.~\ref{thm:into} part (\ref{it:into}).
+\end{proof}
+
 
 \LONGVERSION{
 \begin{corollary}[One-to-one]
@@ -2230,22 +2262,6 @@ If\/ $\LRT \Gamma T A \ell$ and $\LRT \Gamma {T'} A {\ell'}$ then $\Gamma \der T
 \end{enumerate}
 \end{corollary}
 } % END LONGVERSION
-\begin{corollary}[Fresh variable]
-  \label{cor:fresh}
-  If\/ $\der \cext \Gamma T$ and %$A \in \SET[\ell]$
-  $\RG \Gamma T A$
-  then $\LR {\cext \Gamma T} {\ind 0} {(T \slift)} {(\up A \var\Gamma)} A$.
-\end{corollary}
-\begin{proof}
-  Assume $\xi : \Gamma' \leq \cext \Gamma T$.
-  Note that for the length
-  $i = |\Gamma'| - |\cext \Gamma T|$ of the context extension
-  we have $\ind i = \ind 0 \xi$, thus
-  $\Gamma' \der \ind 0 \xi = \ind i : T \slift \xi$.
-  Since $\RNe{\Gamma'} {\var\Gamma} {\ind i}$,
-  the goal follows now from Thm.~\ref{thm:into} part (\ref{it:into}).
-\end{proof}
-
 
 \begin{lemma}[Semantic subtyping implies judgmental subtyping \cite{fridlenderPagano:tlca13}]
 \label{lem:lrsub}
