@@ -1,5 +1,7 @@
 \begin{figure}[htbp]
 \flushleft
+\hrulefill
+\\[1ex]
 Computation rules.
 \begin{gather*}
   \ru{\cext \Gamma U \der t : T \qquad
@@ -39,6 +41,7 @@ Computation rules.
      }%{c \in \{\zero a, \suc a t'\}}
 \end{gather*}
 Extensionality rules.
+\vspace{-1ex}
 \begin{gather*}
   \ru{\Gamma \der t : \piT U T
     }{\Gamma \der t = \lambda x. t\,x : \piT U T}
@@ -51,6 +54,7 @@ Extensionality rules.
   $}
 \end{gather*}
 Congruence rules.
+\vspace{-2ex}
 \begin{gather*}
   \ru{\der \Gamma
     }{\Gamma \der \Set[\ell] = \Set[\ell]: \Set[\ell']
@@ -117,7 +121,8 @@ Congruence rules.
      }{\Gamma \der t = t' : T'}
 \end{gather*}
 Equivalence rules.  %(Reflexivity is admissible.)
-\begin{gather*}
+\vspace{-1ex}
+x\begin{gather*}
   \ru{\Gamma \der t : T
     }{\Gamma \der t = t : T}
 \qquad
@@ -128,7 +133,8 @@ Equivalence rules.  %(Reflexivity is admissible.)
       \Gamma \der t_2 = t_3 : T
     }{\Gamma \der t_1 = t_3 : T}
 \end{gather*}
-\vspace{-3ex}
+\hrulefill
+\vspace{-2ex}
   \caption{Definitional equality \fbox{$\Gamma \der t = t' : T$}
     (implies $\resurrect \Gamma \der T$ and $\Gamma \der t,t' : T$
     [and $\resurrect\Gamma \der t = t' : T$]).}

@@ -1,6 +1,7 @@
 \begin{figure}[htbp]
 \flushleft
-%\hrule[\textwidth]
+\hrulefill
+\\[1ex]
 Inductively defined judgements (mutual).
 \[
 \begin{array}{l@{\qquad}l}
@@ -35,16 +36,18 @@ Derived judgements.
 %    & \mbox{in context $\Gamma$, well-formed size $a$ is less or equal than well-formed size $b$} \\
   \Gamma \der T : \Adm \ell & \defas &
      \multicolumn 2 {@{}l@{\quad}}
-       {\Gamma \der T : \FixK \mand \Gamma.i\of\Size.x\of\Nat i \der T\,i\,x \leq T\,\infty\,x}
+       {\Gamma \der T : \FixK \mand \Gamma.z\of\Size.x\of\Nat z \der T\,z\,x \leq T\,\infty\,x}
     & \mbox{% in context $\Gamma$
             % type constructor
             $T$ is admissible for recursion} \\
   \xi : \Gamma \leq \Delta & \defas &
      \multicolumn 2 {@{}l@{\quad}}
-       {\Gamma \der \xi : \Delta \mand \xi = \slift^k_m \mforsome k,m}
+       {\Gamma \der \xi : \Delta \mand \xi = \slift^k_m
+           \mwith m = |\Delta| \mand k = |\Gamma| - m}
     & \mbox{$\xi$ lifts from $\Delta$ to $\Gamma$}
 \end{array}
 \]
+\hrulefill
 \vspace{-2ex}
   \caption{Judgements.}
   \label{fig:judge}

@@ -1,3 +1,4 @@
+\nonstopmode
 %% For double-blind review submission
 \documentclass[acmlarge%,review,anonymous
 ]{acmart}\settopmatter{printfolios=true}
@@ -392,7 +393,8 @@ We present our type theory as (domain-free) \emph{pure type system} \cite{barend
 The \emph{sorts} $s$ are drawn from an infinite predicative hierarchy of universes $\Set[\ell]$ for $\ell \in \NN$.  Universes provide us with polymorphism and the capability to define types by recursion on values.  Whether we have just two universes $\Set[0]$ and $\Set[1]$ or infinitely many, does not matter for the technical difficulty of the meta theory.  The present setup have the advantage that every sort has again a sort since $\Set[\ell] : \Set[\ell+1]$, thus, we do not have to introduce a separate judgement $\Gamma \der T$ for well-formedness of types, we can define it as $\exists s.\ \Gamma \der T : s$.
 
 \begin{figure}[htbp]
-  \centering
+\centering
+\hrulefill
 \[
 \begin{array}{lllrl@{\qquad}l}
 \Sort & \ni & s
@@ -419,7 +421,8 @@ The \emph{sorts} $s$ are drawn from an infinite predicative hierarchy of univers
   & \mbox{substitutions} \\
 \end{array}
 \]
-\vspace{-4ex}
+\hrulefill
+\vspace{-2ex}
   \caption{Syntax.}
   \label{fig:syntax}
 \end{figure}
@@ -582,21 +585,21 @@ positions.  However, the type $T$ is in scope of the resurrected
 context $\resurrect\Gamma$, hence, can mention all variables declared
 in $\Gamma$.  The other judgements are organized similarly.  To
 understand this distinction, consider judgement
-$i \div \Size \der \Nat i$.  This would mean that $i$ is irrelevant in
-$\Nat i$ and thus, $\Gamma \der \Nat a = \Nat {a'}$ for all sizes
+$z \div \Size \der \Nat z$.  This would mean that $z$ is irrelevant in
+$\Nat z$ and thus, $\Gamma \der \Nat a = \Nat {a'}$ for all sizes
 $\resurrect\Gamma \der a,a' : \Size$.  But this is exactly wrong!  However,
-judgement $i \div \Size \der \zero i : \Nat (i + 1)$ is fine, it
+judgement $z \div \Size \der \zero z : \Nat (z + 1)$ is fine, it
 implies $\Gamma \der \zero a = \zero {a'} : \Nat (b+1)$ for all
 $\resurrect\Gamma \der a,a',b : \Size$.
 
 Our substitution theorem
 needs to reflect the distinct scope of things left of the colon vs.\
 things right of the colon.  In the last example we have applied the
-substitution triple $\Gamma \der [a] = [a'] \eeq [b] : (i \div \Size)$
-to judgement $i \div \Size \der \zero i : \Nat (i + 1)$.
+substitution triple $\Gamma \der [a] = [a'] \eeq [b] : (z \div \Size)$
+to judgement $z \div \Size \der \zero z : \Nat (z + 1)$.
 The first two substitutions apply to the term side while the third
 substitution applies to the type side.  The fact that we replace an
-irrelevant variable $i$ allows $a,a',b$ to refer to irrelevant
+irrelevant variable $z$ allows $a,a',b$ to refer to irrelevant
 variables from $\Gamma$, thus, they are in scope of $\resurrect\Gamma$.
 
 %% COULD BE A LEMMA INSTEAD OF A RULE
@@ -830,6 +833,7 @@ under a reification marker $\down{A}$.
 \]
 
 \begin{figure}
+\hrulefill
 $$
 \xymatrix@R=12ex@C=12ex{
 \mathrlap{\mbox{Semantics ($\beta$)}} &
@@ -848,6 +852,7 @@ t \in \Exp \ar@[red]@(u,dl)[uur]^{\_\color{blue}\eta} %\ar@/^/[uur]^{\den\_}
   &
 }
 $$
+\hrulefill
 \caption{Type-assignment NbE in locally nameless
     style.\label{fig:typedchart}}
 \end{figure}

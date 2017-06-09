@@ -51,17 +51,20 @@
 > Specific comments:
 >
 > p2l20: what is post, and why do we care?
+KEEP
 
 > p4l34: what is b?
 ADDED a sentence to explain.
 
 > p5l23: I couldn't understand what is an inaccessible pattern.
+TODO
 
 > p6l7: what is the notation {! !}?
 EXPLAINED
 
 > p7l24: why de Bruijn indices? what's the point of using them in the presentation of the theory?
 > Later the indices i gets confused with sizes.
+REPLACED size variable i by z in Section 3.
 
 > ===========================================================================
 >                            ICFP 2017 Review #84B
