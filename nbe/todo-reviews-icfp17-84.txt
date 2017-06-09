@@ -1,0 +1,217 @@
+> ===========================================================================
+>                            ICFP 2017 Review #84A
+> ---------------------------------------------------------------------------
+>      Paper #84: Normalization by Evaluation for Sized Dependent Types
+> ---------------------------------------------------------------------------
+>
+>                       Overall merit: B. OK paper, but I will not champion
+>                                         it
+>                          Confidence: Y. I am knowledgeable in this area,
+>                                         but not an expert
+>
+>                          ===== Paper summary =====
+>
+> *Sized types* guide the typechecker to check the totality of a
+> function. However, they are problematic when considered in type
+> theory, since comparing types for equality means that the *size* that
+> is put into the types is also compared by the equality checker,
+> sometimes incorrectly flagging terms as distinct, even when they are
+> essentially equal.
+>
+> This article presents a theory encompassing dependent types and
+> *higher-rank* size polymorphism, and studies its properties.
+>
+>                       ===== Comments to authors =====
+>
+> Plus:
+>  * The motivation is clear, and a solution to the problem is definitively needed.
+>
+>  * The solution proposed -- making an irrelevant Pi type former for sizes -- makes perfect sense.
+>
+>  * There is an implementation.
+>
+> Cons:
+>
+>  * It is not clear why a relevant use of Size is needed. Couldn't Size
+>    be irrelevant and any other type be relevant?
+>
+>  * There are too many details -- such as proofs -- that belong in an
+>    appendix, and that could give more space to explaining what are the
+>    new and interesting parts of the work.
+>
+> About the last point, the dump of rules is overwhelming, and a reader
+> more or less versed in type theory will appreciate the paper just
+> focusing on the relevant rules and lemmas. Everything else belongs in
+> an appendix. Sections 6 and 7 are on the complete opposite side of the
+> spectrum: almost no content, and therefore pretty irrelevant. In the
+> same vein, the third point in the introduction "We present a
+> bidirectional type checking algorithm" is overreaching: you barely
+> discuss this point.
+>
+> Specific comments:
+>
+> p2l20: what is post, and why do we care?
+
+> p4l34: what is b?
+ADDED a sentence to explain.
+
+> p5l23: I couldn't understand what is an inaccessible pattern.
+
+> p6l7: what is the notation {! !}?
+EXPLAINED
+
+> p7l24: why de Bruijn indices? what's the point of using them in the presentation of the theory?
+> Later the indices i gets confused with sizes.
+
+> ===========================================================================
+>                            ICFP 2017 Review #84B
+> ---------------------------------------------------------------------------
+>      Paper #84: Normalization by Evaluation for Sized Dependent Types
+> ---------------------------------------------------------------------------
+>
+>                       Overall merit: B. OK paper, but I will not champion
+>                                         it
+>                          Confidence: Y. I am knowledgeable in this area,
+>                                         but not an expert
+>
+>                          ===== Paper summary =====
+>
+> Combining size types and dependent types, with a type operator that
+> permits size types to be ignored in certain circumstances to permit
+> equality checks despite sizes not necessarily matching.
+>
+> Overall this does seem to provide better type checking than forbidding
+> anything except an exact match in size constraints per the examples in
+> the paper, however I have strong concerns about the relaxation of the
+> size checking being able to be employed too often in such a
+> circumstance as to make the size types redundant in circumstances in
+> which they would help catch errors.
+>
+> While the requirement that size variables can only be ignored when
+> they are not directly used in shape relevant positions helps ensure
+> that they cannot be ignored overall too much, the theory is difficult
+> to follow to check that there are not circumstances where this is
+> still problematic.
+>
+> ===========================================================================
+>                            ICFP 2017 Review #84C
+> ---------------------------------------------------------------------------
+>      Paper #84: Normalization by Evaluation for Sized Dependent Types
+> ---------------------------------------------------------------------------
+>
+>                       Overall merit: A. Good paper, I will champion it
+>                          Confidence: X. I am an expert in this area
+>
+>                          ===== Paper summary =====
+>
+> Dependent type theories rely on totality (or productivity) of typable
+> functions in order to maintain soundness and decidability of type
+> checking. Unfortunately, the current mechanisms for ensuring totality
+> in implementations of such theories are obstacles to their
+> use. Syntactic termination checkers are non-modular and can be
+> sensitive to minor changes in how the program is expressed. Sized
+> types offer a modular and more convenient system for type-based proofs
+> of temrination. However, the integration of sized types with dependent
+> types brings complications due to the way that the size information,
+> which is needed for soundness but is irrelevant to the actual data
+> being computed, interferes with checking of definitional
+> equality. This paper presents a solution based on the observation that
+> the *shape* of the types being manipulated is all that is needed for
+> reification in an NbE algorithm to work, and that this does not depend
+> on size information.
+>
+> This paper is essentially a long presentation of quite a bit of the
+> detail of the proofs of completeness and soundness of a normalisation
+> by evaluation (NbE) algorithm for sized dependent types, incorporating
+> all the difficult features listed above. After the introductory
+> examples, the authors present the type system they are working with
+> (in de Bruijn notation!), the NbE algorithm and its completeness, and
+> a soundness proof. Application to subtyping and typechecking
+> algorithms is mentioned. Finally, a possible adaptation of the ideas
+> here to handling universe levels is proposed.
+>
+>                       ===== Comments to authors =====
+>
+> Things that I liked about this paper
+>
+> - If dependently typed programming is to be more generally useful,
+>   then usable and modular systems for termination checking are
+>   required. Sized types are a strong contender in this area, but as
+>   the introduction to this paper points out, the meta theory has been
+>   lacking. Therefore, this paper fills an important gap in the
+>   literature. Moreover, as the conclusion points out, the same ideas
+>   may be useful for checking of irrelevant universe levels.
+>
+> - The paper presents quite a bit of detail, giving definitions in full
+>   and (I believe) all the intermediate lemmas needed for the
+>   proof. Proofs are often omitted, but seem plausible. (though see the
+>   question below).
+>
+>
+> Queries, and things that could be improved
+>
+> - A possible objection to this paper is that it is very
+>   technical. However, I think that the introduction does a good job of
+>   motivating the problem and its solution.
+>
+> - One part that I didn't understand was the definition of the PER 'NE'
+>   at the top of page 16. I don't understand why there is no constraint
+>   on the types $T$ and $T'$? When this PER is used in the following
+>   definitions, surely one wants to exclude non-naturals from the
+>   $\mathcal{N}at(\alpha)$ PER?
+>
+> - Sections 6 and 7 seem a pointless. I think it would be better to
+>   remove them and mention this additional work in the introduction or
+>   conclusion.
+>
+> Smaller comments
+>
+> Page 3, line 44: "let's" => "let"
+>
+> Page 4, lines 34-36: should the 't's on the right hand side of the
+> conclusions of the first and third judgement here be primed?
+>
+> Page 5, line 35: "Eucledian" => "Euclidean"
+>
+> Page 7, line 5/6: "pure type system". I thought that pure type systems
+> necessarily had untyped equality, but maybe not.
+>
+> Page 8, line 17. "Similar as" => "Similarly to"
+>
+> Page 8, line 37. Missing universe level on 'FixK'
+>
+> Pages 10 and 11. Why are some of the rules in boxes? As far as I can
+> tell, this is because they are difficult rules involving
+> irrelevance. But I can't find mention of this in the text.
+>
+> Page 12, line 45/46: "analoguous" => "analogous"
+>
+> Page 15, line 27/8: odd repetition on this line?
+>
+> Page 16, line 16: Is the denotation of $\forall \mathcal{F}$ the
+> intersection?
+>
+> Page 16, line 43: I assume that $\mathcal{D}$ refers to the derivation
+> of the equality, but this isn't explicitly mentioned.
+>
+> Page 17, line 30: Subtyping is **A** preorder
+>
+> Page 17, line 37: "not the precise type is needed" => "the precise
+> type is not needed"
+>
+> Page 18, line 41: "... by lemma 4.1, and by induction
+> hypothesis". Also using Lemma 4.7? because we need $B_1[u_1]
+> \sqsubseteq B_1[u_1]$? (sorry don't know how to tget the right
+> symbol). Also, on line 44, there is a use of Lemma 4.1(1) when
+> applying the induction hypothesis?
+>
+> Page 19, lines 39-40: Maybe point out that this definition is
+> mirroring the derived judgement for 'Adm' on page 8, line 37.
+>
+> Page 21, line 30: not sure what the word "yet" is doing here.
+>
+> Page 21, line 36. "definitions" => "definition"
+>
+> Page 24, line 13. "In the final" => "In these final"
+>
+> Page 24, lines 17-23: what is an incremental equality checker?

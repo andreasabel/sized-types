@@ -343,6 +343,7 @@ To summarize, this article makes the following novel contributions:
 
 \item We present the first integration of a dependent type theory with higher-rank size polymorphism.
 Concretely, we consider a type theory \`a la Martin-L\"of with dependent function types, cumulative universes, subtyping, a judgmental equality with $\eta$-laws, a sized type of natural numbers and two size quantifiers: an irrelevant one $(\forall)$ for binding of sizes in irrelevant positions, and a relevant one $(\Pi)$ for binding of sizes in shape-irrelevant positions (Section~\ref{sec:syntax}).  Judgmental equality features a ``Curry-style'' rule for irrelevant size application which ignores the size arguments, and consequently, the corresponding typing rule will also ignore the size argument.
+(In the following rules, $a$, $a'$, and $b$ stand for arbitrary size expressions.)
 \[
 \ru{\Gamma \der t = t' : \forall i.\, T
   }{\Gamma \der t\,a = t\,a' : T[b/i]}
@@ -443,65 +444,114 @@ quantification.  We omit the ``$\noterased$''-markers
 from $\Pi$ by default (and also in contexts $\Gamma$)
 and write $\forallT T$ for $\erpiT \Size T$.
 %
-Examples for relevant size quantification $\piT \Size T$, in syntax with named variables, are $\Size \to \Set[0]$ or $\funT i \Size \Nat i \to \Set[0]$.  An instance of irrelevant quantification $\forall T$ would be $\forall i.\, \Nat i \to \Nat i$.  Herein, $\Nat i$ denotes the type of natural numbers below $i$. The expression $\Size$ is a possible instance of $U$ in $\epiT U T$, or a possible type of a variable in a typing context $\Gamma$, but not a first-class type, \ie, we cannot construct our own function on sizes.
+Examples for relevant size quantification $\piT \Size T$ are
+$\piT \Size {\Set[0]}$ and
+$\piT \Size {\piT {(\Nat{\ind 0})} {\Set[0]}}$.
+In a syntax with named variables and non-dependent function type
+they could be written as $\Size \to \Set[0]$ and
+$\funT z \Size \Nat z \to \Set[0]$, resp.
+%
+An instance of irrelevant
+quantification $\forall T$ would be
+$\forall.\, \piT {(\Nat{\ind 0})} {(\Nat{\ind 1})}$
+which is
+$\forall z.\, \Nat z \to \Nat z$
+in a named syntax.
+Herein, $\Nat z$ denotes the type of natural numbers below $z$. The
+expression $\Size$ is a possible instance of $U$ in $\epiT U T$, or a
+possible type of a variable in a typing context $\Gamma$, but not a
+first-class type, \ie, we cannot construct our own functions on sizes.
 
 Canonical natural numbers $c$ are constructed by $\zero a$ and $\suc a t$.
-Size expression $a$ is either a constant $o \in \NN$, a variable
+A size expression $a$ is either a constant $o \in \NN$, a variable
 $\ind i + o$ possibly with increment $o$, or the limit ordinal
 $\infty$ which stands for $\omega$.  The size argument $a$ in the
-constructors is a suggestion for the type checker but bears no
+constructors $\tzero$ and $\tsuc$
+is a suggestion for the type checker but bears no
 semantic significance.  For example, in the declarative typing
 presented here, we can have $\der \zero 5 : \Nat 1$.
 In the algorithmic typing however, $\der \zero 5 \jchk \Nat 1$ will be an error.
+Note, however, that $\der \zero a : \Nat 0$ is impossible for any $a$,
+as $\tzero$ is not strictly below $0$
+(when both term and size are interpreted as natural numbers).
 
-Besides with regular application $t\,u$, relevant size application
-$t\,a$, and irrelevant size application $t \, \ann a$, we can
-eliminate a term $t$ by a case distinction
-$e = \case[\ell] T {t_z}{t_s}$ or a recursive function application
-$e' = \fix[\ell'] {T'} {t'}$.  In both cases, the term should denote a
-natural number.  Application of case distinction $\zero a \, e$ will
-reduce to the zero-branch $t_z$, and $(\suc a t) \,e$ to the
-instantiation of the successor branch $t_s\,t$.  The type annotation
+Regular application $t\,u$, relevant size application
+$t\,a$, and irrelevant size application $t \, \ann a$ eliminate
+functions $t$ and are subsumed under the form $t\,e$ with $e ::= u \mid a \mid \ann a$.
+We have two further eliminations, which make sense when $t$ stands for a natural number.
+These are case distinction
+$e = \case[\ell] T {t_z}{t_s}$ and recursive function application
+$e' = \fix[\ell'] {T'} {t'}$.
+Application of case distinction $\zero a \, e$ will
+reduce to the zero-branch $t_z$, and application $(\suc a t) \,e$ to the
+instantiation $t_s\,t$ of the successor branch.  The type annotation
 $T$ in $\tcase$ allows us to infer the type of the whole case
 statement $t\,e$ as $T\,t$.  The function call $c\,e'$ for a canonical
-number reduces to $f'\,(\lambda x.\,x\,e')\,c$ where we allowed
+number $c$ and elimination $e' = \fix[\ell'] {T'} {t'}$
+reduces to $t'\,(\lambda x.\,x\,e')\,c$ where we allowed
 ourselves the use of a named abstraction in the presentation to the
 reader.  The unfolding of fixed-points is thus restricted to
 application to canonical numbers; this is the usual reduction strategy
 which converges for terminating functions \cite{gimenez:typeBased}.
 
 %We write $\sigma$ and $\tau$ for substitutions, which are lists of terms, and
-For ordinary $\beta$-reduction we employ
-\emph{substitutions} $\sigma$.  These are simply lists of terms that provide one term as replacement for each free de Bruijn index in a term $t$. We write \fbox{$t \sigma$} for the application of substitution $\sigma$ to term $t$ which is defined as usual.  Let \emph{lifting} \fbox{$\slift^k_m$} be the substitution $(\ind{k+m-1},\dots,\ind{k+1},\ind k)$ which accepts a term with $m$ free indices and increases each of them by $k$.  We write $\slift_m$ for the lifting $\slift^1_m$ and \fbox{$\sid_m$} for the identity substitution $ \slift^0_m$. In general, we refer to liftings by letter $\xi$.
-The substitution \fbox{$[u]_m$}${} = (\sid_m, u)$ replaces free index $\ind 0$ by term $u$ and decrements the other $m$ free indices by $1$. We drop subscript $m$ from liftings when clear from the context.
-Substitution composition \fbox{$\sigma\tau$} is the pointwise application of substitution $\tau$ to the list of terms $\sigma$.  In the proofs to follow, we freely use the following identities:
+For ordinary $\beta$-reduction we employ \emph{substitutions}
+$\sigma$.  These are simply lists of terms that provide one term as
+replacement for each free de Bruijn index in a term $t$. We write
+\fbox{$t \sigma$} for the application of substitution $\sigma$ to term
+$t$ which is defined as usual.  Let \emph{lifting} \fbox{$\slift^k_m$}
+be the substitution $(\ind{k+m-1},\dots,\ind{k+1},\ind k)$ which
+accepts a term with $m$ free indices and increases each of them by
+$k$.  We write $\slift_m$ for the lifting $\slift^1_m$ and
+\fbox{$\sid_m$} for the identity substitution $ \slift^0_m$. In
+general, we refer to liftings by letter $\xi$.
+%
+The substitution \fbox{$[u]_m$}${} = (\sid_m, u)$ replaces free index
+$\ind 0$ by term $u$ and decrements the other $m$ free indices by
+$1$. We drop subscript $m$ from liftings and substitutions when clear from the context.
+%
+Substitution composition \fbox{$\sigma\tau$} is the pointwise
+application of substitution $\tau$ to the list of terms $\sigma$.  In
+the proofs to follow, we freely use the following identities:
 \begin{gather*}
-  t\sid \equiv t
-\quad
-  (t\sigma)\tau \equiv t(\sigma\tau)
+  t\,\sid \equiv t
 \qquad
-  \sigma \sid \equiv \sigma
-\quad
-  \sid \tau \equiv \tau
-\quad
+  (t\sigma)\tau \equiv t(\sigma\tau)
+\qquad\quad
+  \sigma\, \sid \equiv \sigma
+\qquad
+  \sid\, \tau \equiv \tau
+\qquad
   (\rho\sigma)\tau \equiv \rho(\sigma\tau)
 \\
   \ind 0 (\sigma,t) \equiv t
-\quad
-  \slift(\sigma,t) \equiv \sigma
 \qquad
+  \slift(\sigma,t) \equiv \sigma
+\qquad\quad
   [t]\sigma \equiv (\sigma, t\sigma)
-\quad
+\qquad
   \slift[t] \equiv \sid
 %  (\sigma\slift)[t] \equiv \sigma
 \end{gather*}
 
-For concrete function types and terms, we may use a named dependent function type notation as syntactic sugar for the corresponding de Bruijn representation.  For instance, $\funT i \Size \Nat i \to \Set[\ell]$ is sugar for $\piT \Size \piT {(\Nat\,\ind 0)} \Set[\ell]$.  We abbreviate this type by \fbox{$\FixK\,\ell$}, and let \fbox{$\FixT\,T$} stand for
-$\forall i.\ (\funT x {\Nat i} T\, i\, x) \to \funT x {\Nat (i + 1)} T \,(i+1)\, x$.
-% $\allT i \Size (\funT x {\Nat i} T\, i\, x) \to \funT x {\Nat (i + 1)} T \,(i+1)\, x$.
-Similar as for $\Pi$, we use named lambda abstraction as sugar for de Bruijn abstraction.  Named abstraction takes care of proper lifting of de Bruijn indices, for instance, $\lambda x.\, t x = \lambda. (t \slift)\,\ind 0$ if $t$ is outside the scope of $x$.
-We may also use names when we construct concrete contexts, for instance, if\/ $T$ is well-formed in context $\Gamma$, we may write $T\,i\,x$ in context $\Gamma.i\of\Size.x\of\Nat i$ to mean $T\slift^2\,\ind 1\,\ind 0$ in context
-$\Gamma.\Size.\Nat \ind 0$.
+As already done in some examples, we may use a named dependent
+function type notation as syntactic sugar for the corresponding de
+Bruijn representation.  For instance,
+$\funT z \Size \Nat z \to \Set[\ell]$ is sugar for
+$\piT \Size \piT {(\Nat\,\ind 0)} \Set[\ell]$.  We abbreviate this
+type by \fbox{$\FixK\,\ell$}, and let \fbox{$\FixT\,T$} stand for
+$\forall z.\ (\sfunT x {\Nat z} T\, z\, x) \to \sfunT x {\Nat (z + 1)} T \,(z+1)\, x$.
+%
+Similar as for $\Pi$, we use named lambda abstraction as sugar for de
+Bruijn abstraction.  Named abstraction takes care of proper lifting of
+de Bruijn indices, for instance,
+$\lambda x.\, t x = \lambda. (t \slift)\,\ind 0$ if $t$ is outside the
+scope of $x$.
+%
+We may also use names when we construct concrete contexts, for
+instance, if\/ $T$ is well-formed in context $\Gamma$, we may write
+$T\,z\,x$ in context $\Gamma.z\of\Size.x\of\Nat z$ to mean
+$T\slift^2\,\ind 1\,\ind 0$ in context $\Gamma.\Size.\Nat \ind 0$.
 
 \input{figjudge}
 
