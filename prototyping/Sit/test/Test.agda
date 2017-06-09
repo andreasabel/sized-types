@@ -118,22 +118,22 @@ pred = \ i n ->
       (\ i _ -> \{ (zero _) -> zero i ; (suc _ y) -> y })
       n
 
---; --- Subtraction
+--; --- Subtraction (cuts off)
 
-sub : forall .j -> Nat j -> forall .i -> Nat i -> Nat i  --;
-sub = \ j y ->
+monus : forall .j -> Nat j -> forall .i -> Nat i -> Nat i  --;
+monus = \ j y ->
   fix (\ _ _ -> forall .i -> Nat i -> Nat i)
       (\ _ f -> \
         { (zero _) -> \ i x -> x
         ; (suc _ y) -> \ i x -> f y i (pred i x)
-        }) --- pred i (f y i x) })
+        })
       y
 
 --; --- Lemma: x - x == 0
 
-sub_diag : forall .i (x : Nat i) -> Eq (Nat oo) (sub i x i x) (zero oo)  --;
-sub_diag = \ i x ->
-  fix (\ i x -> Eq (Nat oo) (sub i x i x) (zero oo))
+monus_diag : forall .i (x : Nat i) -> Eq (Nat oo) (monus i x i x) (zero oo)  --;
+monus_diag = \ i x ->
+  fix (\ i x -> Eq (Nat oo) (monus i x i x) (zero oo))
       (\ _ f -> \
         { (zero _) -> refl (Nat oo) (zero oo)
         ; (suc _ y) -> f y

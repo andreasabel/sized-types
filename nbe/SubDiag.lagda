@@ -1,6 +1,6 @@
 The solution we present in this article already works in current Agda,\footnote{%
 \url{https://github.com/agda/agda}, development version of 2017-02-27.}
-but the implementation is not perfect.  Thus, it is hidden under a scarcely documented flag
+but the implementation is not perfect.  Thus, it is hidden under a scarcely documented flag:
 
 \begin{code}
 {-# OPTIONS --experimental-irrelevance #-}
@@ -36,7 +36,7 @@ data Nat : ..(i : Size) → Set where
   suc   :  ∀ .i → Nat i → Nat (i + 1)
 \end{code}
 
-Similarly, ``type'' argument $i$ to $\apred$ is irrelevant.  Agda checks that it only occurs shape-irrelevantly in the type and irrelevantly in the term.  This is the case since $i$ is also an irrelevant argument to the constructors $\azero$ and $\asuc$; otherwise, we would get a type error.
+Similarly, ``type'' argument $i$ to $\apred$ is irrelevant.  Agda checks that it only occurs shape-irrelevantly in the type and irrelevantly in the term.  The latter is the case since $i$ is also an irrelevant argument to the constructors $\azero$ and $\asuc$; otherwise, we would get a type error.
 
 \begin{code}
 pred : ∀ .i → Nat i → Nat i

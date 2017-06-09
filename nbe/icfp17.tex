@@ -1,5 +1,6 @@
 %% For double-blind review submission
-\documentclass[acmlarge,review,anonymous]{acmart}\settopmatter{printfolios=true}
+\documentclass[acmlarge%,review,anonymous
+]{acmart}\settopmatter{printfolios=true}
 %% For single-blind review submission
 %\documentclass[acmlarge,review]{acmart}\settopmatter{printfolios=true}
 %% For final camera-ready submission
@@ -88,6 +89,11 @@
 %\setcopyright{rightsretained}
 %\copyrightyear{2017}           %% If different from \acmYear
 
+
+% \acmBadgeR[http://icfp17.sigplan.org/track/icfp-2017-Artifacts]{artifact_evaluated-functional.png}
+\acmBadgeR[http://icfp17.sigplan.org/track/icfp-2017-Artifacts]{artifact_evaluated-reusable.png}
+%\acmBadgeL[http://icfp17.sigplan.org/track/icfp-2017-Artifacts]{artifact_available.png}
+\acmBadgeL[https://hackage.haskell.org/package/Sit]{artifact_available.png}
 
 %% Bibliography style
 \bibliographystyle{ACM-Reference-Format}
@@ -235,10 +241,10 @@ In this article, we integrate dependent types and sized types with higher-rank s
 % Agda's function types
 
 
-Dependently-typed programming languages and proof assistants, such as Agda~\citeyearpar{agdawiki}, Coq~\cite{inria:coq86}, and Idris~\cite{brady:jfp13} require programs to be total, for two reasons.  First, for consistency:  since propositions are just types and proofs of a proposition just programs which inhabit the corresponding type, some types need to be empty; otherwise, each proposition would be true.  However, in a partial language with general recursion, each type is inhabited by the looping program $f = f$.  Secondly, totality is needed for decidability of type checking.  Since types can be the result of a computation, we need computation to terminate during type checking, even for \emph{open terms}, \ie, terms with free variables.
+Dependently-typed programming languages and proof assistants, such as Agda~\citeyearpar{agdawiki} and Coq~\cite{inria:coq86}, require programs to be total, for two reasons.  First, for consistency:  since propositions are just types and proofs of a proposition just programs which inhabit the corresponding type, some types need to be empty; otherwise, each proposition would be true.  However, in a partial language with general recursion, each type is inhabited by the looping program $f = f$.  Secondly, totality is needed for decidability of type checking.  Since types can be the result of a computation, we need computation to terminate during type checking, even for \emph{open terms}, \ie, terms with free variables.
 
 % \cite{boveKraussSozeau:mscs16}
-Consequently, each of the aforementioned languages based on Type Theory comes with a termination checker, which needs to reject all non-terminating programs, and should accept sufficiently many terminating programs to allow the user to express her algorithms.  In current termination checkers, programs are required to terminate by structural descent \cite{gimenez:guardeddefinitions}; the structural order may be extended to a lexicographic \cite{abelAltenkirch:jfp02} or size-change termination criterion \cite{jones:sizeChange,wahlstedt:PhD}.  This is not a fundamental limitation, since Type Theory allows many functions to be expressed in a structurally recursive manner, if needed by the help of a well-founded relation \cite{nordstrom:genrec}, inductive domain predicates \cite{boveCapretta:mscs05}, or inductive descriptions of the function graph \cite{bove:entcs09}.  However, the syntactic termination check is very sensitive to reformulations of the program and hostile to abstraction \cite{abel:fics12}.
+Consequently, the aforementioned languages based on Type Theory come with a termination checker, which needs to reject all non-terminating programs, and should accept sufficiently many terminating programs to allow the user to express her algorithms.  In current termination checkers, programs are required to terminate by structural descent \cite{gimenez:guardeddefinitions}; the structural order may be extended to a lexicographic \cite{abelAltenkirch:jfp02} or size-change termination criterion \cite{jones:sizeChange,wahlstedt:PhD}.  This is not a fundamental limitation, since Type Theory allows many functions to be expressed in a structurally recursive manner, if needed by the help of a well-founded relation \cite{nordstrom:genrec}, inductive domain predicates \cite{boveCapretta:mscs05}, or inductive descriptions of the function graph \cite{bove:entcs09}.  However, the syntactic termination check is very sensitive to reformulations of the program and hostile to abstraction \cite{abel:fics12}.
 
 Sized types \cite{hughesParetoSabry:popl96} delegate the checking for structural descent to the type system by annotating data types with a size parameter.  The type checker can then ensure that in recursive calls the size goes down, certifying termination.  In the simplest setting \cite{gimenez:typeBased,abel:lmcs07}, the size is just an upper bound on the tree height of the data structure; however, more sophisticated size annotations have also been considered \cite{xi:terminationHOSC,blanqui:rta04}.  Most sized type systems are non-dependent \cite{amadio:guardcondition,abelPientka:jfp16,bartheGregoireRiba:lernet08,bartheGregoireRiba:csl08,blanquiRiba:lpar06,dalLagoGrellois:probabilisticSizedTypes2017}, yet the combination of sized and dependent types has been studied as well \cite{blanqui:csl05,bartheGregoirePastawski:lpar06,gregoireSacchini:lpar10,sacchini:lics13,sacchini:flops14}.  However, to the best of our knowledge, no study combines \emph{higher-rank size polymorphism} with full-fledged dependent types.\footnote{\citet{xi:terminationHOSC} has first-class size polymorphism, but only indexed types, no universes or large eliminations.}
 
@@ -258,7 +264,7 @@ In case $\vpre\,t = \tnode\,\vts$, the trees in the list $\vts$ are still guaran
   \ttrav \; \vpre \; \vpost \; t = \vpost\;(\tcase\;\vpre\,t\;\tof \, \{ \, \tnode\,\vts \to \tnode\,(\tmap \; (\ttrav \, \vpre \, \vpost) \; \vts)\, \})
 \end{array}
 \]
-The display shows the \emph{Curry}-style program as provided by the user, but state-of-the-art type checkers elaborate the program from surface syntax into an internal \emph{Church}-style syntax with explicit type abstractions and type applications.\footnote{Agda, Coq, Idris, and Haskell \cite{sulzmannChakravartyPeythonJonesDonnelly:tldi07} all have Church-style internal languages.}  With implicit type and size applications elaborated, $\ttrav$ would look as follows:
+The display shows the \emph{Curry}-style program as provided by the user, but state-of-the-art type checkers elaborate the program from surface syntax into an internal \emph{Church}-style syntax with explicit type abstractions and type applications.\footnote{Agda, Coq, Idris~\cite{brady:jfp13}, and Haskell~\cite{sulzmannChakravartyPeythonJonesDonnelly:tldi07} all have Church-style internal languages.}  With implicit type and size applications elaborated, $\ttrav$ would look as follows:
 \[
 \begin{array}{l}
   \ttrav \; \vpre \; \vpost \; i\; t = \vpost\;(\tcase\;\vpre\,i\,t\;\tof \, \{ \, \tnode\,j\,\vts \to \tnode\,\infty\,(\tmap \; (\tT\,j) \; (\tT\,\infty) \; (\ttrav \, \vpre \, \vpost \, j) \; \vts) \})
@@ -285,7 +291,7 @@ size parameter.  It seems that during equality checking we have to
 consider terms of different types, at least for a while.  Once we apply
 $\vpre\,i$ and $\vpre\,j$ to the same tree $t : \tT\,k$, which
 determines $i = j = k$, we are back to safety.  However, allowing
-types to differ during an equality check can be hazardous, especially
+types to differ during an equality check needs special consideration, especially
 when the equality-check is type directed.
 
 Consider the analogous situation for the polymorphic lambda calculus System~F, be it the predicative variant or not, extended by a unit type $\One$.
@@ -316,7 +322,7 @@ By \emph{large eliminations} \cite{werner:types92} we refer to types computed by
 in type theories that feature both universes and data types.
 In the presence of large eliminations, dependency erasure fails, and it is not clear what the skeleton of a dependent type should be.  For instance consider the type $\funT n \NN \underbrace{A \to \dots \to A}_n \to A$ of $n$-ary functions; its shape is dependent on the value of $n$, thus cannot be determined statically.  Thus, the ``skeleton'' idea is also not directly applicable.
 
-Going beyond the classical incremental equality check, there is a technique that can deal with dynamic $\eta$-expansion.  It is a type-directed normalization function inspired by normalization-by-evaluation (NbE) that computes $\eta$-long normal forms \cite{bergerSchwichtenberg:lics91,danvy:tdpe}.  We can check the computed normal forms for identity and, thus, decide definitional equality.
+Going beyond the standard syntax-directed equality check, there is a technique that can deal with dynamic $\eta$-expansion.  It is a type-directed normalization function inspired by normalization-by-evaluation (NbE) that computes $\eta$-long normal forms \cite{bergerSchwichtenberg:lics91,danvy:tdpe}.  We can check the computed normal forms for identity and, thus, decide definitional equality.
 NbE has proven to be a robust method to decide equality in powerful type theories with non-trivial $\eta$-laws.  It scales to universes and large eliminations \cite{abelCoquandDybjer:lics07}, topped with singleton types or proof irrelevance \cite{abelCoquandPagano:lmcs11}, and even impredicativity \cite{abel:flops10}.  At its heart there are reflection $\up T$ and reification $\down T$ functions directed by type $T$ and orchestrating just-in-time $\eta$-expansion.  Reflection $\up T x$ maps variables $x$ into the realm of values of type $T$ and let's us compute with open terms.  Reification $\down T a$ takes a value $a$ of type $T$ and computes its long normal form.  For instance, the normal form of a closed function $f : U \to T$ would be $\lambda x.\,\down{T} (f\,(\up U x))$, and for its dependently-typed variant $f : \funT x U T[x]$ it would be $\lambda x.\,\down{T[\up U x]} (f\,(\up U x))$.
 
 % In the solution we present in this article, we do not introduce a new syntax for shapes, just a relation $T \shape S$ stating that type $S$ qualifies as shape for type $T$.  We use a normalization function inspired by normalization-by-evaluation (NbE) that computes the $\eta$-long normal form of the terms under comparison, which we then check for identity.
@@ -381,8 +387,8 @@ In this section, we show how the lack of size irrelevance prevents us from reaso
 
 In this section, we give the syntax and the \emph{declarative} typing, equality, and subtyping judgements.  The typing relation $\Gamma \der t : T$ will \emph{not} be decidable; instead, we present algorithmic typing $\Gamma \der t \jchk T$ in Section~\ref{sec:tycheck}.  However, equality and subtyping will be decidable for well-formed input, see sections~\ref{sec:sem}--\ref{sec:asub}.
 
-We present our type theory as \emph{pure type system} \cite{barendregt:lambdacube} with extra structure.
-\emph{Sorts} $s$ are drawn from an infinite predicative hierarchy of universes $\Set[\ell]$ for $\ell \in \NN$.  Universes provide us with polymorphism and the capability to define types by recursion on values.  Whether we have just two universes $\Set[0]$ and $\Set[1]$ or infinitely many, does not matter for the technical difficulty of the meta theory.  The present setup have the advantage that every sort has again a sort since $\Set[\ell] : \Set[\ell+1]$, thus, we do not have to introduce a separate judgement $\Gamma \der T$ for well-formedness of types, we can define it as $\exists s.\ \Gamma \der T : s$.
+We present our type theory as (domain-free) \emph{pure type system} \cite{barendregt:lambdacube} with extra structure.
+The \emph{sorts} $s$ are drawn from an infinite predicative hierarchy of universes $\Set[\ell]$ for $\ell \in \NN$.  Universes provide us with polymorphism and the capability to define types by recursion on values.  Whether we have just two universes $\Set[0]$ and $\Set[1]$ or infinitely many, does not matter for the technical difficulty of the meta theory.  The present setup have the advantage that every sort has again a sort since $\Set[\ell] : \Set[\ell+1]$, thus, we do not have to introduce a separate judgement $\Gamma \der T$ for well-formedness of types, we can define it as $\exists s.\ \Gamma \der T : s$.
 
 \begin{figure}[htbp]
   \centering
@@ -417,8 +423,25 @@ We present our type theory as \emph{pure type system} \cite{barendregt:lambdacub
   \label{fig:syntax}
 \end{figure}
 
-For the expression syntax (see Fig.~\ref{fig:syntax}), we use de~Bruijn \citeyearpar{deBruijn:nameless} indices $\ind i$ to represent variables.  Binders are lambda abstraction $\lambda t$ and dependent function types $\epiT U T$, which bind the $0$th index in $t$ and $T$, resp.  The notation $\epiT U T$ is an umbrella for three kinds of function types, where $\evar \in \{ \erased, \noterased \}$ is a relevance annotation borrowed from \citet{pfenning:intextirr}: $\erpiT[\noterased] U T$, the ordinary dependent function type, $\erpiT[\noterased] \Size T$ for relevant size quantification, and $\erpiT \Size T$ for irrelevant size quantification.
-We omit the ``$\noterased$''-markers from $\Gamma$ and $\Pi$ by default and write $\forallT T$ for $\erpiT \Size T$.
+For the expression syntax (see Fig.~\ref{fig:syntax}), we use
+de~Bruijn \citeyearpar{deBruijn:nameless} indices $\ind i$ to
+represent variables.  The index $i \in \NN$ points to the $i$th
+enclosing binder of variable $\ind i$.  Binders are lambda abstraction
+$\lambda t$ and dependent function types $\epiT U T$, which bind the
+$0$th index in $t$ and $T$, resp.  For instance, the term
+$\lambda x.\,x\,(\lambda z.\,z)\, (\lambda y.\,x\,y)$
+with named variables $x,y,z$ has de Bruijn representation
+$\lambda.\,\ind 0\,(\lambda.\, \ind 0)\,(\lambda.\,\ind 1\,\ind0)$.
+
+The notation $\epiT U T$ is an
+umbrella for three kinds of function types, where
+$\evar \in \{ \erased, \noterased \}$ is a relevance annotation
+borrowed from \citet{pfenning:intextirr}. $\erpiT[\noterased] U T$ is
+the ordinary dependent function type, $\erpiT[\noterased] \Size T$ is
+relevant size quantification, and $\erpiT \Size T$ is irrelevant size
+quantification.  We omit the ``$\noterased$''-markers
+from $\Pi$ by default (and also in contexts $\Gamma$)
+and write $\forallT T$ for $\erpiT \Size T$.
 %
 Examples for relevant size quantification $\piT \Size T$, in syntax with named variables, are $\Size \to \Set[0]$ or $\funT i \Size \Nat i \to \Set[0]$.  An instance of irrelevant quantification $\forall T$ would be $\forall i.\, \Nat i \to \Nat i$.  Herein, $\Nat i$ denotes the type of natural numbers below $i$. The expression $\Size$ is a possible instance of $U$ in $\epiT U T$, or a possible type of a variable in a typing context $\Gamma$, but not a first-class type, \ie, we cannot construct our own function on sizes.
 
@@ -431,8 +454,21 @@ semantic significance.  For example, in the declarative typing
 presented here, we can have $\der \zero 5 : \Nat 1$.
 In the algorithmic typing however, $\der \zero 5 \jchk \Nat 1$ will be an error.
 
-Besides with regular application $t\,u$, relevant size application $t\,a$, and irrelevant size application $t \, \ann a$,
-we can eliminate a term $t$ by a case distinction $e = \case[\ell] T {t_z}{t_s}$ or a recursive function application $e' = \fix[\ell'] {T'} {t'}$.  In both cases, the term should denote a natural number.  Application of case distinction $\zero a \, e$ will reduce to the zero-branch $t_z$, and $\suc a t \,e$ to the instantiation of the successor branch $t_s\,t$.  The type annotation $T$ in $\tcase$ allows us to infer the type of the whole case statement $t\,e$ as $T\,t$.  The function call $c\,e'$ for a canonical number reduces to $f'\,(\lambda x.\,x\,e')\,c$ where we allowed ourselves the use of a named abstraction in the presentation to the reader.  The unfolding of fixed-points is thus restricted to application to canonical numbers; this is the usual reduction strategy which converges for terminating functions \cite{gimenez:typeBased}.
+Besides with regular application $t\,u$, relevant size application
+$t\,a$, and irrelevant size application $t \, \ann a$, we can
+eliminate a term $t$ by a case distinction
+$e = \case[\ell] T {t_z}{t_s}$ or a recursive function application
+$e' = \fix[\ell'] {T'} {t'}$.  In both cases, the term should denote a
+natural number.  Application of case distinction $\zero a \, e$ will
+reduce to the zero-branch $t_z$, and $(\suc a t) \,e$ to the
+instantiation of the successor branch $t_s\,t$.  The type annotation
+$T$ in $\tcase$ allows us to infer the type of the whole case
+statement $t\,e$ as $T\,t$.  The function call $c\,e'$ for a canonical
+number reduces to $f'\,(\lambda x.\,x\,e')\,c$ where we allowed
+ourselves the use of a named abstraction in the presentation to the
+reader.  The unfolding of fixed-points is thus restricted to
+application to canonical numbers; this is the usual reduction strategy
+which converges for terminating functions \cite{gimenez:typeBased}.
 
 %We write $\sigma$ and $\tau$ for substitutions, which are lists of terms, and
 For ordinary $\beta$-reduction we employ
@@ -2620,7 +2656,7 @@ Finally, we would like a general theory of shape-irrelevance that extends beyond
   He also acknowledges past discussions with Christoph-Simon Senjak.
 \end{acks}
 
-\clearpage
+% \clearpage
 
 %% Bibliography
 \bibliography{auto-icfp17}
