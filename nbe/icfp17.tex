@@ -2188,12 +2188,41 @@ $\LRTS{\Gamma'}{T(\xi,u)}{B[a]} s$.
 % $\R{\Gamma''} {\down A a} v$ and $\Gamma'' \der u\xi' = v : U\xi\xi'$.
 % However, this follows by induction hypothesis (\ref{it:out}) on
 % assumption $\LR{\Gamma'}{u}{U\xi} a A$ with $\xi'$.
+
+\item % out of
+The premise is $\LR \Gamma t {T'} f {A'}$,
+which means that for all $\xi : \Gamma' \leq \Gamma$ and
+$\LR {\Gamma'} u {U\xi} a A$ we have
+$\LR {\Gamma'} {t\xi\,u} {T(\xi,u)} {f\,a} {B[a]}$.
+
+To show $\Gamma \der t \doteq \tR\,\down {S'} f : {T'}$
+we assume $\xi : \Gamma' \leq \Gamma$ and produce a normal form $v$
+such that $\R {\Gamma'} {\down{S'} f} {\lambda v}$ and
+$\Gamma' \der t\xi = \lambda v : T'\xi$.
+Induction hypothesis (\ref{it:into}) on
+$\RNE {\cext{\Gamma'}{U\xi}} {\ind 0} {\var{\Gamma'}} {U\xi\slift}$
+gives us $\LR {\cext{\Gamma'}{U\xi}} {\ind 0} {U\xi\slift} a A$
+with $a := \up R {\var{\Gamma'}}$.
+Thus, we can instantiate the assumption $\LR \Gamma t {T'} f {A'}$
+to obtain
+$\LR {\cext{\Gamma'}{U\xi}} {(t\xi\slift)\,\ind 0} {T(\xi\slift,\ind 0)} {f\,a} {B[a]}$.
+Now induction hypothesis (\ref{it:out}) yields a normal form $v$ such that
+$\R {\cext{\Gamma'}{U\xi}} {\down {S[a]} (f\,a)} v$
+and
+$\cext{\Gamma'}{U\xi} \der (t\xi\slift)\,\ind 0 = v : T(\xi\slift,\ind 0)$.
+Since $a$ is the semantic version of the last bound variable,
+$\R {\Gamma'} {\down{S'} f} {\lambda v}$ follows by definition of reification.
+For the final goal, we $\lambda$-abstract the definitional equality to
+$\Gamma' \der \lambda.\, (t\xi\slift)\,\ind 0 = \lambda v : \piT{(U\xi)} {(T(\xi\slift,\ind 0))}$
+and with $\eta$-equality and the substitution laws we get
+$\Gamma' \der t\xi = \lambda v : (\piT U T)\xi$.
 \end{enumerate}
 
 \nextcase $A' \evalsto \forallT A$ and $S' \evalsto \forallT S$ and
 $\resurrect\Gamma \der T' = \forallT T$.
 
 \begin{enumerate}
+
 \item % into
 We assume $\xi : \Gamma' \leq \Gamma$ and
 $\resurrect{\Gamma'} \der a, b : \Size$ and $\alpha,\beta \in \SIZE$ with
@@ -2207,8 +2236,7 @@ $\LRTS {\Gamma'} {T(\xi,b)} {A[\beta]} s$ and $A[\beta] \shape S[\alpha]$ and
 $\RNE {\Gamma'} {t\xi\ann a} {n \ann \alpha} {T(\xi,b)}$.
 The first two of these subgoals are immediate.
 The third follows by Lemma~\ref{lem:rclosne} (\ref{it:closneall}) from the
-weakened assumption
- $\RNE {\Gamma'} {t\xi} n {T'\xi}$.
+weakened assumption $\RNE {\Gamma'} {t\xi} n {T'\xi}$.
 % For the third, assume
 % $\xi' : \Gamma'' \leq \Gamma'$.
 % We have to show that there exists a neutral normal form $m'$ such that
@@ -2224,6 +2252,18 @@ weakened assumption
 % $\resurrect{\Gamma''} \der a\xi', a_0, b \xi' : \Size$,
 % thus we are done by choosing $m' : = m \ann{a_0}$.
 %
+
+\item % out of
+To show $\RD \Gamma t {\down{S'} f} {T'}$ we assume $\xi : \Gamma' \leq \Gamma$ and
+produce a normal form $v$ such that $\R{\Gamma'} {\down{S'}f} {\lambda v}$ and
+$\Gamma' \der t\xi = \lambda v : T'\xi$.
+It is sufficient to show
+$\R{\erext{\Gamma'}\Size} {\down{S[\var{\Gamma'}]}(f \ann{\var{\Gamma'}})} v$
+and
+$\erext{\Gamma'}\Size \der (t\xi\slift)\,\ind 0 = v : T(\xi\slift,\ind 0)$.
+These goals, in turn, follow by induction hypothesis (\ref{it:out}) on
+$\LR{\erext{\Gamma'}\Size}{(t\xi\slift)\,\ind 0}{T(\xi\slift,\ind 0)}{f \ann{\var{\Gamma'}}}{A[\var{\Gamma'}]}$ which is an instance of our assumption
+$\LR \Gamma t {T'} f {A'}$.
 \qed
 \end{enumerate}
 %
