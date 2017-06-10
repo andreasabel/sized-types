@@ -1091,10 +1091,10 @@ defined on expressions.
   \ru{\RSize k \alpha b
     }{\RElim k \alpha b}
 \qquad
-  \ru{
-    }{\RElim k {\ann \alpha} {\ann \infty}}
-  % \ru{\RSize k \alpha b
-  %   }{\RElim k {\ann \alpha} {\ann b}}
+  % \ru{
+  %   }{\RElim k {\ann \alpha} {\ann \infty}}
+  \ru{\RSize k \alpha b
+    }{\RElim k {\ann \alpha} {\ann b}}
 \\[2ex]
   \ru{\R k D V \qquad
       \R k {d_z} {v_z} \qquad
@@ -1139,7 +1139,7 @@ defined on expressions.
 
 A type $T$ will be interpreted as a partial equivalence relation (PER) $\A$ on terms, \ie, a relation which is symmetric and transitive. The domain $\dom(\A)$ of the relation can be thought of as the set of terms which denotes the extension of the type; on $\dom(\A) = \{a \mid \exists a'.\ (a,a') \in \A \}$ the relation $\A$ is in fact an equivalence relation.  We write $a = a' \in \A$ for relatedness in $\A$ and $a \in \A$ if $a \in \dom(\A)$.
 
-The PERs $\NE$ characterizes neutral reifiable terms.
+%The PERs $\NE$ characterizes neutral reifiable terms.
 % \[
 % \begin{array}{lll}%{l@{\quad}l@{\quad}l@{~}l@{~}l@{~}l@{~}l@{~}l}
 %   \fbox{$\up T n = \up {T'} {n'} \in \NE$}
@@ -1152,46 +1152,39 @@ The PERs $\NE$ characterizes neutral reifiable terms.
 % \]
 The PERs $\NE$ and $\NF$ characterize (neutral) normalizing terms.
 \[
-\begin{array}{l@{\quad}l@{\quad}l@{~}l@{~}l@{~}l@{~}l@{~}l}
-  n = n' \in \NE
-    & \defas &
-    \RNe k n m &\mand& \RNe k {n'} {m} &\mforall k \\
-  d = d' \in \NF
-    & \defas &
-    \R k d v &\mand& \R k {d'} {v} &\mforall k \\
-  e = e' \in \ELIM
-    & \defas &
-    \RElim k e e_v &\mand& \R k {e'} {e_v} &\mforall k \\
-  A = A' \in \TY
-    & \defas &
-    \RTy k A V &\mand& \RTy k {A'} {V} &\mforall k \\
-  % \fbox{$n = n' \in \NE$}
-  %   & \defas &
-  %   \RNe k n m &\mand& \RNe k {n'} {m} &\mforall k \\
-  % \fbox{$d = d' \in \NF$}
-  %   & \defas &
-  %   \R k d v &\mand& \R k {d'} {v} &\mforall k \\
-  % \fbox{$e = e' \in \ELIM$}
-  %   & \defas &
-  %   \RElim k e e_v &\mand& \R k {e'} {e_v} &\mforall k \\
-  % \fbox{$A = A' \in \TY$}
-  %   & \defas &
-  %   \RTy k A V &\mand& \RTy k {A'} {V} &\mforall k \\
-\end{array}
 % \begin{array}{l@{\quad}l@{\quad}l@{~}l@{~}l@{~}l@{~}l@{~}l}
-%   \fbox{$n = n' \in \NE$}
+%   n = n' \in \NE
 %     & \defas &
-%     \RNe k n m &\mand& \RNe k {n'} {m'} &\mand& m \nfeq m' &\mforall k \\
-%   \fbox{$d = d' \in \NF$}
+%     \RNe k n m &\mand& \RNe k {n'} {m} &\mforall k \\
+%   d = d' \in \NF
 %     & \defas &
-%     \R k d v &\mand& \R k {d'} {v'} &\mand& v \nfeq v' &\mforall k \\
-%   \fbox{$e = e' \in \ELIM$}
+%     \R k d v &\mand& \R k {d'} {v} &\mforall k \\
+%   e = e' \in \ELIM
 %     & \defas &
-%     \RElim k e e_v &\mand& \R k {e'} {e_v'} &\mand& e_v \nfeq e_v' &\mforall k \\
-%   \fbox{$A = A' \in \TY$}
+%     \RElim k e e_v &\mand& \R k {e'} {e_v} &\mforall k \\
+%   A = A' \in \TY
 %     & \defas &
-%     \RTy k A V &\mand& \RTy k {A'} {V'} &\mand& V \nfeq V' &\mforall k \\
+%     \RTy k A V &\mand& \RTy k {A'} {V} &\mforall k \\
 % \end{array}
+%\newcommand{\myfbox}[1]{\begin{array}[c]{@{}l@{}}\framebox(60,12)[l]{~\,#1}\end{array}}
+\newcommand{\myfbox}[1]{\framebox(60,12)[l]{~\,#1}}
+\begin{array}{l@{\quad}l@{\quad}l@{~}l@{\quad}l@{~}l@{~\;}r@{~}l@{~}l@{~}l}
+  \raisebox{-0.5ex}{\myfbox{$n = n' \in \NE$}}
+    & \defas &
+    \RNe k n m &\mand& \RNe k {n'} {m'} &\mand& m &\nfeq& m' &\mforall k
+\\[1ex]
+  \raisebox{-0.8ex}{\myfbox{$d = d' \in \NF$}}
+    & \defas &
+    \R k d v &\mand& \R k {d'} {v'} &\mand& v &\nfeq& v' &\mforall k
+\\[1ex]
+  \raisebox{-0.6ex}{\myfbox{$e = e' \in \ELIM$}}
+    & \defas &
+    \RElim k e e_v &\mand& \R k {e'} {e_v'} &\mand& e_v &\nfeq& e_v' &\mforall k
+\\[1ex]
+  \raisebox{-0.8ex}{\myfbox{$A = A' \in \TY$}}
+    & \defas &
+    \RTy k A V &\mand& \RTy k {A'} {V'} &\mand& V &\nfeq& V' &\mforall k \\
+\end{array}
   % \ru{\RNe k t m \mand \RNe k {t'} {m'} \mand m \nfeq m' \mforall k
   %   }{t = t' \in \NE}
   % \ru{t \evalsto \up N n \qquad t' \evalsto \up{N'}{n'} \qquad n \nfeq n'
@@ -1591,7 +1584,7 @@ By induction on $T \in \SET[\ell]$ and cases on $T \shape S_1$ and $T \shape S_2
   With $(\up{S_i}{n_i})\,u_i \evalsto \up{B_i[u_i]}(n_i\,d_i)$ we are done by definition of $\EL(T)$.
 
 \item We assume $k \in \NN$ and show $\R k {\down{S_i}{t_i}} \lambda v_i$ for some normal forms
-$v_1,v_2$.  Let $u_i = \up{A_i} \lev k$.  Note that $u_1 = u_2 \in A$ by induction hypothesis.
+$v_1 \nfeq v_2$.  Let $u_i = \up{A_i} \lev k$.  Note that $u_1 = u_2 \in A$ by induction hypothesis.
 It is sufficient to show
 $\R{k+1}{\down{B_i[u_i]}{(t_i\,u_i)}} {v_i}$.
 By definition of $\EL(T)$ we have $t_1\,u_1 = t_2\,u_2 \in B[u_1]$, thus, by induction hypothesis,
@@ -1621,7 +1614,7 @@ $\down{B_1[u_1]}(t_1\,u_1) = \down{B_2[u_2]}(t_2\,u_2) \in \NF$, which delivers 
   by weak head expansion, which entails the goal by definition of $\EL(T)$.
 \item Assume $k \in \NN$ and note that $\lev k = \lev k \in \SIZE$, hence,
   $t_1\,\ann{\lev k} = t_2\,\ann{\lev k} \in B[\lev k]$.  Thus, by induction hypothesis,
-  $\R{k+1}{\down{B_i[\lev k]}(t_i\,\ann{\lev k})}{v_i}$, and finally
+  $\R{k+1}{\down{B_i[\lev k]}(t_i\,\ann{\lev k})}{v_i}$ with $v_1 \nfeq v_2$, and finally
   $\R k {\down{S_i} t_i} {\lambda v_i}$ by definition of read back.
 \qed
 \end{enumerate}
@@ -1933,10 +1926,10 @@ $\fbox{$\nbe \Gamma T t \evalsto v$} \defas \R {\Gamma} {\down{T \rho_\Gamma} (t
 Whenever $\nbe \Gamma T t \evalsto v$, we may write $\nbe \Gamma T t$ for $v$.
 
 \begin{theorem}[Completeness of NbE]
-  If\/ $\Gamma \der t = t' : T$ then there is a normal form $v$ such that
-  $\nbe \Gamma T t \evalsto v$ and $\nbe \Gamma T {t'} \evalsto v$.
-  % If\/ $\Gamma \der t = t' : T$ then there are normal forms $v \nfeq v'$ such that
-  % $\nbe \Gamma T t \evalsto v$ and $\nbe \Gamma T {t'} \evalsto v'$.
+  % If\/ $\Gamma \der t = t' : T$ then there is a normal form $v$ such that
+  % $\nbe \Gamma T t \evalsto v$ and $\nbe \Gamma T {t'} \evalsto v$.
+  If\/ $\Gamma \der t = t' : T$ then there are normal forms $v \nfeq v'$ such that
+  $\nbe \Gamma T t \evalsto v$ and $\nbe \Gamma T {t'} \evalsto v'$.
 \end{theorem}
 \begin{proof}
   By the fundamental theorem, $T \rho_\Gamma \in \SET[\ell]$ for some $\ell$ and
@@ -2615,7 +2608,7 @@ Thus, the second goal follows by Cor.~\ref{cor:fresh}.
   \item \label{it:sound}
   If\/ $\Gamma \der t : T$ then $\Gamma \der t = \nbe \Gamma T t : T$.
   \item
-  If\/ $\Gamma \der t,t' : T$ and $\nbe \Gamma T t \equiv \nbe \Gamma T {t'}$ then
+  If\/ $\Gamma \der t,t' : T$ and $\nbe \Gamma T t \nfeq \nbe \Gamma T {t'}$ then
   $\Gamma \der t = t' : T$.
   \end{enumerate}
 \end{corollary}
@@ -2628,15 +2621,17 @@ the Fundamental Theorem for Typing gives $\LR \Gamma t T {t\rhog} {T\rhog}$.
 This implies $\R \Gamma {\down{(T\rhog)} (t\rhog)} v$ for some normal form $v$ and
 $\Gamma \der t = v : T$ by Thm.~\ref{thm:into}.
 
-\item By transitivity of judgmental equality from (\ref{it:sound}).
-   Here we use that the computed normal forms are identical because
-   we erase all size annotations $\ann\alpha$ to $\ann\infty$ during read back.
+\item By transitivity of judgmental equality from (\ref{it:sound}), using
+  Lemma~\ref{lem:erase}:
+  $\Gamma \der t = \nbe \Gamma T t = \nbe \Gamma T {t'} = t' : T$.
+   % Here we use that the computed normal forms are identical because
+   % we erase all size annotations $\ann\alpha$ to $\ann\infty$ during read back.
 \qed
 \end{enumerate}
 \end{proof*}
 
 \begin{corollary}[Decidability of judgemental equality]
-  If\/ $\Gamma \der t,t' : T$ then the test whether $\nbe\Gamma T t \equiv \nbe\Gamma T{t'}$
+  If\/ $\Gamma \der t,t' : T$ then the test whether $\nbe\Gamma T t \nfeq \nbe\Gamma T{t'}$
   terminates and
   decides $\Gamma \der t = t' : T$.
 \end{corollary}
@@ -2700,9 +2695,10 @@ In the final paragraphs, we discuss some questions and insights that follow from
 
 It is now straightforward to add a unit type $\One$ with extensional equality $t = {*} : \One$ for all $t : \One$.  We simply extend reification such that $\down\One a = {*}$.  Further, $\One$ is a new type shape with rule $\One \shape \One$.
 
-Reification erases all irrelevant size arguments to $\infty$.  We have also considered to keep the sizes there, and define equality $v \approx v'$ of normal forms up to differences in erased arguments.  However, it seems difficult to prove that equal normal forms are judgmentally equal, \ie, that $\Gamma \der v,v' : T$ and $v \approx v'$ imply $\Gamma \der v = v' : T$.  Proving this statement seems to be the key to an incremental equality check; but
-the usual bidirectional argument \cite{abelScherer:types10} does not seem to go through as we lack uniqueness of types.
+% Reification erases all irrelevant size arguments to $\infty$.  We have also considered to keep the sizes there, and define equality $v \approx v'$ of normal forms up to differences in erased arguments.  However, it seems difficult to prove that equal normal forms are judgmentally equal, \ie, that $\Gamma \der v,v' : T$ and $v \approx v'$ imply $\Gamma \der v = v' : T$.  Proving this statement seems to be the key to an incremental equality check; but
+% the usual bidirectional argument \cite{abelScherer:types10} does not seem to go through as we lack uniqueness of types.
 In the long run, we wish for an incremental type-directed equality check, which is also at the heart of Agda's type checker, as this check can generate constraints for meta variables involved in type reconstruction \cite{norell:PhD}.
+However, the usual bidirectional construction \cite{abelScherer:types10} does not seem to go through as we lack uniqueness of types.
 
 For now, we have only exploited shape-irrelevance of sized types, but this directly extends to universe levels.  If we consider all universes as a single shape $\Set[\ell_1] \shape \Set[\ell_2]$, we can quantify over levels irrelevantly, as $\Set$ is a shape-irrelevant type constructor.  This is a stepping stone for integrating universe cumulativity with Agda's explicit universe-polymorphism.  If levels are no longer unique (because of subsumption), they will get in the way of proofs, analogously to sizes.  With an irrelevant quantifier we can ignore levels where they do not matter.  We will still respect them where they matter, thus, we keep consistency.
 

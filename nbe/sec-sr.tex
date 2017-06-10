@@ -3,7 +3,7 @@
 
 For normalization of types, we introduce \fbox{$\Nbe \Gamma T$}
 via the relation $\Nbe \Gamma T \evalsto V \defas \RTy \Gamma {T\rhog} V$.
-Analogously, we show that the test $\Nbe \Gamma T \equiv \Nbe \Gamma T'$
+Analogously, we show that the test $\Nbe \Gamma T \nfeq \Nbe \Gamma T'$
 decides type equality $\Gamma \der T = T'$.
 
 \begin{corollary}[Type weak head normalization]
@@ -49,8 +49,8 @@ By the fundamental theorem,
 $(\piT U T)\rhog = (\piT{U'}{T'})\rhog \in s$ which by definition means
 $U\rhog = U'\rhog \in s$ and $T(\rhog,u) = T'(\rhog,u') \in s$ for all $u = u' \in s$.
 By reification (Thm.~\ref{thm:rere}),
-$\RTy\Gamma {U\rhog} V$ and $\RTy\Gamma {U'\rhog} V$ for some normal form
-$V$.
+$\RTy\Gamma {U\rhog} V$ and $\RTy\Gamma {U'\rhog} V'$ for some normal forms
+$V \nfeq V'$.
 Since by inversion we have $\Gamma \der U,U' : s$ we get $\Gamma \der U = U' : s$ by soundness of NbE.
 Now, choosing $u := u' := \up {U\rhog} \var\Gamma \in U$, we obtain
 $T\rhogu = T' \rhogu \in s$, which analogously gives us $\cext\Gamma U \der T = T' : s$.
