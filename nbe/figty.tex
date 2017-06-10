@@ -82,13 +82,13 @@
   $}
 \\[2ex]
   \ru{\Gamma \der u : \Nat (a + 1) \qquad
-      \Gamma \der T : \Nat (a + 1) \to \Set[\ell] \qquad
+      \resurrect\Gamma \der T : \Nat (a + 1) \to \Set[\ell] \qquad
       \Gamma \der t_z : T \, (\zero{a}) \qquad
       \Gamma \der t_s : (x : \Nat a) \to T \, (\suc{a} x)
     }{\Gamma \der u\,\case[\ell] T {t_z} t_s : T \, u}
 \\[2ex]
   \ru{\Gamma \der u : \Nat a \qquad
-      \Gamma \der T : \Adm\,\ell \qquad %% \funT i \Size \Nat i \to \Set[\ell] \\
+      \resurrect\Gamma \der T : \Adm\,\ell \qquad %% \funT i \Size \Nat i \to \Set[\ell] \\
       \Gamma \der t : \FixT\, T
      }{\Gamma \der u\,\fix[\ell] T t : T \,a \, u}
 \qquad
