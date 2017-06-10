@@ -323,8 +323,27 @@ By \emph{large eliminations} \cite{werner:types92} we refer to types computed by
 in type theories that feature both universes and data types.
 In the presence of large eliminations, dependency erasure fails, and it is not clear what the skeleton of a dependent type should be.  For instance consider the type $\funT n \NN \underbrace{A \to \dots \to A}_n \to A$ of $n$-ary functions; its shape is dependent on the value of $n$, thus cannot be determined statically.  Thus, the ``skeleton'' idea is also not directly applicable.
 
-Going beyond the standard syntax-directed equality check, there is a technique that can deal with dynamic $\eta$-expansion.  It is a type-directed normalization function inspired by normalization-by-evaluation (NbE) that computes $\eta$-long normal forms \cite{bergerSchwichtenberg:lics91,danvy:tdpe}.  We can check the computed normal forms for identity and, thus, decide definitional equality.
-NbE has proven to be a robust method to decide equality in powerful type theories with non-trivial $\eta$-laws.  It scales to universes and large eliminations \cite{abelCoquandDybjer:lics07}, topped with singleton types or proof irrelevance \cite{abelCoquandPagano:lmcs11}, and even impredicativity \cite{abel:flops10}.  At its heart there are reflection $\up T$ and reification $\down T$ functions directed by type $T$ and orchestrating just-in-time $\eta$-expansion.  Reflection $\up T x$ maps variables $x$ into the realm of values of type $T$ and let's us compute with open terms.  Reification $\down T a$ takes a value $a$ of type $T$ and computes its long normal form.  For instance, the normal form of a closed function $f : U \to T$ would be $\lambda x.\,\down{T} (f\,(\up U x))$, and for its dependently-typed variant $f : \funT x U T[x]$ it would be $\lambda x.\,\down{T[\up U x]} (f\,(\up U x))$.
+Going beyond the standard syntax-directed equality check, there is a
+technique that can deal with dynamic $\eta$-expansion.  It is a
+type-directed normalization function inspired by
+normalization-by-evaluation (NbE) that computes $\eta$-long normal
+forms \cite{bergerSchwichtenberg:lics91,danvy:tdpe}.  We can check the
+computed normal forms for identity and, thus, decide definitional
+equality.  NbE has proven to be a robust method to decide equality in
+powerful type theories with non-trivial $\eta$-laws.  It scales to
+universes and large eliminations \cite{abelCoquandDybjer:lics07},
+topped with singleton types or proof irrelevance
+\cite{abelCoquandPagano:lmcs11}, and even impredicativity
+\cite{abel:flops10}.  At its heart there are reflection $\up T$ and
+reification $\down T$ functions directed by type $T$ and orchestrating
+just-in-time $\eta$-expansion.  Reflection $\up T x$ maps variables
+$x$ into the realm of values of type $T$ and lets us compute with
+open terms.  Reification $\down T a$ takes a value $a$ of type $T$ and
+computes its long normal form.  For instance, the normal form of a
+closed function $f : U \to T$ would be
+$\lambda x.\,\down{T} (f\,(\up U x))$, and for its dependently-typed
+variant $f : \funT x U T[x]$ it would be
+$\lambda x.\,\down{T[\up U x]} (f\,(\up U x))$.
 
 % In the solution we present in this article, we do not introduce a new syntax for shapes, just a relation $T \shape S$ stating that type $S$ qualifies as shape for type $T$.  We use a normalization function inspired by normalization-by-evaluation (NbE) that computes the $\eta$-long normal form of the terms under comparison, which we then check for identity.
 
@@ -347,14 +366,14 @@ Concretely, we consider a type theory \`a la Martin-L\"of with dependent functio
 (In the following rules, $a$, $a'$, and $b$ stand for arbitrary size expressions.)
 \[
 \ru{\Gamma \der t = t' : \forall i.\, T
-  }{\Gamma \der t\,a = t\,a' : T[b/i]}
+  }{\Gamma \der t\,a = t'\,a' : T[b/i]}
 \qquad
 \ru{\Gamma \der t : \forall i.\, T
   }{\Gamma \der t\,a : T[b/i]}
 \qquad
 \qquad
 \ru{\Gamma \der t = t' : \Pi i.\, T
-  }{\Gamma \der t\,a = t\,a : T[a/i]}
+  }{\Gamma \der t\,a = t'\,a : T[a/i]}
 \qquad
 \ru{\Gamma \der t : \Pi i.\, T
   }{\Gamma \der t\,a : T[a/i]}
@@ -546,7 +565,7 @@ $\piT \Size \piT {(\Nat\,\ind 0)} \Set[\ell]$.  We abbreviate this
 type by \fbox{$\FixK\,\ell$}, and let \fbox{$\FixT\,T$} stand for
 $\forall z.\ (\sfunT x {\Nat z} T\, z\, x) \to \sfunT x {\Nat (z + 1)} T \,(z+1)\, x$.
 %
-Similar as for $\Pi$, we use named lambda abstraction as sugar for de
+Similarly to for $\Pi$, we use named lambda abstraction as sugar for de
 Bruijn abstraction.  Named abstraction takes care of proper lifting of
 de Bruijn indices, for instance,
 $\lambda x.\, t x = \lambda. (t \slift)\,\ind 0$ if $t$ is outside the
@@ -580,6 +599,7 @@ annotations $T$ in recursion $\fix[\ell] T t$.  The type constructor $T$
 has to be monotone in the size argument; this is a technical condition
 for type-based termination \cite{gimenez:typeBased}.  We will make use
 of it in Section~\ref{sec:comp}.
+We write \fbox{$\DD :: J$} to express that $\DD$ is a derivation of judgement $J$.
 
 In the typing judgement $\Gamma \der t : T$, the term $t$ is in scope of
 $\Gamma$, \ie, may not mention irrelevant variables in relevant
@@ -837,7 +857,7 @@ suitable to represent unknowns.
 \emph{Size values} \fbox{$\alpha, \beta \in \SIZE$} are size
 expressions that use de Bruijn levels instead of de Bruijn
 indices. Comparison of size values $\alpha \leq \beta$ is
-analoguous to comparison of size terms $a \leq b$.  In the following, we
+analogous to comparison of size terms $a \leq b$.  In the following, we
 will reuse letter $a$ for a value if it cannot be confused for a size
 term.
 
@@ -1433,7 +1453,7 @@ Simultaneously, we need to prove correctness, namely that $T \leq T' \in \TYPE$ 
       B[\alpha] \leq B'[\alpha] \in \TYPE \mforall \alpha \in \SIZE
     }{T \leq T' \in \TYPE}
 \end{gather*}
-\begin{lemma}[Subtyping is preorder]
+\begin{lemma}[Subtyping is a preorder]
 \label{lem:preord}
 \bla
 \begin{enumerate}
@@ -1465,7 +1485,7 @@ Simultaneously, we need to prove correctness, namely that $T \leq T' \in \TYPE$ 
 \subsection{Type shapes}
 \label{sec:shape}
 
-Reflection and reification perform $\eta$-expansion so that we arrive at an $\eta$-long $\beta$-normal form.  To perform the $\eta$-expansion, not the precise type is needed, just the approximate shape, in particular, whether it is a function type (do expand) or a base type (do not expand).
+Reflection and reification perform $\eta$-expansion so that we arrive at an $\eta$-long $\beta$-normal form.  To perform the $\eta$-expansion, the precise type is not needed, just the approximate shape, in particular, whether it is a function type (do expand) or a base type (do not expand).
 For the logical framework, the shape of a dependent type is just its
 underlying simple type \cite{harperPfenning:equivalenceLF}. However,
 in the presence of universes and large eliminations, there is no
@@ -1563,8 +1583,10 @@ Shapes are used to direct $\eta$-expansion when we reflect neutrals into semanti
 \label{thm:rere}
 Let $T \in \SET[\ell]$ and $T \shape S_1$ and $T \shape S_2$.
 \begin{enumerate}
-\item If\/ $n_1 = n_2 \in \NE$ then $\up{S_1}{n_1} = \up{S_2}{n_2} \in T$.
-\item If\/ $t_1 = t_2 \in T$ then $\down{S_1}{t_1} = \down{S_2}{t_2} \in \NF$.
+\item \label{it:up}
+If\/ $n_1 = n_2 \in \NE$ then $\up{S_1}{n_1} = \up{S_2}{n_2} \in T$.
+\item \label{it:down}
+If\/ $t_1 = t_2 \in T$ then $\down{S_1}{t_1} = \down{S_2}{t_2} \in \NF$.
 \end{enumerate}
 \end{theorem}
 \begin{proof*}
@@ -1591,13 +1613,16 @@ By induction on $T \in \SET[\ell]$ and cases on $T \shape S_1$ and $T \shape S_2
 \begin{enumerate}
 \item To show $\up{S_1}{n_1} = \up{S_2}{n_2} \in T$ assume arbitrary $u_1 = u_2 \in A$.
   Let $d_i = \down{A_i}{u_i}$.
-  By induction hypothesis, $d_1 = d_2 \in \NF$.
+  By induction hypothesis (\ref{it:down}) with shapes $A \shape A_1$ and $A \shape A_2$
+  we get $d_1 = d_2 \in \NF$.
   Thus, $n_1\,d_1 = n_2\,d_2 \in \NE$ by Lemma~\ref{lem:closne}, and
-  by induction hypothesis,  $\up{B_1[u_1]}(n_1\,d_1) = \up{B_2[u_2]}(n_2\,d_2) \in B[u_1]$.
+  by induction hypothesis (\ref{it:up}) with shapes
+  $B[u_1] \shape B_1[u_1]$ and $B[u_1] \shape B_2[u_2]$ we obtain
+  $\up{B_1[u_1]}(n_1\,d_1) = \up{B_2[u_2]}(n_2\,d_2) \in B[u_1]$.
   With $(\up{S_i}{n_i})\,u_i \evalsto \up{B_i[u_i]}(n_i\,d_i)$ we are done by definition of $\EL(T)$.
 
 \item We assume $k \in \NN$ and show $\R k {\down{S_i}{t_i}} \lambda v_i$ for some normal forms
-$v_1 \nfeq v_2$.  Let $u_i = \up{A_i} \lev k$.  Note that $u_1 = u_2 \in A$ by induction hypothesis.
+$v_1 \nfeq v_2$.  Let $u_i = \up{A_i} \lev k$.  Note that $u_1 = u_2 \in A$ by induction hypothesis, since $\var k = \var k \in \NE$ by Lemma~\ref{lem:closne}.
 It is sufficient to show
 $\R{k+1}{\down{B_i[u_i]}{(t_i\,u_i)}} {v_i}$.
 By definition of $\EL(T)$ we have $t_1\,u_1 = t_2\,u_2 \in B[u_1]$, thus, by induction hypothesis,
@@ -1980,7 +2005,7 @@ head normalization theorem.
 First, let us define some auxiliary judgements that relate a
 well-formed syntactic object to a value, via read back.
 They will constitute the logical relation for base types,
-yet, are not general enough for function types.
+but need to be strengthened for function types.
 \begin{alignat*}{8}
 & \Gamma \der a && \doteq \tRsize\, \alpha
   && \quad\defas\quad
@@ -2044,7 +2069,7 @@ yet, are not general enough for function types.
 %   % \RSize {\Gamma'} \alpha a' \mand
 %   % \Gamma' \der a\xi = a' : \Size
 % \]
-By definitions, these relations are closed under subsumption and
+By definition, these relations are closed under subsumption and
 weakening, e.g., if\/ $\RD \Gamma t d T$ and $\Gamma \der T \leq T'$ then $\RD \Gamma t d T'$,
 and if\/ $\xi : \Gamma' \leq \Gamma$ then $\RD{\Gamma'}{t\xi}d{T\xi}$.
 \begin{lemma}[Fresh variable readback]
@@ -2714,14 +2739,21 @@ long version of this article.
 \label{sec:concl}
 
 In this article, we have described the first successful integration of higher-rank size polymorphism into a core type theory with dependent function types, a sized type of natural numbers, a predicative hierarchy of universes, subtyping, and $\eta$-equality.  This is an important stepping stone for the smooth integration of sized types into dependently-typed proof assistants.
-In the final paragraphs, we discuss some questions and insights that follow from our work and go beyond it.
+In these final paragraphs, we discuss some questions and insights that follow from our work and go beyond it.
 
 It is now straightforward to add a unit type $\One$ with extensional equality $t = {*} : \One$ for all $t : \One$.  We simply extend reification such that $\down\One a = {*}$.  Further, $\One$ is a new type shape with rule $\One \shape \One$.
 
 % Reification erases all irrelevant size arguments to $\infty$.  We have also considered to keep the sizes there, and define equality $v \approx v'$ of normal forms up to differences in erased arguments.  However, it seems difficult to prove that equal normal forms are judgmentally equal, \ie, that $\Gamma \der v,v' : T$ and $v \approx v'$ imply $\Gamma \der v = v' : T$.  Proving this statement seems to be the key to an incremental equality check; but
 % the usual bidirectional argument \cite{abelScherer:types10} does not seem to go through as we lack uniqueness of types.
-In the long run, we wish for an incremental type-directed equality check, which is also at the heart of Agda's type checker, as this check can generate constraints for meta variables involved in type reconstruction \cite{norell:PhD}.
-However, the usual bidirectional construction \cite{abelScherer:types10} does not seem to go through as we lack uniqueness of types, and even principal types.
+
+In the long run, we wish for a type-directed equality check that does
+not normalization in one go, but interleaves weak head normalization
+with structural comparison.
+Such a equality test is at the heart of Agda's type
+checker and it generates constraints for meta variables
+involved in type reconstruction \cite{norell:PhD}.  However, the usual
+bidirectional construction \cite{abelScherer:types10} does not seem to
+go through as we lack uniqueness of types (and even principal types).
 
 For now, we have only exploited shape-irrelevance of sized types, but this directly extends to universe levels.  If we consider all universes as a single shape $\Set[\ell_1] \shape \Set[\ell_2]$, we can quantify over levels irrelevantly, as $\Set$ is a shape-irrelevant type constructor.  This is a stepping stone for integrating universe cumulativity with Agda's explicit universe-polymorphism.  If levels are no longer unique (because of subsumption), they will get in the way of proofs, analogously to sizes.  With an irrelevant quantifier we can ignore levels where they do not matter.  We will still respect them where they matter, thus, we keep consistency.
 

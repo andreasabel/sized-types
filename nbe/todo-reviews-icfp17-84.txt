@@ -168,53 +168,74 @@ REPLACED size variable i by z in Section 3.
 >   conclusion.
 >
 > Smaller comments
->
+
 > Page 3, line 44: "let's" => "let"
->
+DONE: lets
+
 > Page 4, lines 34-36: should the 't's on the right hand side of the
 > conclusions of the first and third judgement here be primed?
->
+DONE
+
 > Page 5, line 35: "Eucledian" => "Euclidean"
->
+DONE
+
 > Page 7, line 5/6: "pure type system". I thought that pure type systems
 > necessarily had untyped equality, but maybe not.
 >
 > Page 8, line 17. "Similar as" => "Similarly to"
->
+DONE
+
 > Page 8, line 37. Missing universe level on 'FixK'
->
+DONE
+
 > Pages 10 and 11. Why are some of the rules in boxes? As far as I can
 > tell, this is because they are difficult rules involving
 > irrelevance. But I can't find mention of this in the text.
->
+DONE.  Mentioned it
+
 > Page 12, line 45/46: "analoguous" => "analogous"
->
+DONE
+
 > Page 15, line 27/8: odd repetition on this line?
->
+DONE
+
 > Page 16, line 16: Is the denotation of $\forall \mathcal{F}$ the
 > intersection?
->
+NOT REALLY
+
 > Page 16, line 43: I assume that $\mathcal{D}$ refers to the derivation
 > of the equality, but this isn't explicitly mentioned.
->
+ADDED TO SECTION 2
+
 > Page 17, line 30: Subtyping is **A** preorder
->
+DONE
+
 > Page 17, line 37: "not the precise type is needed" => "the precise
 > type is not needed"
->
+DONE
+
 > Page 18, line 41: "... by lemma 4.1, and by induction
 > hypothesis". Also using Lemma 4.7? because we need $B_1[u_1]
 > \sqsubseteq B_1[u_1]$? (sorry don't know how to tget the right
-> symbol). Also, on line 44, there is a use of Lemma 4.1(1) when
+> symbol).
+NO, but added shapes to clarify.
+
+> Also, on line 44, there is a use of Lemma 4.1(1) when
 > applying the induction hypothesis?
->
+YES, DONE
+
 > Page 19, lines 39-40: Maybe point out that this definition is
 > mirroring the derived judgement for 'Adm' on page 8, line 37.
->
+DONE
+
 > Page 21, line 30: not sure what the word "yet" is doing here.
->
+REFORMULATED
+
 > Page 21, line 36. "definitions" => "definition"
->
+DONE
+
 > Page 24, line 13. "In the final" => "In these final"
->
+DONE
+
 > Page 24, lines 17-23: what is an incremental equality checker?
+EXPLAINED
