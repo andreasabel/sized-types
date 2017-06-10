@@ -573,6 +573,7 @@ Different size variables are incomparable.
 
 Fig.~\ref{fig:judge} lists the inductive and derived judgements of our type theory and
 figures~\ref{fig:ty} and \ref{fig:eq} the inference rules.
+We have \fbox{boxed} the rules dealing with irrelevant size application.
 Judgement $\Gamma \der T : \Adm \ell$ characterizes the valid type
 annotations $T$ in recursion $\fix[\ell] T t$.  The type constructor $T$
 has to be monotone in the size argument; this is a technical condition
@@ -602,11 +603,24 @@ substitution applies to the type side.  The fact that we replace an
 irrelevant variable $z$ allows $a,a',b$ to refer to irrelevant
 variables from $\Gamma$, thus, they are in scope of $\resurrect\Gamma$.
 
+Typing requires from annotations $\ann a$ in a term only that they are well-scoped size expressions, \ie, just mention relevant size variables.  Let \fbox{$t^\infty$} denote the \emph{erasure} of term $t$, meaning that we replace all annotations $\ann a$ in $t$ by $\ann \infty$.  Let \fbox{$t \approx u$} relate terms that only differ in their annotations, \ie, $t \approx u \defiff t^\infty = u^\infty$.
+Erasure does not change the term modulo judgmental equality:
+\begin{lemma}[Erasure and similarity]
+\label{lem:erase}
+\bla
+\begin{enumerate}
+\item If\/ $\Gamma \der t : T$ then $\Gamma \der t = t^\infty : T$.
+\item If\/ $\Gamma \der t, u : T$ and $t \approx u$ then $\Gamma \der t = u : T$.
+\end{enumerate}
+\end{lemma}
+
+
 %% COULD BE A LEMMA INSTEAD OF A RULE
 % \begin{lemma}[Reflexivity]
 %   If\/ $\Gamma \der t : T$ then $\Gamma \der t = t : T$.
 % \end{lemma}
 
+\noindent
 In the following, we list syntactic properties of our judgements.  To
 this end, let $J$ %, $L$, and $R$
 match a part of a judgement.
@@ -630,7 +644,9 @@ irrelevant sizes may refer to irrelevant size variables.
 \begin{lemma}[Resurrection]
 \label{lem:res} \bla
 \begin{enumerate}
-\item \label{it:reswf} $\der \Gamma$ iff $\der \resurrect\Gamma$;  then $\resurrect \Gamma \der \sid : \Gamma$.
+\item \label{it:reswf} $\der \Gamma$ iff $\der \resurrect\Gamma$.
+  Then $\resurrect \Gamma \der \sid : \Gamma$, which can be written
+  $\sid : \resurrect\Gamma \leq \Gamma$.
   % Consequently, if\/ $\Gamma \der J$ then $\resurrect \Gamma \der J$.
   % Further, if\/ $\Gamma \der J : \resurrect\Delta$ then $\Gamma \der J : \Delta$.
 \item If\/ $\Gamma \der J$ then $\resurrect \Gamma \der J$.
@@ -664,10 +680,15 @@ irrelevant sizes may refer to irrelevant size variables.
 
 The relation $\sueq \Gamma \sigma {\sigma'} \tau \Delta$ is a partial equivalence
 relation (PER) on term-side substitutions $\sigma,\sigma'$. Note that
-we cannot resurrect this judgement to
-$\sueq{\resurrect\Gamma}{\sigma}{\sigma'}\tau \Delta$ in general!
-The type-side substitution $\tau$ can be converted to one that is
-equal in and for resurrected contexts.
+usually we cannot resurrect this judgement to
+$\sueq{\resurrect\Gamma}{\sigma}{\sigma'}\tau {\resurrect\Delta}$.
+For instance,
+$\sueq{z_1 {\div} \Size.\,z_2 {\div} \Size} {\sg{z_1}} {\sg{z_2}} {\sg{\infty}} {z {\div} \Size}$
+holds but
+$\sueq{z_1 {:} \Size.\,z_2 {:} \Size} {\sg{z_1}} {\sg{z_2}} {\sg{\infty}} {z {:} \Size}$
+clearly not.
+% The type-side substitution $\tau$ can be converted to one that is
+% equal in and for resurrected contexts.
 \begin{lemma}[Substitution equality]
 \label{lem:subeq}\bla
 \begin{enumerate}
