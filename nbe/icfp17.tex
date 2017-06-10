@@ -768,7 +768,8 @@ clearly not.
 In this section we present an operational semantics of our language,
 define the NbE algorithm, construct a PER model, and demonstrate that
 NbE is complete for definitional equality, \ie, if
-$\Gamma \der t = t' : T$, then $t$ and $t'$ have the same normal form.
+$\Gamma \der t = t' : T$, then $t$ and $t'$ have the same normal form
+up to annotations.
 \[
 \begin{array}{lllll@{\qquad}l}
   \Ne & \ni &
@@ -888,7 +889,8 @@ First, we close the term $t$ with an environment \textcolor{blue}{$\eta$} that m
 free de Bruijn indices of $t$ to reflected de Bruijn levels.
 Reflection of de Bruijn levels follows the \textcolor{blue}{blue path}
 $\Level \blueto \DNe \blueto \D$: Levels embed via constructor $\var{}$
-into semantic neutrals $\DNe$ which are labeled with their type $A \in \D$ to become and element $\up A \lev j \in \D$.
+into semantic neutrals $\DNe$ which are labeled with their type $A \in \D$
+to become an element $\up A \lev j \in \D$.
 
 \item
 Then, we label value $t \eta \in \D$ with its type $A$ to obtain $\down A t \eta \in \DNf$.
@@ -904,68 +906,62 @@ If this is the case, each de Bruijn level encountered during read back is below 
 We define the operational semantics of our language by the weak head
 evaluation relation \fbox{$t \evalsto w$} which is defined on
 expressions, thus works on values as well as on terms.  It is defined mutually
-with auxiliary relation \fbox{$w @ e \evalsto w'$} stating that weak
+with auxiliary relation \fbox{$w \at e \evalsto w'$} stating that weak
 head normal form $w$ is eliminated by $e$ into weak head normal form $w'$.
 % \[
 % \begin{array}{l@{\qquad}l}
 %   t \evalsto w & \mbox{term $t$ evaluates to weak head normal form $w$} \\
-%   w @ e \evalsto w' & \mbox{eliminating $w$ with $e$ evaluates to $w'$} \\
-% %  w @ \vec e \evalsto w' & \mbox{applying $w$ to eliminations $\vec e$ evaluates to $w'$} \\
+%   w \at e \evalsto w' & \mbox{eliminating $w$ with $e$ evaluates to $w'$} \\
+% %  w \at \vec e \evalsto w' & \mbox{applying $w$ to eliminations $\vec e$ evaluates to $w'$} \\
 % \end{array}
 % \]
 
+\noindent
 \fbox{$t \evalsto w$}
-\vspace{-4ex}
+\ and \
+\fbox{$w \at e \evalsto w'$}
+\vspace{-6ex}
 \begin{gather*}
   \ru{}{w \evalsto w}
 \qquad
-  \ru{t \evalsto w \qquad w @ e \evalsto w'}{t\,e \evalsto w'}
-\end{gather*}
-
-% \fbox{$w @ \vec e \evalsto w'$}
-% \begin{gather*}
-%   \ru{}{w @ () \evalsto w}
-% \qquad
-%   \ru{w @ e \evalsto w' \qquad
-%       w' @ \vec e \evalsto w''
-%     }{w @ (e, \vec e) \evalsto w''}
+  \ru{t \evalsto w \qquad w \at e \evalsto w'}{t\,e \evalsto w'}
 % \end{gather*}
-
-\fbox{$w @ e \evalsto w'$}
-\begin{gather*}
+% \fbox{$w \at e \evalsto w'$}
+% \begin{gather*}
+\\[1.5ex]
   \ru{t[u] \evalsto w
-    }{(\lambda t) @ u \evalsto w}
+    }{(\lambda t) \at u \evalsto w}
 \qquad
   \ru{t[\alpha] \evalsto w
-    }{(\lambda t) @ \alpha \evalsto w}
+    }{(\lambda t) \at \alpha \evalsto w}
 \qquad
   \ru{t[\alpha] \evalsto w
-    }{(\lambda t) @ \ann \alpha \evalsto w}
+    }{(\lambda t) \at \ann \alpha \evalsto w}
 \qquad
   \ru{t_z \evalsto w
-    }{(\zero \alpha) @ \casett \evalsto w}
-\\[2ex]
+    }{(\zero \alpha) \at \casett \evalsto w}
+\\[1.5ex]
   \ru{t_s\, t \evalsto w
-    }{(\suc \alpha t) @ \casett \evalsto w}
+    }{(\suc \alpha t) \at \casett \evalsto w}
 \qquad
-  \ru{t\,\ann \alpha\,(\lambda x.\, x\, \fixtt)\,c \evalsto w
-     }{c @ \fixtt \evalsto w
+  \rux{t\,\ann \alpha\,(\lambda x.\, x\, \fixtt)\,c \evalsto w
+     }{c \at \fixtt \evalsto w
      }{c\in \{ \zero \alpha, \suc \alpha u \}}
 \end{gather*}
 %The rules added for NbE deal with elimination of delayed reflection:
 For NbE, we add evaluation rules that deal with elimination of delayed reflection:
 \begin{gather*}
   \ru{A' \evalsto \piT A B
-    }{(\up {A'} n) @ u \evalsto \up{B[u]} (n \, \down A u) }
+    }{(\up {A'} n) \at u \evalsto \up{B[u]} (n \, \down A u) }
 \qquad
   \ru{A \evalsto \piT \Size B
-    }{(\up {A} n) @ \alpha \evalsto \up{B[\alpha]} (n \, \alpha)}
+    }{(\up {A} n) \at \alpha \evalsto \up{B[\alpha]} (n \, \alpha)}
 \qquad
   \ru{A \evalsto \forallT B
-    }{(\up {A} n) @ \ann \alpha \evalsto \up{B[\alpha]} (n \ann \alpha)}
-\\[2ex]
+    }{(\up {A} n) \at \ann \alpha \evalsto \up{B[\alpha]} (n \ann \alpha)}
+\\[1.2ex]
   \ru{%A \evalsto \Nat \beta \qquad
-    }{(\up {A} n) @ \case[\ell] B {f_z} {f_s} \evalsto
+    }{(\up {A} n) \at \case[\ell] B {f_z} {f_s} \evalsto
       \up{B\,(\up{A} n)}\,
       % \up{B\,(\up{\Nat \infty} n)}
          n\,\case[\ell]
@@ -973,9 +969,9 @@ For NbE, we add evaluation rules that deal with elimination of delayed reflectio
              {(\down {B\,{\zero\infty}} f_z)}
              {(\down {\funS x {\Nat \infty} B\,(\suc \infty x)} f_s)}
     }
-\\[2ex]
+\\[1ex]
   \ru{%A \evalsto \Nat \beta \qquad
-    }{(\up {A} n) @ \fix[\ell] B f \evalsto
+    }{(\up {A} n) \at \fix[\ell] B f \evalsto
       n\,\fix[\ell] {(\down {\FixK} B)} {(\down {\FixT\, B} f)}
     }
 \end{gather*}
@@ -1062,6 +1058,7 @@ defined on expressions.
 
 \noindent
 \fbox{$\RSize k {\alpha} a$}\ \ Read back size value $\alpha$.
+\vspace{-1.5ex}
 \begin{gather*}
   \ru{
     }{\RSize k \infty \infty}
@@ -1137,20 +1134,18 @@ defined on expressions.
 \subsection{Partial equivalence relations}
 \label{sec:per}
 
-A type $T$ will be interpreted as a partial equivalence relation (PER) $\A$ on terms, \ie, a relation which is symmetric and transitive. The domain $\dom(\A)$ of the relation can be thought of as the set of terms which denotes the extension of the type; on $\dom(\A) = \{a \mid \exists a'.\ (a,a') \in \A \}$ the relation $\A$ is in fact an equivalence relation.  We write $a = a' \in \A$ for relatedness in $\A$ and $a \in \A$ if $a \in \dom(\A)$.
+A type $T$ will be interpreted as a partial equivalence relation (PER)
+$\A$ on terms, \ie, a relation which is symmetric and transitive. The
+domain $\dom(\A)$ of the relation can be thought of as the set of
+terms which denotes the extension of the type; on
+$\dom(\A) = \{a \mid \exists a'.\ (a,a') \in \A \}$ the relation $\A$
+is in fact an equivalence relation.  We write $a = a' \in \A$ for
+relatedness in $\A$ and $a \in \A$ if $a \in \dom(\A)$.
 
-%The PERs $\NE$ characterizes neutral reifiable terms.
-% \[
-% \begin{array}{lll}%{l@{\quad}l@{\quad}l@{~}l@{~}l@{~}l@{~}l@{~}l}
-%   \fbox{$\up T n = \up {T'} {n'} \in \NE$}
-%     & \defas &
-%     T \evalsto N \mand T' \evalsto N' \mand
-%     \mforall k \mboth
-%     \RNe k n m \mand \RNe k {n'} {m'} \mand m \nfeq m'
-%     .\\
-% \end{array}
-% \]
-The PERs $\NE$ and $\NF$ characterize (neutral) normalizing terms.
+The PERs $\NE$ and $\NF$ characterize (neutral) normalizing values.
+For instance, two values $n$ and $n'$ are related in $\NE$ if at any $k \in \NN$
+they can be read back to neutral normal forms $m$ and $m'$
+which are identical up to annotations.
 \[
 % \begin{array}{l@{\quad}l@{\quad}l@{~}l@{~}l@{~}l@{~}l@{~}l}
 %   n = n' \in \NE
@@ -1161,36 +1156,51 @@ The PERs $\NE$ and $\NF$ characterize (neutral) normalizing terms.
 %     \R k d v &\mand& \R k {d'} {v} &\mforall k \\
 %   e = e' \in \ELIM
 %     & \defas &
-%     \RElim k e e_v &\mand& \R k {e'} {e_v} &\mforall k \\
+%     \RElim k e e_v &\mand& \RElim k {e'} {e_v} &\mforall k \\
 %   A = A' \in \TY
 %     & \defas &
 %     \RTy k A V &\mand& \RTy k {A'} {V} &\mforall k \\
 % \end{array}
 %\newcommand{\myfbox}[1]{\begin{array}[c]{@{}l@{}}\framebox(60,12)[l]{~\,#1}\end{array}}
-\newcommand{\myfbox}[1]{\framebox(60,12)[l]{~\,#1}}
-\begin{array}{l@{\quad}l@{\quad}l@{~}l@{\quad}l@{~}l@{~\;}r@{~}l@{~}l@{~}l}
+\newcommand{\myfbox}[1]{\framebox(60,13)[l]{~\,#1}}
+\begin{array}{l@{\quad}l@{\quad}l@{~}l@{\,}l@{\quad}l@{\,}l@{~}l@{~\;}r@{~}l@{~}l@{~}l}
   \raisebox{-0.5ex}{\myfbox{$n = n' \in \NE$}}
     & \defas &
-    \RNe k n m &\mand& \RNe k {n'} {m'} &\mand& m &\nfeq& m' &\mforall k
+    \tRne _k & n \evalsto m &\mand& \tRne _k & {n'} \evalsto {m'} &\mand& m &\nfeq& m' &\mforall k
 \\[1ex]
   \raisebox{-0.8ex}{\myfbox{$d = d' \in \NF$}}
     & \defas &
-    \R k d v &\mand& \R k {d'} {v'} &\mand& v &\nfeq& v' &\mforall k
+    \tR _k & d \evalsto v &\mand& \tR _k & {d'} \evalsto {v'} &\mand& v &\nfeq& v' &\mforall k
 \\[1ex]
   \raisebox{-0.6ex}{\myfbox{$e = e' \in \ELIM$}}
     & \defas &
-    \RElim k e e_v &\mand& \R k {e'} {e_v'} &\mand& e_v &\nfeq& e_v' &\mforall k
+    \tRelim _k & e \evalsto e_v &\mand& \tRelim _k & {e'} \evalsto {e_v'} &\mand& e_v &\nfeq& e_v' &\mforall k
 \\[1ex]
   \raisebox{-0.8ex}{\myfbox{$A = A' \in \TY$}}
     & \defas &
-    \RTy k A V &\mand& \RTy k {A'} {V'} &\mand& V &\nfeq& V' &\mforall k \\
+    \tRty _k & A \evalsto V &\mand& \tRty _k & {A'} \evalsto {V'} &\mand& V &\nfeq& V' &\mforall k \\
 \end{array}
-  % \ru{\RNe k t m \mand \RNe k {t'} {m'} \mand m \nfeq m' \mforall k
-  %   }{t = t' \in \NE}
-  % \ru{t \evalsto \up N n \qquad t' \evalsto \up{N'}{n'} \qquad n \nfeq n'
-  %   }{t = t' \in \NE}
+% \begin{array}{l@{\quad}l@{\quad}l@{~}l@{\quad}l@{~}l@{~\;}r@{~}l@{~}l@{~}l}
+%   \raisebox{-0.5ex}{\myfbox{$n = n' \in \NE$}}
+%     & \defas &
+%     \RNe k n m &\mand& \RNe k {n'} {m'} &\mand& m &\nfeq& m' &\mforall k
+% \\[1ex]
+%   \raisebox{-0.8ex}{\myfbox{$d = d' \in \NF$}}
+%     & \defas &
+%     \R k d v &\mand& \R k {d'} {v'} &\mand& v &\nfeq& v' &\mforall k
+% \\[1ex]
+%   \raisebox{-0.6ex}{\myfbox{$e = e' \in \ELIM$}}
+%     & \defas &
+%     \RElim k e e_v &\mand& \RElim k {e'} {e_v'} &\mand& e_v &\nfeq& e_v' &\mforall k
+% \\[1ex]
+%   \raisebox{-0.8ex}{\myfbox{$A = A' \in \TY$}}
+%     & \defas &
+%     \RTy k A V &\mand& \RTy k {A'} {V'} &\mand& V &\nfeq& V' &\mforall k \\
+% \end{array}
 \]
-%All PERs $\A$ we consider are sandwiched $\NE \subseteq \A \subseteq \NF$ between $\NE$ and $\NF$.
+Once we have established useful closure properties of these PERs, they
+abstract most of the reasoning about the read-back relation from our
+proofs.  This idea is due to Coquand \cite{abelCoquandPagano:tlca09}.
 
 \begin{lemma}[Closure properties of $\NE$]
   \label{lem:closne}
@@ -1295,7 +1305,7 @@ each universe level $\ell$.  The construction follows \citet{abelCoquandDybjer:l
 By induction on $\ell \in \NN$ we define the PER family
 $\_ = \_ \in \Set[\ell]$ of types
 together with the extension $\EL[\ell] T$ (for $T = T' \in \Set[\ell]$)
-which is a PER of values of type $A$.
+which is a PER of values of type $T$.
 The rules for \fbox{$T = T' \in \SET[\ell]$} are:
 \[
 \begin{array}{l@{\qquad}l}
@@ -1361,7 +1371,7 @@ All relations involved here are closed under weak head equality.
   By induction on $\DD_1$ and cases on $\DD_2$.
 \end{proof}
 }
-Since $\EL[\ell](T)$ does not depend $\ell$ nor the derivation that introduced $T = T' \in \SET[\ell]$,  we may simply write $t = t' \in \EL(T)$ or even $t = t' \in T$.
+Since $\EL[\ell](T)$ does not depend on $\ell$ nor the derivation that introduced $T = T' \in \SET[\ell]$,  we may simply write $t = t' \in \EL(T)$ or even $t = t' \in T$.
 
 
 \subsection{Subtyping}
@@ -1452,7 +1462,7 @@ Simultaneously, we need to prove correctness, namely that $T \leq T' \in \TYPE$ 
 \subsection{Type shapes}
 \label{sec:shape}
 
-Reflection and reification perform $\eta$-expansion such that we arrive at an $\eta$-long $\beta$-normal form.  To perform the $\eta$-expansion, not the precise type is needed, just the approximate shape, in particular, whether it is a function type (do expand) or a base type (do not expand).
+Reflection and reification perform $\eta$-expansion so that we arrive at an $\eta$-long $\beta$-normal form.  To perform the $\eta$-expansion, not the precise type is needed, just the approximate shape, in particular, whether it is a function type (do expand) or a base type (do not expand).
 For the logical framework, the shape of a dependent type is just its
 underlying simple type \cite{harperPfenning:equivalenceLF}. However,
 in the presence of universes and large eliminations, there is no
@@ -1517,7 +1527,7 @@ We have $T \shape S$, but $S$ is not well-defined; $S \not\in \SET[0]$.
   If\/ $T = T' \in \SET[\ell]$ and $T' \shape S$ then $T \shape S$.
 \end{lemma}
 
-However, templates are not closed under subtyping in either direction because of contravariance.
+However, templates are not closed under subtyping in either direction because subtyping is contravariant for function type domains but the shape relation is covariant.
 
 Further, it is not true that equal types make equally good shapes.  We do not have that
 $T \shape S$ and $S = S' \in \SET[\ell]$ imply $T \shape S'$.  This property fails for function types.
@@ -1684,6 +1694,7 @@ The remaining goal $\case[\ell] D {d_z}{d_s} = \case[\ell] {D'} {d_z'}{d_s'} \in
 
 %A type constructor $B \in \FixK\,\ell$ is \emph{admissible for recursion}, \fbox{$B \in \ADM$}, if
 %$\bigcap_{
+\noindent
 Let us write \fbox{$B = B' \in \Adm\ell$} iff $B = B' \in \FixK\,\ell$ and
 for all $\beta \in \SIZE$ and $a \in \Nat \beta$ we have
 $B\,\beta\, a \leq B\,\infty\,a \in \TYPE$ and
@@ -2731,7 +2742,7 @@ Finally, we would like a general theory of shape-irrelevance that extends beyond
 % \clearpage
 
 %% Bibliography
-\bibliography{auto-icfp17}
+\bibliography{auto-icfp17-long}
 
 
 % %% Appendix
