@@ -9,84 +9,11 @@ In this section, we show that type checking for normal forms is decidable, and s
 We will refer to the restricted typing judgement as \fbox{$\Gamma \ders t : T$}, and obviously,
 if\/ $\Gamma \ders t : T$ then $\Gamma \der t : T$.
 
-Bidirectional typing of normal forms.
+\input{figcheck}
 
-Checking \fbox{$\Gamma \der t \jchk T$}.
-\begin{gather*}
-  \ru{T' \evalsto s \qquad
-      \Gamma \der a : \Size
-    }{\Gamma \der \Nat a \jchk T'}
-\qquad
-  \ru{T' \evalsto \Set[\ell'] \qquad \ell < \ell'
-    }{\Gamma \der \Set[\ell] \jchk T'}
-\\[2ex]
-  \ru{T' \evalsto s \qquad
-      \Gamma \der U \jchk s \qquad
-      \cext \Gamma U \der T \jchk s
-    }{\Gamma \der \piT U T \jchk T'}
-\qquad
-  \ru{T' \evalsto s \qquad
-      \cext \Gamma \Size \der T \jchk s
-    }{\Gamma \der \epiT \Size T \jchk T'}
-%\\[2ex]
-%   \ru{T' \evalsto \piT U T \qquad
-%       \cext \Gamma U \der t \jchk T
-%     }{\Gamma \der \lambda t \jchk T'}
-% \qquad
-%   \ru{T' \evalsto \epiT \Size T \qquad
-%       \eext \Gamma \Size \der t \jchk T
-%     }{\Gamma \der \lambda t \jchk T'}
-\\[2ex]
-  \ru{T' \evalsto \Nat b \qquad
-      \resurrect \Gamma \der a+1 \leq b : \Size
-    }{\Gamma \der \zero a \jchk T'}
-\qquad
-  \ru{T' \evalsto \Nat b \qquad
-      \resurrect \Gamma \der a+1 \leq b : \Size \qquad
-      \Gamma \der t \jchk \Nat a
-    }{\Gamma \der \suc a t \jchk T'}
-\\[2ex]
-  \ru{T' \evalsto \epiT U T \qquad
-      \eext \Gamma U \der t \jchk T
-    }{\Gamma \der \lambda t \jchk T'}
-\qquad
-  \ru{\Gamma \der t \jinf T \qquad \Gamma \der T \asub T'
-    }{\Gamma \der t \jchk T'}
-\end{gather*}
-
-Inference \fbox{$\Gamma \der t \jinf T$}.
-\begin{gather*}
-  \ru{\Gamma(i) = \erann[\noterased] T
-    }{\Gamma \der \ind i \jinf T}
-\qquad
-  \ru{\Gamma \der t \jinf T' \qquad
-      T' \evalsto \piT U T \qquad
-      \Gamma \der u \jchk U
-    }{\Gamma \der t\, u \jinf T[u]}
-\\[2ex]
-  \ru{\Gamma \der t \jinf T' \qquad
-      T' \evalsto \piT \Size T \qquad
-      \Gamma \der a : \Size
-    }{\Gamma \der t\,a \jinf T[a]}
-\qquad
-  \ru{\Gamma \der t \jinf T' \qquad
-      T' \evalsto \erpiT \Size T \qquad
-      \resurrect\Gamma \der a : \Size
-    }{\Gamma \der t\,\ann a \jinf T[a]}
-\\[2ex]
-  \ru{\Gamma \der u \jinf \Nat (a+1) \qquad
-      \Gamma \der T \jchk \Nat (a+1) \to \Set[\ell] \qquad
-      \Gamma \der t_z \jchk T\,(\zero a) \qquad
-      \Gamma \der t_s \jchk \funT x {\Nat a} {T\,(\suc a x)}
-    }{\Gamma \der u\, \case[\ell] T {t_z} {t_s} \jinf T\,u}
-\\[2ex]
-  \ru{\Gamma \der u \jinf \Nat a \qquad
-      \Gamma \der T \jchk \FixK\,\ell \qquad
-      \Gamma \der t \jchk \FixT\,T
-    }{\Gamma \der u\, \fix[\ell] T t \jinf T\,a\,u}
-\end{gather*}
-
-We could go beyond normal forms, by adding inference rules for the $\Nat$-constructors:
+Figure~\ref{fig:check} displays the rules for bidirectional typing of normal forms.
+Note that we could go beyond normal forms,
+by adding inference rules for the $\Nat$-constructors:
 \begin{gather*}
   \ru{\resurrect \Gamma \der a : \Size
     }{\Gamma \der \zero a \jinf \Nat(a+1)}
