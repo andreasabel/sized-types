@@ -1524,7 +1524,12 @@ $\piT A B \shape \piT R S$, we take $S$ to be a family over domain
 $A$, not $R$!  We cannot take $R$ since we have to compare families $B$ and $S$
 at a common domain, and $A$ and $R$ are not equal.
 
-\fbox{$T \shape S$} for $T \in \SET[\ell]$.  We call $T$ the \emph{template} and $S$ one of its possible \emph{shapes}.
+Fig.~\ref{fig:shape} defines \fbox{$T \shape S$} for $T \in \SET[\ell]$.
+We call $T$ the \emph{template} and $S$ one of its possible \emph{shapes}.
+%% WORKAROUND SINCE \shape does not seem to work in \caption
+\newbox{\TshapeS}\savebox{\TshapeS}{\fbox{$T \shape S$}}
+\begin{figure}
+\hrulefill
 \begin{gather*}
   \ru{T \evalsto N \quad \
       S \evalsto N'
@@ -1554,8 +1559,10 @@ at a common domain, and $A$ and $R$ are not equal.
       B[\alpha] \shape B'[\alpha'] \mforall \alpha,\alpha' \in \SIZE
     }{T \shape S}
 \end{gather*}
-% The last rule is the crucial one
-
+\hrulefill
+\caption{Type shapes \usebox{\TshapeS}\,.}
+\label{fig:shape}
+\end{figure}
 Note that $T \in \SET[\ell]$ and $T \shape S$ do not imply $S \in \SET[\ell]$.
 Type shapes are not well-defined types in general.
 For instance, assume a term $F : \Nat 0 \to \Set[0]$ which diverges if applied to a successor term.
