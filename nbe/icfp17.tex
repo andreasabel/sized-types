@@ -402,7 +402,7 @@ As usual for the meta-theory of Type Theory with large eliminations, the machine
 The algorithm employs the usual lazy reduction for types, \ie, just-in-time weak-head evaluation, in type and sub-type checker
 \cite{huet:wsscs89}.  In this, it improves on \citet{fridlenderPagano:tlca13} which instruments full normalization (NbE) at every step.
 \end{enumerate}
-This article is accompanied by a prototypical type checker \textsf{Sit} which implements the type system and type checking algorithm as described in the remainder of the paper.
+This article is accompanied by a prototypical type checker \href{https://hackage.haskell.org/package/Sit}{\texttt{Sit}} which implements the type system and type checking algorithm as described in the remainder of the paper.
 But before going into the technical details, we will motivate our type system from a practical perspective: reasoning about programs involving sized types in Agda.
 
 
@@ -1264,6 +1264,7 @@ proofs.  This idea is due to Coquand \cite{abelCoquandPagano:tlca09}.
 
 Now we define some PERs and PER constructors on values.  All these PERs $\A$ are closed under weak head equality, meaning if $a = b \in \A$ and $a'$ has the same weak head normal form as $a$, then $a' = b \in \A$.  (By symmetry, $\A$ is also closed under weak head equality on the second argument.)
 
+\fleq
 %Neutrals in the value world $\D$.
 PER $\NEE$ interprets all neutral types.
 \[
@@ -1307,7 +1308,6 @@ PER $\NEE$ interprets all neutral types.
     }{\lev k + o = \lev k + o \in \SIZE}
 \end{gather*}
 
-\fleq
 Let $\A$ be a PER (including $\A = \SIZE$) and $\F$ a family of PERs over $\A$ such that
 $\F(u) = \F(u')$ whenever $u = u' \in \A$.  We define
 \[
@@ -1346,7 +1346,9 @@ By induction on $\ell \in \NN$ we define the PER family
 $\_ = \_ \in \Set[\ell]$ of types
 together with the extension $\EL[\ell] T$ (for $T = T' \in \Set[\ell]$)
 which is a PER of values of type $T$.
-The rules for \fbox{$T = T' \in \SET[\ell]$} are:
+The rules for \fbox{$T = T' \in \SET[\ell]$} are listed in Fig.~\ref{fig:per}.
+\begin{figure}
+\hrulefill
 \[
 \begin{array}{l@{\qquad}l}
   \ru{% T \evalsto \up{\Set[\ell']} n \qquad
@@ -1385,6 +1387,9 @@ The rules for \fbox{$T = T' \in \SET[\ell]$} are:
   & \EL[\ell](T) = \FORALL(\alpha \mapsto \EL[\ell](B[\alpha]))
 \end{array}
 \]
+\hrulefill
+\caption{Semantic types and their interpretation.\label{fig:per}}
+\end{figure}
 All relations involved here are closed under weak head equality.
 \begin{lemma}[Well-definedness]
   Let $\DD :: T_1 = T_2 \in \SET[\ell]$.
@@ -1816,7 +1821,9 @@ We write $\rho \in \Gamma$ for $\rho = \rho \eeq \rho \in \Gamma$.
 \end{lemma}
 
 \noindent
-Then, we define semantic counterparts of our declarative judgements:
+Then, in Fig.~\ref{fig:sem}, we define semantic counterparts of our declarative judgements by recursion on the length of the context.
+\begin{figure}
+\hrulefill
 \[
 \begin{array}{l@{\quad}l@{\quad}l}
   \models () & \defas & \mtrue \\
@@ -1852,6 +1859,9 @@ Then, we define semantic counterparts of our declarative judgements:
     \mforall \eta = \eta' \eeq \rho \in \Gamma
 \end{array}
 \]
+\hrulefill
+\caption{Semantic judgements.\label{fig:sem}}
+\end{figure}
 
 \begin{theorem}[Fundamental theorem]
   \label{thm:fund}
