@@ -1,6 +1,10 @@
 % Section on algorithmic subtyping delegated to long version
 
-Algorithmic subtyping \fbox{$\Gamma \der T \asub T'$}.
+Fig~\ref{fig:asub} defines an incremental subtyping algorithm
+\fbox{$\Gamma \der T \asub T'$}.
+Neutral types are subtypes iff they are equal, which is checked using NbE.
+\begin{figure}[htbp]
+\hrulefill
 \begin{gather*}
   \ru{T \evalsto n \qquad
       T' \evalsto n' \qquad
@@ -28,6 +32,10 @@ Algorithmic subtyping \fbox{$\Gamma \der T \asub T'$}.
       \cext \Gamma {U_2} \der T_1 \asub T_2
     }{\Gamma \der T_1' \asub T_2'}
 \end{gather*}
+\hrulefill
+\caption{Algorithmic subtyping \fbox{$\Gamma \der T \asub T'$}.}
+\label{fig:asub}
+\end{figure}
 
 \begin{lemma}[Soundness of algorithmic subtyping]
   \label{lem:asubsound}
