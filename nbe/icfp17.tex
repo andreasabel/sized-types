@@ -40,6 +40,7 @@
 \usepackage[all]{xy}
 
 \usepackage[cal=boondoxo]{mathalfa}
+\usepackage{calc} % \widthof
 
 \usepackage{latex/agda}
 
@@ -2136,128 +2137,234 @@ and \fbox{$\LR \Gamma t {T'} f {A'}$} for $\Gamma \der t : T'$ and $f \in A'$
 by induction on ${A'} \in s$.
 
 \begin{caselist}
+\fleq
+\newlength{\colw}
+\setlength{\colw}{\widthof{$\LR{\Gamma}{U}{T'}{B}{A'}$}}
 
 \vspace{2ex}
 \nextcase $A' \evalsto N$ neutral.
+\[
+\begin{array}{p{\colw}ll}
+  $\LRTS{\Gamma}{T'}{A'} s$ & \defiff &
+  \mbox{$\Gamma \der T' \evalsto n : s$ for some neutral $n$ and
+  $\Gamma \der T' \doteq \tRty\,A' : s$.}
+\\
+  $\LR{\Gamma}{t}{T'}{f}{A'}$ & \defiff &
+  \Gamma \der t \doteq \tR \, \down {A'} f : T' .
+\end{array}
+\]
 
-  \noindent
-  $\LRTS{\Gamma}{T'}{A'} s$ iff
-  $\Gamma \der T' \evalsto n : s$ for some neutral $n$ and
-  $\Gamma \der T' \doteq \tRty\,A' : s$.
-  %$\forall \xi : \Gamma' \leq \Gamma.\ \ \exists M.\ \ \RTy{\Gamma'}{A'}M \mand \Gamma' \der T'\xi = M : \Set[\ell]$.
+%   \noindent
+%   $\LRTS{\Gamma}{T'}{A'} s$ iff
+%   $\Gamma \der T' \evalsto n : s$ for some neutral $n$ and
+%   $\Gamma \der T' \doteq \tRty\,A' : s$.
+%   %$\forall \xi : \Gamma' \leq \Gamma.\ \ \exists M.\ \ \RTy{\Gamma'}{A'}M \mand \Gamma' \der T'\xi = M : \Set[\ell]$.
 
-  \noindent
-  $\LR{\Gamma}{t}{T'}{f}{A'}$ iff
-  $\Gamma \der t \doteq \tR \, \down {A'} f : T'$.
-  % $\forall \xi : \Gamma' \leq \Gamma.\ \
-  %  \exists m. \ \
-  %  \R {\Gamma'} {\down {A'} f} m \mand
-  %  \Gamma' \der t\xi = m : T'\xi$.
+%   \noindent
+%   $\LR{\Gamma}{t}{T'}{f}{A'}$ iff
+%   $\Gamma \der t \doteq \tR \, \down {A'} f : T'$.
+%   % $\forall \xi : \Gamma' \leq \Gamma.\ \
+%   %  \exists m. \ \
+%   %  \R {\Gamma'} {\down {A'} f} m \mand
+%   %  \Gamma' \der t\xi = m : T'\xi$.
 
-\vspace{2ex}
+\vspace{0ex}
 \nextcase $A' \evalsto \Nat \alpha$.
+\[
+\begin{array}{p{\colw}ll}
+  $\LRTS{\Gamma}{T'}{A'} s$ & \defiff &
+    \mbox{$\Gamma \der T' \evalsto \Nat a : s$ for some $a$ and $\LRSize \Gamma a \alpha$.}
+\\
+  $\LR{\Gamma}{t}{T'}{f}{A'}$ & \defiff &
+    \mbox{$\resurrect\Gamma \der T' \evalsto \Nat a : s$ for some $a$ and
+  $\LRSize {\resurrect\Gamma} a \alpha$}
+\\
+\multicolumn 3 {@{\qquad}l} {
+   \mand \Gamma \der t \doteq \tR\,\down{A'} f : \Nat a.
+  }
+\end{array}
+\]
+%   \noindent
+%   $\LRTS{\Gamma}{T'}{A'} s$ iff $\Gamma \der T' \evalsto \Nat a : s$ for some $a$ and $\LRSize \Gamma a \alpha$.
 
-  \noindent
-  $\LRTS{\Gamma}{T'}{A'} s$ iff $\Gamma \der T' \evalsto \Nat a : s$ for some $a$ and $\LRSize \Gamma a \alpha$.
-
-  \noindent
-  $\LR{\Gamma}{t}{T'}{f}{A'}$ iff $\resurrect\Gamma \der T' \evalsto \Nat a$ for some $a$ and
-  $\LRSize {\resurrect\Gamma} a \alpha$ and
-  $\Gamma \der t \doteq \tR\,\down{A'} f : \Nat a$.
-  % \\
-  % $\forall \xi : \Gamma' \leq \Gamma.\ \
-  %  \exists v. \ \
-  %  \R {\Gamma'} {\down {A'} f} v \mand
-  %  \Gamma' \der t\xi = v : \Nat\,a\xi$.
+%   \noindent
+%   $\LR{\Gamma}{t}{T'}{f}{A'}$ iff $\resurrect\Gamma \der T' \evalsto \Nat a$ for some $a$ and
+%   $\LRSize {\resurrect\Gamma} a \alpha$ and
+%   $\Gamma \der t \doteq \tR\,\down{A'} f : \Nat a$.
+%   % \\
+%   % $\forall \xi : \Gamma' \leq \Gamma.\ \
+%   %  \exists v. \ \
+%   %  \R {\Gamma'} {\down {A'} f} v \mand
+%   %  \Gamma' \der t\xi = v : \Nat\,a\xi$.
 
 
-\vspace{2ex}
+\vspace{0ex}
 \nextcase $A' \evalsto \Set[\ell']$.
+\[
+\begin{array}{p{\colw}ll}
+  $\LRTS {\Gamma} {T'} {A'} s$ & \defiff & \Gamma \der T' \evalsto \Set[\ell'] : s.
+\\
+  $\LR \Gamma U {T'} B {A'}$  & \defiff &
+  \resurrect\Gamma \der T' \evalsto \Set[\ell'] : s \mand \LRT \Gamma U B {\ell'}.
+\end{array}
+\]
+  % \noindent
+  % $\LRTS {\Gamma} {T'} {A'} s$ iff $\Gamma \der T' \evalsto \Set[\ell'] : s$.
 
-  \noindent
-  $\LRTS {\Gamma} {T'} {A'} s$ iff $\Gamma \der T' \evalsto \Set[\ell'] : s$.
+  % \noindent
+  % $\LR \Gamma U {T'} B {A'}$ iff
+  % $\resurrect\Gamma \der T' \evalsto \Set[\ell'] : s$ and $\LRT \Gamma U B {\ell'}$.
 
-  \noindent
-  $\LR \Gamma U {T'} B {A'}$ iff
-  $\resurrect\Gamma \der T' \evalsto \Set[\ell'] : s$ and $\LRT \Gamma U B {\ell'}$.
-
-\vspace{2ex}
+\vspace{0ex}
 \nextcase $A' \evalsto \piT A B$.
-
-\noindent
-$\LRTS \Gamma {T'} {A'} s$ iff
-\(
-\begin{array}[t]{l}
-\Gamma \der T' \evalsto \piT U T : s \mforsome U, T \mand \LRTS \Gamma U A s \mand \\
-\forall \xi : \Gamma' \leq \Gamma.\ \
-\LR {\Gamma'} u {U\xi} a A \implies \LRTS {\Gamma'} {T(\xi,u)} {B[a]} s
-. \\
+\[
+\begin{array}{p{\colw}ll}
+$\LRTS \Gamma {T'} {A'} s$ & \defiff &
+  \Gamma \der T' \evalsto \piT U T : s \mforsome U, T \mand \LRTS \Gamma U A s \\
+\multicolumn 3 {@{\qquad}l} {
+  \mand \forall \xi : \Gamma' \leq \Gamma.\ \
+  \LR {\Gamma'} u {U\xi} a A \implies \LRTS {\Gamma'} {T(\xi,u)} {B[a]} s
+  .
+}
+\\[1ex]
+$\LR \Gamma t {T'} f {A'}$ & \defiff &
+  \resurrect\Gamma \der T' \evalsto \piT U T : s \mforsome U, T \mand \LRTS {\resurrect\Gamma} U A s \\
+\multicolumn 3 {@{\qquad}l} {
+  \mand \forall \xi : \Gamma' \leq \Gamma.\ \
+  \LR {\Gamma'} u {U\xi} a A \implies \LR {\Gamma'} {t\xi\,u} {T(\xi,u)} {f\,a} {B[a]}
+  .
+}
 \end{array}
-\) \\
-$\LR \Gamma t {T'} f {A'}$ iff
-\(
-\begin{array}[t]{l}
-\resurrect\Gamma \der T' \evalsto \piT U T : s \mforsome U, T \mand \LRTS {\resurrect\Gamma} U A s \mand \\
-\forall \xi : \Gamma' \leq \Gamma.\ \
-\LR {\Gamma'} u {U\xi} a A \implies \LR {\Gamma'} {t\xi\,u} {T(\xi,u)} {f\,a} {B[a]}
-.
-\end{array}
-\)
+\]
+% \noindent
+% $\LRTS \Gamma {T'} {A'} s$ iff
+% \(
+% \begin{array}[t]{l}
+% \Gamma \der T' \evalsto \piT U T : s \mforsome U, T \mand \LRTS \Gamma U A s \mand \\
+% \forall \xi : \Gamma' \leq \Gamma.\ \
+% \LR {\Gamma'} u {U\xi} a A \implies \LRTS {\Gamma'} {T(\xi,u)} {B[a]} s
+% . \\
+% \end{array}
+% \) \\
+% $\LR \Gamma t {T'} f {A'}$ iff
+% \(
+% \begin{array}[t]{l}
+% \resurrect\Gamma \der T' \evalsto \piT U T : s \mforsome U, T \mand \LRTS {\resurrect\Gamma} U A s \mand \\
+% \forall \xi : \Gamma' \leq \Gamma.\ \
+% \LR {\Gamma'} u {U\xi} a A \implies \LR {\Gamma'} {t\xi\,u} {T(\xi,u)} {f\,a} {B[a]}
+% .
+% \end{array}
+% \)
 
-\vspace{2ex}
+\vspace{0ex}
 \nextcase $A' \evalsto \piT \Size B$.
-
-\noindent
-$\LRTS \Gamma {T'} {A'} s$ iff
-\(
-\begin{array}[t]{l}
-\Gamma \der T' \evalsto \piT \Size T : s \mforsome T\\
-\forall \xi : \Gamma' \leq \Gamma.\ \
-\LRSize {\Gamma'} a \alpha
-\implies \LRTS {\Gamma'} {T(\xi,a)} {B[\alpha]} s
-.
+\[
+\begin{array}{p{\colw}ll}
+$\LRTS \Gamma {T'} {A'} s$ & \defiff &
+  \Gamma \der T' \evalsto \piT \Size T : s \mforsome T
+\\
+\multicolumn 3 {@{\qquad}l} {
+  \mand \forall \xi : \Gamma' \leq \Gamma.\ \
+  \LRSize {\Gamma'} a \alpha
+  \implies \LRTS {\Gamma'} {T(\xi,a)} {B[\alpha]} s
+  .
+}
+\\[1ex]
+$\LR \Gamma t {T'} f {A'}$ & \defiff &
+\resurrect\Gamma \der T' \evalsto \piT \Size T : s \mforsome T
+\\
+\multicolumn 3 {@{\qquad}l} {
+  \mand
+  \forall \xi : \Gamma' \leq \Gamma.\ \
+  \LRSize {\Gamma'} a \alpha
+  \implies \LR {\Gamma'} {t\xi\,a} {T(\xi,a)} {f\,\alpha} {B[\alpha]}
+  .
+}
 \end{array}
-\) \\
-$\LR \Gamma t {T'} f {A'}$ iff
-\(
-\begin{array}[t]{l}
-\resurrect\Gamma \der T' \evalsto \piT \Size T : s \mforsome T\\
-\forall \xi : \Gamma' \leq \Gamma.\ \
-\LRSize {\Gamma'} a \alpha
-\implies \LR {\Gamma'} {t\xi\,a} {T(\xi,a)} {f\,\alpha} {B[\alpha]}
-.
-\end{array}
-\)
+\]
+% \noindent
+% $\LRTS \Gamma {T'} {A'} s$ iff
+% \(
+% \begin{array}[t]{l}
+% \Gamma \der T' \evalsto \piT \Size T : s \mforsome T\\
+% \forall \xi : \Gamma' \leq \Gamma.\ \
+% \LRSize {\Gamma'} a \alpha
+% \implies \LRTS {\Gamma'} {T(\xi,a)} {B[\alpha]} s
+% .
+% \end{array}
+% \) \\
+% $\LR \Gamma t {T'} f {A'}$ iff
+% \(
+% \begin{array}[t]{l}
+% \resurrect\Gamma \der T' \evalsto \piT \Size T : s \mforsome T\\
+% \forall \xi : \Gamma' \leq \Gamma.\ \
+% \LRSize {\Gamma'} a \alpha
+% \implies \LR {\Gamma'} {t\xi\,a} {T(\xi,a)} {f\,\alpha} {B[\alpha]}
+% .
+% \end{array}
+% \)
 
-\vspace{2ex}
+\vspace{0ex}
 \nextcase $A' \evalsto \forallT B$.
-
-\noindent
-$\LRTS \Gamma {T'} {A'} s$ iff
-\(
-\begin{array}[t]{l}
-\Gamma \der T' \evalsto \forallT T : s \mforsome T\\
-\forall \xi : \Gamma' \leq \Gamma,\
-{\Gamma'} \der b : \Size,\
-\beta \in \SIZE. \ \
-\LRSize {\Gamma'} b \beta
-\implies \LRTS {\Gamma'} {T(\xi,b)} {B[\beta]} s
-.
+\[
+\begin{array}{p{\colw}ll}
+$\LRTS \Gamma {T'} {A'} s$ & \defiff &
+  \Gamma \der T' \evalsto \forallT T : s \mforsome T
+\\
+\multicolumn 3 {@{\qquad}l} {
+  \mand
+  \forall \xi : \Gamma' \leq \Gamma,\
+  {\Gamma'} \der b : \Size,\
+  \beta \in \SIZE. \ \
+  \LRSize {\Gamma'} b \beta
+  \implies \LRTS {\Gamma'} {T(\xi,b)} {B[\beta]} s
+  .
+}
+\\[1ex]
+$\LR \Gamma t {T'} f {A'}$ & \defiff &
+  \resurrect\Gamma \der T' \evalsto \forallT T : s \mforsome T
+\\
+\multicolumn 3 {@{\qquad}l} {
+  \mand
+  \forall \xi : \Gamma' \leq \Gamma,\
+  %\Gamma' \der a : \Size,\
+  \resurrect{\Gamma'} \der a,b : \Size,\
+  \alpha,\beta \in \SIZE. \
+}
+\\
+\multicolumn 3 {@{\qquad\qquad}l} {
+  \LRSize {\resurrect{\Gamma'}} b \beta
+  \implies \LR {\Gamma'} {t\xi\,\ann a} {T(\xi,b)} {f\,\ann\alpha} {B[\beta]}
+  .
+}
 \end{array}
-\) \\
-$\LR \Gamma t {T'} f {A'}$ iff
-\(
-\begin{array}[t]{l}
-\resurrect\Gamma \der T' \evalsto \forallT T : s \mforsome T\\
-\forall \xi : \Gamma' \leq \Gamma,\
-%\Gamma' \der a : \Size,\
-\resurrect{\Gamma'} \der a,b : \Size,\
-\alpha,\beta \in \SIZE. \ \\ \qquad
-\LRSize {\resurrect{\Gamma'}} b \beta
-\implies \LR {\Gamma'} {t\xi\,\ann a} {T(\xi,b)} {f\,\ann\alpha} {B[\beta]}
-.
-\end{array}
-\)
+\]
+% \noindent
+% $\LRTS \Gamma {T'} {A'} s$ iff
+% \(
+% \begin{array}[t]{l}
+% \Gamma \der T' \evalsto \forallT T : s \mforsome T\\
+% \forall \xi : \Gamma' \leq \Gamma,\
+% {\Gamma'} \der b : \Size,\
+% \beta \in \SIZE. \ \
+% \LRSize {\Gamma'} b \beta
+% \implies \LRTS {\Gamma'} {T(\xi,b)} {B[\beta]} s
+% .
+% \end{array}
+% \) \\
+% $\LR \Gamma t {T'} f {A'}$ iff
+% \(
+% \begin{array}[t]{l}
+% \resurrect\Gamma \der T' \evalsto \forallT T : s \mforsome T\\
+% \forall \xi : \Gamma' \leq \Gamma,\
+% %\Gamma' \der a : \Size,\
+% \resurrect{\Gamma'} \der a,b : \Size,\
+% \alpha,\beta \in \SIZE. \ \\ \qquad
+% \LRSize {\resurrect{\Gamma'}} b \beta
+% \implies \LR {\Gamma'} {t\xi\,\ann a} {T(\xi,b)} {f\,\ann\alpha} {B[\beta]}
+% .
+% \end{array}
+% \)
 \end{caselist}
 We may prove theorems ``by induction on $\LRTS \Gamma T A s$'', even if in reality this will be proofs by induction on $A \in s$ and cases on $\LRTS \Gamma T A s$.
 We write \fbox{$\RG \Gamma T A$} if\/ $\LRTS \Gamma T A s$ for some sort $s$.
