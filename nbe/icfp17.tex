@@ -2668,7 +2668,7 @@ Fig.~\ref{fig:lrsub} defines a logical relation for substitutions
 We write \fbox{$\LRS \Gamma \tau \Delta \rho$} for $\LRSub \Gamma \tau \tau \Delta \rho \rho$.
 
 \LONGVERSION{ % BEGIN LONGVERSION
-\begin{lemma}[Properties of the logical relation for substitution]
+\begin{lemma}[Properties of the logical relation for substitutions]
   \label{lem:wklrsub}
   \bla \\
   Let $\LRSub \Gamma \sigma \tau \Delta \eta \rho$. Then:
@@ -2862,38 +2862,40 @@ details, see the long version of this article.
 \section{Algorithmic Subtyping}
 \label{sec:asub}
 
-\LONGVERSION{
 \input{sec-asub}
-} % END LONG VERSION
-\SHORTVERSION{
-Subtyping is decidable, for instance by full normalization
-and comparison of normal forms
-\cite{fridlenderPagano:tlca13}.
-Alternatively, we can define the usual incremental subtyping algorithm
-based on weak head evaluation, which checks equality of neutral types
-by NbE.  For details, see the long version of this article.
-} % END SHORTVERSION
+% \LONGVERSION{
+% \input{sec-asub}
+% } % END LONG VERSION
+% \SHORTVERSION{
+% Subtyping is decidable, for instance by full normalization
+% and comparison of normal forms
+% \cite{fridlenderPagano:tlca13}.
+% Alternatively, we can define the usual incremental subtyping algorithm
+% based on weak head evaluation, which checks equality of neutral types
+% by NbE.  For details, see the long version of this article.
+% } % END SHORTVERSION
 
 
 \section{Type Checking}
 \label{sec:tycheck}
 
-\LONGVERSION{
 \input{sec-tycheck}
-} % END LONG VERSION
-\SHORTVERSION{
-It is now straightforward to define a bidirectional type-checking
-algorithm which decides typing for normal forms, and succeeds for
-those that rely only on the following restricted rule for irrelevant
-size application:
-\[
-  \ru{\Gamma \ders t : \forall T \qquad
-      \resurrect\Gamma \der a : \Size
-    }{\Gamma \ders t\, \ann a : T[a]}
-\]
-For lack of space, we delegate definition and soundness proof to the
-long version of this article.
-} % END SHORTVERSION
+% \LONGVERSION{
+% \input{sec-tycheck}
+% } % END LONG VERSION
+% \SHORTVERSION{
+% It is now straightforward to define a bidirectional type-checking
+% algorithm which decides typing for normal forms, and succeeds for
+% those that rely only on the following restricted rule for irrelevant
+% size application:
+% \[
+%   \ru{\Gamma \ders t : \forall T \qquad
+%       \resurrect\Gamma \der a : \Size
+%     }{\Gamma \ders t\, \ann a : T[a]}
+% \]
+% For lack of space, we delegate definition and soundness proof to the
+% long version of this article.
+% } % END SHORTVERSION
 
 \section{Discussion and Conclusions}
 \label{sec:concl}

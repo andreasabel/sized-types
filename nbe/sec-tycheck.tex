@@ -30,10 +30,12 @@ by adding inference rules for the $\Nat$-constructors:
   \item If\/ $\DD :: \Gamma \der t \jinf T$ then $\resurrect\Gamma \der T$ and $\Gamma \ders t : T$.
   \end{enumerate}
 \end{theorem}
+\LONGVERSION{
 \begin{proof}
   Simultaneously by induction on $\DD$, using subject reduction (Thm.~\ref{thm:sr})
   and soundness of algorithmic subtyping (Lemma~\ref{lem:asubsound}).
 \end{proof}
+} % END LONGVERSION
 
 \begin{lemma}[Weak head reduction of subtypes]
 \label{lem:whdsub}

@@ -42,14 +42,21 @@ Neutral types are subtypes iff they are equal, which is checked using NbE.
   If\/ $\Gamma \der T \asub T'$ then $\Gamma \der T \leq T'$.
 \end{lemma}
 \begin{proof}
-  By induction on $\Gamma \der T \asub T'$, soundness of NbE, and subject reduction (Thm.~\ref{thm:sr}).
+  By induction on $\Gamma \der T \asub T'$, soundness of NbE, and
+  subject reduction\LONGVERSION{~(Thm.~\ref{thm:sr})}.
 \end{proof}
 
 \begin{lemma}[Semantic subtyping implies algorithmic subtyping]
 \label{lem:lrasub}
-\bla
+\bla \\
    If\/ $\RG \Gamma T A$ and $\RG \Gamma {T'} {A'}$ and $A \leq A' \in \TYPE$ then $\Gamma \der T \asub T'$.
 \end{lemma}
+\SHORTLONG{
+\begin{proof}
+  By induction on $\RG \Gamma T A$ and $\RG \Gamma {T'} {A'}$ and
+  cases on $A \leq A' \in \TYPE$.
+\end{proof}
+}{ % LONG VERSION
 \begin{proof*}
 By induction on % $A_1' \in s_1$ and $A_2' \in s_2$ and cases on the inductive relations
 $\LRTS \Gamma {T_1'} {A_1'} {s_1}$ and $\LRTS \Gamma {T_2'} {A_2'} {s_2}$
@@ -69,6 +76,7 @@ $\LRTS {\cext \Gamma {U_2}} {T_i} {B_i[a]} s$ and $B_1[a] \leq B_2[a] \in \TYPE$
 \qed
 \end{caselist}
 \end{proof*}
+} % END LONG VERSION
 
 \begin{corollary}[Completeness of algorithmic subtyping]
 \label{cor:complasub}
