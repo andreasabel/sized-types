@@ -32,7 +32,7 @@ files=icfp17.tex acmart.cls Makefile macros.tex latex/SubDiag.tex latex/SubDiagE
 .PRECIOUS : %.dvi %.ps %.gz %.pdf %.tex
 
 
-default : icfp17-long.pdf # icfp17.pdf
+default : icfp17-long.pdf icfp17.pdf
 
 add : additional-material.tgz
 
@@ -72,7 +72,7 @@ icfp17_aux : icfp17.tex $(files)
 	touch $@;
 
 # then, run bibtex
-icfp17.bbl : icfp17_aux auto-icfp17.bib
+icfp17.bbl : icfp17_aux auto-icfp17-long.bib # auto-icfp17.bib
 	-bibtex icfp17;
 
 # finally, finish by running latex twice again

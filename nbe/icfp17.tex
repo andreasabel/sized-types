@@ -1608,6 +1608,7 @@ If\/ $t_1 = t_2 \in T$ then $\down{S_1}{t_1} = \down{S_2}{t_2} \in \NF$.
 \end{theorem}
 \begin{proof*}
 By induction on $T \in \SET[\ell]$ and cases on $T \shape S_1$ and $T \shape S_2$.
+\SHORTLONG{\qed}{
 \begin{caselist}
 
 \nextcase $T \evalsto \piT A B$ with $A \in \SET[\ell]$ and
@@ -1674,6 +1675,7 @@ $\down{B_1[u_1]}(t_1\,u_1) = \down{B_2[u_2]}(t_2\,u_2) \in \NF$, which delivers 
 \end{enumerate}
 
 \end{caselist}
+} % END SHORTLONG
 \end{proof*}
 
 \begin{corollary}
@@ -1700,6 +1702,7 @@ then $a\,\case[\ell] B {f_z}{f_s} = a'\,\case[\ell] {B'} {f_z'}{f_s'} \in B\,a$.
 \end{lemma}
 \begin{proof*}
 By induction on $a = a' \in \Nat(\alpha+1)$.
+\SHORTLONG{\qed}{
 \begin{caselist}
 
 \nextcase $a \evalsto \zero \beta$ and $a' \evalsto \zero{\beta'}$.
@@ -1725,6 +1728,7 @@ and $\up{B[a]} (n\,e) = \up{B'[a']} (n'\,e') \in B[a]$ by reflection (Theorem~\r
 The remaining goal $\case[\ell] D {d_z}{d_s} = \case[\ell] {D'} {d_z'}{d_s'} \in \ELIM$ follows by the closure properties for eliminations (Lemma~\ref{lem:closelim}), since $D = D' \in \NF$ and $d_z = d_z' \in \NF$ and $d_s = d_s' \in \NF$ all hold by reification (Theorem~\ref{thm:rere}).
 \qed
 \end{caselist}
+} % END SHORTLONG
 \end{proof*}
 
 \begin{lemma}[$\NAT$ is cocontinuous]
@@ -1753,6 +1757,7 @@ then $g = g' \in B\,\alpha\,a$.
 \end{lemma}
 \begin{proof*}
 By well-founded induction on $\alpha$.
+\SHORTLONG{\qed}{
 \begin{caselist}
 
 \nextcase $\alpha < \infty$ and $a \evalsto \up{T}n$ and $a' \evalsto \up{T'}{n'}$ and $n = n' \in \NE$.
@@ -1777,6 +1782,7 @@ $B\,\alpha\,a \leq B\,\infty\,a$ by admissibility of $B$, the goal
 $g = g' \in B\,\infty\,a$ follows by subsumption.
 \qed
 \end{caselist}
+} % END SHORTLONG
 \end{proof*}
 
 \subsection{Fundamental Theorem}
@@ -1956,6 +1962,7 @@ $\rho_{\cext \Gamma T} = (\rho_\Gamma, \up{T\rho_\Gamma} \var\Gamma)$.
   $\rho_\Gamma \in \Gamma$.
   % $\rho_\Gamma = \rho_\Gamma \eeq \rho_\Gamma \in \Gamma$
 \end{lemma}
+\LONGVERSION{
 \begin{proof*}
 By induction on $\der \Gamma$.
 \begin{caselist}
@@ -1983,6 +1990,7 @@ $(\rho_\Gamma, \var\Gamma) \in \eext\Gamma \Size$.
 \qed
 \end{caselist}
 \end{proof*}
+} % END LONGVERSION
 
 We now define the normalization relation
 $\fbox{$\nbe \Gamma T t \evalsto v$} \defas \R {\Gamma} {\down{T \rho_\Gamma} (t \rho_\Gamma)} v$.
@@ -2943,5 +2951,5 @@ More research is needed to tell a more general story of shape-irrelevance.
 
 %%% Local Variables:
 %%% mode: latex
-%%% TeX-master: "icfp17-long"
+%%% TeX-master: "icfp17"
 %%% End:
