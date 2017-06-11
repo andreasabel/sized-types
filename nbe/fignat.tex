@@ -1,0 +1,60 @@
+\begin{figure}[htbp]
+\flushleft
+\hrulefill
+\\[1ex]
+Case distinction.
+\begin{gather*}
+  \ru{\resurrect\Gamma \der T : \Nat (a {+} 1) \to \Set[\ell] \\
+      \Gamma \der u : \Nat (a {+} 1) \qquad
+      \Gamma \der t_z : T \, (\zero{a}) \qquad
+      \Gamma \der t_s : (x : \Nat a) \to T \, (\suc{a} x)
+    }{\Gamma \der u\,\case[\ell] T {t_z} t_s : T \, u}
+\\[2ex]
+  \ru{\resurrect\Gamma \der T = T' : \Nat (a + 1) \to \Set[\ell] \\
+      \Gamma \der u = u' : \Nat (a + 1) \qquad
+      \Gamma \der t_z = t_z' : T \, (\zero a) \qquad
+      \Gamma \der t_s = t_s' : (x : \Nat a) \to T \, (\suc a x)
+    }{\Gamma \der u\,\case[\ell] T {t_z} t_s = u'\,\case[\ell] {T'} {t_z'} t_s' : T \, u}
+\\[2ex]
+  \ru{\resurrect\Gamma \der a, b : \Size \qquad
+      \resurrect\Gamma \der T : \Nat (b + 1) \to \Set[\ell] \\
+      % \Gamma \der a : \Size \qquad
+      \Gamma \der t_z : T\,(\zero{b}) \qquad
+      \Gamma \der t_s : (x : \Nat b) \to T\,(\suc{b}x)
+    }{\Gamma \der (\zero{a})\,\case[\ell] T {t_z} {t_s} = t_z : T\,\zero{b}}
+\\[2ex]
+  \ru{\resurrect\Gamma \der a : \Size \quad
+      \Gamma \der t : \Nat b \quad
+      \resurrect\Gamma \der T : \Nat (b + 1) \to \Set[\ell] \\
+      \Gamma \der t_z : T\,(\zero{b}) \quad
+      \Gamma \der t_s : (x : \Nat b) \to T\,(\suc{b}x)
+    }{\Gamma \der (\suc{a} t)\,\case[\ell] T {t_z} {t_s} = t_s\,t : T\,(\suc{b} t)}
+\end{gather*}
+Recursion.
+\begin{gather*}
+  \ru{\Gamma \der u : \Nat a \qquad
+      \resurrect\Gamma \der T : \Adm\,\ell \qquad %% \funT i \Size \Nat i \to \Set[\ell] \\
+      \Gamma \der t : \FixT\, T
+     }{\Gamma \der u\,\fix[\ell] T t : T \,a \, u}
+\\[2ex]
+  \ru{\Gamma \der u = u' : \Nat a \qquad
+      \resurrect\Gamma \der T = T' : \Adm\,\ell \qquad %% \funT i \Size \Nat i \to \Set[\ell] \\
+      \Gamma \der t = t' : \FixT\,T \qquad %% \allT i \Size (\funT x {\Nat i} T \,i\, x) \to \funT x {\Nat (i + 1)} T \,{i+1}\, x
+     }{\Gamma \der u\,\fix[\ell] T t = u'\,\fix[\ell] {T'} t' : T \, a \, u}
+\\[2ex]
+  \ru{\Gamma \der c : \Nat b \qquad
+      \resurrect\Gamma \der a : \Size \qquad
+      \resurrect\Gamma \der T : \Adm\,\ell \qquad %% \funT i \Size \Nat i \to \Set[\ell] \\
+      \Gamma \der t : \FixT\,T %% \allT i \Size (\funT x {\Nat i} T\, i\, x) \to \funT x {\Nat (i + 1)} T \,(i+1)\, x
+     }{\Gamma \der c\,\fix[\ell] T t = t\ann a (\lambda x. x\,\fix[\ell] T t)\, c : T \,b \, c
+     }%{c \in \{\zero a, \suc a t'\}}
+\end{gather*}
+\hrulefill
+\vspace{-2ex}
+  \caption{Rules for case distinction and recursion.}
+  \label{fig:nat}
+\end{figure}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "icfp17"
+%%% End:

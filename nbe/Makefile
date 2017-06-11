@@ -25,7 +25,7 @@ bibliography=all.bib
 
 stdlib=$(HOME)/agda/std-lib/src
 
-files=icfp17.tex acmart.cls Makefile macros.tex latex/SubDiag.tex latex/SubDiagError.tex figjudge.tex figeq.tex figty.tex figcheck.tex sec-sr.tex sec-asub.tex sec-tycheck.tex
+files=icfp17.tex acmart.cls Makefile macros.tex latex/SubDiag.tex latex/SubDiagError.tex figjudge.tex figeq.tex figty.tex fignat.tex figcheck.tex sec-sr.tex sec-asub.tex sec-tycheck.tex
 
 .PHONY : all debugMake html
 

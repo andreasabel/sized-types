@@ -2,8 +2,18 @@
 \flushleft
 \hrulefill
 \\[1ex]
-\fbox{$\der \Gamma$} (implies $\der \resurrect \Gamma$) and
-\fbox{$\Gamma(i) = \eann T$} (implies $\resurrect\Gamma \der T$ if $\der \Gamma$).
+\fbox{$\der \Gamma$}
+\quad
+{\color{darkgray}
+(implies $\der \resurrect \Gamma$) }
+\quad
+and
+\quad
+\fbox{$\Gamma(i) = \eann T$}
+\quad
+{\color{darkgray}
+(implies $\resurrect\Gamma \der T$ if $\der \Gamma$).
+}
 \[
   \ru{}{\der \cempty}
 \qquad
@@ -20,7 +30,11 @@
   \ru{\Gamma(i) = \eann T
     }{(\cext \Gamma \_)(i+1) = \eann T \slift}
 \]
-\fbox{$\Gamma \der a : \Size$}  (implies $\der \Gamma$ and $\resurrect \Gamma \der a : \Size$).
+\fbox{$\Gamma \der a : \Size$}
+\quad
+{\color{darkgray}
+  (implies $\der \Gamma$ and $\resurrect \Gamma \der a : \Size$).
+}
 \[
   \ru{\der \Gamma}{\Gamma \der \infty : \Size}
 \qquad
@@ -30,7 +44,12 @@
      }{\Gamma \der \ind i + o : \Size
      }{o \in \NN}
 \]
-\fbox{$\Gamma \der t : T$}  (implies $\der \Gamma$ and $\resurrect \Gamma \der T$ [and $\resurrect \Gamma \der t : T$]. Note: no rule for $\Gamma \der \Size : s$.)
+\fbox{$\Gamma \der t : T$}
+\quad
+{\color{darkgray}
+(implies $\der \Gamma$ and $\resurrect \Gamma \der T$
+[and $\resurrect \Gamma \der t : T$]. Note: no rule for $\Gamma \der \Size : s$.)
+}
 \begin{gather*}
   \ru{\der \Gamma
     }{\Gamma \der \Set[\ell] : \Set[\ell']
@@ -80,23 +99,27 @@
   \ru{\resurrect\Gamma \der a : \Size \qquad
       \Gamma \der t : \Nat b
     }{\Gamma \der \suc a t : \Nat (b + 1)}
-\\[2ex]
-  \ru{\resurrect\Gamma \der T : \Nat (a {+} 1) \to \Set[\ell] \\
-      \Gamma \der u : \Nat (a {+} 1) \qquad
-      \Gamma \der t_z : T \, (\zero{a}) \qquad
-      \Gamma \der t_s : (x : \Nat a) \to T \, (\suc{a} x)
-    }{\Gamma \der u\,\case[\ell] T {t_z} t_s : T \, u}
-\\[2ex]
-  \ru{\Gamma \der u : \Nat a \qquad
-      \resurrect\Gamma \der T : \Adm\,\ell \qquad %% \funT i \Size \Nat i \to \Set[\ell] \\
-      \Gamma \der t : \FixT\, T
-     }{\Gamma \der u\,\fix[\ell] T t : T \,a \, u}
+%\\[2ex]
+%   \ru{\resurrect\Gamma \der T : \Nat (a {+} 1) \to \Set[\ell] \\
+%       \Gamma \der u : \Nat (a {+} 1) \qquad
+%       \Gamma \der t_z : T \, (\zero{a}) \qquad
+%       \Gamma \der t_s : (x : \Nat a) \to T \, (\suc{a} x)
+%     }{\Gamma \der u\,\case[\ell] T {t_z} t_s : T \, u}
+% \\[2ex]
+%   \ru{\Gamma \der u : \Nat a \qquad
+%       \resurrect\Gamma \der T : \Adm\,\ell \qquad %% \funT i \Size \Nat i \to \Set[\ell] \\
+%       \Gamma \der t : \FixT\, T
+%      }{\Gamma \der u\,\fix[\ell] T t : T \,a \, u}
 \qquad
   \ru{\Gamma \der t : T \qquad
       \resurrect\Gamma \der T \leq T'
      }{\Gamma \der t : T'}
 \end{gather*}
-\fbox{$\Gamma \der T \leq T'$} (implies $\Gamma \der T,T'$)
+\fbox{$\Gamma \der T \leq T'$}
+\quad
+{\color{darkgray}
+(implies $\Gamma \der T,T'$)
+}
 % (implies $\resurrect \Gamma \der T,T'$)
 \begin{gather*}
   \ru{\der \Gamma \qquad \ell {\leq} \ell'
@@ -118,27 +141,30 @@
   \ru{\Gamma \der T_1 \leq T_2 \qquad
       \Gamma \der T_2 \leq T_3
     }{\Gamma \der T_1 \leq T_3}
-\qquad
+\\[-1ex]
 \end{gather*}
 %Substitution typing. % and equality.
 \fbox{$\Gamma \der \tau : \Delta$}
+\quad
+{\color{darkgray}
 (implies $\der \Gamma$ and $\der \Delta$
  %% and $\Gamma \der \tau : \resurrect \Delta$  %NO
  [and $\resurrect\Gamma \der \tau : \Delta$]
  and $\resurrect\Gamma \der \tau : \resurrect \Delta$).
+}
 \begin{gather*}
   \ru{\der \Gamma \qquad
     }{\Gamma \der \sempty : \cempty}
-\quad
+\qquad
   \ru{\Gamma \der \tau : \Delta \qquad
       \resurrect \Delta \der T \qquad
       \Gamma \der t : T \tau
     }{\Gamma \der \sext \tau t : \cext \Delta T}
-\quad
+\\[2ex]
   \ru{\Gamma \der \tau : \Delta \qquad
       \Gamma \der a : \Size
     }{\Gamma \der \sext \tau a : \cext \Delta \Size}
-\quad
+\qquad
 \fbox{$
   \ru{\Gamma \der \tau : \Delta \qquad
       \resurrect\Gamma \der a : \Size
@@ -147,7 +173,12 @@
 \end{gather*}
 %Substitution equality
 \fbox{$\sueq \Gamma \sigma {\sigma'} \tau \Delta$}
-(implies $\der \Gamma$ and $\der \Delta$ and $\Gamma \der \tau : \Delta$ and $\sueq \Gamma {\sigma'} {\sigma} \tau \Delta$).
+\quad
+{\color{darkgray}
+(implies $\der \Gamma$ and $\der \Delta$ and
+$\Gamma \der \tau : \Delta$ and
+$\sueq \Gamma {\sigma'} {\sigma} \tau \Delta$).
+}
 \begin{gather*}
   \ru{\der \Gamma \qquad
     }{\sueq \Gamma \sempty \sempty \sempty \cempty}

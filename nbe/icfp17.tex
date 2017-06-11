@@ -601,10 +601,13 @@ Different size variables are incomparable.
 
 \input{figty}
 \input{figeq}
+\input{fignat}
 
 Fig.~\ref{fig:judge} lists the inductive and derived judgements of our type theory and
 figures~\ref{fig:ty} and \ref{fig:eq} the inference rules.
 We have \fbox{boxed} the rules dealing with irrelevant size application.
+Fig.~\ref{fig:nat} add the typing and equality rules for case distinction
+and recursion on natural numbers.
 Judgement $\Gamma \der T : \Adm \ell$ characterizes the valid type
 annotations $T$ in recursion $\fix[\ell] T t$.  The type constructor $T$
 has to be monotone in the size argument; this is a technical condition
