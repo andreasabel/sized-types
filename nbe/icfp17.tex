@@ -1575,7 +1575,7 @@ We have $T \shape S$, but $S$ is not well-defined; $S \not\in \SET[0]$.
   If\/ $T = T' \in \SET[\ell]$ then $T \shape T'$.
 \end{lemma}
 
-\begin{lemma}[Equal types make equally good templates]
+\begin{lemma}[Templates are up to equality]
   If\/ $T = T' \in \SET[\ell]$ and $T' \shape S$ then $T \shape S$.
 \end{lemma}
 
@@ -2633,8 +2633,8 @@ If\/ $\LRT \Gamma T A \ell$ and $\LRT \Gamma {T'} A {\ell'}$ then $\Gamma \der T
 \end{lemma}
 
 
-Logical relation for substitutions.
-\fbox{$\LRSub \Gamma \sigma \tau \Delta \eta \rho$}.
+\begin{figure}[htbp]
+\hrulefill
 \begin{gather*}
   \ru{\der \Gamma
     }{\LRSub \Gamma {\sempty} {\sempty} {\cempty} {\sempty} {\sempty}}
@@ -2657,6 +2657,14 @@ Logical relation for substitutions.
       f = g \in T\rho
     }{\LRSub \Gamma {(\sigma,u)} {(\tau,t)} {\cext \Delta T} {(\eta,f)} {(\rho,q)}}
 \end{gather*}
+\hrulefill
+\caption{Logical relation for substitutions
+  \fbox{$\LRSub \Gamma \sigma \tau \Delta \eta \rho$}.}
+\label{fig:lrsub}
+\end{figure}
+
+Fig.~\ref{fig:lrsub} defines a logical relation for substitutions
+\fbox{$\LRSub \Gamma \sigma \tau \Delta \eta \rho$}.
 We write \fbox{$\LRS \Gamma \tau \Delta \rho$} for $\LRSub \Gamma \tau \tau \Delta \rho \rho$.
 
 \LONGVERSION{ % BEGIN LONGVERSION
@@ -2689,12 +2697,12 @@ We write \fbox{$\LRS \Gamma \tau \Delta \rho$} for $\LRSub \Gamma \tau \tau \Del
 % If\/ $\Gamma \der c : \Nat b$ then $\resurrect\Gamma \der b : \Size$ and $b > 0$.
 % \end{lemma}
 
-Validity judgements.
+The following judgements are used to state the fundamental theorem of typing.
 \[
 \begin{array}{l@{\quad}l@{\quad}l}
   \Gamma \valid t : T & \defas & %\valid \Gamma \mand
     % \resurrect\Gamma \valid T \mand
-    \valid \cext \Gamma T \mand
+    % \valid \cext \Gamma T \mand
     \LR {\Gamma'} {t \sigma} {T \tau} {t \eta} {T \rho}
     \mforall \LRSub {\Gamma'} \sigma \tau \Gamma \eta \rho
 \\[1ex]
