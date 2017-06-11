@@ -34,7 +34,7 @@ Algorithmic subtyping \fbox{$\Gamma \der T \asub T'$}.
   If\/ $\Gamma \der T \asub T'$ then $\Gamma \der T \leq T'$.
 \end{lemma}
 \begin{proof}
-  By induction on $\Gamma \der T \asub T'$, using soundness of NbE and subject reduction (Thm.~\ref{thm:sr}).
+  By induction on $\Gamma \der T \asub T'$, soundness of NbE, and subject reduction (Thm.~\ref{thm:sr}).
 \end{proof}
 
 \begin{lemma}[Semantic subtyping implies algorithmic subtyping]
@@ -88,7 +88,8 @@ Since the algorithmic subtyping relation is equivalent to the declarative one, w
   By the fundamental theorem of typing, $\RG \Gamma T A$ and $\RG \Gamma {T'} {A'}$,
   thus, the query  $\Gamma \der T \asub T'$ terminates by Lemma~\ref{lem:termasub}.
   If successfully, then $\Gamma \der T \leq T'$ by soundness of algorithmic equality.
-  If unsuccessfully, then $\Gamma \der T \leq T'$ is impossible by completeness of algorithmic equality.
+  % If unsuccessfully, then
+  Otherwise  $\Gamma \der T \leq T'$ is impossible by completeness of algorithmic equality.
 \end{proof}
 
 
