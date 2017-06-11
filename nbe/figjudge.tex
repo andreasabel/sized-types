@@ -1,5 +1,6 @@
 \begin{figure}[htbp]
 \flushleft
+\fleq
 \hrulefill
 \\[1ex]
 Inductively defined judgements (mutual).
@@ -21,30 +22,33 @@ Inductively defined judgements (mutual).
 \]
 Derived judgements.
 \[
-\begin{array}{l@{\quad}l@{\quad}l@{~}l@{~~}l}
+\begin{array}{l@{\qquad}l@{\qquad}l@{~}l}%@{~~}l}
   \Gamma \der T & \defas & \Gamma \der T : s & \mforsome s
-    & \mbox{in $\Gamma$, type $T$ is well-formed} \\
+    % & \mbox{in $\Gamma$, type $T$ is well-formed}
+\\
   \Gamma \der T = T' & \defas & \Gamma \der T = T' : s & \mforsome s
-    & \mbox{in $\Gamma$, types $T$ and $T'$ are equal} \\
+    % & \mbox{in $\Gamma$, types $T$ and $T'$ are equal}
+\\
   \Gamma \der a = b : \Size & \defas &
     \multicolumn 2 {@{}l@{\quad}} {\Gamma \der a : \Size \mand a = b}
-    & \mbox{$a$, $b$ are identical sizes} \\
+    % & \mbox{$a$, $b$ are identical sizes}
+\\
   \Gamma \der a \leq b : \Size & \defas &
      \multicolumn 2 {@{}l@{\quad}} {\Gamma \der a : \Size \mand \Gamma \der b : \Size \mand a \leq b}
-%     \multicolumn 2 {l@{\qquad}} {\Gamma \der a : \Size \mand \Gamma \der b : \Size \mand a \leq b}
-    & \mbox{$a$, $b$ are comparable sizes} \\
+    % & \mbox{$a$, $b$ are comparable sizes}
+\\
 %    & \mbox{in context $\Gamma$, well-formed size $a$ is less or equal than well-formed size $b$} \\
   \Gamma \der T : \Adm \ell & \defas &
      \multicolumn 2 {@{}l@{\quad}}
        {\Gamma \der T : \FixK\,\ell \mand \Gamma.z\of\Size.x\of\Nat z \der T\,z\,x \leq T\,\infty\,x}
-    & \mbox{% in context $\Gamma$
-            % type constructor
-            $T$ is admissible for recursion} \\
+    % & \mbox{% in context $\Gamma$ type constructor
+    %         $T$ is admissible for recursion}
+\\
   \xi : \Gamma \leq \Delta & \defas &
      \multicolumn 2 {@{}l@{\quad}}
        {\Gamma \der \xi : \Delta \mand \xi = \slift^k_m
            \mwith m = |\Delta| \mand k = |\Gamma| - m}
-    & \mbox{$\xi$ lifts from $\Delta$ to $\Gamma$}
+    % & \mbox{$\xi$ lifts from $\Delta$ to $\Gamma$}
 \end{array}
 \]
 \hrulefill

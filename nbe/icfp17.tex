@@ -1,6 +1,6 @@
 \nonstopmode
 %% For double-blind review submission
-\documentclass[acmlarge%,review,anonymous
+\documentclass[acmsmall%acmlarge%,review,anonymous
 ]{acmart}\settopmatter{printfolios=true}
 %% For single-blind review submission
 %\documentclass[acmlarge,review]{acmart}\settopmatter{printfolios=true}
@@ -25,6 +25,16 @@
 \newcommand{\EXTENDED}[1]{}
 
 %\usepackage[right]{showlabels}\renewcommand{\showlabelfont}{\small\ttfamily\color{gray}}
+
+% controlling flushleft/center for math displays
+% http://www.golatex.de/wechsel-zwischen-leqno-und-reqno-fleqn-uvm-t2488.html
+\makeatletter
+%\def\leqn{\tagsleft@true}
+%\def\reqn{\tagsleft@false}
+\def\fleq{\@fleqntrue\let\mathindent\@mathmargin \@mathmargin=\leftmargini}
+\def\cneq{\@fleqnfalse}
+\g@addto@macro{\endsubequations}{\addtocounter{equation}{-1}}
+\makeatother
 
 \usepackage{mathtools} %mathrlap
 \usepackage[all]{xy}
@@ -416,7 +426,7 @@ The \emph{sorts} $s$ are drawn from an infinite predicative hierarchy of univers
 \centering
 \hrulefill
 \[
-\begin{array}{lllrl@{\qquad}l}
+\begin{array}{l@{~}l@{~\,}l@{~\,}r@{~\,}l@{\quad}l}
 \Sort & \ni & s
     & ::= & \Set[\ell] ~(\ell \in \NN)& \mbox{sort (universe)} \\
 % \Ann & \ni & \star & ::= & \erased \mid \nonstrict \mid \noterased & \mbox{annotation (irrelevant, shape-irrelevant, relevant)}\\
@@ -794,11 +804,12 @@ NbE is complete for definitional equality, \ie, if
 $\Gamma \der t = t' : T$, then $t$ and $t'$ have the same normal form
 up to annotations.
 \[
-\begin{array}{lllll@{\qquad}l}
+\begin{array}{l@{~\,}l@{~\,}l@{~\,}l@{~\,}l@{\qquad}l}
   \Ne & \ni &
   m & ::= & \ind i \mid m\,v \mid m\,a \mid m\,\ann a \mid
             m\,\case[\ell] V{v_z}{v_s} \mid m\,\fix[\ell] V v
-    & \mbox{normal neutral term} \\
+    & \mbox{neutral n.f.} \\
+    % & \mbox{normal neutral term} \\
   \Nf & \ni &
   v & ::= & m \mid \lambda v \mid \zero a \mid \suc a v \mid
             \Set[\ell] \mid \Nat a \mid \piT {V_u}{V_t} \mid
@@ -822,8 +833,8 @@ $\down A f$ also live in the value world.
   \NeExp & \ni & n & ::= & \dots \mid \lev k
     & \mbox{de Bruijn level $k$} \\
   \tUp  & \ni & N & ::= & \up A n
-     & \mbox{reflection of neutral term $n$ into the value world $\D$, at
-       type $A$} \\
+     & \mbox{reflection of neutral term $n$ as value of type $A$} \\
+     % & \mbox{reflection of neutral term $n$ into the value world $\D$, at type $A$} \\
   \Whnf & \ni & w & ::= & \dots \mid N
     & \mbox{reflected neutral is weak head normal} \\
   \Exp  & \ni & t & ::= & \dots \mid \down A f
@@ -1268,13 +1279,13 @@ PER $\NEE$ interprets all neutral types.
       % n = n' \in \NE
       t = t' \in \NEE
     }{t = t' \in \NAT(\beta)}
-\quad
-  \ru{t \evalsto \zero \alpha \qquad
+\qquad
+  \ru{t \evalsto \zero \alpha \\
       t' \evalsto \zero{\alpha'}
     }{t = t' \in \NAT(\beta+1)}
-\quad
+\qquad
   \ru{t \evalsto \suc \alpha u \qquad
-      t' \evalsto \suc {\alpha'} {u'} \qquad
+      t' \evalsto \suc {\alpha'} {u'} \\
       u = u' \in \NAT(\beta)
     }{t = t' \in \NAT(\beta+1)}
 \end{gather*}
@@ -1292,6 +1303,7 @@ PER $\NEE$ interprets all neutral types.
     }{\lev k + o = \lev k + o \in \SIZE}
 \end{gather*}
 
+\fleq
 Let $\A$ be a PER (including $\A = \SIZE$) and $\F$ a family of PERs over $\A$ such that
 $\F(u) = \F(u')$ whenever $u = u' \in \A$.  We define
 \[
@@ -1302,10 +1314,11 @@ $\F(u) = \F(u')$ whenever $u = u' \in \A$.  We define
 
 For a family $\F$ over $\SIZE$ we also have the irrelevant function space
 \[
-  \fbox{$\FORALL\,\F$} \defas
+  \fbox{$\FORALL\,\F$} \quad \, \defas
   \{(t,t') \mid t \ann \alpha = t' \ann{\alpha'} \in \F(\beta) \mforall \alpha,\alpha',\beta \in \SIZE \}
   .
 \]
+\cneq
 
 % \begin{lemma}[PER Subsumption]
 % \label{lem:subsump} \hfill
@@ -1348,21 +1361,21 @@ The rules for \fbox{$T = T' \in \SET[\ell]$} are:
      }{\ell'{<}\ell}
   & \EL[\ell](T) = \SET[\ell']
 \\[3ex]
-  \rul{T \evalsto \piT A B \qquad
-      T' \evalsto \piT{A'}{B'} \\
-      A = A' \in \SET[\ell] \qquad
+  \rul{T \evalsto \piT A B \quad \
+      T' \evalsto \piT{A'}{B'} \quad \
+      A = A' \in \SET[\ell] \\
       B[u] = B'[u'] \in \SET[\ell] \mforall u = u' \in \EL[\ell](A)
     }{T = T' \in \SET[\ell]}
   & \EL[\ell](T) = \PI(\EL[\ell](A),\;u \mapsto \EL[\ell](B[u]))
 \\[3ex]
-  \rul{T \evalsto \piT \Size B \quad
-      T' \evalsto \piT{\Size}{B'} \quad
+  \rul{T \evalsto \piT \Size B \qquad
+      T' \evalsto \piT{\Size}{B'} \\
       B[\alpha] = B'[\alpha] \in \SET[\ell] \mforall \alpha \in \SIZE
     }{T = T' \in \SET[\ell]}
   & \EL[\ell](T) = \PI(\SIZE,\; \alpha \mapsto \EL[\ell](B[\alpha]))
 \\[3ex]
-  \rul{T \evalsto \forallT B \quad
-      T' \evalsto \forallT{B'} \quad
+  \rul{T \evalsto \forallT B \qquad
+      T' \evalsto \forallT{B'} \\
       B[\alpha] = B'[\alpha] \in \SET[\ell] \mforall \alpha \in \SIZE
     }{T = T' \in \SET[\ell]}
   & \EL[\ell](T) = \FORALL(\alpha \mapsto \EL[\ell](B[\alpha]))
@@ -1432,13 +1445,13 @@ Simultaneously, we need to prove correctness, namely that $T \leq T' \in \TYPE$ 
   \ru{T = T' \in \NEE
     }{T \leq T' \in \TYPE}
 \qquad
-  \ru{T \evalsto \Nat \alpha \qquad
-      T' \evalsto \Nat \alpha' \qquad
+  \ru{T \evalsto \Nat \alpha \quad
+      T' \evalsto \Nat \alpha' \quad
       \alpha \leq \alpha'
     }{T \leq T' \in \TYPE}
 \qquad
-  \ru{T \evalsto \Set[\ell_0] \qquad
-      T' \evalsto \Set[\ell_0'] \qquad
+  \ru{T \evalsto \Set[\ell_0] \quad
+      T' \evalsto \Set[\ell_0'] \quad
       \ell_0 \leq \ell_0'
     }{T \leq T' \in \TYPE}
 \\[2ex]
@@ -1504,13 +1517,13 @@ at a common domain, and $A$ and $R$ are not equal.
 
 \fbox{$T \shape S$} for $T \in \SET[\ell]$.  We call $T$ the \emph{template} and $S$ one of its possible \emph{shapes}.
 \begin{gather*}
-  \ru{T \evalsto N \qquad
+  \ru{T \evalsto N \quad \
       S \evalsto N'
     }{T \shape S}
 \qquad
-  \ru{T \evalsto \piT A B \qquad
-      S \evalsto \piT{A'}{B'} \qquad
-      A \shape A' \qquad
+  \ru{T \evalsto \piT A B \quad \
+      S \evalsto \piT{A'}{B'} \quad \
+      A \shape A' \quad \
       B[u] \shape B'[u'] \mforall u = u' \in A
     }{T \shape S}
 \\[2ex]
@@ -1604,7 +1617,7 @@ By induction on $T \in \SET[\ell]$ and cases on $T \shape S_1$ and $T \shape S_2
       A \shape A_1 \qquad
       B[u] \shape B_1[u'] \mforall u = u' \in A
     }{T \shape S_1}
-\\[2ex]
+\\[1.5ex]
   \ru{S_2 \evalsto \piT{A_2}{B_2} \qquad
       A \shape A_2 \qquad
       B[u] \shape B_2[u'] \mforall u = u' \in A
@@ -1637,8 +1650,7 @@ $\down{B_1[u_1]}(t_1\,u_1) = \down{B_2[u_2]}(t_2\,u_2) \in \NF$, which delivers 
   \ru{S_1 \evalsto \forallT{B_1} \qquad
       B[\alpha] \shape B_1[\alpha'] \mforall \alpha, \alpha' \in \SIZE
     }{T \shape S_1}
-%\\[2ex]
-\qquad
+\\[1.5ex]
   \ru{S_2 \evalsto \forallT{B_2} \qquad
       B[\alpha] \shape B_2[\alpha'] \mforall \alpha, \alpha' \in \SIZE
     }{T \shape S_2}
@@ -1670,7 +1682,7 @@ $\down{B_1[u_1]}(t_1\,u_1) = \down{B_2[u_2]}(t_2\,u_2) \in \NF$, which delivers 
 \end{corollary}
 
 
-\subsection{Computation}
+\subsection{Computation with natural numbers}
 \label{sec:comp}
 
 In this section we show that the eliminations for natural numbers are accurately modeled.

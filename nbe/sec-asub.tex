@@ -6,26 +6,26 @@ Algorithmic subtyping \fbox{$\Gamma \der T \asub T'$}.
       T' \evalsto n' \qquad
       \Nbe \Gamma n \nfeq \Nbe \Gamma n'
     }{\Gamma \der T \asub T'}
-\\[2ex]
+\qquad
   \rux{T \evalsto \Set[\ell] \qquad
       T' \evalsto \Set[\ell']
     }{\Gamma \der T \asub T'
     }{\ell \leq \ell'}
-\qquad
-  \ru{T_1' \evalsto \piT{U_1}{T_1} \qquad
-      T_2' \evalsto \piT{U_2}{T_2} \qquad
-      \Gamma \der U_2 \asub U_1 \qquad
-      \cext \Gamma {U_2} \der T_1 \asub T_2
-    }{\Gamma \der T_1' \asub T_2'}
 \\[2ex]
-  \ru{T \evalsto \Nat a \qquad
+  \rux{T \evalsto \Nat a \qquad
       T' \evalsto \Nat a'
     }{\Gamma \der T \asub T'
     }{a \leq a'}
 \qquad
-  \ru{T_1' \evalsto \epiT\Size{T_1} \qquad
-      T_2' \evalsto \epiT\Size{T_2} \qquad
+  \ru{T_1' \evalsto \epiT\Size{T_1} \quad \
+      T_2' \evalsto \epiT\Size{T_2} \quad \
       \cext \Gamma {\Size} \der T_1 \asub T_2
+    }{\Gamma \der T_1' \asub T_2'}
+\\[2ex]
+  \ru{T_1' \evalsto \piT{U_1}{T_1} \qquad
+      T_2' \evalsto \piT{U_2}{T_2} \qquad
+      \Gamma \der U_2 \asub U_1 \qquad
+      \cext \Gamma {U_2} \der T_1 \asub T_2
     }{\Gamma \der T_1' \asub T_2'}
 \end{gather*}
 

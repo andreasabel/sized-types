@@ -30,12 +30,12 @@ Output: \emph{yes/no}.
 %       \eext \Gamma \Size \der t \jchk T
 %     }{\Gamma \der \lambda t \jchk T'}
 \\[2ex]
-  \ru{T' \evalsto \Nat b \qquad
+  \ru{T' \evalsto \Nat b \quad \
       \resurrect \Gamma \der a+1 \leq b : \Size
     }{\Gamma \der \zero a \jchk T'}
-\qquad
-  \ru{T' \evalsto \Nat b \qquad
-      \resurrect \Gamma \der a+1 \leq b : \Size \qquad
+\quad
+  \ru{T' \evalsto \Nat b \quad \
+      \resurrect \Gamma \der a+1 \leq b : \Size \quad \
       \Gamma \der t \jchk \Nat a
     }{\Gamma \der \suc a t \jchk T'}
 \\[2ex]
@@ -59,24 +59,24 @@ Output: $T$ or \emph{no}.
       \Gamma \der u \jchk U
     }{\Gamma \der t\, u \jinf T[u]}
 \\[2ex]
-  \ru{\Gamma \der t \jinf T' \qquad
-      T' \evalsto \piT \Size T \qquad
+  \ru{\Gamma \der t \jinf T' \quad \
+      T' \evalsto \piT \Size T \quad \
       \Gamma \der a : \Size
     }{\Gamma \der t\,a \jinf T[a]}
-\qquad
-  \ru{\Gamma \der t \jinf T' \qquad
-      T' \evalsto \erpiT \Size T \qquad
+\quad
+  \ru{\Gamma \der t \jinf T' \quad \
+      T' \evalsto \erpiT \Size T \quad \
       \resurrect\Gamma \der a : \Size
     }{\Gamma \der t\,\ann a \jinf T[a]}
 \\[2ex]
-  \ru{\Gamma \der u \jinf \Nat (a+1) \qquad
-      \Gamma \der T \jchk \Nat (a+1) \to \Set[\ell] \qquad
+  \ru{\Gamma \der u \jinf \Nat (a+1) \\
+      \resurrect\Gamma \der T \jchk \Nat (a+1) \to \Set[\ell] \qquad
       \Gamma \der t_z \jchk T\,(\zero a) \qquad
       \Gamma \der t_s \jchk \funT x {\Nat a} {T\,(\suc a x)}
     }{\Gamma \der u\, \case[\ell] T {t_z} {t_s} \jinf T\,u}
 \\[2ex]
   \ru{\Gamma \der u \jinf \Nat a \qquad
-      \Gamma \der T \jchk \FixK\,\ell \qquad
+      \resurrect\Gamma \der T \jchk \FixK\,\ell \qquad
       \Gamma \der t \jchk \FixT\,T
     }{\Gamma \der u\, \fix[\ell] T t \jinf T\,a\,u}
 \end{gather*}

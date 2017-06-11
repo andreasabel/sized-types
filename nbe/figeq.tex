@@ -4,23 +4,23 @@
 \\[1ex]
 Computation rules.
 \begin{gather*}
-  \ru{\cext \Gamma U \der t : T \qquad
+  \ru{\cext \Gamma U \der t : T \quad \
       \Gamma \der u : U
     }{\Gamma \der (\lambda t)\,u = t[u] : T[u]}
-\qquad
-  \ru{\cext \Gamma \Size \der t : T \qquad
+\quad \
+  \ru{\cext \Gamma \Size \der t : T \quad \
       \Gamma \der a : \Size
     }{\Gamma \der (\lambda t)\,a = t[a] : T[a]}
-\qquad
+\quad \
 \fbox{$
-  \ru{\erext \Gamma \Size \der t : T \qquad
-      % \Gamma \der a : \Size \qquad
+  \ru{\erext \Gamma \Size \der t : T \quad \
+      % \Gamma \der a : \Size \quad \
       \resurrect \Gamma \der a, b : \Size
     }{\Gamma \der (\lambda t)\,\ann a = t[a] : T[b]}
   $}
 \\[2ex]
   \ru{\resurrect\Gamma \der a, b : \Size \qquad
-      \resurrect\Gamma \der T : \Nat (b + 1) \to \Set[\ell] \qquad
+      \resurrect\Gamma \der T : \Nat (b + 1) \to \Set[\ell] \\
       % \Gamma \der a : \Size \qquad
       \Gamma \der t_z : T\,\zero{b} \qquad
       \Gamma \der t_s : (x : \Nat b) \to T\,(\suc{b}x)
@@ -28,7 +28,7 @@ Computation rules.
 \\[2ex]
   \ru{\resurrect\Gamma \der a : \Size \quad
       \Gamma \der t : \Nat b \quad
-      \resurrect\Gamma \der T : \Nat (b + 1) \to \Set[\ell] \quad
+      \resurrect\Gamma \der T : \Nat (b + 1) \to \Set[\ell] \\
       \Gamma \der t_z : T\,\zero{b} \quad
       \Gamma \der t_s : (x : \Nat b) \to T\,(\suc{b}x)
     }{\Gamma \der (\suc{a} t)\,\case[\ell] T {t_z} {t_s} = t_s\,t : T\,(\suc{b} t)}
@@ -115,14 +115,14 @@ Congruence rules.
       \resurrect\Gamma \der T = T' : \Adm\,\ell \qquad %% \funT i \Size \Nat i \to \Set[\ell] \\
       \Gamma \der t = t' : \FixT\,T \qquad %% \allT i \Size (\funT x {\Nat i} T \,i\, x) \to \funT x {\Nat (i + 1)} T \,{i+1}\, x
      }{\Gamma \der u\,\fix[\ell] T t = u'\,\fix[\ell] {T'} t' : T \, a \, u}
-\qquad
+\\[2ex]
   \ru{\Gamma \der t = t' : T \qquad
       \resurrect\Gamma \der T \leq T'
      }{\Gamma \der t = t' : T'}
 \end{gather*}
 Equivalence rules.  %(Reflexivity is admissible.)
 \vspace{-1ex}
-x\begin{gather*}
+\begin{gather*}
   \ru{\Gamma \der t : T
     }{\Gamma \der t = t : T}
 \qquad

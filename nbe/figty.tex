@@ -61,10 +61,17 @@
 %   \ru{\Gamma \der t : T \qquad
 %       \Gamma \mid T \der e : T'
 %     }{\Gamma \der t\,e : T'}
-\qquad
+\\[2ex]
   \ru{\Gamma \der t : \piT \Size T \qquad
       \Gamma \der a : \Size
     }{\Gamma \der t\,a : T[a]}
+\qquad
+\fbox{$
+  \ru{\Gamma \der t : \forallT T \qquad
+      %\Gamma \der a : \Size \qquad
+      \resurrect\Gamma \der a,b : \Size
+    }{\Gamma \der t \ann a : T[b]}
+  $}
 \\[2ex] % \qquad
   \ru{%\Gamma \der a : \Size \qquad
       \resurrect\Gamma \der a, b : \Size
@@ -73,16 +80,9 @@
   \ru{\resurrect\Gamma \der a : \Size \qquad
       \Gamma \der t : \Nat b
     }{\Gamma \der \suc a t : \Nat (b + 1)}
-\qquad
-\fbox{$
-  \ru{\Gamma \der t : \forallT T \qquad
-      %\Gamma \der a : \Size \qquad
-      \resurrect\Gamma \der a,b : \Size
-    }{\Gamma \der t \ann a : T[b]}
-  $}
 \\[2ex]
-  \ru{\Gamma \der u : \Nat (a + 1) \qquad
-      \resurrect\Gamma \der T : \Nat (a + 1) \to \Set[\ell] \qquad
+  \ru{\resurrect\Gamma \der T : \Nat (a {+} 1) \to \Set[\ell] \\
+      \Gamma \der u : \Nat (a {+} 1) \qquad
       \Gamma \der t_z : T \, (\zero{a}) \qquad
       \Gamma \der t_s : (x : \Nat a) \to T \, (\suc{a} x)
     }{\Gamma \der u\,\case[\ell] T {t_z} t_s : T \, u}

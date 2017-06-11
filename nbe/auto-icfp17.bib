@@ -14,6 +14,11 @@
 @STRING{elsevier= "Elsevier" }
 @STRING{entcs	= "Electronic Notes in Theoretical Computer Science" }
 @STRING{eptcs	= "Electronic Proceedings in Theoretical Computer Science" }
+@STRING{esop17	= "Programming Languages and Systems - 26th European
+		  Symposium on Programming, {ESOP} 2017, Held as Part of the
+		  European Joint Conferences on Theory and Practice of
+		  Software, {ETAPS} 2017, Uppsala, Sweden, April 22-29, 2017,
+		  Proceedings" }
 @STRING{fics12	= "Proceedings of the 8th Workshop on Fixed Points in
 		  Computer Science ({FICS} 2012)" }
 @STRING{flops10	= "Functional and Logic Programming, 10th International
@@ -38,7 +43,6 @@
 		  Pittsburgh, Pennsylvania, USA, October 4-6, 2002" }
 @STRING{ieee	= "IEEE Computer Society Press" }
 @STRING{jfp	= "Journal of Functional Programming" }
-@STRING{jsl	= "The Journal of Symbolic Logic" }
 @STRING{lernet08= "Language Engineering and Rigorous Software Development,
 		  International LerNet ALFA Summer School 2008, Piriapolis,
 		  Uruguay, February 24 - March 1, 2008, Revised Tutorial
@@ -77,6 +81,9 @@
 @STRING{pe98	= "Partial Evaluation -- Practice and Theory, DIKU 1998
 		  International Summer School, Copenhagen, Denmark, June 29 -
 		  July 10, 1998" }
+@STRING{popl01	= "Conference Record of {POPL} 2001: The 28th {ACM}
+		  {SIGPLAN-SIGACT} Symposium on Principles of Programming
+		  Languages, London, UK, January 17-19, 2001" }
 @STRING{popl96	= "Conference Record of {POPL}'96: The 23rd {ACM}
 		  {SIGPLAN-SIGACT} Symposium on Principles of Programming
 		  Languages, Papers Presented at the Symposium, {St.
@@ -88,6 +95,9 @@
 @STRING{springer= "Springer" }
 @STRING{tlca01	= "Typed Lambda Calculi and Applications, 5th International
 		  Conference, TLCA 2001, Krakow, {Poland}, May 2-5, 2001,
+		  Proceedings" }
+@STRING{tlca09	= "Typed Lambda Calculi and Applications, 9th International
+		  Conference, TLCA 2009, Brasilia, Brazil, July 1-3, 2009,
 		  Proceedings" }
 @STRING{tlca13	= "Typed Lambda Calculi and Applications, 11th International
 		  Conference, {TLCA} 2013, Eindhoven, The Netherlands, June
@@ -262,8 +272,11 @@
   number	= 4,
   year		= 2005,
   pages		= {671--708},
-  ee		= {http://dx.doi.org/10.1017/S0960129505004822},
-  bibsource	= {DBLP, http://dblp.uni-trier.de}
+  url		= {https://doi.org/10.1017/S0960129505004822},
+  doi		= {10.1017/S0960129505004822},
+  timestamp	= {Thu, 08 Jun 2017 09:09:46 +0200},
+  biburl	= {http://dblp2.uni-trier.de/rec/bib/journals/mscs/BoveC05},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
 
 @PhDThesis{	  wahlstedt:PhD,
@@ -282,8 +295,11 @@
   volume	= {6},
   number	= {4},
   year		= {2010},
-  ee		= {http://dx.doi.org/10.2168/LMCS-6(4:5)2010},
-  bibsource	= {DBLP, http://dblp.uni-trier.de}
+  url		= {https://doi.org/10.2168/LMCS-6(4:5)2010},
+  doi		= {10.2168/LMCS-6(4:5)2010},
+  timestamp	= {Wed, 03 May 2017 14:47:53 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/journals/corr/abs-1009-1861},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
 
 @InProceedings{	  fridlenderPagano:tlca13,
@@ -301,29 +317,21 @@
   bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
 
-@Article{	  dybjer:jsl00,
-  author	= {Peter Dybjer},
-  title		= {A General Formulation of Simultaneous Inductive-Recursive
-		  Definitions in Type Theory},
-  journal	= jsl,
-  volume	= 65,
-  number	= 2,
-  year		= 2000,
-  pages		= {525--549},
-  bibsource	= {DBLP, http://dblp.uni-trier.de}
-}
-
 @InProceedings{	  coquand:type,
-  author	= "Thierry Coquand",
-  title		= "An Algorithm for Type-Checking Dependent Types",
-  volume	= 26,
-  number	= "1--3",
-  series	= scp,
-  pages		= "167--177",
+  author	= {Thierry Coquand},
+  title		= {An Algorithm for Type-Checking Dependent Types},
   booktitle	= mpc95,
-  year		= 1996,
+  journal	= scp,
+  volume	= {26},
+  number	= {1-3},
+  pages		= {167--177},
   publisher	= elsevier,
-  url		= {http://www.cs.chalmers.se/\~{}coquand/type.html}
+  year		= {1996},
+  url		= {https://doi.org/10.1016/0167-6423(95)00021-6},
+  doi		= {10.1016/0167-6423(95)00021-6},
+  timestamp	= {Sat, 27 May 2017 14:22:56 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/journals/scp/Coquand96},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
 
 @InProceedings{	  stumpSjobergWeirich:par10,
@@ -362,14 +370,15 @@
   title		= {Combining Typing and Size Constraints for Checking the
 		  Termination of Higher-Order Conditional Rewrite Systems},
   editor	= {Miki Hermann and Andrei Voronkov},
-  booktitle	= lpar06,
-  publisher	= springer,
-  series	= lncs,
   year		= 2006,
   volume	= 4246,
   pages		= {105-119},
-  ee		= {http://dx.doi.org/10.1007/11916277_8},
-  bibsource	= {DBLP, http://dblp.uni-trier.de}
+  crossref	= {DBLP:conf/lpar/2006},
+  url		= {https://doi.org/10.1007/11916277_8},
+  doi		= {10.1007/11916277_8},
+  timestamp	= {Fri, 02 Jun 2017 13:01:08 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/lpar/BlanquiR06},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
 
 @InProceedings{	  mishraLingerSheard:fossacs08,
@@ -386,16 +395,16 @@
 @InProceedings{	  geuvers:shortFlexibleSNCC,
   author	= {Herman Geuvers},
   title		= {A short and flexible proof of Strong Normalization for the
-		  {Calculus of Constructions}},
-  booktitle	= {Types for Proofs and Programs, Int. Workshop TYPES '94},
+		  Calculus of Constructions},
+  booktitle	= types94,
   pages		= {14--38},
-  year		= 1994,
-  editor	= {P. Dybjer, B. Nordstr\"om and J. Smith},
-  volume	= 996,
-  series	= lncs,
-  address	= {B\aa{}stad, Sweden},
-  publisher	= springer,
-  url		= {http://www.cs.kun.nl/\~{}herman/pubs.html}
+  year		= {1994},
+  crossref	= {DBLP:conf/types/1994},
+  url		= {https://doi.org/10.1007/3-540-60579-7_2},
+  doi		= {10.1007/3-540-60579-7_2},
+  timestamp	= {Sat, 20 May 2017 15:32:50 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/types/Geuvers94},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
 
 @InProceedings{	  danvy:tdpe,
@@ -410,7 +419,11 @@
   volume	= 1706,
   year		= 1999,
   ee		= {http://doi.acm.org/10.1145/237721.237784},
-  bibsource	= {DBLP, http://dblp.uni-trier.de}
+  url		= {https://doi.org/10.1007/3-540-47018-2_16},
+  doi		= {10.1007/3-540-47018-2_16},
+  timestamp	= {Wed, 24 May 2017 15:40:45 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/pepm/Danvy98},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
 
 @Article{	  barendregt:lambdacube,
@@ -419,9 +432,11 @@
   journal	= jfp,
   volume	= 1,
   number	= 2,
+  pages		= {125--154},
   year		= 1991,
-  pages		= {125-154},
-  bibsource	= {DBLP, http://dblp.uni-trier.de}
+  timestamp	= {Fri, 19 Mar 2004 13:37:10 +0100},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/journals/jfp/Barendregt91},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
 
 @InProceedings{	  barrasBernardo:fossacs08,
@@ -449,18 +464,17 @@
 }
 
 @InProceedings{	  jones:sizeChange,
-  author	= {Lee, Chin Soon and Jones, Neil D. and Ben-Amram, Amir M.},
-  year		= {2001},
+  author	= {Chin Soon Lee and Neil D. Jones and Amir M. Ben{-}Amram},
   title		= {The Size-Change Principle for Program Termination},
-  booktitle	= {ACM Symposium on Principles of Programming Languages
-		  (POPL'01)},
-  editor	= {},
-  publisher	= acm,
-  organization	= {},
-  address	= {London, UK},
-  series	= {},
-  volume	= {},
+  booktitle	= popl01,
   pages		= {81--92},
+  year		= {2001},
+  crossref	= {DBLP:conf/popl/2001},
+  url		= {http://doi.acm.org/10.1145/360204.360210},
+  doi		= {10.1145/360204.360210},
+  timestamp	= {Mon, 18 Mar 2013 08:39:18 +0100},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/popl/LeeJB01},
+  bibsource	= {dblp computer science bibliography, http://dblp.org},
   keywords	= {termination, program analysis, lexical order, pspace
 		  hardness},
   summary	= {The ``size-change termination'' principle for a
@@ -491,8 +505,7 @@
 		  reduction from Boolean program termination. An interesting
 		  consequence: the same hardness result applies to many other
 		  analyses found in the termination and quasi-termination
-		  literature.},
-  url		= {http://www.diku.dk/\~{}neil/}
+		  literature.}
 }
 
 @Article{	  abelPientka:jfp16,
@@ -512,10 +525,13 @@
 		  with Typed Equality Judgements},
   booktitle	= lics07,
   year		= 2007,
-  ee		= {http://doi.ieeecomputersociety.org/10.1109/LICS.2007.33},
-  publisher	= ieee,
   pages		= {3--12},
-  bibsource	= {DBLP, http://dblp.uni-trier.de}
+  crossref	= {DBLP:conf/lics/2007},
+  url		= {https://doi.org/10.1109/LICS.2007.33},
+  doi		= {10.1109/LICS.2007.33},
+  timestamp	= {Thu, 25 May 2017 00:42:40 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/lics/AbelCD07},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
 
 @Article{	  abelCoquandPagano:lmcs11,
@@ -527,7 +543,12 @@
   volume	= 7,
   number	= {2:4},
   pages		= {1--57},
-  url		= {http://arxiv.org/pdf/1102.2405}
+  alturl	= {http://arxiv.org/pdf/1102.2405},
+  url		= {https://doi.org/10.2168/LMCS-7(2:4)2011},
+  doi		= {10.2168/LMCS-7(2:4)2011},
+  timestamp	= {Wed, 03 May 2017 14:47:54 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/journals/corr/abs-1102-2405},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
 
 @Article{	  abelScherer:types10,
@@ -539,8 +560,26 @@
   number	= {1:29},
   year		= 2012,
   pages		= {1--36},
-  ee		= {http://dx.doi.org/10.2168/LMCS-8(1:29)2012},
-  bibsource	= {DBLP, http://dblp.uni-trier.de}
+  url		= {https://doi.org/10.2168/LMCS-8(1:29)2012},
+  doi		= {10.2168/LMCS-8(1:29)2012},
+  timestamp	= {Wed, 03 May 2017 14:47:55 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/journals/corr/abs-1203-4716},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@InProceedings{	  abelCoquandPagano:tlca09,
+  author	= {Andreas Abel and Thierry Coquand and Miguel Pagano},
+  title		= {A Modular Type-Checking Algorithm for Type Theory with
+		  Singleton Types and Proof Irrelevance},
+  booktitle	= tlca09,
+  pages		= {5--19},
+  year		= 2009,
+  crossref	= {DBLP:conf/tlca/2009},
+  url		= {https://doi.org/10.1007/978-3-642-02273-9_3},
+  doi		= {10.1007/978-3-642-02273-9_3},
+  timestamp	= {Wed, 17 May 2017 14:24:41 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/tlca/AbelCP09},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
 
 @Book{		  abel:habil,
@@ -594,16 +633,17 @@
 
 @InProceedings{	  abel:flops10,
   author	= {Andreas Abel},
-  title		= {{Towards Normalization by Evaluation for the
-		  $\beta\eta$-Calculus of Constructions}},
+  title		= {Towards Normalization by Evaluation for the
+		  {$\beta\eta$-Calculus of Constructions}},
   booktitle	= flops10,
   pages		= {224--239},
   year		= 2010,
-  editor	= {Matthias Blume and Naoki Kobayashi and Germ{\'a}n Vidal},
-  volume	= 6009,
-  series	= lncs,
-  publisher	= springer,
-  ee		= {http://dx.doi.org/10.1007/978-3-642-12251-4}
+  crossref	= {DBLP:conf/flops/2010},
+  url		= {https://doi.org/10.1007/978-3-642-12251-4_17},
+  doi		= {10.1007/978-3-642-12251-4_17},
+  timestamp	= {Sun, 21 May 2017 00:19:14 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/flops/Abel10},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
 
 @Article{	  abel:lmcs07,
@@ -658,8 +698,12 @@
   booktitle	= lics91,
   year		= 1991,
   pages		= {203--211},
-  ee		= {http://dx.doi.org/10.1109/LICS.1991.151645},
-  publisher	= ieee
+  crossref	= {DBLP:conf/lics/1991},
+  url		= {https://doi.org/10.1109/LICS.1991.151645},
+  doi		= {10.1109/LICS.1991.151645},
+  timestamp	= {Thu, 25 May 2017 00:42:41 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/lics/BergerS91},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
 
 @InProceedings{	  pfenning:lics01,
@@ -691,15 +735,6 @@
   publisher	= acm
 }
 
-@InProceedings{	  pfenning:intextirr,
-  author	= {Frank Pfenning},
-  title		= {Intensionality, Extensionality, and Proof Irrelevance in
-		  Modal Type Theory},
-  booktitle	= lics01,
-  publisher	= ieee,
-  year		= 2001
-}
-
 @InProceedings{	  amadio:guardcondition,
   author	= {Roberto M. Amadio and Solange Coupet-Grimal},
   title		= {Analysis of a Guard Condition in Type Theory (Extended
@@ -726,8 +761,11 @@
   volume	= 37,
   number	= 9,
   pages		= {235--246},
-  ee		= {http://doi.acm.org/10.1145/581478.581501},
-  bibsource	= {DBLP, http://dblp.uni-trier.de}
+  url		= {http://doi.acm.org/10.1145/581478.581501},
+  doi		= {10.1145/581478.581501},
+  timestamp	= {Tue, 11 Jun 2013 13:49:16 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/icfp/GregoireL02},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
 
 @Article{	  brady:jfp13,
@@ -753,12 +791,12 @@
   booktitle	= csl05,
   year		= {2005},
   pages		= {135--150},
-  editor	= {C.-H. Luke Ong},
-  publisher	= springer,
-  series	= lncs,
-  volume	= {3634},
-  ee		= {http://dx.doi.org/10.1007/11538363_11},
-  bibsource	= {DBLP, http://dblp.uni-trier.de}
+  crossref	= {DBLP:conf/csl/2005},
+  url		= {https://doi.org/10.1007/11538363_11},
+  doi		= {10.1007/11538363_11},
+  timestamp	= {Tue, 30 May 2017 16:36:53 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/csl/Blanqui05},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
 
 @InProceedings{	  blanqui:rta04,
@@ -812,17 +850,6 @@
   bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
 
-@InProceedings{	  miquel:lics00,
-  author	= {Alexandre Miquel},
-  title		= {A Model for Impredicative Type Systems, Universes,
-		  Intersection Types and Subtyping},
-  booktitle	= lics00,
-  year		= 2000,
-  pages		= {18-29},
-  ee		= {http://www.computer.org/proceedings/lics/0725/07250018abs.htm},
-  bibsource	= {DBLP, http://dblp.uni-trier.de}
-}
-
 @InProceedings{	  miquel:tlca01,
   author	= {Alexandre Miquel},
   title		= {The Implicit Calculus of Constructions},
@@ -833,8 +860,26 @@
   volume	= 2044,
   year		= 2001,
   pages		= {344--359},
-  ee		= {http://link.springer.de/link/service/series/0558/bibs/2044/20440344.htm},
-  bibsource	= {DBLP, http://dblp.uni-trier.de}
+  url		= {https://doi.org/10.1007/3-540-45413-6_27},
+  doi		= {10.1007/3-540-45413-6_27},
+  timestamp	= {Wed, 17 May 2017 14:24:41 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/tlca/Miquel01},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@InProceedings{	  miquel:lics00,
+  author	= {Alexandre Miquel},
+  title		= {A Model for Impredicative Type Systems, Universes,
+		  Intersection Types and Subtyping},
+  booktitle	= lics00,
+  year		= 2000,
+  pages		= {18-29},
+  crossref	= {DBLP:conf/lics/2000},
+  url		= {https://doi.org/10.1109/LICS.2000.855752},
+  doi		= {10.1109/LICS.2000.855752},
+  timestamp	= {Thu, 25 May 2017 00:42:40 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/lics/Miquel00},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
 
 @InProceedings{	  werner:types92,
@@ -859,16 +904,853 @@
   bibsource	= {DBLP, http://dblp.uni-trier.de}
 }
 
-@Article{	  dalLagoGrellois:probabilisticSizedTypes2017,
+@InProceedings{	  dalLagoGrellois:esop17,
   author	= {Ugo Dal Lago and Charles Grellois},
-  title		= {Probabilistic Termination by Monadic Affine Sized Typing
-		  (Long Version)},
-  journal	= {CoRR},
-  volume	= {abs/1701.04089},
-  year		= {2017},
-  url		= {http://arxiv.org/abs/1701.04089},
-  timestamp	= {Wed, 01 Feb 2017 17:47:56 +0100},
-  biburl	= {http://dblp.uni-trier.de/rec/bib/journals/corr/LagoG17},
+  title		= {Probabilistic Termination by Monadic Affine Sized Typing},
+  booktitle	= esop17,
+  pages		= {393--419},
+  year		= 2017,
+  crossref	= {DBLP:conf/esop/2017},
+  url		= {https://doi.org/10.1007/978-3-662-54434-1_15},
+  doi		= {10.1007/978-3-662-54434-1_15},
+  timestamp	= {Fri, 19 May 2017 01:25:18 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/esop/LagoG17},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@Proceedings{	  DBLP:conf/fossacs/2008,
+  editor	= {Roberto M. Amadio},
+  title		= fossacs08,
+  booktitle	= fossacs08,
+  publisher	= springer,
+  series	= lncs,
+  volume	= 4962,
+  year		= 2008,
+  url		= {https://doi.org/10.1007/978-3-540-78499-9},
+  doi		= {10.1007/978-3-540-78499-9},
+  timestamp	= {Tue, 23 May 2017 01:08:04 +0200},
+  biburl	= {http://dblp2.uni-trier.de/rec/bib/conf/fossacs/2008},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@Proceedings{	  DBLP:conf/types/1994,
+  editor	= {Peter Dybjer and Bengt Nordstr{\"{o}}m and Jan M. Smith},
+  title		= types94,
+  series	= lncs,
+  volume	= 996,
+  publisher	= springer,
+  year		= 1995,
+  url		= {https://doi.org/10.1007/3-540-60579-7},
+  doi		= {10.1007/3-540-60579-7},
+  timestamp	= {Fri, 17 Nov 2006 20:17:12 +0100},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/types/1994},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@InCollection{	  huet:wsscs89,
+  author	= {G{\'{e}}rard P. Huet},
+  title		= {The Constructive Engine},
+  booktitle	= {A Perspective in Theoretical Computer Science -
+		  Commemorative Volume for Gift Siromoney},
+  pages		= {38--69},
+  year		= {1989},
+  crossref	= {DBLP:series/wsscs/16},
+  url		= {http://dx.doi.org/10.1142/9789814368452_0004},
+  doi		= {10.1142/9789814368452_0004},
+  timestamp	= {Wed, 21 Dec 2016 15:24:24 +0100},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/series/wsscs/Huet89},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@Manual{	  inria:coq86,
+  title		= {The {Coq} Proof Assistant Reference Manual},
+  author	= {INRIA},
+  organization	= {INRIA},
+  edition	= {Version 8.6},
+  year		= 2016,
+  url		= {http://coq.inria.fr/}
+}
+
+@InProceedings{	  sulzmannChakravartyPeythonJonesDonnelly:tldi07,
+  author	= {Martin Sulzmann and Manuel M. T. Chakravarty and Simon L.
+		  Peyton Jones and Kevin Donnelly},
+  title		= {System {F} with type equality coercions},
+  booktitle	= {Proceedings of TLDI'07: 2007 {ACM} {SIGPLAN} International
+		  Workshop on Types in Languages Design and Implementation,
+		  Nice, France, January 16, 2007},
+  pages		= {53--66},
+  year		= {2007},
+  crossref	= {DBLP:conf/tldi/2007},
+  url		= {http://doi.acm.org/10.1145/1190315.1190324},
+  doi		= {10.1145/1190315.1190324},
+  timestamp	= {Tue, 22 May 2012 15:24:55 +0200},
+  biburl	= {http://dblp2.uni-trier.de/rec/bib/conf/tldi/SulzmannCJD07},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@Misc{		  agdawiki,
+  author	= {{AgdaTeam}},
+  title		= {The {A}gda {W}iki},
+  year		= 2017,
+  url		= {http://wiki.portal.chalmers.se/agda}
+}
+
+@PhDThesis{	  norell:PhD,
+  author	= {Ulf Norell},
+  title		= {Towards a Practical Programming Language Based on
+		  Dependent Type Theory},
+  school	= csechalmers,
+  year		= 2007,
+  address	= {G\"{o}teborg, Sweden}
+}
+
+@InProceedings{	  hughesParetoSabry:popl96,
+  author	= {John Hughes and Lars Pareto and Amr Sabry},
+  title		= {Proving the Correctness of Reactive Systems Using Sized
+		  Types},
+  booktitle	= popl96,
+  pages		= {410--423},
+  year		= {1996},
+  crossref	= {DBLP:conf/popl/1996},
+  ee		= {http://doi.acm.org/10.1145/237721.240882},
+  url		= {http://doi.acm.org/10.1145/237721.240882},
+  doi		= {10.1145/237721.240882},
+  timestamp	= {Mon, 21 May 2012 16:19:51 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/popl/HughesPS96},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@InProceedings{	  martinlof:predicative75,
+  author	= "Martin-L{\"o}f, Per",
+  title		= "An Intuitionistic Theory of Types: Predicative Part",
+  booktitle	= "Logic Colloquium `73",
+  year		= 1975,
+  pages		= "73--118",
+  editor	= "H. E. Rose and J. C. Shepherdson",
+  publisher	= "North-Holland"
+}
+
+@Article{	  xi:terminationHOSC,
+  author	= "Hongwei Xi",
+  title		= {Dependent Types for Program Termination Verification},
+  journal	= hosc,
+  year		= 2002,
+  volume	= 15,
+  number	= 1,
+  pages		= {91--131},
+  ee		= {http://dx.doi.org/10.1023/A:1019916231463},
+  doi		= {10.1023/A:1019916231463}
+}
+
+@InProceedings{	  sacchini:flops14,
+  author	= {Jorge Luis Sacchini},
+  title		= {Linear Sized Types in the Calculus of Constructions},
+  booktitle	= flops14,
+  pages		= {169--185},
+  year		= 2014,
+  crossref	= {DBLP:conf/flops/2014},
+  url		= {http://dx.doi.org/10.1007/978-3-319-07151-0_11},
+  doi		= {10.1007/978-3-319-07151-0_11},
+  timestamp	= {Fri, 23 May 2014 14:56:52 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/flops/Sacchini14},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@InProceedings{	  sacchini:lics13,
+  author	= {Jorge Luis Sacchini},
+  title		= {Type-Based Productivity of Stream Definitions in the
+		  Calculus of Constructions},
+  booktitle	= lics13,
+  pages		= {233--242},
+  year		= {2013},
+  crossref	= {DBLP:conf/lics/2013},
+  url		= {http://dx.doi.org/10.1109/LICS.2013.29},
+  doi		= {10.1109/LICS.2013.29},
+  timestamp	= {Wed, 27 May 2015 19:02:35 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/lics/Sacchini13},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@InProceedings{	  gregoireSacchini:lpar10,
+  author	= {Benjamin Gr{\'{e}}goire and Jorge Luis Sacchini},
+  title		= {On Strong Normalization of the Calculus of Constructions
+		  with Type-Based Termination},
+  booktitle	= lpar10,
+  pages		= {333--347},
+  year		= 2010,
+  crossref	= {DBLP:conf/lpar/2010y},
+  url		= {http://dx.doi.org/10.1007/978-3-642-16242-8_24},
+  doi		= {10.1007/978-3-642-16242-8_24},
+  timestamp	= {Fri, 08 Oct 2010 13:51:39 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/lpar/GregoireS10},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@Article{	  bove:entcs09,
+  author	= {Ana Bove},
+  title		= {Another Look at Function Domains},
+  journal	= entcs,
+  volume	= 249,
+  pages		= {61--74},
+  year		= 2009,
+  url		= {http://dx.doi.org/10.1016/j.entcs.2009.07.084},
+  doi		= {10.1016/j.entcs.2009.07.084},
+  timestamp	= {Tue, 17 Nov 2009 14:49:04 +0100},
+  biburl	= {http://dblp2.uni-trier.de/rec/bib/journals/entcs/Bove09},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@Article{	  boveCapretta:mscs05,
+  author	= {Ana Bove and Venanzio Capretta},
+  title		= {Modelling general recursion in type theory},
+  journal	= mscs,
+  volume	= 15,
+  number	= 4,
+  year		= 2005,
+  pages		= {671--708},
+  url		= {https://doi.org/10.1017/S0960129505004822},
+  doi		= {10.1017/S0960129505004822},
+  timestamp	= {Thu, 08 Jun 2017 09:09:46 +0200},
+  biburl	= {http://dblp2.uni-trier.de/rec/bib/journals/mscs/BoveC05},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@PhDThesis{	  wahlstedt:PhD,
+  author	= {David Wahlstedt},
+  title		= {Dependent Type Theory with Parameterized First-Order Data
+		  Types and Well-Founded Recursion},
+  school	= {Chalmers University of Technology},
+  year		= 2007
+}
+
+@Article{	  lovasPfenning:lmcs10,
+  author	= {William Lovas and Frank Pfenning},
+  title		= {Refinement Types for Logical Frameworks and Their
+		  Interpretation as Proof Irrelevance},
+  journal	= lmcs,
+  volume	= {6},
+  number	= {4},
+  year		= {2010},
+  url		= {https://doi.org/10.2168/LMCS-6(4:5)2010},
+  doi		= {10.2168/LMCS-6(4:5)2010},
+  timestamp	= {Wed, 03 May 2017 14:47:53 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/journals/corr/abs-1009-1861},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@InProceedings{	  fridlenderPagano:tlca13,
+  author	= {Daniel Fridlender and Miguel Pagano},
+  title		= {A Type-Checking Algorithm for Martin-L{\"{o}}f Type Theory
+		  with Subtyping Based on Normalisation by Evaluation},
+  booktitle	= tlca13,
+  pages		= {140--155},
+  year		= 2013,
+  crossref	= {DBLP:conf/tlca/2013},
+  url		= {http://dx.doi.org/10.1007/978-3-642-38946-7_12},
+  doi		= {10.1007/978-3-642-38946-7_12},
+  timestamp	= {Wed, 11 Sep 2013 08:22:06 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/tlca/FridlenderP13},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@InProceedings{	  coquand:type,
+  author	= {Thierry Coquand},
+  title		= {An Algorithm for Type-Checking Dependent Types},
+  booktitle	= mpc95,
+  journal	= scp,
+  volume	= {26},
+  number	= {1-3},
+  pages		= {167--177},
+  publisher	= elsevier,
+  year		= {1996},
+  url		= {https://doi.org/10.1016/0167-6423(95)00021-6},
+  doi		= {10.1016/0167-6423(95)00021-6},
+  timestamp	= {Sat, 27 May 2017 14:22:56 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/journals/scp/Coquand96},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@InProceedings{	  stumpSjobergWeirich:par10,
+  author	= {Aaron Stump and Vilhelm Sj{\"{o}}berg and Stephanie
+		  Weirich},
+  title		= {Termination Casts: {A} Flexible Approach to Termination
+		  with General Recursion},
+  booktitle	= par10,
+  pages		= {76--93},
+  year		= 2010,
+  crossref	= {DBLP:journals/corr/abs-1012-4555},
+  url		= {http://dx.doi.org/10.4204/EPTCS.43.6},
+  doi		= {10.4204/EPTCS.43.6},
+  timestamp	= {Mon, 28 Oct 2013 16:56:55 +0100},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/journals/corr/abs-1012-4900},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@InProceedings{	  bartheGregoireRiba:csl08,
+  author	= {Gilles Barthe and Benjamin Gr{\'e}goire and Colin Riba},
+  title		= {Type-Based Termination with Sized Products},
+  editor	= {Michael Kaminski and Simone Martini},
+  booktitle	= csl08,
+  year		= 2008,
+  pages		= {493--507},
+  publisher	= springer,
+  series	= lncs,
+  volume	= 5213,
+  ee		= {http://dx.doi.org/10.1007/978-3-540-87531-4_35},
+  doi		= {10.1007/978-3-540-87531-4_35},
+  bibsource	= {DBLP, http://dblp.uni-trier.de}
+}
+
+@InProceedings{	  blanquiRiba:lpar06,
+  author	= {Fr{\'e}d{\'e}ric Blanqui and Colin Riba},
+  title		= {Combining Typing and Size Constraints for Checking the
+		  Termination of Higher-Order Conditional Rewrite Systems},
+  editor	= {Miki Hermann and Andrei Voronkov},
+  year		= 2006,
+  volume	= 4246,
+  pages		= {105-119},
+  crossref	= {DBLP:conf/lpar/2006},
+  url		= {https://doi.org/10.1007/11916277_8},
+  doi		= {10.1007/11916277_8},
+  timestamp	= {Fri, 02 Jun 2017 13:01:08 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/lpar/BlanquiR06},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@InProceedings{	  mishraLingerSheard:fossacs08,
+  author	= {Nathan Mishra-Linger and Tim Sheard},
+  title		= {Erasure and Polymorphism in Pure Type Systems},
+  booktitle	= {FoSSaCS},
+  year		= 2008,
+  pages		= {350-364},
+  ee		= {http://dx.doi.org/10.1007/978-3-540-78499-9_25},
+  crossref	= {DBLP:conf/fossacs/2008},
+  bibsource	= {DBLP, http://dblp.uni-trier.de}
+}
+
+@InProceedings{	  geuvers:shortFlexibleSNCC,
+  author	= {Herman Geuvers},
+  title		= {A short and flexible proof of Strong Normalization for the
+		  Calculus of Constructions},
+  booktitle	= types94,
+  pages		= {14--38},
+  year		= {1994},
+  crossref	= {DBLP:conf/types/1994},
+  url		= {https://doi.org/10.1007/3-540-60579-7_2},
+  doi		= {10.1007/3-540-60579-7_2},
+  timestamp	= {Sat, 20 May 2017 15:32:50 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/types/Geuvers94},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@InProceedings{	  danvy:tdpe,
+  author	= {Olivier Danvy},
+  title		= {Type-Directed Partial Evaluation},
+  editor	= {John Hatcliff and Torben {\AE}. Mogensen and Peter
+		  Thiemann},
+  booktitle	= pe98,
+  pages		= {367-411},
+  publisher	= springer,
+  series	= lncs,
+  volume	= 1706,
+  year		= 1999,
+  ee		= {http://doi.acm.org/10.1145/237721.237784},
+  url		= {https://doi.org/10.1007/3-540-47018-2_16},
+  doi		= {10.1007/3-540-47018-2_16},
+  timestamp	= {Wed, 24 May 2017 15:40:45 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/pepm/Danvy98},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@Article{	  barendregt:lambdacube,
+  author	= {Henk Barendregt},
+  title		= {Introduction to Generalized Type Systems},
+  journal	= jfp,
+  volume	= 1,
+  number	= 2,
+  pages		= {125--154},
+  year		= 1991,
+  timestamp	= {Fri, 19 Mar 2004 13:37:10 +0100},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/journals/jfp/Barendregt91},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@InProceedings{	  barrasBernardo:fossacs08,
+  author	= {Bruno Barras and Bruno Bernardo},
+  title		= {The Implicit Calculus of Constructions as a Programming
+		  Language with Dependent Types},
+  booktitle	= {FoSSaCS},
+  year		= {2008},
+  pages		= {365-379},
+  ee		= {http://dx.doi.org/10.1007/978-3-540-78499-9_26},
+  doi		= {10.1007/978-3-540-78499-9_26},
+  crossref	= {DBLP:conf/fossacs/2008},
+  bibsource	= {DBLP, http://dblp.uni-trier.de}
+}
+
+@Article{	  deBruijn:nameless,
+  author	= {N. G. de Bruijn},
+  title		= {Lambda calculus notation with nameless dummies, a tool for
+		  automatic formula manipulation, with application to the
+		  {C}hurch-{R}osser theorem},
+  journal	= {Indagationes Mathematicae},
+  year		= 1972,
+  volume	= 34,
+  pages		= {381--392}
+}
+
+@InProceedings{	  jones:sizeChange,
+  author	= {Chin Soon Lee and Neil D. Jones and Amir M. Ben{-}Amram},
+  title		= {The Size-Change Principle for Program Termination},
+  booktitle	= popl01,
+  pages		= {81--92},
+  year		= {2001},
+  crossref	= {DBLP:conf/popl/2001},
+  url		= {http://doi.acm.org/10.1145/360204.360210},
+  doi		= {10.1145/360204.360210},
+  timestamp	= {Mon, 18 Mar 2013 08:39:18 +0100},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/popl/LeeJB01},
+  bibsource	= {dblp computer science bibliography, http://dblp.org},
+  keywords	= {termination, program analysis, lexical order, pspace
+		  hardness},
+  summary	= {The ``size-change termination'' principle for a
+		  first-order functional language with well-founded data is:
+		  a program terminates on all inputs if {\em every infinite
+		  call sequence} (following program control flow) would cause
+		  an infinite descent in some data values. Size-change
+		  analysis is based only on local approximations to parameter
+		  size changes derivable from program syntax. The set of
+		  infinite call sequences that follow program flow and can be
+		  recognized as causing infinite descent is an
+		  $\omega$-regular set, representable by a B\"uchi automaton.
+		  Algorithms for such automata can be used to decide
+		  size-change termination. We also give a direct algorithm
+		  operating on ``size-change graphs'' (without the passage to
+		  automata). Compared to other results in the literature,
+		  termination analysis based on the size-change principle is
+		  surprisingly simple and general: lexical orders (also
+		  called lexicographic orders), indirect function calls and
+		  permuted arguments (descent that is not {\em in-situ}) are
+		  all handled {\em automatically and without special
+		  treatment}, with no need for manually supplied argument
+		  orders, or theorem-proving methods not certain to terminate
+		  at analysis time. We establish the problem's {\em intrinsic
+		  complexity}. This turns out to be surprisingly high,
+		  complete for {\sc pspace}, in spite of the simplicity of
+		  the principle. {\sc pspace} hardness is proved by a
+		  reduction from Boolean program termination. An interesting
+		  consequence: the same hardness result applies to many other
+		  analyses found in the termination and quasi-termination
+		  literature.}
+}
+
+@Article{	  abelPientka:jfp16,
+  author	= {Andreas Abel and Brigitte Pientka},
+  title		= {Well-founded recursion with copatterns and sized types},
+  journal	= jfp,
+  year		= 2016,
+  volume	= 26,
+  pages		= 61,
+  url		= {http://dx.doi.org/10.1017/S0956796816000022},
+  doi		= {http://dx.doi.org/10.1017/S0956796816000022}
+}
+
+@InProceedings{	  abelCoquandDybjer:lics07,
+  author	= {Andreas Abel and Thierry Coquand and Peter Dybjer},
+  title		= {Normalization by Evaluation for {Martin-L\"of Type Theory}
+		  with Typed Equality Judgements},
+  booktitle	= lics07,
+  year		= 2007,
+  pages		= {3--12},
+  crossref	= {DBLP:conf/lics/2007},
+  url		= {https://doi.org/10.1109/LICS.2007.33},
+  doi		= {10.1109/LICS.2007.33},
+  timestamp	= {Thu, 25 May 2017 00:42:40 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/lics/AbelCD07},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@Article{	  abelCoquandPagano:lmcs11,
+  author	= {Andreas Abel and Thierry Coquand and Miguel Pagano},
+  title		= {A Modular Type-Checking Algorithm for Type Theory with
+		  Singleton Types and Proof Irrelevance},
+  journal	= lmcs,
+  year		= 2011,
+  volume	= 7,
+  number	= {2:4},
+  pages		= {1--57},
+  alturl	= {http://arxiv.org/pdf/1102.2405},
+  url		= {https://doi.org/10.2168/LMCS-7(2:4)2011},
+  doi		= {10.2168/LMCS-7(2:4)2011},
+  timestamp	= {Wed, 03 May 2017 14:47:54 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/journals/corr/abs-1102-2405},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@Article{	  abelScherer:types10,
+  author	= {Andreas Abel and Gabriel Scherer},
+  title		= {On Irrelevance and Algorithmic Equality in Predicative
+		  Type Theory},
+  journal	= lmcs,
+  volume	= 8,
+  number	= {1:29},
+  year		= 2012,
+  pages		= {1--36},
+  url		= {https://doi.org/10.2168/LMCS-8(1:29)2012},
+  doi		= {10.2168/LMCS-8(1:29)2012},
+  timestamp	= {Wed, 03 May 2017 14:47:55 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/journals/corr/abs-1203-4716},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@InProceedings{	  abelCoquandPagano:tlca09,
+  author	= {Andreas Abel and Thierry Coquand and Miguel Pagano},
+  title		= {A Modular Type-Checking Algorithm for Type Theory with
+		  Singleton Types and Proof Irrelevance},
+  booktitle	= tlca09,
+  pages		= {5--19},
+  year		= 2009,
+  crossref	= {DBLP:conf/tlca/2009},
+  url		= {https://doi.org/10.1007/978-3-642-02273-9_3},
+  doi		= {10.1007/978-3-642-02273-9_3},
+  timestamp	= {Wed, 17 May 2017 14:24:41 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/tlca/AbelCP09},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@Book{		  abel:habil,
+  author	= {Andreas Abel},
+  title		= {Normalization by Evaluation: {D}ependent Types and
+		  Impredicativity},
+  school	= {Ludwig-Maximilians-Uni\-ver\-sity Munich},
+  year		= {2013},
+  optkey	= {},
+  opttype	= {},
+  optaddress	= {},
+  optmonth	= {},
+  url		= {http://www.tcs.ifi.lmu.de/~abel/habil.pdf},
+  publisher	= {Unpublished},
+  optpostscript	= {},
+  optpdf	= {},
+  optdvi	= {},
+  optabstract	= {}
+}
+
+@Article{	  abelAltenkirch:jfp02,
+  author	= {Andreas Abel and Thorsten Altenkirch},
+  title		= {A Predicative Analysis of Structural Recursion},
+  journal	= jfp,
+  year		= 2002,
+  volume	= 12,
+  number	= 1,
+  pages		= {1--41},
+  ee		= {http://dx.doi.org/10.1017/S0956796801004191},
+  url		= {http://dx.doi.org/10.1017/S0956796801004191},
+  doi		= {10.1017/S0956796801004191},
+  timestamp	= {Fri, 27 Sep 2013 20:12:09 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/journals/jfp/AbelA02},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@InProceedings{	  abel:fics12,
+  author	= {Andreas Abel},
+  title		= {Type-Based Termination, Inflationary Fixed-Points, and
+		  Mixed Inductive-Coinductive Types},
+  booktitle	= fics12,
+  year		= 2012,
+  pages		= {1-11},
+  ee		= {http://dx.doi.org/10.4204/EPTCS.77.1},
+  url		= {http://dx.doi.org/10.4204/EPTCS.77.1},
+  crossref	= {DBLP:journals/corr/abs-1202-3174},
+  timestamp	= {Mon, 28 Oct 2013 16:56:55 +0100},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/journals/corr/abs-1202-3496},
+  bibsource	= {DBLP, http://dblp.uni-trier.de}
+}
+
+@InProceedings{	  abel:flops10,
+  author	= {Andreas Abel},
+  title		= {Towards Normalization by Evaluation for the
+		  {$\beta\eta$-Calculus of Constructions}},
+  booktitle	= flops10,
+  pages		= {224--239},
+  year		= 2010,
+  crossref	= {DBLP:conf/flops/2010},
+  url		= {https://doi.org/10.1007/978-3-642-12251-4_17},
+  doi		= {10.1007/978-3-642-12251-4_17},
+  timestamp	= {Sun, 21 May 2017 00:19:14 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/flops/Abel10},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@Article{	  abel:lmcs07,
+  author	= {Andreas Abel},
+  title		= {Semi-continuous Sized Types and Termination},
+  journal	= lmcs,
+  year		= 2008,
+  doi		= {10.2168/LMCS-4(2:3)2008},
+  volume	= 4,
+  number	= {2:3},
+  pages		= {1--33},
+  ee		= {http://dx.doi.org/10.2168/LMCS-4(2:3)2008},
+  url		= {http://dx.doi.org/10.2168/LMCS-4(2:3)2008},
+  timestamp	= {Fri, 27 Sep 2013 20:12:09 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/journals/lmcs/Abel08},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@InProceedings{	  bartheGregoireRiba:lernet08,
+  author	= {Gilles Barthe and Benjamin Gr{\'e}goire and Colin Riba},
+  title		= {A Tutorial on Type-Based Termination},
+  booktitle	= {LerNet ALFA Summer School},
+  year		= 2008,
+  pages		= {100-152},
+  ee		= {http://dx.doi.org/10.1007/978-3-642-03153-3_3},
+  doi		= {10.1007/978-3-642-03153-3_3},
+  crossref	= {DBLP:conf/lernet/2008},
+  bibsource	= {DBLP, http://dblp.uni-trier.de}
+}
+
+@InProceedings{	  bartheGregoirePastawski:lpar06,
+  author	= {Gilles Barthe and Benjamin Gr{\'e}goire and Fernando
+		  Pastawski},
+  title		= {{CIC\^{}}: Type-Based Termination of Recursive Definitions
+		  in the {C}alculus of {I}nductive {C}onstructions},
+  editor	= {Miki Hermann and Andrei Voronkov},
+  booktitle	= lpar06,
+  year		= 2006,
+  pages		= {257--271},
+  ee		= {http://dx.doi.org/10.1007/11916277_18},
+  doi		= {10.1007/11916277_18},
+  publisher	= springer,
+  series	= lncs,
+  volume	= 4246,
+  bibsource	= {DBLP, http://dblp.uni-trier.de}
+}
+
+@InProceedings{	  bergerSchwichtenberg:lics91,
+  author	= "Ulrich Berger and Helmut Schwichtenberg",
+  title		= "An Inverse to the Evaluation Functional for Typed
+		  $\lambda$-calculus",
+  booktitle	= lics91,
+  year		= 1991,
+  pages		= {203--211},
+  crossref	= {DBLP:conf/lics/1991},
+  url		= {https://doi.org/10.1109/LICS.1991.151645},
+  doi		= {10.1109/LICS.1991.151645},
+  timestamp	= {Thu, 25 May 2017 00:42:41 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/lics/BergerS91},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@InProceedings{	  pfenning:lics01,
+  author	= {Frank Pfenning},
+  title		= {Intensionality, Extensionality, and Proof Irrelevance in
+		  Modal Type Theory},
+  booktitle	= lics01,
+  pages		= {221--230},
+  year		= 2001,
+  crossref	= {DBLP:conf/lics/2001},
+  url		= {http://dx.doi.org/10.1109/LICS.2001.932499},
+  doi		= {10.1109/LICS.2001.932499},
+  timestamp	= {Sat, 22 Nov 2014 13:44:40 +0100},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/lics/Pfenning01},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@Article{	  harperPfenning:equivalenceLF,
+  author	= {Robert Harper and Frank Pfenning},
+  title		= {On Equivalence and Canonical Forms in the {LF} Type
+		  Theory},
+  journal	= acmtocl,
+  volume	= 6,
+  number	= 1,
+  year		= 2005,
+  issn		= {1529-3785},
+  pages		= {61--101},
+  doi		= {http://doi.acm.org/10.1145/1042038.1042041},
+  publisher	= acm
+}
+
+@InProceedings{	  amadio:guardcondition,
+  author	= {Roberto M. Amadio and Solange Coupet-Grimal},
+  title		= {Analysis of a Guard Condition in Type Theory (Extended
+		  Abstract).},
+  booktitle	= fossacs98,
+  year		= {1998},
+  pages		= {48--62},
+  crossref	= {DBLP:conf/fossacs/1998},
+  ee		= {http://dx.doi.org/10.1007/BFb0053541},
+  url		= {http://dx.doi.org/10.1007/BFb0053541},
+  doi		= {10.1007/BFb0053541},
+  timestamp	= {Thu, 16 Jun 2011 15:51:15 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/fossacs/AmadioC98},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@InProceedings{	  gregoireLeroy:icfp02,
+  author	= {Benjamin Gr{\'e}goire and Xavier Leroy},
+  title		= {A compiled implementation of strong reduction},
+  booktitle	= icfp02,
+  year		= 2002,
+  publisher	= acm,
+  series	= {SIGPLAN Notices},
+  volume	= 37,
+  number	= 9,
+  pages		= {235--246},
+  url		= {http://doi.acm.org/10.1145/581478.581501},
+  doi		= {10.1145/581478.581501},
+  timestamp	= {Tue, 11 Jun 2013 13:49:16 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/icfp/GregoireL02},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@Article{	  brady:jfp13,
+  author	= {Edwin Brady},
+  title		= {Idris, a general-purpose dependently typed programming
+		  language: Design and implementation},
+  journal	= jfp,
+  volume	= 23,
+  number	= 5,
+  pages		= {552--593},
+  year		= 2013,
+  url		= {http://dx.doi.org/10.1017/S095679681300018X},
+  doi		= {10.1017/S095679681300018X},
+  timestamp	= {Tue, 05 Nov 2013 14:59:48 +0100},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/journals/jfp/Brady13},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@InProceedings{	  blanqui:csl05,
+  author	= {Fr{\'e}d{\'e}ric Blanqui},
+  title		= {Decidability of Type-Checking in the {Calculus of
+		  Algebraic Constructions} with Size Annotations.},
+  booktitle	= csl05,
+  year		= {2005},
+  pages		= {135--150},
+  crossref	= {DBLP:conf/csl/2005},
+  url		= {https://doi.org/10.1007/11538363_11},
+  doi		= {10.1007/11538363_11},
+  timestamp	= {Tue, 30 May 2017 16:36:53 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/csl/Blanqui05},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@InProceedings{	  blanqui:rta04,
+  author	= {Fr\'ed\'eric Blanqui},
+  title		= {A Type-Based Termination Criterion for Dependently-Typed
+		  Higher-Order Rewrite Systems},
+  booktitle	= rta04,
+  volume	= 3091,
+  pages		= {24--39},
+  editor	= {Vincent van Oostrom},
+  year		= 2004,
+  series	= lncs,
+  publisher	= springer,
+  ee		= {http://dx.doi.org/10.1007/978-3-540-25979-4_2},
+  doi		= {10.1007/978-3-540-25979-4_2}
+}
+
+@InProceedings{	  gimenez:guardeddefinitions,
+  author	= {Eduardo Gim\'enez},
+  title		= {Codifying Guarded Definitions with Recursive Schemes},
+  editor	= {Peter Dybjer and Bengt Nordstr\"{o}m and Jan Smith},
+  volume	= 996,
+  series	= lncs,
+  pages		= {39--59},
+  booktitle	= types94,
+  year		= 1995,
+  publisher	= springer,
+  crossref	= {DBLP:conf/types/1994},
+  url		= {http://dx.doi.org/10.1007/3-540-60579-7_3},
+  ee		= {http://dx.doi.org/10.1007/3-540-60579-7_3},
+  doi		= {10.1007/3-540-60579-7_3},
+  timestamp	= {Thu, 23 Jun 2011 19:51:07 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/types/Gimenez94},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@Article{	  gimenez:typeBased,
+  author	= {Gilles Barthe and Maria Jo{\~{a}}o Frade and Eduardo
+		  Gim{\'{e}}nez and Lu{\'{i}}s Pinto and Tarmo Uustalu},
+  title		= {Type-Based Termination of Recursive Definitions},
+  journal	= mscs,
+  volume	= 14,
+  number	= 1,
+  pages		= {97--141},
+  year		= 2004,
+  ee		= {http://dx.doi.org/10.1017/S0960129503004122},
+  url		= {http://dx.doi.org/10.1017/S0960129503004122},
+  doi		= {10.1017/S0960129503004122},
+  timestamp	= {Sun, 24 Jan 2016 16:03:57 +0100},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/journals/mscs/BartheFGPU04},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@InProceedings{	  miquel:tlca01,
+  author	= {Alexandre Miquel},
+  title		= {The Implicit Calculus of Constructions},
+  editor	= {Samson Abramsky},
+  booktitle	= tlca01,
+  publisher	= springer,
+  series	= lncs,
+  volume	= 2044,
+  year		= 2001,
+  pages		= {344--359},
+  url		= {https://doi.org/10.1007/3-540-45413-6_27},
+  doi		= {10.1007/3-540-45413-6_27},
+  timestamp	= {Wed, 17 May 2017 14:24:41 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/tlca/Miquel01},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@InProceedings{	  miquel:lics00,
+  author	= {Alexandre Miquel},
+  title		= {A Model for Impredicative Type Systems, Universes,
+		  Intersection Types and Subtyping},
+  booktitle	= lics00,
+  year		= 2000,
+  pages		= {18-29},
+  crossref	= {DBLP:conf/lics/2000},
+  url		= {https://doi.org/10.1109/LICS.2000.855752},
+  doi		= {10.1109/LICS.2000.855752},
+  timestamp	= {Thu, 25 May 2017 00:42:40 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/lics/Miquel00},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@InProceedings{	  werner:types92,
+  author	= {Benjamin Werner},
+  title		= {A Normalization Proof for an Impredicative Type System
+		  with Large Eliminations over Integers},
+  booktitle	= types92,
+  pages		= {341--357},
+  year		= 1992,
+  editor	= {Bengt Nordstr\"om and Kent Petersson and Gordon Plotkin},
+  url		= {http://www.cs.chalmers.se/Cs/Research/Logic/Types/proc92.ps}
+}
+
+@Article{	  nordstrom:genrec,
+  author	= {Bengt Nordstr{\"o}m},
+  title		= {Terminating General Recursion},
+  journal	= {BIT},
+  volume	= 28,
+  number	= 3,
+  year		= 1988,
+  pages		= {605--619},
+  bibsource	= {DBLP, http://dblp.uni-trier.de}
+}
+
+@InProceedings{	  dalLagoGrellois:esop17,
+  author	= {Ugo Dal Lago and Charles Grellois},
+  title		= {Probabilistic Termination by Monadic Affine Sized Typing},
+  booktitle	= esop17,
+  pages		= {393--419},
+  year		= 2017,
+  crossref	= {DBLP:conf/esop/2017},
+  url		= {https://doi.org/10.1007/978-3-662-54434-1_15},
+  doi		= {10.1007/978-3-662-54434-1_15},
+  timestamp	= {Fri, 19 May 2017 01:25:18 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/esop/LagoG17},
   bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
 
@@ -914,6 +1796,21 @@
   bibsource	= {DBLP, http://dblp.uni-trier.de}
 }
 
+@Proceedings{	  DBLP:conf/flops/2010,
+  editor	= {Matthias Blume and Naoki Kobayashi and Germ{\'a}n Vidal},
+  title		= flops10,
+  booktitle	= flops10,
+  publisher	= springer,
+  series	= lncs,
+  volume	= 6009,
+  year		= 2010,
+  url		= {https://doi.org/10.1007/978-3-642-12251-4},
+  doi		= {10.1007/978-3-642-12251-4},
+  timestamp	= {Sun, 21 May 2017 00:19:14 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/flops/2010},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
 @Proceedings{	  DBLP:conf/flops/2014,
   editor	= {Michael Codish and Eijiro Sumii},
   title		= flops14,
@@ -940,6 +1837,17 @@
   bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
 
+@Proceedings{	  DBLP:conf/lics/2007,
+  title		= lics07,
+  booktitle	= lics07,
+  publisher	= ieee,
+  year		= 2007,
+  url		= {http://ieeexplore.ieee.org/xpl/mostRecentIssue.jsp?punumber=4276538},
+  timestamp	= {Fri, 21 Nov 2014 14:08:55 +0100},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/lics/2007},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
 @Proceedings{	  DBLP:conf/lics/2001,
   title		= lics01,
   booktitle	= lics01,
@@ -948,6 +1856,28 @@
   url		= {http://ieeexplore.ieee.org/xpl/mostRecentIssue.jsp?punumber=7424},
   timestamp	= {Fri, 21 Nov 2014 14:08:56 +0100},
   biburl	= {http://dblp.uni-trier.de/rec/bib/conf/lics/2001},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@Proceedings{	  DBLP:conf/lics/2000,
+  title		= lics00,
+  booktitle	= lics00,
+  publisher	= ieee,
+  year		= 2000,
+  url		= {http://ieeexplore.ieee.org/xpl/mostRecentIssue.jsp?punumber=6908},
+  timestamp	= {Fri, 21 Nov 2014 14:08:55 +0100},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/lics/2000},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@Proceedings{	  DBLP:conf/lics/1991,
+  title		= lics91,
+  booktitle	= lics91,
+  publisher	= ieee,
+  year		= 1991,
+  url		= {http://ieeexplore.ieee.org/xpl/mostRecentIssue.jsp?punumber=360},
+  timestamp	= {Fri, 21 Nov 2014 14:08:56 +0100},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/lics/1991},
   bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
 
@@ -975,6 +1905,33 @@
   bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
 
+@Proceedings{	  DBLP:conf/lpar/2006,
+  editor	= {Miki Hermann and Andrei Voronkov},
+  title		= lpar06,
+  booktitle	= lpar06,
+  series	= lncs,
+  volume	= 4246,
+  publisher	= springer,
+  year		= 2006,
+  url		= {https://doi.org/10.1007/11916277},
+  doi		= {10.1007/11916277},
+  timestamp	= {Fri, 02 Jun 2017 13:01:08 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/lpar/2006},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@Proceedings{	  DBLP:conf/popl/2001,
+  editor	= {Chris Hankin and Dave Schmidt},
+  title		= popl01,
+  booktitle	= popl01,
+  publisher	= acm,
+  year		= {2001},
+  url		= {http://dl.acm.org/citation.cfm?id=360204},
+  timestamp	= {Mon, 18 Mar 2013 08:39:18 +0100},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/popl/2001},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
 @Proceedings{	  DBLP:conf/popl/1996,
   editor	= {Hans-Juergen Boehm and Guy L. {Steele Jr.}},
   title		= popl96,
@@ -988,27 +1945,49 @@
   bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
 
+@Proceedings{	  DBLP:conf/esop/2017,
+  editor	= {Hongseok Yang},
+  title		= esop17,
+  booktitle	= esop17,
+  series	= lncs,
+  volume	= {10201},
+  publisher	= springer,
+  year		= {2017},
+  url		= {https://doi.org/10.1007/978-3-662-54434-1},
+  doi		= {10.1007/978-3-662-54434-1},
+  timestamp	= {Fri, 19 May 2017 01:25:18 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/esop/2017},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
 @Proceedings{	  DBLP:conf/fossacs/1998,
   editor	= {Maurice Nivat},
   title		= fossacs98,
+  booktitle	= fossacs98,
   series	= lncs,
   volume	= 1378,
   publisher	= springer,
   year		= 1998,
-  timestamp	= {Mon, 18 Mar 2002 09:11:49 +0100},
-  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/fossacs/1998},
+  url		= {https://doi.org/10.1007/BFb0053537},
+  doi		= {10.1007/BFb0053537},
+  timestamp	= {Tue, 23 May 2017 11:53:58 +0200},
+  biburl	= {http://dblp2.uni-trier.de/rec/bib/conf/fossacs/1998},
   bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
 
 @Proceedings{	  DBLP:conf/fossacs/2008,
   editor	= {Roberto M. Amadio},
   title		= fossacs08,
-  booktitle	= {FoSSaCS},
+  booktitle	= fossacs08,
   publisher	= springer,
   series	= lncs,
   volume	= 4962,
   year		= 2008,
-  bibsource	= {DBLP, http://dblp.uni-trier.de}
+  url		= {https://doi.org/10.1007/978-3-540-78499-9},
+  doi		= {10.1007/978-3-540-78499-9},
+  timestamp	= {Tue, 23 May 2017 01:08:04 +0200},
+  biburl	= {http://dblp2.uni-trier.de/rec/bib/conf/fossacs/2008},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
 
 @Proceedings{	  DBLP:conf/types/1994,
@@ -1018,6 +1997,8 @@
   volume	= 996,
   publisher	= springer,
   year		= 1995,
+  url		= {https://doi.org/10.1007/3-540-60579-7},
+  doi		= {10.1007/3-540-60579-7},
   timestamp	= {Fri, 17 Nov 2006 20:17:12 +0100},
   biburl	= {http://dblp.uni-trier.de/rec/bib/conf/types/1994},
   bibsource	= {dblp computer science bibliography, http://dblp.org}
@@ -1037,6 +2018,21 @@
   bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
 
+@Proceedings{	  DBLP:conf/tlca/2009,
+  editor	= {Pierre{-}Louis Curien},
+  title		= tlca09,
+  booktitle	= tlca09,
+  series	= lncs,
+  volume	= {5608},
+  publisher	= springer,
+  year		= {2009},
+  url		= {https://doi.org/10.1007/978-3-642-02273-9},
+  doi		= {10.1007/978-3-642-02273-9},
+  timestamp	= {Wed, 17 May 2017 14:24:41 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/tlca/2009},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
 @Proceedings{	  DBLP:conf/tlca/2013,
   editor	= {Masahito Hasegawa},
   title		= tlca13,
@@ -1049,5 +2045,20 @@
   doi		= {10.1007/978-3-642-38946-7},
   timestamp	= {Wed, 11 Sep 2013 08:20:01 +0200},
   biburl	= {http://dblp.uni-trier.de/rec/bib/conf/tlca/2013},
+  bibsource	= {dblp computer science bibliography, http://dblp.org}
+}
+
+@Proceedings{	  DBLP:conf/csl/2005,
+  editor	= {C.{-}H. Luke Ong},
+  title		= csl05,
+  booktitle	= csl05,
+  series	= lncs,
+  volume	= 3634,
+  publisher	= springer,
+  year		= 2005,
+  url		= {https://doi.org/10.1007/11538363},
+  doi		= {10.1007/11538363},
+  timestamp	= {Tue, 30 May 2017 16:36:53 +0200},
+  biburl	= {http://dblp.uni-trier.de/rec/bib/conf/csl/2005},
   bibsource	= {dblp computer science bibliography, http://dblp.org}
 }
