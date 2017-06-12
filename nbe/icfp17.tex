@@ -606,7 +606,7 @@ Different size variables are incomparable.
 Fig.~\ref{fig:judge} lists the inductive and derived judgements of our type theory and
 figures~\ref{fig:ty} and \ref{fig:eq} the inference rules.
 We have \fbox{boxed} the rules dealing with irrelevant size application.
-Fig.~\ref{fig:nat} add the typing and equality rules for case distinction
+Fig.~\ref{fig:nat} adds the typing and equality rules for case distinction
 and recursion on natural numbers.
 Judgement $\Gamma \der T : \Adm \ell$ characterizes the valid type
 annotations $T$ in recursion $\fix[\ell] T t$.  The type constructor $T$
@@ -1749,7 +1749,7 @@ The remaining goal $\case[\ell] D {d_z}{d_s} = \case[\ell] {D'} {d_z'}{d_s'} \in
 \end{lemma}
 \begin{proof}
   By induction on $a = a' \in \NAT(\infty)$, we can easily show $a = a' \in \NAT(\alpha)$ for some $\alpha < \infty$.
-  For instance, $\alpha$ could be number of uses of the successor rule plus one.
+  For instance, $\alpha$ could be the number of uses of the successor rule plus one.
 \end{proof}
 
 %A type constructor $B \in \FixK\,\ell$ is \emph{admissible for recursion}, \fbox{$B \in \ADM$}, if
@@ -2909,9 +2909,9 @@ It is now straightforward to add a unit type $\One$ with extensional equality $t
 % the usual bidirectional argument \cite{abelScherer:types10} does not seem to go through as we lack uniqueness of types.
 
 In the long run, we wish for a type-directed equality check that does
-not normalization in one go, but interleaves weak head normalization
+not do normalization in one go, but interleaves weak head normalization
 with structural comparison.
-Such a equality test is at the heart of Agda's type
+Such an equality test is at the heart of Agda's type
 checker and it generates constraints for meta variables
 involved in type reconstruction \cite{norell:PhD}.  However, the usual
 bidirectional construction \cite{abelScherer:types10} does not seem to
