@@ -51,6 +51,11 @@ Let $\DD :: \Gamma \der T \asub T'$.
 \begin{proof}
   By cases on $\DD$, since weak head evaluation is deterministic.
 \end{proof}
+This lemma also holds in the other direction of subtyping, \ie, when
+$T \asub T'$ and
+$T$ weak head evaluates, then $T'$ weak head evaluates to a type of
+the same form.
+\LONGVERSION{
 \begin{lemma}[Weak head reduction of supertypes]
 \label{lem:whdsuper}
 Let $\DD :: \Gamma \der T \asub T'$.
@@ -65,6 +70,7 @@ Let $\DD :: \Gamma \der T \asub T'$.
 \begin{proof}
   By cases on $\DD$, since weak head evaluation is deterministic.
 \end{proof}
+}
 \begin{lemma}[Subsumption for type checking]
   \label{lem:subtc}
   Let $\sid : \Gamma' \leq \Gamma$.
@@ -75,7 +81,7 @@ Let $\DD :: \Gamma \der T \asub T'$.
 \end{lemma}
 \begin{proof}
   Simultaneously by induction on $\DD$, using % weak head normalization of types,
-  lemmata \ref{lem:whdsub} and \ref{lem:whdsuper},
+  \SHORTLONG{lemma \ref{lem:whdsub}}{lemmata \ref{lem:whdsub} and \ref{lem:whdsuper},}
   and soundness and completeness of algorithmic subtyping.
 \end{proof}
 \begin{theorem}[Completeness of type checking for normal terms]

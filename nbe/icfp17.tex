@@ -1620,9 +1620,10 @@ If\/ $t_1 = t_2 \in T$ then $\down{S_1}{t_1} = \down{S_2}{t_2} \in \NF$.
 \end{theorem}
 \begin{proof*}
 By induction on $T \in \SET[\ell]$ and cases on $T \shape S_1$ and $T \shape S_2$.
-\SHORTLONG{\qed}{
+%\SHORTLONG{\qed}{
 \begin{caselist}
 
+\LONGVERSION{
 \nextcase $T \evalsto \piT A B$ with $A \in \SET[\ell]$ and
       $B[u] = B[u'] \in \SET[\ell] \mforall u = u' \in A$
 \begin{gather*}
@@ -1658,6 +1659,7 @@ $\R{k+1}{\down{B_i[u_i]}{(t_i\,u_i)}} {v_i}$.
 By definition of $\EL(T)$ we have $t_1\,u_1 = t_2\,u_2 \in B[u_1]$, thus, by induction hypothesis,
 $\down{B_1[u_1]}(t_1\,u_1) = \down{B_2[u_2]}(t_2\,u_2) \in \NF$, which delivers $v_1$ and $v_2$ for $k+1$.
 \end{enumerate}
+} % END LONG VERSION
 
 \nextcase $T \evalsto \forallT B$ with $B[\alpha] \in \SET[\ell] \mforall \alpha \in \SIZE$
 \begin{gather*}
@@ -1687,7 +1689,7 @@ $\down{B_1[u_1]}(t_1\,u_1) = \down{B_2[u_2]}(t_2\,u_2) \in \NF$, which delivers 
 \end{enumerate}
 
 \end{caselist}
-} % END SHORTLONG
+%} % END SHORTLONG
 \end{proof*}
 
 \begin{corollary}
@@ -2815,27 +2817,38 @@ Thus, the second goal follows by Cor.~\ref{cor:fresh}.
   \begin{enumerate}
   \item \label{it:sound}
   If\/ $\Gamma \der t : T$ then $\Gamma \der t = \nbe \Gamma T t : T$.
-  \item
+  \item \label{it:soundeq}
   If\/ $\Gamma \der t,t' : T$ and $\nbe \Gamma T t \nfeq \nbe \Gamma T {t'}$ then
   $\Gamma \der t = t' : T$.
   \end{enumerate}
 \end{corollary}
 \begin{proof*}
-\bla
-\begin{enumerate}
-
-\item For the identity environment $\LRS \Gamma \sid \Gamma \rhog$ (Lemma~\ref{lem:idenv})
+(\ref{it:sound}) For the identity environment $\LRS \Gamma \sid \Gamma \rhog$ (Lemma~\ref{lem:idenv})
 the Fundamental Theorem for Typing gives $\LR \Gamma t T {t\rhog} {T\rhog}$.
 This implies $\R \Gamma {\down{(T\rhog)} (t\rhog)} v$ for some normal form $v$ and
 $\Gamma \der t = v : T$ by Thm.~\ref{thm:into}.
-
-\item %By transitivity of judgmental equality from
+%
+Then (\ref{it:soundeq}):
   From (\ref{it:sound}), using Lemma~\ref{lem:erase}:
   $\Gamma \der t = \nbe \Gamma T t = \nbe \Gamma T {t'} = t' : T$.
    % Here we use that the computed normal forms are identical because
    % we erase all size annotations $\ann\alpha$ to $\ann\infty$ during read back.
 \qed
-\end{enumerate}
+% \bla
+% \begin{enumerate}
+
+% \item For the identity environment $\LRS \Gamma \sid \Gamma \rhog$ (Lemma~\ref{lem:idenv})
+% the Fundamental Theorem for Typing gives $\LR \Gamma t T {t\rhog} {T\rhog}$.
+% This implies $\R \Gamma {\down{(T\rhog)} (t\rhog)} v$ for some normal form $v$ and
+% $\Gamma \der t = v : T$ by Thm.~\ref{thm:into}.
+
+% \item %By transitivity of judgmental equality from
+%   From (\ref{it:sound}), using Lemma~\ref{lem:erase}:
+%   $\Gamma \der t = \nbe \Gamma T t = \nbe \Gamma T {t'} = t' : T$.
+%    % Here we use that the computed normal forms are identical because
+%    % we erase all size annotations $\ann\alpha$ to $\ann\infty$ during read back.
+% \qed
+% \end{enumerate}
 \end{proof*}
 
 \begin{corollary}[Decidability of judgemental equality]
@@ -2967,7 +2980,7 @@ More research is needed to tell a more general story of shape-irrelevance.
   The incentive to write this article came during the EU Cost Action CA15123 EUTYPES meeting in Ljubljana in January 2017; thanks to Andrej Bauer for organizing it.
 \end{acks}
 
-% \clearpage
+\SHORTVERSION{\clearpage}
 
 %% Bibliography
 \bibliography{auto-icfp17-long}
