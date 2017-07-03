@@ -1,11 +1,11 @@
 \nonstopmode
 %% For double-blind review submission
-\documentclass[acmsmall%acmlarge%,review,anonymous
-]{acmart}\settopmatter{printfolios=true}
+%%\documentclass[acmsmall%acmlarge%,review,anonymous
+%%]{acmart}\settopmatter{printfolios=true}
 %% For single-blind review submission
 %\documentclass[acmlarge,review]{acmart}\settopmatter{printfolios=true}
 %% For final camera-ready submission
-%\documentclass[acmlarge]{acmart}\settopmatter{}
+\documentclass[acmsmall,screen]{acmart}\settopmatter{}
 
 % For having two versions of a paper in one file.
 % Stuff that does not fit into the short version can be encosed in \LONGVERSION{...}
@@ -59,27 +59,36 @@
 \usepackage{subcaption} %% For complex figures with subfigures/subcaptions
                         %% http://ctan.org/pkg/subcaption
 
-
-\makeatletter\if@ACM@journal\makeatother
-%% Journal information (used by PACMPL format)
-%% Supplied to authors by publisher for camera-ready submission
+\setcopyright{rightsretained}
 \acmJournal{PACMPL}
+\acmYear{2017}
 \acmVolume{1}
-\acmNumber{1}
-\acmArticle{1}
-\acmYear{2017}
-\acmMonth{1}
-\acmDOI{10.1145/nnnnnnn.nnnnnnn}
-\startPage{1}
-\else\makeatother
-%% Conference information (used by SIGPLAN proceedings format)
-%% Supplied to authors by publisher for camera-ready submission
-\acmConference[PL'17]{ACM SIGPLAN Conference on Programming Languages}{January 01--03, 2017}{New York, NY, USA}
-\acmYear{2017}
-\acmISBN{978-x-xxxx-xxxx-x/YY/MM}
-\acmDOI{10.1145/nnnnnnn.nnnnnnn}
-\startPage{1}
-\fi
+\acmNumber{ICFP}
+\acmArticle{33}
+\acmMonth{9}
+\acmDOI{10.1145/3110277}
+\acmPrice{}
+
+%% \makeatletter\if@ACM@journal\makeatother
+%% %% Journal information (used by PACMPL format)
+%% %% Supplied to authors by publisher for camera-ready submission
+%% \acmJournal{PACMPL}
+%% \acmVolume{1}
+%% \acmNumber{1}
+%% \acmArticle{33}
+%% \acmYear{2017}
+%% \acmMonth{9}
+%% \acmDOI{10.1145/nnnnnnn.nnnnnnn}
+%% \startPage{1}
+%% \else\makeatother
+%% %% Conference information (used by SIGPLAN proceedings format)
+%% %% Supplied to authors by publisher for camera-ready submission
+%% \acmConference[PL'17]{ACM SIGPLAN Conference on Programming Languages}{January 01--03, 2017}{New York, NY, USA}
+%% \acmYear{2017}
+%% \acmISBN{978-x-xxxx-xxxx-x/YY/MM}
+%% \acmDOI{10.1145/nnnnnnn.nnnnnnn}
+%% \startPage{1}
+%% \fi
 
 \makeatletter
 \newenvironment{proof*}[1][\proofname]{\par
@@ -95,7 +104,7 @@
 %% Copyright information
 %% Supplied to authors (based on authors' rights management selection;
 %% see authors.acm.org) by publisher for camera-ready submission
-\setcopyright{none}             %% For review submission
+%%\setcopyright{none}             %% For review submission
 %\setcopyright{acmcopyright}
 %\setcopyright{acmlicensed}
 %\setcopyright{rightsretained}
