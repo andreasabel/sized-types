@@ -289,7 +289,8 @@ In case $\vpre\,t = \tnode\,\vts$, the trees in the list $\vts$ are still guaran
 The display shows the \emph{Curry}-style program as provided by the user, but state-of-the-art type checkers elaborate the program from surface syntax into an internal \emph{Church}-style syntax with explicit type abstractions and type applications.\footnote{Agda, Coq, Idris~\cite{brady:jfp13}, and Haskell~\cite{sulzmannChakravartyPeythonJonesDonnelly:tldi07} all have Church-style internal languages.}  With implicit type and size applications elaborated, $\ttrav$ would look as follows:
 \[
 \begin{array}{l}
-  \ttrav \; \vpre \; \vpost \; i\; t = \vpost\;(\tcase\;\vpre\,i\,t\;\tof \, \{ \, \tnode\,j\,\vts \to \tnode\,\infty\,(\tmap \; (\tT\,j) \; (\tT\,\infty) \; (\ttrav \, \vpre \, \vpost \, j) \; \vts) \})
+  \ttrav \; \vpre \; \vpost \; i\; t =\\
+  \phantom{\ttrav\,}\vpost\;(\tcase\;\vpre\,i\,t\;\tof \, \{ \, \tnode\,j\,\vts \to \tnode\,\infty\,(\tmap \; (\tT\,j) \; (\tT\,\infty) \; (\ttrav \, \vpre \, \vpost \, j) \; \vts) \})
 \end{array}
 \]
 Church-style syntax is the basis for all program analyses and transformations to follow and should be considered as the \emph{true} syntax.
