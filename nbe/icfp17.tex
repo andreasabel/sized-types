@@ -129,7 +129,7 @@
 \begin{document}
 
 %% Title information
-\title[NbE for Sized Types]{Normalization by Evaluation for Sized Dependent Types}
+\title{Normalization by Evaluation for Sized Dependent Types}
 %\titlenote{with title note}             %% \titlenote is optional;
                                         %% can be repeated if necessary;
                                         %% contents suppressed with 'anonymous'
@@ -156,7 +156,7 @@
 \orcid{0000-0003-0420-4492}             %% \orcid is optional
 \affiliation{
   \department{Department of Computer Science and Engineering}
-  \institution{Gothenburg University}
+  \institution{Gothenburg University, Sweden}
   \streetaddress{Rännvägen 6b}
   \city{Göteborg}
 %  \state{State1}
@@ -169,7 +169,7 @@
 \author{Andreas Vezzosi}
 \affiliation{
   \department{Department of Computer Science and Engineering}
-  \institution{Chalmers University of Technology}
+  \institution{Chalmers University of Technology, Sweden}
   \streetaddress{Rännvägen 6b}
   \city{Göteborg}
 %  \state{State1}
@@ -180,7 +180,7 @@
 
 \author{Theo Winterhalter}
 \affiliation{
-  \institution{École normale supérieure Paris-Saclay}
+  \institution{École normale supérieure Paris-Saclay, France}
   \country{France}
 }
 \email{theo.winterhalter@gmail.com}
@@ -426,7 +426,7 @@ In this section, we show how the lack of size irrelevance prevents us from reaso
 
 \input{latex/SubDiag}
 
-\section{A Type System With Irrelevant Size Application}
+\section{A Type System with Irrelevant Size Application}
 \label{sec:syntax}
 
 In this section, we give the syntax and the \emph{declarative} typing, equality, and subtyping judgements.  The typing relation $\Gamma \der t : T$ will \emph{not} be decidable; instead, we present algorithmic typing $\Gamma \der t \jchk T$ in Section~\ref{sec:tycheck}.  However, equality and subtyping will be decidable for well-formed input, see sections~\ref{sec:sem}--\ref{sec:asub}.
@@ -950,7 +950,7 @@ Herein, $k$ should be the length of the context the original term $t$ lived in.
 If this is the case, each de Bruijn level encountered during read back is below $k$ and can be safely converted to a de Bruijn index.
 \end{enumerate}
 
-\subsection{Weak head reduction}
+\subsection{Weak Head Reduction}
 
 We define the operational semantics of our language by the weak head
 evaluation relation \fbox{$t \evalsto w$} which is defined on
@@ -1025,7 +1025,7 @@ For NbE, we add evaluation rules that deal with elimination of delayed reflectio
     }
 \end{gather*}
 
-\subsection{Read back}
+\subsection{Read Back}
 \label{sec:read}
 
 The \emph{read back} phase of NbE \cite{gregoireLeroy:icfp02}
@@ -1180,7 +1180,7 @@ defined on expressions.
 
 
 
-\subsection{Partial equivalence relations}
+\subsection{Partial Equivalence Relations}
 \label{sec:per}
 
 A type $T$ will be interpreted as a partial equivalence relation (PER)
@@ -1346,7 +1346,7 @@ For a family $\F$ over $\SIZE$ we also have the irrelevant function space
 
 
 
-\subsection{PER model}
+\subsection{PER Model}
 \label{sec:permodel}
 
 Semantic types and their interpretation as PERs are now defined via a
@@ -1515,7 +1515,7 @@ Simultaneously, we need to prove correctness, namely that $T \leq T' \in \TYPE$ 
 
 
 
-\subsection{Type shapes}
+\subsection{Type Shapes}
 \label{sec:shape}
 
 Reflection and reification perform $\eta$-expansion so that we arrive at an $\eta$-long $\beta$-normal form.  To perform the $\eta$-expansion, the precise type is not needed, just the approximate shape, in particular, whether it is a function type (do expand) or a base type (do not expand).
@@ -1713,7 +1713,7 @@ $\down{B_1[u_1]}(t_1\,u_1) = \down{B_2[u_2]}(t_2\,u_2) \in \NF$, which delivers 
 \end{corollary}
 
 
-\subsection{Computation with natural numbers}
+\subsection{Computation with Natural Numbers}
 \label{sec:comp}
 
 In this section we show that the eliminations for natural numbers are accurately modeled.
@@ -2041,7 +2041,7 @@ Whenever $\nbe \Gamma T t \evalsto v$, we may write $\nbe \Gamma T t$ for $v$.
 
 
 
-\section{Soundness  of Normalization by Evaluation}
+\section{Soundness of Normalization by Evaluation}
 \label{sec:soundnbe}
 
 In this section, we show that NbE is sound for judgmental equality,
@@ -2991,7 +2991,7 @@ More research is needed to tell a more general story of shape-irrelevance.
   The incentive to write this article came during the EU Cost Action CA15123 EUTYPES meeting in Ljubljana in January 2017; thanks to Andrej Bauer for organizing it.
 \end{acks}
 
-\SHORTVERSION{\clearpage}
+%%\SHORTVERSION{\clearpage}
 
 %% Bibliography
 \bibliography{auto-icfp17-long}
