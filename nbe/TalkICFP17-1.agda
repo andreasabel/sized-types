@@ -1,3 +1,6 @@
+-- Andreas Abel, Andrea Vezzosi, Theo Winterhalter
+-- Normalization by Evaluation for Sized Dependent Types [paper #33]
+-- ICFP, 6 September 2017
 
 data Nat : Set where
   zero : Nat
