@@ -10,7 +10,8 @@ pred : Nat → Nat
 pred zero    = zero
 pred (suc x) = x
 
--- Subtraction, tail-recursive, cutting off at zero.
+-- Subtraction, tail-recursive, cutting off at zero
+-- E.g.  5 ∸ 3 = 2;   3 ∸ 5 = 0
 
 monus : Nat → Nat → Nat
 monus x zero    = x
