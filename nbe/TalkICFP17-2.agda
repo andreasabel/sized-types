@@ -34,8 +34,7 @@ Eq _ _         _         = ⊥
 -- Lemma: x ∸ x = 0
 
 monus-diag : ∀ i (x : Nat i) → Eq ∞ (monus i i x x) (zero ∞)
-monus-diag .(↑ i) (zero i)  = _
-monus-diag .(↑ i) (suc i x) = {!monus-diag i x!}
+monus-diag i x = {!x!}
 
 -- Some kind of Euclidean division
 
