@@ -473,7 +473,8 @@
   \frametitle{Definitional equality}
   \begin{itemize}
   \item Decidable (for type checking).
-  \item Proper subrelation of extensional equality (usually $x + y \not= y + x$).
+  \item Proper subrelation of extensional equality (usually
+    $\not\der x + y = y + x$).
   \item Equates at least computationally equal terms.
   \item The bigger, the better!
   \item Type needed for $\eta$-laws, e.g., for unit type $\top$.
@@ -497,16 +498,17 @@
   \item Index data types by tree height: ``$\Nat^i = \{ n \mid n < i \}$'' \\
     $\tfix : (\forall i \to (\Nat^i \to C) \to (\Nat^{i+1} \to C))
     \to \forall i \to \Nat^i \to C$
-  \item Subtyping: $\Nat^0 \leq \Nat^1 \leq \Nat^2 \leq \dots \leq
-    \Nat^\infty$
   \item Polymorphism $t : (\forall i \to \Tree^i \to \Tree^i) \to
     \forall i \to \Tree^i \to \Tree^\infty$
+  \item Subtyping: $\Nat^0 \leq \Nat^1 \leq \Nat^2 \leq \dots \leq
+    \Nat^\infty$
   \item Size expressions are not unique.  Problematic for proofs.
 \[
-\begin{array}{l@{~ : \Nat^i \to \Nat^\infty}}
-  \tsuc\,i \\
-  \tsuc\,(i + 1) \\
-  \tsuc\,\infty
+\begin{array}{lcl}
+  \tsuc          & : & \forall i \to \Nat^i \to \Nat^{i + 1} \\
+  \tsuc\,i       & : & \Nat^i \to \Nat^\infty \\
+  \tsuc\,(i + 1) & : & \Nat^i \to \Nat^\infty \\
+  \tsuc\,\infty  & : & \Nat^i \to \Nat^\infty \\
 \end{array}
 \]
 \vspace{-2ex}
@@ -514,8 +516,8 @@
   \end{itemize}
 \end{frame}
 
-\newcommand{\interp}[1]{\left\llbracket #1 \right \rrbracket}
-
+% Nuyts slide
+% \newcommand{\interp}[1]{\left\llbracket #1 \right \rrbracket}
 % \section{Parametricity, Shape-irrelevance, irrelevance}
 % \begin{frame}
 %     \frametitle{Parametricity, Shape-irrelevance, irrelevance}
@@ -544,6 +546,15 @@
 %         \end{equation*}
 %     \end{center}
 % \end{frame}
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{Grau ist alle Theorie}
+\vfill
+\begin{center}
+  \huge Agda demo
+\end{center}
+\vfill
+\end{frame}
 
 \begin{frame}%[fragile=singleslide]
   \frametitle{Church-style vs.\ Curry style}
@@ -729,7 +740,7 @@
   \item Type-directed eta-expansion:
     \begin{itemize}
     \item Reflection $\up A t$: syntax to semantics.
-    \item Reification $\down A d$ semantics to syntax.
+    \item Reification $\down A d$: semantics to syntax.
     \end{itemize}
   \item My observation: only \emph{shape} of $A$ matters.
   \item Works for \emph{type assignment} NbE \\ \relax
