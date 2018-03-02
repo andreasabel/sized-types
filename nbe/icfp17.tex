@@ -1686,11 +1686,11 @@ $\down{B_1[u_1]}(t_1\,u_1) = \down{B_2[u_2]}(t_2\,u_2) \in \NF$, which delivers 
     }{T \shape S_2}
 \end{gather*}
 \begin{enumerate}
-\item To show $\up{S_1}{n_1} = \up{S_2}{n_2} \in T$ assume arbitrary $\alpha_1,\alpha_2 \in \SIZE$.
+\item To show $\up{S_1}{n_1} = \up{S_2}{n_2} \in T$ assume arbitrary $\alpha_1,\alpha_2,\beta \in \SIZE$.
   Since $n_1 \ann{\alpha_1} = n_2 \ann{\alpha_2} \in \NE$ by Lemma~\ref{lem:closne}, we obtain
-  $\up{B_1[\alpha_1]}{(n_1 \ann{\alpha_1})} = \up{B_2[\alpha_2]}{(n_2 \ann{\alpha_2})} \in B[\alpha_1]$
+  $\up{B_1[\alpha_1]}{(n_1 \ann{\alpha_1})} = \up{B_2[\alpha_2]}{(n_2 \ann{\alpha_2})} \in B[\beta]$
   by induction hypothesis.
-  Thus, $(\up{S_1}{n_1}) \ann{\alpha_1} = (\up{S_2}{n_2}) \ann{\alpha_2} \in B[\alpha_1]$
+  Thus, $(\up{S_1}{n_1}) \ann{\alpha_1} = (\up{S_2}{n_2}) \ann{\alpha_2} \in B[\beta]$
   by weak head expansion, which entails the goal by definition of $\EL(T)$.
 \item Assume $k \in \NN$ and note that $\lev k = \lev k \in \SIZE$, hence,
   $t_1\,\ann{\lev k} = t_2\,\ann{\lev k} \in B[\lev k]$.  Thus, by induction hypothesis,
