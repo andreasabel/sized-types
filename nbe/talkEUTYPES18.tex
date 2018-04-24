@@ -1,0 +1,1272 @@
+\nonstopmode
+\documentclass[t,fleqn]{beamer}
+%\documentclass{article}\usepackage{beamerarticle}
+
+\makeatletter
+%\def\leqn{\tagsleft@true}
+%\def\reqn{\tagsleft@false}
+\def\fleq{\@fleqntrue\let\mathindent\@mathmargin \@mathmargin=\leftmargini}
+\def\cneq{\@fleqnfalse}
+\g@addto@macro{\endsubequations}{\addtocounter{equation}{-1}}
+\makeatother
+
+\mode<presentation>
+{
+  % \usetheme{AnnArbor}
+  \useinnertheme[shadow=true]{rounded}
+  \useoutertheme{infolines}
+  %\setbeamercolor*{title in head/foot}{parent=palette secondary}
+  %\useoutertheme{shadow}
+  \usecolortheme{wolverine}
+
+  \setbeamerfont{block title}{size={}}
+  \setbeamercolor{titlelike}{parent=structure,bg=yellow!85!orange}
+
+  % My modification: centered title with white background
+  \setbeamercolor{frametitle}{bg=white}
+  \setbeamertemplate{frametitle}{
+    %\begin{center}
+      \Large\insertframetitle
+      \vspace{1ex}
+      %\hline
+      \par
+    %\end{center}
+  }
+  % %% Does not work
+  % \setbeamercolor{frametitlecentered}{bg=white}
+  % \setbeamertemplate{frametitlecentered}{
+  %   \begin{center}
+  %     \Large\insertframetitle
+  %     \par
+  %   \end{center}
+  % }
+  % plus red emphasis
+  \setbeamercolor{alerted text}{fg=red!70!black}
+
+  % More space between items
+  %\defbeamertemplate*{itemize/enumerate body begin}{default}{\itemsep1ex}
+
+
+  \setbeamercolor{math text}{parent=titlelike}
+%  \setbeamercolor{math text displayed}{parent=palette primary}
+
+  % Fix background of theorems/proof
+  \setbeamercolor{block body}{parent=palette primary}%{bg=yellow!85!orange}
+  \setbeamercolor{block title}{parent=palette secondary}%{bg=orange}
+
+
+
+  \setbeamercovered{transparent}
+  % or whatever (possibly just delete it)
+
+} % end mode presentation
+
+%\usepackage{tcolorbox}
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+%\usepackage{times}  % DYSFUNCTIONAL! looks awful when mixing mathtt and ordinary math.
+\usepackage{ifthen}
+%\usepackage[T1]{fontenc} %no effect
+% Or whatever. Note that the encoding and the font should match. If T1
+% does not look nice, try deleting the line with the fontenc.
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\usepackage{alltt}
+\usepackage[normalem]{ulem} % strikethrough \sout
+\usepackage{cancel} % strikethrough math mode \cancel
+%\usepackage{enumitem} % set label in itemize
+\usepackage{pifont} % for \tickNo
+%\usepackage{}
+%\usepackage{listings}
+%\usepackage[all]{xy}
+%\usepackage{proof}
+%\usepackage{eurosym}
+%\usepackage{graphics}
+\usepackage{bibentry}
+%\nobibliography{short}
+\bibliographystyle{plain}
+%\input{prooftree}
+
+\newtheorem{takehomemessage}[theorem]{\textbf{Take home message}}
+
+\usepackage{latex/agda}
+\AgdaNoSpaceAroundCode{}
+
+\DeclareMathSymbol{\chkmark}{\mathord}{AMSa}{"58}
+
+% RGB colors
+\definecolor{darkred}{rgb}{0.5,0,0}
+\definecolor{darkgreen}{rgb}{0,0.5,0}
+\definecolor{darkblue}{rgb}{0,0,0.5}
+\definecolor{dirtyred}{rgb}{0.7,0.2,0.1}
+\definecolor{dirtygreen}{rgb}{0.2,0.4,0.1}
+\definecolor{darkdirtygreen}{rgb}{0.13,0.25,0.07}
+\definecolor{dirtyblue}{rgb}{0.07,0.2,0.5}
+\definecolor{darkdirtyblue}{rgb}{0.1,0.15,0.35}
+\definecolor{lightblue}{rgb}{0.5,0.5,1}
+\definecolor{olivegreen}{rgb}{0.5,0.5,0}
+\definecolor{brown}{rgb}{0.65,0.35,0} % almost gold
+\definecolor{grey}{rgb}{0.33,0.33,0.33}
+\definecolor{darkbrown}{rgb}{0.35,0.15,0}
+\definecolor{darkgrey}{rgb}{0.16,0.16,0.16}
+
+\newcommand{\textred}[1]{{\color{dirtyred}\textbf{#1}}}
+
+%\newcommand{\tickYes}{{\color{darkgreen}\checkmark}} % does not work
+  %since checkmark invokes math mode
+\newcommand{\tickYes}{\ensuremath{\color{darkgreen}\chkmark}}
+\newcommand{\tickNo}{{\color{dirtyred}\hspace{1pt}\ding{55}}}
+
+%\usepackage[curve,matrix,arrow]{xy}
+%\usepackage{tikz} % Drawing diagrams
+%\usepackage{pgflibraryshapes} %Ellipses
+
+
+% black text in mbox
+\newcommand{\mybox}[1]{\mbox{\color{black}#1}}
+
+% MACROS:
+\newcommand{\inst}{}
+\input{macros}
+\renewcommand{\ru}[2]{\dfrac{\begin{array}[b]{@{}c@{}} #1 \end{array}}{\begin{array}[t]{@{}l@{}} #2 \end{array}}}
+
+% \renewcommand{\tin}{\mathsf{inn}}
+% \renewcommand{\thead}{\cop{\mathsf{head}}}
+% \renewcommand{\ttail}{\cop{\mathsf{tail}}}
+% % start copattern color
+% \newcommand{\shead}{\cop{\mathsf{head}}}
+% \newcommand{\stail}{\cop{\mathsf{tail}}}
+% \newcommand{\phead}{\cop{\mathsf{.head}}}
+% \newcommand{\ptail}{\cop{\mathsf{.tail}}}
+% \newcommand{\vecQ}{\cop{\vec Q}}
+% \newcommand{\bDelta}{\boring{\Delta}}
+% \newcommand{\bcovered}{\mathrel{\boring{\ccovered}}}
+% \newcommand{\bA}{\boring{A}}
+% \newcommand{\bC}{\boring{C}}
+% \newcommand{\bder}{\mathrel{\boring{\vdash}}}
+% \newcommand{\bcolon}{\mathrel{\boring{:}}}
+% \newcommand{\blpar}{\boring{(}}
+% \newcommand{\brpar}{\boring{)}}
+% \renewcommand{\vbranches}{\boring{\mathit{branches}}}
+% \renewcommand{\tout}{\cop{\mathsf{out}}}
+% \renewcommand{\tforce}{\cop{\mathsf{force}}}
+% \newcommand{\kw}[1]{{\bf\texttt{#1}}}
+% \newcommand{\kwnewtype}{\kw{newtype}}
+% \newcommand{\kwrecord}{\kw{record}}
+% \newcommand{\kwwhere}{\kw{where}}
+% \newcommand{\kwinstance}{\kw{instance}}
+% \newcommand{\kwcoinductive}{\kw{coinductive}}
+% \newcommand{\kwCoInductive}{\kw{CoInductive}}
+% \newcommand{\kwCoFixpoint}{\kw{CoFixpoint}}
+% \newcommand{\kwfield}{\kw{field}}
+% \renewcommand{\tcase}{\mathbf{case}}
+% \renewcommand{\tof}{\mathbf{of}}
+% \renewcommand{\caseof}[3]{\tcase\,#1\,\tof~#2 \mathrel{\boldsymbol\To} #3}
+% \newcommand{\tthead}{\cop{\texttt{head}}}
+% \newcommand{\tttail}{\cop{\texttt{tail}}}
+\newcommand{\ONE}{\mathbf{1}}
+
+% DOES NOT WORK:
+% rule with "boring" default text
+\newcommand{\setboring}{\setbeamercolor{math text}{fg=grey}\setbeamercolor{math display}{fg=grey}}
+\newcommand{\bru}[2]{\setboring\dfrac{\setboring#1}{\setboring#2}}
+
+\renewcommand*\ttdefault{txtt} % for listing package
+
+% \newcommand{\defHaskelllistings}{%
+%   \lstset{%
+%     language=Haskell,%
+%     basicstyle=\ttfamily\small\color{darkdirtyblue},% \ttfamily
+%     keywordstyle=\ttfamily\bfseries,% \underbar
+%     identifierstyle=,%
+%     commentstyle=\itshape,%
+%     columns=flexible,%spaceflexible,% fixed,% flexible,%
+%     showstringspaces=false,%
+% %    xleftmargin=\codeindent,% defined below
+%     breaklines=true,%
+%     deletekeywords={succ,zero,head,tail,zipWith,Either,List},%
+%     morekeywords={Set,Size,fun,cofun,pattern},% ,left,right,nil,cons
+%     literate={\\}{{$\lambda$}}1 {->}{{$\rightarrow$~}}2
+%              {<=}{{$\leq$~}}2 {<}{{$<$~}}1
+% %     literate={map}{map~}4
+% %       {even}{even~}5
+% %       {odd}{odd~}4
+%      }%
+% }
+%\defHaskelllistings
+
+\title[NbE for Sized Dependent Types]{%
+  Normalization by Evaluation for Sized Dependent Types}
+
+\author[Abel Vezzosi Winterhalter]{
+  Andreas Abel\inst{1}
+  \and Andrea Vezzosi\inst{1}
+  \and Theo Winterhalter\inst{2}
+}
+% \author{Andreas Abel\inst{1}
+%   \and Brigitte Pientka\inst{2}
+%   \and David Thibodeau\inst{2}
+%   \and Anton Setzer\inst{3}
+% }
+%{F.~Author\inst{1} \and S.~Another\inst{2}}
+% - Give the names in the same order as the appear in the paper.
+% - Use the \inst{?} command only if the authors have different
+%   affiliation.
+
+\institute[] %Chalmers/GU/ENS Cachan] % (optional, but mostly needed)
+{
+  \inst{1}
+  Department of Computer Science and Engineering\\
+  Chalmers and Gothenburg University, Sweden \\[1ex]
+
+  \inst{2}
+  Université de Nantes, France \\
+}
+%  \inst{1}%
+%  Department of Computer Science\\
+%  University of Somewhere
+%  \and
+%  \inst{2}%
+%  Department of Theoretical Philosophy\\
+%  University of Elsewhere}
+%% - Use the \inst command only if there are several affiliations.
+%% - Keep it simple, no one is interested in your street address.
+
+\date[EUTYPES WG'18] % (optional, should be abbreviation of conference name)
+{ The European Network on Types for Programming and Verification (EUTYPES)\\
+  Working Group meeting \\
+  24 January 2018
+}
+% - Either use conference name or its abbreviation.
+% - Not really informative to the audience, more for people (including
+%   yourself) who are reading the slides online
+
+%\subject{Software Verification}
+% This is only inserted into the PDF information catalog. Can be left
+% out.
+
+
+
+% If you have a file called "university-logo-filename.xxx", where xxx
+% is a graphic format that can be processed by latex or pdflatex,
+% resp., then you can add a logo as follows:
+
+% \pgfdeclareimage[height=0.5cm]{university-logo}{university-logo-filename}
+% \logo{\pgfuseimage{university-logo}}
+
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+
+%\AtBeginSubsection[]
+%\AtBeginSection[]
+%{
+%  \begin{frame}<beamer>
+%    \frametitle{Outline}
+%    \tableofcontents[currentsection,currentsubsection]
+%  \end{frame}
+%}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command:
+
+%\beamerdefaultoverlayspecification{<+->}
+
+\makeatletter
+\def\MLine#1{\par\vspace{1ex}\hspace*{-\@totalleftmargin}\parbox{\textwidth}{\[#1\]}}
+\makeatother
+%\newenvironment{display}{\par\vspace{1ex}\hspace*{-\@totalleftmargin}\parbox{\textwidth}{\[}{\]}}
+
+
+%\newcommand{\List}{\mathsf{List}}
+\renewcommand{\Set}{\mathsf{Set}}
+\newcommand{\Tree}{\mathsf{Tree}}
+%\newcommand{\Prop}{\mathsf{Prop}}
+%\newcommand{\Type}{\mathsf{Type}}
+%\newcommand{\Size}{\mathsf{Size}}
+%\newcommand{\tfix}{\mathsf{fix}}
+%\newcommand{\Int}{\mathsf{Int}}
+%\newcommand{\tnil}{\mathsf{nil}}
+%\newcommand{\tcons}{\mathsf{cons}}
+%\newcommand{\vas}{\mathit{as}}
+%\newcommand{\ttuple}[1]{(#1)}
+
+%\newcommand{\oford}{\of\tord} \newcommand{\oftype}{\of\ttype}
+\newcommand{\oford}{}         \newcommand{\oftype}{}
+\newenvironment{prg}{\begin{quotation}\begin{tabbing}}{\end{tabbing}\end{quotation}}
+
+% COLORS
+\newcommand{\cHead}{\color{darkblue}}
+\newcommand{\cSub}{\color{brown}}
+\newcommand{\cWhite}{\color{white}}
+\newcommand{\cGray}{\color{gray}}
+\newcommand{\cGreen}{\color{olivegreen}}
+\newcommand{\cBrown}{\color{brown}}
+\newcommand{\cBlack}{\color{black}}
+\newcommand{\black}[1]{{\cBlack#1}}
+
+\newcommand{\cAnn}{\color{red!80!black}}%purple darkblue
+\newcommand{\cAside}{\color{gray}}
+\newcommand{\cEnum}{\color{darkgreen}}
+\newcommand{\cEm}{\cAnn} %\color{red}}
+\newcommand{\cCo}{\cAnn} %\color{red}} % copattern color
+\newcommand{\cop}[1]{{\cCo#1}}
+\newcommand{\cApp}{\color{violet}}
+\newcommand{\capp}[1]{{\cApp#1}}
+\newcommand{\cFocus}{\color{darkgreen}}
+\newcommand{\focus}[1]{{\cFocus#1}}
+\newcommand{\cMath}{\usebeamercolor[fg]{math text}}
+\newcommand{\cIdent}{\usebeamercolor[fg]{math text}}
+\newcommand{\ident}[1]{{\cIdent#1}}
+\newcommand{\cExp}{\cIdent}
+\newcommand{\cBoring}{\color{grey}}
+\newcommand{\boring}[1]{{\cBoring#1}}
+
+%\newcommand{\ann}[1]{^{\cAnn #1}}
+\newcommand{\unn}[1]{_{\cAnn #1}}
+\newcommand{\annW}[1]{^{\hphantom{#1}}}
+%\newcommand{\Ann}[1]{{\cAnn #1}}
+\newcommand{\AnnW}[1]{\hphantom{#1}}
+\newcommand{\ttAnn}[1]{\{{\cAnn #1}\}}
+% ordinal annotation
+\newcommand{\cOrd}{\cAnn}
+\newcommand{\onn}[1]{^{\cOrd #1}}
+\newcommand{\Onn}[1]{{\cOrd #1}}
+\newcommand{\oforall}[1]{\forall\Onn{#1}.~}
+\newcommand{\oexists}[1]{\exists\Onn{#1}.~}
+\newcommand{\oapp}[1]{\,\Onn{#1}}
+\renewcommand{\emph}[1]{{\cAnn#1}}
+\newcommand{\OSize}{\Onn{Size}}
+\newcommand{\oi}{\Onn{i}}
+\newcommand{\odi}{\Onn{\$i}}
+\newcommand{\oddi}{\Onn{\$\$i}}
+\newcommand{\oj}{\Onn{j}}
+\newcommand{\ohash}{\Onn{\#}}
+
+% \newcommand{\kw}[1]{{\bf#1}}
+\newcommand{\kwdata}{\kw{data}}
+\newcommand{\kwcodata}{\kw{codata}}
+\newcommand{\kwsized}{\kw{sized}}
+\newcommand{\kwfun}{\kw{fun}}
+\newcommand{\kwcofun}{\kw{cofun}}
+\newcommand{\kwlet}{\kw{let}}
+\newcommand{\kwfields}{\kw{fields}}
+%\newcommand{\kw}{\kw{}}
+%\newcommand{\kw}{\kw{}}
+%\newcommand{\kw}{\kw{}}
+\newcommand{\tinl}{\mathsf{inl}}
+\newcommand{\tinr}{\mathsf{inr}}
+
+\renewcommand{\rulename}[1]{#1}
+
+% types
+\newcommand{\cType}{\color{orange!60!black}}
+
+
+% irrelevance
+\newcommand{\irr}{\mathord{\bullet}}
+\newcommand{\shirr}{\mathord{{\bullet}{\bullet}}}
+\renewcommand{\erhyp}[3][\irr]{#1#2 \of #3}
+\newcommand{\shirrhyp}{\erhyp[\shirr]}
+\renewcommand{\erfunT}[4][\irr]{(\erhyp[#1]{#2}{#3}) \to #4}
+\newcommand{\serfunT}[4][\irr]{(#1#2 : #3) \to #4}
+\renewcommand{\resurrect}[1]{\irr^{-1}(#1)}
+
+
+\newcommand{\mlsays}[1]{
+\begin{frame}%[fragile=singleslide]
+  %\frametitle{Himself}
+  \begin{minipage}[c]{0.5\linewidth}
+   \includegraphics[height=0.9\textheight]{martin-loef-bw.png}
+  \end{minipage}% NO SPACE HERE!
+  \begin{minipage}[c]{0.5\linewidth}
+   \begin{center}
+     \bla \\[8ex]
+     \Huge #1
+   \end{center}
+  \end{minipage}
+\end{frame}
+}
+
+\newcommand{\JOKE}[1]{} % No jokes.
+
+\begin{document}
+
+\maketitle
+%\begin{frame}
+%  \titlepage
+%\end{frame}
+
+%\begin{frame}
+%  \frametitle{Outline}
+%  \tableofcontents
+%  % You might wish to add the option [pausesections]
+%\end{frame}
+
+% Background: Dependent Types
+%
+% Typing judgement
+% Conversion rule
+% Definitional equality judgement
+% - Equal terms are not distinguished
+% - Fragment of extensional equality
+% - The stronger the better
+% - eta for unit type
+%
+% Example: monus
+%
+% Sized types and problem with proof
+%
+% Curry-style would solve it
+% Internal: fully reconstructed: Church-Style
+% Churry-style
+
+\renewcommand{\emph}[1]{\textit{\cType#1}}
+
+\section{Introduction}
+
+
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{Dependent type theory \`a la Martin-Löf}
+  \vspace{-3ex}
+  \begin{itemize}
+  \item Typing judgement $\Gamma \der t : A$
+    \begin{itemize}
+    \item in context $\Gamma$, expression $t$ has type $A$
+    \item under hypotheses $\Gamma$, term $t$ is a proof of
+      proposition $A$
+    \end{itemize}
+  \item Consistency: empty type not inhabited $\not\der t : \bot$.
+  \item Conversion / subsumption rule
+    \[
+      \ru{\Gamma \der t : A \qquad \Gamma \der A \leq B
+        }{\Gamma \der t : B}
+    \]
+    \vspace{-2ex}
+    % \begin{gather*}
+    %   \ru{\Gamma \der t : A \qquad \Gamma \der A \leq B
+    %     }{\Gamma \der t : B}
+    % \end{gather*}
+% \MLine{
+%       \ru{\Gamma \der t : A \qquad \Gamma \der A \leq B
+%         }{\Gamma \der t : B}
+% }
+  \item Definitional equality $\Gamma \der t = t' : A$ \\
+     in $\Gamma$, terms $t$ and $t'$ of type $A$ are not distinguished
+% \MLine{
+%       \ru{\Gamma \der A = B : \Type
+%         }{\Gamma \der A \leq B}
+% }
+  \item Reflexivity rule of subtyping
+\[
+      \ru{\Gamma \der A = B : \Type
+        }{\Gamma \der A \leq B}
+\]
+  \end{itemize}
+\end{frame}
+
+\mlsays{Subtyping??}
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{Definitional equality}
+  \vspace{-3ex}
+  \begin{itemize}
+  \item Decidable (for type checking).
+  \item Proper subrelation of extensional equality (usually
+    $\not\der x + y = y + x$).
+  \item Equates at least computationally equal terms.
+  \item The bigger, the better!
+  \item Type needed for $\eta$-laws, e.g., for unit type $\top$.
+\[
+  \ru{\Gamma \der t : \top \qquad \Gamma \der t' : \top
+    }{\Gamma \der t = t' : \top}
+\]
+\vspace{-2ex}
+  \end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{Sized types as refinement types}
+  \vspace{-3ex}
+  \begin{itemize}
+  \item Termination needed for consistency.\\
+    $\tfix : ((\Nat \to C) \to (\Nat \to C)) \to \Nat \to C$
+    inconsistent
+  \item Index data types by tree height: ``$\Nat^i = \{ n \mid n < i \}$'' \\
+    $\tfix : (\forall i \to (\Nat^i \to C) \to (\Nat^{i+1} \to C))
+    \to \forall i \to \Nat^i \to C$
+  \item Polymorphism $t : (\forall i \to \Tree^i \to \Tree^i) \to
+    \forall i \to \Tree^i \to \Tree^\infty$
+  \item Subtyping: $\Nat^0 \leq \Nat^1 \leq \Nat^2 \leq \dots \leq
+    \Nat^\infty$
+  \item Size expressions are not unique.  Problematic for proofs.
+\[
+\begin{array}{lcl}
+  \tsuc          & : & \forall i \to \Nat^i \to \Nat^{i + 1} \\
+  \tsuc\,i       & : & \Nat^i \to \Nat^\infty \\
+  \tsuc\,(i + 1) & : & \Nat^i \to \Nat^\infty \\
+  \tsuc\,\infty  & : & \Nat^i \to \Nat^\infty \\
+\end{array}
+\]
+\vspace{-2ex}
+  \item Intuition: Sizes are \emph{irrelevant} in terms, but \emph{relevant} in types.
+  \end{itemize}
+\end{frame}
+
+% Nuyts slide
+% \newcommand{\interp}[1]{\left\llbracket #1 \right \rrbracket}
+% \section{Parametricity, Shape-irrelevance, irrelevance}
+% \begin{frame}
+%     \frametitle{Parametricity, Shape-irrelevance, irrelevance}
+%     4 functors on bridge/path cubical sets:
+%     \begin{description}
+%         \item[$\id$] Non-parametricity (continuity)
+%         \item[$\sharp$] Parametricity
+%         \item[$\bullet \bullet$] Shape-irrelevance
+%         \item[$\bullet$] Irrelevance
+%     \end{description}
+%     such that $\sharp \circ (\bullet \bullet) = \bullet$.
+
+%     \bigskip
+
+%     Abel et al. have: $\interp{\Size} = \interp{\IN}$.
+
+%     We have: $\interp{\Size} = \bullet \bullet \interp{\IN}$. Hence, $\sharp \interp \Size = \bullet \interp \IN$.
+
+%     \begin{center}
+%         \begin{equation*}
+%             \begin{array}{r | r || r}
+%                 \text{ParamDTT} & \text{Abel} \qquad \qquad {\,} & \interp{\text{domain}}\\ \hline
+%                 \Pi(i : \Size).A~i & \bullet \bullet (i : \Size) \to A~i & \bullet \bullet \interp \IN \\
+%                 \forall(i : \Size).A~i & \bullet (i : \Size) \to A~i & \bullet \interp \IN
+%             \end{array}
+%         \end{equation*}
+%     \end{center}
+% \end{frame}
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{Grau ist alle Theorie}
+\vfill
+\begin{center}
+  \huge Agda demo
+\end{center}
+\vfill
+\end{frame}
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{Church-style vs.\ Curry style}
+  \vspace{-3ex}
+  \begin{itemize}
+  \item Pure Type Systems: Church-style \\
+    dependent functions = polymorphic functions.
+\[
+  \ru{\Gamma \der t = t' : (i : \Size) \to A \qquad
+      \Gamma \der b : \Size
+    }{\Gamma \der t\,b = t'\,b : A[b/i]
+    }
+\]
+\vspace{-2ex}
+  \item Curry-style would fit our needs:
+\[
+  \ru{\Gamma \der t = t' : \alert{\forall i{:}\Size.\, A} \qquad
+      \Gamma \der b : \Size
+    }{\Gamma \der t = t' : A[b/i]}
+\]
+\vspace{-2ex}
+  \item Absent size arguments cannot spoil our proofs.
+  \item<2> Synthesis: \emph{Churry-style}.
+  \end{itemize}
+\end{frame}
+
+\JOKE{
+\begin{frame}%[fragile=singleslide]
+  \frametitle{Kind of Churry}
+   \includegraphics[width=\textwidth]{Churros_Madrid.jpg}
+\end{frame}
+} % END JOKE
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{``Churry-style''}
+  \vspace{-3ex}
+  \begin{itemize}
+  \item Use size arguments for \emph{type checking}.
+  \item Ignore them during \emph{equality checking}.
+  \item Irrelevant size quantification:
+\[
+  \ru{\Gamma \der t = t' : \erfunT i \Size A \qquad
+      \Gamma \der \alert{a,a',b} : \Size
+    }{\Gamma \der t\,\ann{\alert{a}} = t'\,\ann{\alert{a'}} : A[\alert{b}/i]
+    }
+\]
+\vspace{-2ex}
+  \item Forces to ignore arguments also during \emph{typing}.
+\[
+  \ru{\Gamma \der t : \erfunT i \Size A \qquad
+      \Gamma \der \alert{a,b} : \Size
+    }{\Gamma \der t\,\ann{\alert{a}} : A[\alert{b}/i]
+    }
+\]
+\vspace{-2ex}
+\item (Bidirectional) \emph{type checking}:
+\[
+  \ru{\Gamma \der t \jinf\erfunT i \Size A \qquad
+      \Gamma \der \alert{a} \jchk \Size
+    }{\Gamma \der t\,\ann{\alert{a}} \jinf A[\alert{a}/i]
+    }
+\]
+\vspace{-2ex}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{Does ``Churry-style'' work in general?}
+\vspace{-3ex}
+  \begin{itemize}
+  \item Generally, can we have?
+\[
+  \ru{\Gamma \der t = t' : \erfunT x A B\qquad
+      \Gamma \der u,u',v : A
+    }{\Gamma \der t\,\ann u = t'\,\ann{u'} : B[v/x]
+    }
+\]
+\vspace{-2ex}
+  \item Not with type-directed $\eta$!
+\[
+\hspace{-\leftmargin}
+\ru{\der f : \erfunT X \Type (X \to X) \to C
+  }{\der
+    f \ann {A \to A} (\lambda x y \to x\,y) \\ =
+    f \ann {A \to \top} (\lambda x y \to \_) \\ =
+    f \ann {A \to A} (\lambda x y \to x\,(x\,y))
+  }
+\]
+\vspace{-2ex}
+  \item In $\erfunT x A B$, the \emph{shape} of $B$ must be
+    independent of $x$.
+    \begin{itemize}
+    \item Same shape: $\Nat^i$, $\Nat^{j+1}$, $\Nat^\infty$.
+    \item Different shape: $\top$, $\bot$, $A \to B$.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{Shape-irrelevance}
+  \vspace{-3ex}
+  \begin{itemize}
+  \item These are shape-irrelevant in $i$
+\[
+\begin{array}{@{\shirr i \der~}l}
+  \Nat^i
+\\
+  \Nat^i \to \Nat^{i+1}
+\\
+  \tifthenelse b {\Nat^i} {\Nat^i \to \Nat^i}
+\\
+  (x : \Nat^i) \to \mathsf{Vec}\,A\,x
+\end{array}
+\]
+  \item These are \emph{not} shape-irrelevant:
+\[
+\begin{array}{@{\shirr}l@{~\not\der~}l}
+  b \of \Bool  & \tifthenelse b {\Type} {\Type \to \Type}
+\\
+  X \of \Type & X
+\\
+  X \of \Type & X \to X
+\\
+\end{array}
+\]
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{Official rules for irrelevant quantifier}
+  \vspace{-3ex}
+  \begin{itemize}
+  \item Formation:
+\[
+  \ru{\Gamma \der A : \Type \qquad
+      \Gamma,\, \shirrhyp x A \der B : \Type
+    }{\Gamma \der \erfunT x A B : \Type}
+\]
+\vspace{-2ex}
+  \item Introduction:
+\[
+  \ru{\Gamma, \erhyp x A \der t : B
+    }{\Gamma \der (\lambda x \to t) : \erfunT x A B}
+\]
+\vspace{-2ex}
+  \item Elimination:
+\[
+  \ru{\Gamma \der t : \erfunT x A B \qquad
+      \resurrect \Gamma \der u,v : A
+    }{\Gamma \der t\,u : B[v/x]}
+\]
+\vspace{-2ex}
+  \item \emph{Resurrection} $\resurrect \Gamma$ removes $\bullet$s.
+  (Nuyts et al.: $\bullet \setminus \Gamma$)
+  \end{itemize}
+\end{frame}
+
+\JOKE{
+\mlsays{Irrelevance??}
+} % END JOKE
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{Defining Shapes (in the Model)}
+\vspace{-3ex}
+  \begin{itemize}
+  \item Base types of the same shape:
+\[
+  \ONE \approx \ONE
+\qquad
+  \Nat^i \approx \Nat^j
+\qquad
+  \Set_\ell \approx \Set_{\ell'}
+\]
+\vspace{-2ex}
+  \item Function types:
+\[
+  \ru{A_1 \approx A_2 \qquad B_1(a) \approx B_2(a) \mforall a \in \alert{A_1}
+    }{\funT x {A_1}{B_1(x)} \approx \funT x {A_2}{B_2(x)}}
+\]
+\vspace{-2ex}
+  \item \emph{Not symmetric!}
+\[
+  \mathit{template} \shape \mathit{shape}
+\]
+\vspace{-2ex}
+  \item No syntactic judgement for \textit{same shape}. :(
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{Finally, Normalization by Evaluation (NbE)!}
+  \vspace{-3ex}
+  \begin{itemize}
+  \item Type Assignment NbE
+  \item Values $a$ are (extended) weak head normal forms.
+  \item Relations $a \in A$ and $a = a' \in A$ between whnfs.
+  \item Reflecting neutral term $u$ as value $\up A u \in A$:
+\[
+\begin{array}{rll}
+   (\up {\sfunT x A B(x)} u)(a) & = & \up {B(a)} (u\,\down A a)
+\\
+   (\up {\serfunT x A B(x)} u)(a) & = & \up {B(a)} (u \ann{\down A a})
+\end{array}
+\]
+\vspace{-2ex}
+  \item Reifying value $a \in A$ as normal term $\down A a$:
+\[
+\begin{array}{lll}
+  \down \ONE a & = & \star \\
+  \down {\sfunT x A B(x)} f & = & \lambda y.\, \down{B(\up A y)} f(\up A y)
+\end{array}
+\]
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{Reflection and Reification}
+  \begin{theorem}
+    Let $A \shape A_1$ and $A \shape A_2$.
+    \begin{enumerate}
+    \item If $u_1$ and $u_2$ are equal neutrals then $\up {A_1} u_1 = \up {A_2} u_2 \in A$.
+    \item If $a_1 = a_2 \in A$ then $\down {A_1} a_1$ and $\down {A_2} a_2$ are equal normal forms.
+    \end{enumerate}
+  \end{theorem}
+  \begin{proof}
+    \begin{itemize}
+    \item
+    Goal $\up{\color{darkred}\serfunT x {A_1}{B_1(x)}} u_1 = \up{\color{darkred}\serfunT x {A_2}{B_2(x)}} u_2 \in \color{darkred}\erfunT x A {B(x)}$.
+    \item
+    Assume $a_1 \in A$ and $a_2 \in A$.
+    \item
+    Show $(\up{\serfunT x {A_1}{B_1(x)}} u_1)(a_1) = (\up{\serfunT x {A_2}{B_2(x)}} u_2)(a_2) \in B(a_1)$.
+    \item
+    Show $\up{\color{darkred}B_1(a_1)} (u_1 \ann {\down{A_1} a_1}) = \up{\color{darkred}B_2(a_2)} (u_2 \ann {\down{A_2}a_2}) \in \color{darkred}B(a_1)$.
+    \end{itemize}
+    Since $B_1(x)$ and $B_2(x)$ are shape-irrelevant in $x$, we apply the induction hypothesis with
+    $B(a_1) \shape B_1(a_1)$ and $B(a_1) \shape B_2(a_2)$.
+  \end{proof}
+\end{frame}
+
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{Decidability}
+  \begin{itemize}
+  \item NbE decides definitional equality.
+  \item Type checking (bidirectional) decidable with rule:
+\[
+  \ru{\Gamma \der t \jinf \erfunT x U T(x) \qquad
+      \resurrect \Gamma \der u : U
+    }{\Gamma \der t \ann u \jinf T(u)}
+\]
+  \end{itemize}
+\end{frame}
+
+% \begin{frame}%[fragile=singleslide]
+%   \frametitle{In the paper}
+%   \vspace{-3ex}
+%   \begin{itemize}
+%   \item Dependent type theory with
+%     \begin{itemize}
+%     \item predicative universes $\Set_0, \Set_1, \dots$,
+%     \item sized natural numbers $\Nat^i$,
+%     \item subtyping
+%     \item irrelevant $\forall$ and shape-irrelevant $\Pi$ size quantifier.
+%     \end{itemize}
+%   \item Decidability of definitional equality via
+%     normalization-by-evaluation (NbE).
+%   \item Decidability of bidirectional type checking.
+%   \item Discussion of related irrelevant quantifiers \\
+%     (Pfenning, Miquel, Barras/Bernardo, Mishram-Linger/Sheard).
+%   \end{itemize}
+% \end{frame}
+
+
+
+% \begin{frame}%[fragile=singleslide]
+%   \frametitle{Normalization by Evaluation (NbE)}
+%   \vspace{-3ex}
+%   \begin{itemize}
+%   \item Type-directed eta-expansion:
+%     \begin{itemize}
+%     \item Reflection $\up A t$: syntax to semantics.
+%     \item Reification $\down A d$: semantics to syntax.
+%     \end{itemize}
+%   \item My observation: only \emph{shape} of $A$ matters.
+%   \item Works for \emph{type assignment} NbE \\ \relax
+%     [e.g., Abel/Aehlig/Coquand/Dybjer, 2007--].
+%   \item Not for \emph{intrinsically typed} NbE \\ \relax
+%     [e.g., Altenkirch/Kaposi, FSCD 2016].
+%   \end{itemize}
+% \end{frame}
+
+\begin{frame}%[fragile=singleslide]
+%  \frametitle{Take Home Message}
+\vfill
+\hspace{0.15\textwidth}%
+\begin{minipage}[c]{0.67\linewidth}
+\begin{takehomemessage}
+The irrelevance modality allows us to ignore sizes where they just help the type checker.
+\[
+  \suc {{\color{grey}\mathit{ignoreMe}}} n ~:~ \Nat^{\alert{\mathit{dontIgnoreMe}}}
+\]
+\vspace{-2ex}
+\end{takehomemessage}
+\end{minipage}
+% \hspace{0.15\textwidth}
+%     \begin{beamercolorbox}[rounded=true, shadow=true, title=A,
+%       wd=0.7\textwidth]{block body}
+% The irrelevance modality allows us to ignore sizes where they just help the type checker.
+% \[
+%   \suc {{\color{grey}\mathit{ignoreMe}}} n ~:~ \Nat^{\alert{\mathit{dontIgnoreMe}}}
+% \]
+% \vspace{-2ex}
+%     \end{beamercolorbox}
+\vfill
+\end{frame}
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{Future work}
+  \vspace{-3ex}
+  \begin{itemize}
+  \item Explore \emph{shape-irrelevance}.
+  \item Replace NbE by traditional algorithmic equality.
+  \item Solidify Agda implementation of shape-irrelevance.
+  \end{itemize}
+\end{frame}
+
+
+\JOKE{
+\mlsays{Sized types?!}
+} % END JOKE
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% END DOC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \bibliography{short}
+
+\end{document}
+
+
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{}
+  \begin{itemize}
+  \item
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{Story I: Stratification of Universes}
+  \vspace{-3ex}
+  \begin{itemize}
+  \item $\Set : \Set$ (meaning $\Type : \Type$) inconsistent.
+  \item Stratification $\Set_0 : \Set_1 : \Set_2 : \dots$
+  \item Subtyping $\Set_0 \subset \Set_1 \subset \Set_2 \subset \dots$
+  \item Polymorphism $f : \forall \ell \to (A : \Set_\ell) \to A \to A$.
+  \item Level expressions are not unique: $f\,0\,\Nat\,x$ vs. $f\,1\,Nat\,x$.
+  \item Get in the way of equality: $f\,0\,\Nat\,x = f\,1\,Nat\,x$?
+  \end{itemize}
+\end{frame}
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{Story II: Stratification of Datatypes}
+  \vspace{-3ex}
+  \begin{itemize}
+  \item $\tfix : ((\Nat \to C) \to (\Nat \to C)) \to \Nat \to C$
+    inconsistent
+  \item Stratification $\Nat^0 \subset \Nat^1 \subset \Nat^2 \subset \dots \subset \Nat^\infty$ \\
+    $\tfix : (\forall i \to (\Nat^i \to C) \to (\Nat^{i+1} \to C))
+    \to \forall i \to \Nat^i \to C$
+  \item Polymorphism $t : (\forall i \to \Tree^i \to \Tree^i) \to
+    \forall i \to \Tree^i \to \Tree^\infty$
+  \item Size expressions are not unique.
+  \item Get in the way of equality proofs.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile=singleslide]
+  \frametitle{Sizes in the Way of Agda}
+\input{latex/MonusDiagError}
+\aNat \\[2ex]
+
+\aPredTy \\[2ex]
+
+\aMonus
+\end{frame}
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{What if the offender was absent?}
+  \vspace{-3ex}
+  \begin{itemize}
+  \item Curry-style quantification:
+\[
+  \ru{t_1 = t_2 : \forall i \to A\,i
+    }{t_1 = t_2 : A\,a}
+\]
+  \vspace{-1ex}
+  \item Great, but want Church-style syntax for type-checking.
+\[
+  \ru{t_1 = t_2 : \forall i \to A\,i
+    }{t_1 \ann {a_1} = t_2 \ann {a_2} : A\,a}
+\]
+  \vspace{-1ex}
+  \item Semantically, instantiations $a_1$ and $a_2$ are \emph{irrelevant}.
+  \item ``Semantic'' typing rule (\emph{not} \textit{type checking} rule):
+\[
+  \ru{t : \forall i \to A\,i
+    }{t \ann a : A\,b}
+\]
+
+  \end{itemize}
+\end{frame}
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{(When) does this make sense?}
+  \vspace{-3ex}
+  \begin{itemize}
+  \item ICC($^*$)  (Miquel, Barras, Bernardo, Sheard, Mishram-Linger): \\
+    ``Always, under erasure''
+%  \item Not compatible with type-directed $\eta$ with unit type $\star : \ONE$:
+  \item What about $\eta$ for unit type $\star : \ONE$ with $t = t' : \ONE$?
+\[
+\ru{f : \forall X \to (X \to X) \to C
+  }{
+    f \ann {A \to A} (\lambda x.\,x) =
+    f \ann \ONE (\lambda x.\,\star) =
+    f \ann {A \to A} (\lambda x.\, \lambda y.\,x\,(x\,y))
+    % \\
+    % f \ann {A \to A} (\lambda x \lambda y.\,x\,y) =
+    % f \ann A (\lambda x.\,x) =
+    % f \ann \ONE (\lambda x.\,\star)
+  }
+\]
+\vspace{-1ex}
+  \item Our restriction: the choice of instantiation may not affect
+    $\eta$.
+  \item $\eta$ is directed by the type \emph{shape}: function type,
+    unit type, $\Sigma$-type, other type.
+  \item Here: $X$ is \emph{not} irrelevant for the shape of $(X \to X) \to C$.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}%[fragile=singleslide]
+  % \frametitle{(Shape-)irrelevance}
+  % \begin{itemize}
+  % \item Formation of irrelevant function types.
+  \frametitle{Dependent irrelevant function types}
+    \begin{enumerate}
+    \item The cautious (Pfenning, LiCS 2001)
+\[
+  \ru{\erhyp x A \der B : \Set
+    }{\der \erfunT x A B : \Set}
+\]
+    \item The daredevil (Miquel, LiCS 2000)
+\[
+  \ru{x \of A \der B : \Set
+    }{\der \erfunT x A B : \Set}
+\]
+    \item ``lagom'' (Abel, AIM 2011)
+\[
+  \ru{\shirrhyp x A \der B : \Set
+    }{\der \erfunT x A B : \Set}
+\]
+    \end{enumerate}
+%  \end{itemize}
+\end{frame}
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{Shape-irrelevance}
+  \vspace{-3ex}
+  \begin{itemize}
+  \item These are shape-irrelevant in $i$
+\[
+\begin{array}{@{\shirr i \der~}l}
+  \Nat^i
+\\
+  \Nat^i \to \Nat^{i+1}
+\\
+  \tifthenelse b {\Set_i} {\Set_i \to \Set_i}
+\\
+  (x : \Nat^i) \to \mathsf{Vec}\,A\,x
+\end{array}
+\]
+  \item These are \emph{not} shape-irrelevant:
+\[
+\begin{array}{@{\shirr}l@{~\not\der~}l}
+  b \of \Bool  & \tifthenelse b {\Set_0} {\Set_0 \to \Set_0}
+\\
+  X \of \Set_0 & X
+\\
+  X \of \Set_0 & X \to X
+\\
+\end{array}
+\]
+  \end{itemize}
+\end{frame}
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{Defining Shapes (in the Model)}
+\vspace{-3ex}
+  \begin{itemize}
+  \item Base types of the same shape:
+\[
+  \ONE \approx \ONE
+\qquad
+  \Nat^i \approx \Nat^j
+\qquad
+  \Set_\ell \approx \Set_{\ell'}
+\]
+\vspace{-2ex}
+  \item Function types:
+\[
+  \ru{A_1 \approx A_2 \qquad B_1(a) \approx B_2(a) \mforall a \in \alert{A_1}
+    }{\funT x {A_1}{B_1(x)} \approx \funT x {A_2}{B_2(x)}}
+\]
+\vspace{-2ex}
+  \item \emph{Not symmetric!}
+\[
+  \mathit{template} \shape \mathit{shape}
+\]
+\vspace{-2ex}
+  \item No syntactic judgement for \textit{same shape}. :(
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{Finally, Normalization by Evaluation (NbE)!}
+  \vspace{-3ex}
+  \begin{itemize}
+  \item TA-NbE (TA = Type Assignment $\not=$ Thorsten Altenkirch)
+  \item Values $a$ are (extended) weak head normal forms.
+  \item Relations $a \in A$ and $a = a' \in A$ between whnfs.
+  \item Reflecting neutral term $u$ as value $\up A u \in A$:
+\[
+\begin{array}{rll}
+   (\up {\sfunT x A B(x)} u)(a) & = & \up {B(a)} (u\,\down A a)
+\\
+   (\up {\serfunT x A B(x)} u)(a) & = & \up {B(a)} (u \ann{\down A a})
+\end{array}
+\]
+\vspace{-2ex}
+  \item Reifying value $a \in A$ as normal term $\down A a$:
+\[
+\begin{array}{lll}
+  \down \ONE a & = & \star \\
+  \down {\sfunT x A B(x)} f & = & \lambda y.\, \down{B(\up A y)} f(\up A y)
+\end{array}
+\]
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{Reflection and Reification}
+  \begin{theorem}
+    Let $A \shape A_1$ and $A \shape A_2$.
+    \begin{enumerate}
+    \item If $u_1$ and $u_2$ are equal neutrals then $\up {A_1} u_1 = \up {A_2} u_2 \in A$.
+    \item If $a_1 = a_2 \in A$ then $\down {A_1} a_1$ and $\down {A_2} a_2$ are equal normal forms.
+    \end{enumerate}
+  \end{theorem}
+  \begin{proof}
+    \begin{itemize}
+    \item
+    Goal $\up{\color{darkred}\serfunT x {A_1}{B_1(x)}} u_1 = \up{\color{darkred}\serfunT x {A_2}{B_2(x)}} u_2 \in \color{darkred}\erfunT x A {B(x)}$.
+    \item
+    Assume $a_1 \in A$ and $a_2 \in A$.
+    \item
+    Show $(\up{\serfunT x {A_1}{B_1(x)}} u_1)(a_1) = (\up{\serfunT x {A_2}{B_2(x)}} u_2)(a_2) \in B(a_1)$.
+    \item
+    Show $\up{\color{darkred}B_1(a_1)} (u_1 \ann {\down{A_1} a_1}) = \up{\color{darkred}B_2(a_2)} (u_2 \ann {\down{A_2}a_2}) \in \color{darkred}B(a_1)$.
+    \end{itemize}
+    Since $B_1(x)$ and $B_2(x)$ are shape-irrelevant in $x$, we apply the induction hypothesis with
+    $B(a_1) \shape B_1(a_1)$ and $B(a_1) \shape B_2(a_2)$.
+  \end{proof}
+\end{frame}
+
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{Decidability}
+  \begin{itemize}
+  \item NbE decides definitional equality.
+  \item Type checking (bidirectional) decidable with rule:
+\[
+  \ru{\Gamma \der t \jinf \erfunT x U T(x) \qquad
+      \resurrect \Gamma \der u : U
+    }{\Gamma \der t \ann u \jinf T(u)}
+\]
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile=singleslide]
+  \frametitle{Sizes out of the Way!}
+\vspace{-3ex}
+\input{latex/MonusDiag}
+\aOpt \\[1ex]
+\aNat \\[2ex]
+
+\aPredTy \\[2ex]
+
+\aMonus
+\end{frame}
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{Conclusions}
+  \vspace{-3ex}
+  \begin{itemize}
+  \item Irrelevance modality allows us to ignore sizes where they just help the type checker.
+\[
+  \suc {{\color{grey}\mathit{ignoreMe}}} n : \Nat^{\alert{\mathit{dontIgnoreMe}}}
+\]
+\vspace{-2ex}
+  \item Codomain of dependent irrelevant function type needs to be \emph{shape-irrelevant}.
+  \item Better semantics for these modalities? (Vezzosi, Nuyts)
+  \item Beware type-theorist! More modalities are coming your way!
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}%[fragile=singleslide]
+\vfill
+\begin{quotation}
+  These modalities are horribly complicated, can't we get rid of them?
+\end{quotation}
+\begin{flushright}
+---Phil Wadler (Leuven, 2017-05-18)
+\end{flushright}
+\vfill
+\end{frame}
+
+
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{}
+  \vspace{-3ex}
+  \begin{itemize}
+  \item
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{}
+  \vspace{-3ex}
+  \begin{itemize}
+  \item
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{}
+  \vspace{-3ex}
+  \begin{itemize}
+  \item
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{}
+  \vspace{-3ex}
+  \begin{itemize}
+  \item
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{}
+  \vspace{-3ex}
+  \begin{itemize}
+  \item
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{}
+  \vspace{-3ex}
+  \begin{itemize}
+  \item
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}%[fragile=singleslide]
+  \frametitle{}
+  \vspace{-3ex}
+  \begin{itemize}
+  \item
+  \end{itemize}
+\end{frame}
+
+\end{document}
+
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
