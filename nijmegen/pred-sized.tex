@@ -127,8 +127,9 @@
 \input{macros}
 
 \renewcommand{\forallT}[2]{\forall #1.\,#2}
-
-
+\renewcommand{\sext}[3]{(#1,#3/#2)}
+\renewcommand{\cext}[3]{#1,#2{:}#3}
+\renewcommand{\AA}{\mathcal{A}}
 
 \begin{document}
 
@@ -262,6 +263,11 @@
 
 \section{Term model via a logical predicate}
 
+Note: The semantics in this section does not support an irrelevant
+size quantifier.  Sizes are relevant in types and terms.
+
+\subsection{Preliminaries}
+
 Weak head evaluation $t \evalsto w$ is defined as usual.
 
 Let $\Phi,\Psi$ range over size contexts.  We write $\Phi \der a$ if
@@ -313,6 +319,8 @@ is defined inductively as follows:
 \]
 Here,
 $\ONhat^\alpha = \{ t \mid t \evalsto w \mand w \in \ON^\alpha \}$.
+
+\subsection{An inductive-recursive model of types}
 
 By induction on $\ell \in \NN$, we define inductively sound type codes
 $A \in \TY \Psi \psi \ell$ and simultaneously their extension
@@ -373,16 +381,235 @@ Case for size polymorphism:
 \begin{align*}
   & \ru{\forall \phi \in \Phi \leq \psi \in \Psi,\
         \Phi \der a.\ \
-        \subst a i A \in \TY \Phi \phi \ell
+        \subst a i A \in \TYhat \Phi \phi \ell
       }{\forallT i A \in \TY \Psi \psi \ell}
 \\
   & t \in \EL \Psi \psi \ell {\forallT i A}
     \defas
-    t\,a \in \EL \Phi \phi \ell {\subst a i A}
+    t\,a \in \ELhat \Phi \phi \ell {\subst a i A}
     \mforall \phi \in \Phi \leq \psi \in \Psi
     \mand \Phi \der a
 \end{align*}
 
+\begin{lemma}[Monotonicity]
+  If $\phi \in \Phi \leq \psi \in \Psi$ then
+  $\TY \Psi \psi \ell \subseteq \TY \Phi \phi \ell$ and
+  $\EL \Psi \psi \ell A = \EL \Phi \phi \ell A$ for all
+  $A \in \TY \Psi \psi \ell$.
+\end{lemma}
+
+
+\subsection{Normalization}
+
+In the following, we show that sound type codes and their elements are
+weakly normalizing.  We make use of the following facts.
+\begin{lemma}[Properties of weak normalization] \bla
+  \begin{enumerate}
+  \item $\WN$ is closed under type constructors and introductions.
+  \item If\/ $t\,x \in \WN$ then $t \in \WN$ (note: $x$ is a variable).
+  \item If\/ $t \evalsto w$ then $t \in \WN$ iff $w \in WN$.
+  \end{enumerate}
+\end{lemma}
+\begin{theorem}
+  If $A \in \TYhat \Psi \psi \ell$ then $A \in \WN$ and
+  $\widehat\NE \subseteq \ELhat \Psi \psi \ell A \subseteq \WN$.
+\end{theorem}
+\noindent
+\begin{proof*}
+By induction on $A \in \TYhat \Psi \psi \ell$.
+\begin{caselist}
+\nextcase $\forallT i A \in \TY \Psi \psi \ell$.
+In this case, we actually make use of the Kripke construction in the
+semantics of the size quantifier.  However, we could probably get away
+without the Kripke construction and use the fact that
+$\subst \infty i A \in \WN$ implies $\forallT i A \in \WN$ and that
+$t\,\infty \in \WN$ implies $t \in \WN$.
+
+Let $\alpha$ be any ordinal number and observe $\Psi,i \der i$.  By
+induction hypothesis with $\Phi = (\Psi,i)$ and
+$\phi = \sext \psi i \alpha$ and $a = i$ we have $A \in \WN$, thus,
+$\forallT i A \in \WN$.
+
+Next, assume $n$ neutral, then
+$n \in \ELhat \Psi \phi \ell {\forallT i A}$ by induction hypothesis,
+since $n\,a$ is neutral as well for any size expression $a$.
+Finally, assume $t \in \ELhat \Psi \psi \ell {\forallT i A}$.  By
+induction hypothesis with $\Phi = (\Psi,i)$ and
+$\phi = \sext \psi i 0$ and $a = i$ we have $t\,i \in \WN$, thus,
+$t \in \WN$.
+\qed
+\end{caselist}
+\end{proof*}
+
+
+\subsection{Fundamental theorem and soundness of typing}
+
+Given a size context $\Psi$ and a valuation $\psi \in \Psi$, the a
+context soundness predicate $\Gamma \in \CXT \Psi \psi$ and the set of
+its valuations $\VAL \Psi \psi \Gamma$ (given $\Gamma \in \CXT \Psi \psi$)
+are defined by recursion on
+$\Gamma$ as follows:
+\begin{align*}
+  & \ru{}{\cempty \in \CXT \Psi \psi}
+  & \VAL \Psi \psi \cempty = \{ \cempty \}
+\\
+  & \ru{\Gamma \in \CXT \Psi \psi \qquad
+      }{\cext \Gamma i \Size \in \CXT \Psi \psi}
+  & \VAL \Psi \psi (\cext \Gamma i \Size) = \{ (\gamma,a) \mid
+      \gamma \in \VAL \Psi \psi \Gamma \mand
+      \Psi \der a \}
+\end{align*}
+\begin{align*}
+  & \ru{\Gamma \in \CXT \Psi \psi \qquad
+        A\gamma \in \TYhat \Psi \psi \ell
+        \mforall \gamma \in \VAL \Psi \psi \Gamma
+      }{\cext \Gamma x A \in \CXT \Psi \psi}
+\\
+  & \VAL \Psi \psi (\cext \Gamma x A) = \{ (\gamma,u) \mid
+      \gamma \in \VAL \Psi \psi \Gamma \mand
+      u \in \ELhat \Psi \psi \ell {A\gamma}
+\end{align*}
+
+% Given a size context $\Psi$ and a valuation $\psi \in \Psi$, the
+% interpretation $\DenG \Gamma \Psi \psi$ of a typing context $\Gamma$ is
+% a set of $\Gamma$-substitutions
+% defined inductively by the following rules.
+% \begin{gather*}
+%   \ru{
+%     }{\sempty \in \DenG \cempty \Psi \psi}
+% \qquad
+%   \ru{\gamma \in \DenG \Gamma \Psi \psi \qquad
+%       \Psi \der a
+%     }{\sext \gamma i a \in \DenG{\cext \Gamma i \Size} \Psi \psi}
+% \qquad
+%   \ru{\gamma \in \DenG \Gamma \Psi \psi \qquad
+%       A \gamma \in \TYhat \Psi \psi \ell \qquad
+%       u \in \ELhat \Psi \psi \ell {A \gamma}
+%     }{\sext \gamma u x \in \DenG{\cext \Gamma x A} \Psi \psi}
+% \end{gather*}
+
+We define semantic judgements as follows:
+\begin{align*}
+  & \models \Gamma
+    & \defas
+    & \Gamma \in \CXT \Psi \psi \mforall \Psi \mand \psi \in \Psi
+\\
+  & \Gamma \models A
+    & \defas
+    & \models \Gamma \mand
+      A \gamma \in \TYhat \Psi \psi \ell \mforsome \ell
+      \mforall \Psi \mand \psi \in \Psi
+      \mand \gamma \in \VAL \Psi \psi \Gamma
+\\
+  & \Gamma \models t : A
+    & \defas
+    & \Gamma \models A \mand
+      t \gamma \in \ELhat \Psi \psi \ell {A \gamma}
+      \mforall \Psi \mand \psi \in \Psi
+      \mand \gamma \in \VAL \Psi \psi \Gamma
+\\
+  & \Gamma \models A \leq B
+    & \defas
+    & \Gamma \models A \mand \Gamma \models B \mand
+      \ELhat \Psi \psi \ell A \subseteq \ELhat \Psi \psi \ell B
+\end{align*}
+\begin{lemma}
+  If\/ $\models \cext \Gamma x A$ then $\Gamma \models A$.
+\end{lemma}
+\begin{lemma}[Subtyping laws]
+  The following laws, written as inference rules, hold:
+\begin{gather*}
+  \ru{\Gamma \models A
+    }{\Gamma \models A \leq A}
+\qquad
+  \ru{\Gamma \models A \leq B \qquad
+      \Gamma \models B \leq C
+    }{\Gamma \models A \leq C}
+\qquad
+  \ru{\Gamma \der a \leq b
+    }{\Gamma \models \Nat a \leq \Nat b}
+\qquad
+  \ru{\Gamma \der a \leq b
+    }{\Gamma \models \On a \leq \On b}
+\\[2ex]
+  \ru{\Gamma \models A' \leq A \qquad
+      \cext \Gamma x {A'} \models B \leq B'
+    }{\Gamma \models \funT x A B \leq \funT x {A'} {B'}}
+\qquad
+  \ru{\cext \Gamma i \Size \models A \leq A'
+    }{\Gamma \models \forallT i A \leq \forallT i {A'}}
+  \end{gather*}
+\end{lemma}
+\begin{theorem}[Typing laws]
+  The following laws, written as inference rules, hold:
+\begin{gather*}
+  \ru{\Gamma \models t : A \qquad
+      \Gamma \models A \leq B
+    }{\Gamma \models t : B}
+\\[2ex]
+  \ru{\models \Gamma
+    }{\Gamma \models x : \Gamma(x)}
+\qquad
+  \ru{\cext \Gamma x A \models t : B
+    }{\Gamma \models \lambda x t : \funT x A B}
+\qquad
+  \ru{\Gamma \models t : \funT x A B \qquad
+      \Gamma \models u : A
+    }{\Gamma \models t\,u : \subst u x B}
+\\[2ex]
+  \ru{\cext \Gamma i \Size \models t : A
+    }{\Gamma \models \lambda i t : \forallT i A}
+\qquad
+  \ru{\Gamma \models t : \forallT i A \qquad
+      \Gamma \der a
+    }{\Gamma \models t\,a : \subst a i A}
+\qquad
+  \dots
+\end{gather*}
+\end{theorem}
+\noindent
+\begin{proof*}
+\begin{caselist}
+\nextcase
+\[
+  \ru{\cext \Gamma i \Size \models t : A
+    }{\Gamma \models \lambda i t : \forallT i A}
+\]
+Assume $\Psi$ and $\psi \in \Psi$ and
+$\gamma \in \VAL \Psi \psi \Gamma$.  Further, assume $\Phi \leq \Psi$
+and $\phi \in \Phi \leq \psi \in \Psi$ and $\Phi \der a$.  We show
+$\subst a i A \in \TYhat \Phi \phi \ell$ and
+$(\lambda i t)\,a \in \ELhat \Phi \phi \ell {\subst a i A}$.  By
+monotonicity, $\gamma \in \VAL \Phi \phi \Gamma$, thus
+$\sext \gamma i a \in \VAL \Phi \phi {(\cext \Gamma i \Size)}$.
+By induction hypothesis $\subst a i A \in \TYhat \Phi \phi \ell$,
+and $\subst a i t \in \ELhat \Phi \phi \ell {\subst a i A}$,
+and we conclude by weak head expansion.
+
+\nextcase
+\[
+  \ru{\Gamma \models t : \forallT i A \qquad
+      \Gamma \der a
+    }{\Gamma \models t\,a : \subst a i A}
+\]
+Assume $\Psi$ and $\psi \in \Psi$ and
+$\gamma \in \VAL \Psi \psi \Gamma$.  We show
+$(\subst a i A)\gamma \in \TYhat \Psi \psi \ell$ and
+$(t\,a)\gamma \in \ELhat \Psi \psi \ell {(\subst a i A)\gamma}$.  By
+induction hypothesis, $(\forall i A) \gamma \in \TY \Psi \psi \ell$
+and $t\gamma \in \ELhat \Psi \psi \ell {(\forallT i A)\gamma}$.  Since
+$\Psi \der a \gamma$, we have
+$\subst {a\gamma} i {A\gamma} \in \TYhat \Psi \psi \ell$ and
+$t \gamma\, (a \gamma) \in \ELhat \Psi \psi \ell {\subst {a\gamma} i
+  {A\gamma}}$.
+The rest is substitution laws.
+\qed
+\end{caselist}
+\end{proof*}
+Since the models does not have any notion of equality of terms, it
+does not allow us to give a complete set of rules for type equality
+and subtyping.
+Thus, we refine the model.
 
 
 \section{Term model via partial equivalence relations}
@@ -409,8 +636,8 @@ rules:
      }{\alpha {>} \beta}
 \]
 Here,
-$\NAThat^\alpha = \{ (t,t') \mid t \evalsto w \mand \mand t' \evalsto
-w' and w = w' \in \NAT^\alpha \}$.
+$\NAThat^\alpha = \{ (t,t') \mid t \evalsto w \mand t' \evalsto
+w' \mand w = w' \in \NAT^\alpha \}$.
 
 A PER $\ON^\alpha$ of tree ordinals strictly below $\alpha$
 is defined inductively as follows:
@@ -503,6 +730,9 @@ Case for size polymorphism:
     \mforall \phi \in \Phi \leq \psi \in \Psi
     \mand \Phi \der a,a',b
 \end{align*}
+
+
+\subsection{Fundamental theorem}
 
 
 
