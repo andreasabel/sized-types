@@ -1,0 +1,525 @@
+\nonstopmode
+%% For double-blind review submission
+%%\documentclass[acmsmall%acmlarge%,review,anonymous
+%%]{acmart}\settopmatter{printfolios=true}
+%% For single-blind review submission
+%\documentclass[acmlarge,review]{acmart}\settopmatter{printfolios=true}
+%% For final camera-ready submission
+\documentclass[acmsmall,screen]{acmart}\settopmatter{}
+
+% For having two versions of a paper in one file.
+% Stuff that does not fit into the short version can be encosed in \LONGVERSION{...}
+\ifdefined\LONGVERSION
+  \relax
+\else
+% short version:
+\newcommand{\LONGVERSION}[1]{}
+\newcommand{\SHORTVERSION}[1]{#1}
+% % long version:
+% \newcommand{\LONGVERSION}[1]{#1}
+% \newcommand{\SHORTVERSION}[1]{}
+% \newcommand{\SHORTVERSION}[1]{BEGIN~SHORT\ #1 \ END~SHORT}
+\fi
+\newcommand{\LONGSHORT}[2]{\LONGVERSION{#1}\SHORTVERSION{#2}}
+\newcommand{\SHORTLONG}[2]{\SHORTVERSION{#1}\LONGVERSION{#2}}
+\newcommand{\EXTENDED}[1]{}
+
+%\usepackage[right]{showlabels}\renewcommand{\showlabelfont}{\small\ttfamily\color{gray}}
+
+% controlling flushleft/center for math displays
+% http://www.golatex.de/wechsel-zwischen-leqno-und-reqno-fleqn-uvm-t2488.html
+\makeatletter
+%\def\leqn{\tagsleft@true}
+%\def\reqn{\tagsleft@false}
+\def\fleq{\@fleqntrue\let\mathindent\@mathmargin \@mathmargin=\leftmargini}
+\def\cneq{\@fleqnfalse}
+\g@addto@macro{\endsubequations}{\addtocounter{equation}{-1}}
+\makeatother
+
+\usepackage[utf8]{inputenc}
+\usepackage{mathtools} %mathrlap
+\usepackage[all]{xy}
+
+\usepackage[cal=boondoxo]{mathalfa}
+\usepackage{calc} % \widthof
+
+%\usepackage{latex/agda}
+
+% NO EFFECT:
+% \renewcommand{\AgdaOperator}    [1]
+%     {\AgdaNoSpaceMath{\AgdaFontStyle{\textcolor{AgdaOperator}{\mathbf{#1}}}}}
+
+%% Note: Authors migrating a paper from PACMPL format to traditional
+%% SIGPLAN proceedings format should change 'acmlarge' to
+%% 'sigplan,10pt'.
+
+
+%% Some recommended packages.
+\usepackage{booktabs}   %% For formal tables:
+                        %% http://ctan.org/pkg/booktabs
+\usepackage{subcaption} %% For complex figures with subfigures/subcaptions
+                        %% http://ctan.org/pkg/subcaption
+
+\setcopyright{rightsretained}
+\acmJournal{PACMPL}
+\acmYear{2019}
+\acmVolume{5}
+\acmNumber{POPL}
+\acmArticle{1}
+\acmMonth{1}
+\acmDOI{10.1145/???}
+\acmPrice{}
+
+%% \makeatletter\if@ACM@journal\makeatother
+%% %% Journal information (used by PACMPL format)
+%% %% Supplied to authors by publisher for camera-ready submission
+%% \acmJournal{PACMPL}
+%% \acmVolume{1}
+%% \acmNumber{1}
+%% \acmArticle{33}
+%% \acmYear{2017}
+%% \acmMonth{9}
+%% \acmDOI{10.1145/nnnnnnn.nnnnnnn}
+%% \startPage{1}
+%% \else\makeatother
+%% %% Conference information (used by SIGPLAN proceedings format)
+%% %% Supplied to authors by publisher for camera-ready submission
+%% \acmConference[PL'17]{ACM SIGPLAN Conference on Programming Languages}{January 01--03, 2017}{New York, NY, USA}
+%% \acmYear{2017}
+%% \acmISBN{978-x-xxxx-xxxx-x/YY/MM}
+%% \acmDOI{10.1145/nnnnnnn.nnnnnnn}
+%% \startPage{1}
+%% \fi
+
+\makeatletter
+\newenvironment{proof*}[1][\proofname]{\par
+  \normalfont \topsep6\p@\@plus6\p@\relax
+  \trivlist
+  \item[\@proofindent\hskip\labelsep
+        {\@proofnamefont #1\@addpunct{.}}]\ignorespaces
+}{%
+  \endtrivlist\@endpefalse
+}
+\makeatother
+
+%% Copyright information
+%% Supplied to authors (based on authors' rights management selection;
+%% see authors.acm.org) by publisher for camera-ready submission
+%%\setcopyright{none}             %% For review submission
+%\setcopyright{acmcopyright}
+%\setcopyright{acmlicensed}
+%\setcopyright{rightsretained}
+%\copyrightyear{2017}           %% If different from \acmYear
+
+
+% \acmBadgeR[http://icfp17.sigplan.org/track/icfp-2017-Artifacts]{artifact_evaluated-functional.png}
+% \acmBadgeR[http://icfp17.sigplan.org/track/icfp-2017-Artifacts]{artifact_evaluated-reusable.png}
+% \acmBadgeL[http://icfp17.sigplan.org/track/icfp-2017-Artifacts]{artifact_available.png}
+% \acmBadgeL[https://hackage.haskell.org/package/Sit]{artifact_available.png}
+
+%% Bibliography style
+\bibliographystyle{ACM-Reference-Format}
+%% Citation style
+%% Note: author/year citations are required for papers published as an
+%% issue of PACMPL.
+\citestyle{acmauthoryear}   %% For author/year citations
+
+\input{macros}
+
+\renewcommand{\forallT}[2]{\forall #1.\,#2}
+
+
+
+\begin{document}
+
+%% Title information
+\title{A Predicative Semantics of Sized Dependent Types}
+%\titlenote{with title note}             %% \titlenote is optional;
+                                        %% can be repeated if necessary;
+                                        %% contents suppressed with 'anonymous'
+%\subtitle{Subtitle}                     %% \subtitle is optional
+%\subtitlenote{with subtitle note}       %% \subtitlenote is optional;
+                                        %% can be repeated if necessary;
+                                        %% contents suppressed with 'anonymous'
+
+
+%% Author information
+%% Contents and number of authors suppressed with 'anonymous'.
+%% Each author should be introduced by \author, followed by
+%% \authornote (optional), \orcid (optional), \affiliation, and
+%% \email.
+%% An author may have multiple affiliations and/or emails; repeat the
+%% appropriate command.
+%% Many elements are not rendered, but should be provided for metadata
+%% extraction tools.
+
+%% Author with single affiliation.
+\author{Andreas Abel}
+%\authornote{with author1 note}          %% \authornote is optional;
+                                        %% can be repeated if necessary
+\orcid{0000-0003-0420-4492}             %% \orcid is optional
+\affiliation{
+  \department{Department of Computer Science and Engineering}
+  \institution{Gothenburg University, Sweden}
+  \streetaddress{Rännvägen 6b}
+  \city{Göteborg}
+%  \state{State1}
+  \postcode{41296}
+  \country{Sweden}
+}
+\email{andreas.abel@gu.se}          %% \email is recommended
+
+\author{Henning Basold}
+\affiliation{
+  \institution{Lyon}
+  \country{France}
+}
+\email{henning@basold.eu}
+
+% %% Author with two affiliations and emails.
+% \author{Andreas Vezzosi}
+% \affiliation{
+%   \department{Department of Computer Science and Engineering}
+%   \institution{Chalmers University of Technology, Sweden}
+%   \streetaddress{Rännvägen 6b}
+%   \city{Göteborg}
+% %  \state{State1}
+%   \postcode{41296}
+%   \country{Sweden}
+% }
+% \email{vezzosi@chalmers.se}          %% \email is recommended
+
+% \author{Theo Winterhalter}
+% \affiliation{
+%   \institution{École normale supérieure Paris-Saclay, France}
+%   \country{France}
+% }
+% \email{theo.winterhalter@gmail.com}
+
+%% Paper note
+%% The \thanks command may be used to create a "paper note" ---
+%% similar to a title note or an author note, but not explicitly
+%% associated with a particular element.  It will appear immediately
+%% above the permission/copyright statement.
+%\thanks{with paper note}                %% \thanks is optional
+                                        %% can be repeated if necesary
+                                        %% contents suppressed with 'anonymous'
+
+
+%% Abstract
+%% Note: \begin{abstract}...\end{abstract} environment must come
+%% before \maketitle command
+\begin{abstract}
+\end{abstract}
+
+
+%% 2012 ACM Computing Classification System (CSS) concepts
+%% Generate at 'http://dl.acm.org/ccs/ccs.cfm'.
+ \begin{CCSXML}
+<ccs2012>
+<concept>
+<concept_id>10003752.10003790.10011740</concept_id>
+<concept_desc>Theory of computation~Type theory</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10003752.10010124.10010125.10010130</concept_id>
+<concept_desc>Theory of computation~Type structures</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10003752.10010124.10010138.10010142</concept_id>
+<concept_desc>Theory of computation~Program verification</concept_desc>
+<concept_significance>300</concept_significance>
+</concept>
+<concept>
+<concept_id>10003752.10010124.10010131.10010134</concept_id>
+<concept_desc>Theory of computation~Operational semantics</concept_desc>
+<concept_significance>100</concept_significance>
+</concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Theory of computation~Type theory}
+\ccsdesc[500]{Theory of computation~Type structures}
+\ccsdesc[300]{Theory of computation~Program verification}
+\ccsdesc[100]{Theory of computation~Operational semantics}
+%% End of generated code
+
+
+%% Keywords
+%% comma separated list
+\keywords{dependent types, eta-equality, normalization-by-evaluation, proof irrelevance, sized types, subtyping, universes.}  %% \keywords is optional
+%\keywords{Dependent Types, Normalization-by-Evaluation, Proof Irrelevance, Sized Types, Subtyping, Universes}  %% \keywords is optional
+
+
+%% \maketitle
+%% Note: \maketitle command must come after title commands, author
+%% commands, abstract environment, Computing Classification System
+%% environment and commands, and keywords command.
+\maketitle
+
+
+\section{Term model via a logical predicate}
+
+Weak head evaluation $t \evalsto w$ is defined as usual.
+
+Let $\Phi,\Psi$ range over size contexts.  We write $\Phi \der a$ if
+$a$ is a valid size expression in size context $\Phi$.
+% and $\phi,\psi$ over their valuations.
+We write $\phi \in \Phi$ if $\phi$ is a finite map of the
+size variables declared in the size context $\Phi$ to ordinals.
+We write $\Phi \leq \Psi$ if $\Phi$ is an extension (a thinning) of
+$\Psi$ and $\phi \in \Phi \leq \psi \in \Psi$ if $\phi(i) = \psi(i)$
+for all $i \in \Psi$.
+
+Let $\NE$ be the set of all neutral terms.  Let $n,N$ range over neutrals.
+
+A semantic type $\NAT^\alpha$ of natural numbers
+strictly below $\alpha$ is defined inductively as by the following
+rules:
+\[
+  \ru{n \in \NE
+    }{n \in \NAT^\alpha}
+\qquad
+  \rux{
+     }{\zero a \in \NAT^{\alpha}
+     }{\alpha {>} 0}
+\qquad
+  \rux{t \in \NAThat^{\beta}
+     }{\suc a t \in \NAT^{\alpha}
+     }{\alpha {>} \beta}
+\]
+Here,
+$\NAThat^\alpha = \{ t \mid t \evalsto w \mand w \in \NAT^\alpha \}$.
+
+A semantic type $\ON^\alpha$ of tree ordinals strictly below $\alpha$
+is defined inductively as follows:
+\[
+  \ru{n \in \NE
+    }{n \in \ON^\alpha}
+\qquad
+  \rux{
+     }{\zero a \in \ON^{\alpha}
+     }{\alpha {>} 0}
+\qquad
+  \rux{t \in \ONhat^{\beta}
+     }{\suc a t \in \ON^{\alpha}
+     }{\alpha {>} \beta}
+\qquad
+  \rux{t\,u \in \ONhat^{\beta} \mforall u \in \NAThat^\omega
+     }{\lim a t \in ON^{\alpha}
+     }{\alpha{>}\beta}
+\]
+Here,
+$\ONhat^\alpha = \{ t \mid t \evalsto w \mand w \in \ON^\alpha \}$.
+
+By induction on $\ell \in \NN$, we define inductively sound type codes
+$A \in \TY \Psi \psi \ell$ and simultaneously their extension
+$\EL \Psi \psi \ell A \subseteq \Tm$ by in recursion on
+$A \in \TY \Psi \psi \ell$.
+In these definitions, we make use of the notations:
+\[
+\begin{array}{lcl}
+  T \in \TYhat \Psi \psi \ell
+    & \defiff & T \evalsto A \mand A \in \TY \Psi \psi \ell
+\\
+  \ELhat \Psi \psi \ell T
+    & = & \EL \Psi \psi \ell A \mwhere T \evalsto A
+\end{array}
+\]
+Case for neutrals:
+\begin{align*}
+  & \ru{N \in \NE}{N \in \TY \Psi \psi \ell}
+  &
+  \EL \Psi \psi \ell N = \NE
+\end{align*}
+Case for natural numbers:
+\begin{align*}
+  & \ru{\Psi \der a
+      }{\Nat a \in \TY \Psi \psi \ell}
+  & \EL \Psi \psi \ell {\Nat a}
+    = \NAT^{\psi(a)}
+\end{align*}
+Case for tree ordinals:
+\begin{align*}
+  & \ru{\Psi \der a
+      }{\On a \in \TY \Psi \psi \ell}
+  & \EL \Psi \psi \ell {\On a}
+    = \ON^{\psi(a)}
+\end{align*}
+Case for universes:
+\begin{align*}
+  & \ru{\ell' < \ell
+      }{\Univ{\ell'} \in \TY \Psi \psi \ell}
+  & \EL \Psi \psi \ell{\Univ{\ell'}}
+    =
+    \TY \Psi \psi {\ell'}
+\end{align*}
+Case for the function type:
+\begin{align*}
+  & \ru{A \in \TYhat \Psi \psi \ell \qquad
+        \subst u x B \in \TYhat \Psi \psi \ell
+        \mforall u \in \ELhat \Psi \psi \ell A
+      }{\funT x A B \in \TY \Psi \psi \ell}
+\\
+  & t \in \EL \Psi \psi \ell {\funT x A B}
+    \defas
+    t\,u \in \ELhat \Psi \psi \ell {\subst u x B}
+    \mforall u \in \ELhat \Psi \psi \ell A
+\\
+\end{align*}
+Case for size polymorphism:
+\begin{align*}
+  & \ru{\forall \phi \in \Phi \leq \psi \in \Psi,\
+        \Phi \der a.\ \
+        \subst a i A \in \TY \Phi \phi \ell
+      }{\forallT i A \in \TY \Psi \psi \ell}
+\\
+  & t \in \EL \Psi \psi \ell {\forallT i A}
+    \defas
+    t\,a \in \EL \Phi \phi \ell {\subst a i A}
+    \mforall \phi \in \Phi \leq \psi \in \Psi
+    \mand \Phi \der a
+\end{align*}
+
+
+
+\section{Term model via partial equivalence relations}
+
+If $\AA$ is a partial equivalence relation (PER) on terms, We write $t = t'
+\in \AA$ if $(t,t') \in \AA$, and $t \in \AA$ if $(t,t) \in \AA$.
+
+Let $\NE$ be PER of neutrals such that $n = n' \in \NE$ iff $n$ and
+$n'$ are identical except for size annotations $\ann a$.
+
+The PER $\NAT^\alpha$ of natural numbers
+strictly below $\alpha$ is defined inductively as by the following
+rules:
+\[
+  \ru{n = n' \in \NE
+    }{n = n' \in \NAT^\alpha}
+\qquad
+  \rux{
+     }{\zero a = \zero {a'} \in \NAT^{\alpha}
+     }{\alpha {>} 0}
+\qquad
+  \rux{t = t' \in \NAThat^{\beta}
+     }{\suc a t = \suc{a'}{t'} \in \NAT^{\alpha}
+     }{\alpha {>} \beta}
+\]
+Here,
+$\NAThat^\alpha = \{ (t,t') \mid t \evalsto w \mand \mand t' \evalsto
+w' and w = w' \in \NAT^\alpha \}$.
+
+A PER $\ON^\alpha$ of tree ordinals strictly below $\alpha$
+is defined inductively as follows:
+\begin{gather*}
+  \ru{n = n' \in \NE
+    }{n = n' \in \ON^\alpha}
+\qquad
+  \rux{
+     }{\zero a = \zero{a'} \in \ON^{\alpha}
+     }{\alpha {>} 0}
+\qquad
+  \rux{t = t' \in \ONhat^{\beta}
+     }{\suc a t = \suc{a'}{t'} \in \ON^{\alpha}
+     }{\alpha {>} \beta}
+\\[2ex]
+  \rux{t\,u = t'\,u' \in \ONhat^{\beta} \mforall u = u' \in \NAThat^\omega
+     }{\lim a t = \lim{a'}{t'} \in ON^{\alpha}
+     }{\alpha{>}\beta}
+\end{gather*}
+Here,
+$\ONhat^\alpha  = \{ (t,t') \mid t \evalsto w \mand \mand t' \evalsto
+w' and w = w' \in \ON^\alpha \}$.
+
+
+By induction on $\ell \in \NN$, we define inductively a PER
+$\TY \Psi \psi \ell$ of type codes and simultaneously their extension
+$\EL \Psi \psi \ell A \subseteq \Tm$ by in recursion on
+$A \in \TY \Psi \psi \ell$.
+In these definitions, we make use of the notations:
+\[
+\begin{array}{lcl}
+  T = T' \in \TYhat \Psi \psi \ell
+    & \defiff & T \evalsto A \mand T' \evalsto A' \mand A = A' \in \TY \Psi \psi \ell
+\\
+  \ELhat \Psi \psi \ell T
+    & = & \EL \Psi \psi \ell A \mwhere T \evalsto A
+\end{array}
+\]
+Case for neutrals:
+\begin{align*}
+  & \ru{N = N' \in \NE}{N \in \TY \Psi \psi \ell}
+  &
+  \EL \Psi \psi \ell N = \NE
+\end{align*}
+Case for natural numbers:
+\begin{align*}
+  & \ru{\Psi \der a
+      }{\Nat a = \Nat a \in \TY \Psi \psi \ell}
+  & \EL \Psi \psi \ell {\Nat a}
+    = \NAT^{\psi(a)}
+\end{align*}
+Case for tree ordinals:
+\begin{align*}
+  & \ru{\Psi \der a
+      }{\On a = \On a \in \TY \Psi \psi \ell}
+  & \EL \Psi \psi \ell {\On a}
+    = \ON^{\psi(a)}
+\end{align*}
+Case for universes:
+\begin{align*}
+  & \ru{\ell' < \ell
+      }{\Univ{\ell'} = \Univ{\ell'} \in \TY \Psi \psi \ell}
+  & \EL \Psi \psi \ell{\Univ{\ell'}}
+    =
+    \TY \Psi \psi {\ell'}
+\end{align*}
+Case for the function type:
+\begin{align*}
+  & \ru{A = A' \in \TYhat \Psi \psi \ell \qquad
+        \subst u x B = \subst{u'}x{B'} \in \TYhat \Psi \psi \ell
+        \mforall u = u' \in \ELhat \Psi \psi \ell A
+      }{\funT x A B = \funT x {A'} {B'} \in \TY \Psi \psi \ell}
+\\
+  & t = t' \in \EL \Psi \psi \ell {\funT x A B}
+    \defas
+    t\,u = t'\,u' \in \ELhat \Psi \psi \ell {\subst u x B}
+    \mforall u = u' \in \ELhat \Psi \psi \ell A
+\\
+\end{align*}
+Case for size polymorphism:
+\begin{align*}
+  & \ru{\forall \phi \in \Phi \leq \psi \in \Psi,\
+        \Phi \der a.\ \
+        \subst a i A = \subst a i {A'} \in \TY \Phi \phi \ell
+      }{\forallT i A = \forallT i {A'} \in \TY \Psi \psi \ell}
+\\
+  & t = t' \in \EL \Psi \psi \ell {\forallT i A}
+    \defas
+    t\,a = t'\,a' \in \EL \Phi \phi \ell {\subst b i A}
+    \mforall \phi \in \Phi \leq \psi \in \Psi
+    \mand \Phi \der a,a',b
+\end{align*}
+
+
+
+
+%% Bibliography
+\bibliography{all}
+
+
+% %% Appendix
+% \appendix
+% \section{Appendix}
+
+% Text of appendix \ldots
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "pred-sized"
+%%% End:
