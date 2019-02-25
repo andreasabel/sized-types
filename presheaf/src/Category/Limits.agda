@@ -7,7 +7,8 @@ module Category.Limits where
 
 -- Fix an index category and a target category and a diagram F
 
-module _ {oi hi ei} {I : Category oi hi ei}
+module Limits
+         {oi hi ei} {I : Category oi hi ei}
          {o  h  e } {C : Category o  h  e }
          (F : Functor I C) where
 
@@ -40,7 +41,7 @@ module _ {oi hi ei} {I : Category oi hi ei}
 
     ConeHomS :  Setoid (oi ⊔ h ⊔ e) e
     ConeHomS .Setoid.Carrier = ConeHom
-    ConeHomS .Setoid._≈_ u v = u .coneHom ≈ v .coneHom
+    ConeHomS .Setoid._≈_ U V = U .coneHom ≈ V .coneHom
     ConeHomS .Setoid.isEquivalence .IsEquivalence.refl  = C .reflEq
     ConeHomS .Setoid.isEquivalence .IsEquivalence.sym   = C .symEq
     ConeHomS .Setoid.isEquivalence .IsEquivalence.trans = C .transEq
@@ -79,3 +80,11 @@ module _ {oi hi ei} {I : Category oi hi ei}
   -- A limit of a diagram is its terminal cone.
 
   Limit = TerminalObject CONE
+
+
+-- Dualize everything to get colimits
+
+module Colimits
+         {oi hi ei} {I : Category oi hi ei}
+         {o  h  e } {C : Category o  h  e }
+         (F : Functor I C) where

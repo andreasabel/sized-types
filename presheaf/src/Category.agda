@@ -132,38 +132,61 @@ SET o e .comp-id-r  {f = f}                 x=y = FEq.cong f x=y
 SET o e .comp-assoc {f = f} {g = g} {h = h} x=y = FEq.cong (f FEq.∘ (g FEq.∘ h)) x=y
 SET o e .comp-cong  f=f' g=g'               x=y = f=f' (g=g' x=y)
 
--- Being a terminal object
+
+-- Finality and terminal objects
 
 module Finality {o h e} (C : Category o h e) where
+
+  record WeakTerminalObject : Set (o ⊔ h ⊔ e) where
+    field
+      𝟙 : C .Obj
+      ! : (A : C .Obj) → C .Hom A 𝟙
 
   record Terminal (X : C .Obj) : Set (o ⊔ h ⊔ e) where
     field
       ! : ∀ (A : C .Obj) → C .Hom A X
       !-unique : ∀{A} (f : C .Hom A X) → C .Eq f (! A)
-  open Terminal public
 
   record TerminalObject : Set (o ⊔ h ⊔ e) where
     field
       𝟙        : C .Obj
       terminal : Terminal 𝟙
-  open TerminalObject public
+
+  open Terminal           public
+  open TerminalObject     public
+  open WeakTerminalObject public
 
 open Finality public
 
--- Being an initial object
 
-module _ {o h e} (C : Category o h e) where
+-- Initiality and initial objects
+
+module Initiality {o h e} (C : Category o h e) where
+  open Finality (op C) public using () renaming
+    ( Terminal           to Initial
+    ; !                  to ¿
+    ; !-unique           to ¿-unique
+    ; 𝟙                  to 𝟘
+    ; terminal           to initial
+    ; TerminalObject     to InitialObject
+    ; WeakTerminalObject to WeakInitialObject
+    )
+
+module InitialityALT {o h e} (C : Category o h e) where
 
   Initial : (X : C .Obj) → Set (o ⊔ h ⊔ e)
   Initial = Terminal (op C)
 
   module Initial X (init : Initial X) = Terminal {C = op C} init
-    renaming (! to ¿; !-unique to ?-unique)
+    renaming (! to ¿; !-unique to ¿-unique)
 
   record InitialObject : Set (o ⊔ h ⊔ e) where
     field
       𝟘       : C .Obj
       initial : Initial 𝟘
+
+open Initiality public
+
 
 -- Functor
 
