@@ -71,6 +71,18 @@ op C .comp-id-r      = C .comp-id-l
 op C .comp-assoc     = C .symEq (C .comp-assoc)
 op C .comp-cong e e' = C .comp-cong e' e
 
+-- Empty category
+
+⊥-cat : ∀ o h e → Category o h e
+⊥-cat o h e .Obj = Lift _ ⊥
+⊥-cat o h e .HomS _ _ = ⊥-setoid _ _
+⊥-cat o h e .id ()
+⊥-cat o h e .comp ()
+⊥-cat o h e .comp-id-l  {f = ()}
+⊥-cat o h e .comp-id-r  {f = ()}
+⊥-cat o h e .comp-assoc {f = ()}
+⊥-cat o h e .comp-cong ()
+
 -- Unit category
 
 ⊤-cat : ∀ o h e → Category o h e
@@ -120,6 +132,39 @@ SET o e .comp-id-r  {f = f}                 x=y = FEq.cong f x=y
 SET o e .comp-assoc {f = f} {g = g} {h = h} x=y = FEq.cong (f FEq.∘ (g FEq.∘ h)) x=y
 SET o e .comp-cong  f=f' g=g'               x=y = f=f' (g=g' x=y)
 
+-- Being a terminal object
+
+module Finality {o h e} (C : Category o h e) where
+
+  record Terminal (X : C .Obj) : Set (o ⊔ h ⊔ e) where
+    field
+      ! : ∀ (A : C .Obj) → C .Hom A X
+      !-unique : ∀{A} (f : C .Hom A X) → C .Eq f (! A)
+  open Terminal public
+
+  record TerminalObject : Set (o ⊔ h ⊔ e) where
+    field
+      𝟙        : C .Obj
+      terminal : Terminal 𝟙
+  open TerminalObject public
+
+open Finality public
+
+-- Being an initial object
+
+module _ {o h e} (C : Category o h e) where
+
+  Initial : (X : C .Obj) → Set (o ⊔ h ⊔ e)
+  Initial = Terminal (op C)
+
+  module Initial X (init : Initial X) = Terminal {C = op C} init
+    renaming (! to ¿; !-unique to ?-unique)
+
+  record InitialObject : Set (o ⊔ h ⊔ e) where
+    field
+      𝟘       : C .Obj
+      initial : Initial 𝟘
+
 -- Functor
 
 record Functor {o1 h1 e1} (C1 : Category o1 h1 e1)
@@ -146,6 +191,19 @@ record Functor {o1 h1 e1} (C1 : Category o1 h1 e1)
              → C2 .Eq (map f) (map f')
 
 open Functor public
+
+-- Given a Functor F : C → D, the opposite functor op F : op C → op D
+-- is the same functor with arrows in both categories considered reversed.
+
+module _ {o1 h1 e1} (C1 : Category o1 h1 e1)
+         {o2 h2 e2} (C2 : Category o2 h2 e2) where
+
+  opFun : Functor C1 C2 → Functor (op C1) (op C2)
+  opFun F .App      = F .App
+  opFun F .map      = F .map
+  opFun F .map-id   = F .map-id
+  opFun F .map-comp = F .map-comp
+  opFun F .map-cong = F .map-cong
 
 -- Identity functor
 
@@ -185,6 +243,16 @@ projFun C i .map-cong f=f' = f=f' i
 Presheaf : ∀ o e {o1 h1 e1} (C : Category o1 h1 e1) → Set (lsuc (o ⊔ e) ⊔ o1 ⊔ h1 ⊔ e1)
 Presheaf o e C = Functor (op C) (SET o e)
 
+-- Empty presheaf
+
+⊥-presheaf : ∀ o e {o1 h1 e1} (C : Category o1 h1 e1) → Presheaf o e C
+⊥-presheaf o e C .App _ = ⊥-setoid o e
+⊥-presheaf o e C .map f ._⟨$⟩_ ()
+⊥-presheaf o e C .map f .FEq.cong ()
+⊥-presheaf o e C .map-id ()
+⊥-presheaf o e C .map-comp ()
+⊥-presheaf o e C .map-cong eq ()
+
 -- Unit presheaf
 
 ⊤-presheaf : ∀ o e {o1 h1 e1} (C : Category o1 h1 e1) → Presheaf o e C
@@ -212,7 +280,7 @@ module _ {o e o1 h1 e1} {C : Category o1 h1 e1}
                                             , Q .map-id q=q'
   ×-presheaf .map-comp        (p=p' , q=q') = P .map-comp p=p' , Q .map-comp q=q'
   ×-presheaf .map-cong f=f'   (p=p' , q=q') = P .map-cong f=f' p=p'
-                                              , Q .map-cong f=f' q=q'
+                                            , Q .map-cong f=f' q=q'
 
   -- Presheaf exponential
 
@@ -358,8 +426,7 @@ presheaf-cat : ∀ s {o h e}    (let ℓ = s ⊔ o ⊔ h ⊔ e)
                → Category (lsuc ℓ) (lsuc ℓ) ℓ
 presheaf-cat s {o} {h} {e} C = let ℓ = s ⊔ o ⊔ h ⊔ e in
 
-  functor-cat C (SET ℓ ℓ)
-
+  functor-cat (op C) (SET ℓ ℓ)
 
 -- projᵢ and injᵢ are natural transformations on presheafs
 
@@ -379,7 +446,6 @@ module _ {i o e o1 h1 e1} {I : Set i} {C : Category o1 h1 e1}
   inj-presheaf i .transformation A ._⟨$⟩_     p = i , p
   inj-presheaf i .transformation A .FEq.cong eq = refl , eq
   inj-presheaf i .naturality f               eq = refl , P i .map-cong (C .reflEq) eq
-
 
 -- -}
 -- -}

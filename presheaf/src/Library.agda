@@ -8,6 +8,8 @@ open import Level public using (Level; _⊔_; Lift; lift; lower)
 open import Data.Bool.Base  public using (Bool; true; false) hiding (module Bool)
 open import Data.List.Base  public using (List; []; _∷_)
 
+open import Data.Empty      public using (⊥; ⊥-elim)
+
 open import Data.Unit       public using (⊤)
 open import Data.Product    public using (Σ; ∃; _×_; _,_; proj₁; proj₂)
 open import Data.Product.Relation.Binary.Pointwise.NonDependent
@@ -23,6 +25,13 @@ open import Relation.Binary.PropositionalEquality public using (_≡_; refl; sub
 module PEq = Relation.Binary.PropositionalEquality
 import Relation.Binary.Reasoning.Setoid
 module SetoidReasoning = Relation.Binary.Reasoning.Setoid
+
+⊥-setoid : ∀ o e → Setoid o e
+⊥-setoid o e .Setoid.Carrier = Lift _ ⊥
+⊥-setoid o e .Setoid._≈_ _ _ = Lift _ ⊥
+⊥-setoid o e .Setoid.isEquivalence .IsEquivalence.refl {x = ()}
+⊥-setoid o e .Setoid.isEquivalence .IsEquivalence.sym ()
+⊥-setoid o e .Setoid.isEquivalence .IsEquivalence.trans ()
 
 ⊤-setoid : ∀ o e → Setoid o e
 ⊤-setoid o e .Setoid.Carrier = Lift _ ⊤
