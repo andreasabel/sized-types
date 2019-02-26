@@ -128,6 +128,9 @@ which is the pointwise function space plus flipping the domain
 
     (∙)⁻ : (Oᵒᵖ × O → Set) → O × Oᵒᵖ → Set.
 
+(It is not clear whether we need this function space, at least to
+model lambda calculus we need the usual presheaf exponential instead.)
+
 If we work with such profunctors, the "officially" all types are
 mixed-variant, but "internally", they might be co- or contra-variant;
 however, their behavior is not statically exposed.
@@ -220,6 +223,51 @@ lambda/Π-introduced variable is negative, but only positive variables
 can be used in a term, thus, λx.x is not even well-typed.)
 
 
+## Sizes
+
+Judgements
+
+    Δ ⊢ s
+    Δ ⊢ s ≤ s'
+
+Rules
+
+          Δ ⊢ s
+    suc   ---------
+          Δ ⊢ suc s
+
+          Δ ⊢ s ≤ s'
+    suc-l --------------
+          Δ ⊢ s < suc s'
+
+          Δ ⊢ s < s'
+    suc-r ------------------
+          Δ ⊢ suc s ≤ s'
+
+Given a twin ordinal (α,β) ∈ O₂, what should be the successor?
+
+          α ≤ α'  β' ≤ β
+    suc-l ----------------------
+          α < suc α'  β' < suc β
+
+Thus, the usual successor should only apply to the covariant part.
+
+    suc(α,β) = (α+1,β)
+
+We could also have a "negative successor" applying to the contravariant part.
+
+    suc⁻(α,β) = (α,β+1)
+
+It acts like a predecessor, only that it does not cancel with the successor,
+rather, it commutes with the successor.
+
+
+But actually, rule suc-l does not hold on O₂ with _<_ defined as
+leaving the second component fixed.  We would need β' = β there.
+
+
+
+
 ## Size quantification
 
          Δ,i; Wk₁ Γ ⊢ A
@@ -243,3 +291,53 @@ The quantifier ∀ can thus be defined pointwise (a simple limit)
 
 We may not need ends, which would be necessary if s was interpreted as
 a single ordinal α, and we had to substitute it as (α,α).
+
+
+## Subtyping
+
+    Δ; Γ ⊢ A    Δ ⊢ A ≤ A'
+    ----------------------
+    Δ; Γ ⊢ A'
+
+The subtyping derivation is interpreted as morphism
+
+    (A≤A') : PSh⟦Δ⟧(A,A')
+
+which can be composed with the morphism from the term
+
+    t : PSh⟦Δ⟧(Γ,A)
+
+to
+
+    (A≤A') ∘ t : PSh⟦Δ](Γ,A')
+
+### Contravariant function space
+
+    Δ ⊢ A' ≤ A    Δ ⊢ B ≤ B'
+    ------------------------
+    Δ ⊢ (A → B) ≤ (A' → B')
+
+    ((A → B) ≤ (A' → B')) σ (f : (A → B)σ) (σ' ≥ σ) (a : A'σ')
+      = (B ≤ B')σ' (f σ' (A' ≤ A)σ' a)
+
+    ((A → B) ≤ (A' → B')) σ (f : (A → B)σ) (σ' ≥ σ)
+      = (B ≤ B')σ' ∘ f σ' ∘ (A' ≤ A)σ'
+
+### Structural subtyping
+
+If we only have structural subtyping, Aσ ≤ Aσ' for σ ≤ σ', then the
+morphism we get from the subtyping derivation should be the
+functoriality of A.
+
+    (Aσ ≤ Aσ') = A(σ ≤ σ')
+
+Structural subtyping is introduced by a single rule
+
+    Δ' ⊢ A   Δ ⊢ σ ≤ σ' : Δ'
+    ------------------------
+    Δ ⊢ Aσ ≤ Aσ'
+
+provided we have comparison of size substitutions  Δ ⊢ σ ≤ σ' : Δ'.
+
+
+2019-02-26, Andreas
