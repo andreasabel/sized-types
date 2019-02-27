@@ -135,21 +135,164 @@ If we work with such profunctors, the "officially" all types are
 mixed-variant, but "internally", they might be co- or contra-variant;
 however, their behavior is not statically exposed.
 
-With regards to nomenclature, our profunctors are just presheaves on category
+With regards to nomenclature, our profunctors are just presheaves on
+category O₂ where
 
     O₂ = O × Oᵒᵖ
 
-## Wellfoundedness
+<!--
+category O₂ᵒᵖ where
 
-We can extend strict ordering on O to O₂ by setting
+    O₂ = Oᵒᵖ × O
+-->
 
-    (α,β) < (α',β')  iff  α < α'  and  β = β'
+## Twisted pairs of ordinals
 
-which is wellfounded.  This should allow us to justify well-founded
-recursion on sizes
+The preorder ≤ on elements (α⁺,α⁻) of O₂ = O × Oᵒᵖ is defined by
 
-    fix : (∀i. (∀j<i. Aʲ) → Aⁱ) → ∀i. Aⁱ
+    α⁺ ≤ β⁺   β⁻ ≤ α⁻
+    -----------------
+    (α⁺,α⁻) ≤ (β⁺,β⁻)
 
+There are two strict versions of _◁_, _◀_ ⊆ _≤_:
+
+    α⁺ < β⁺   β⁻ ≤ α⁻
+    -----------------
+    (α⁺,α⁻) ◁ (β⁺,β⁻)
+
+    α⁺ ≤ β⁺   β⁻ < α⁻
+    -----------------
+    (α⁺,α⁻) ◀ (β⁺,β⁻)
+
+Correspondingly there are two successor operations:
+
+    suc⁺(α⁺,α⁻) = (α⁺+1 , α⁻)
+    suc⁻(α⁺,α⁻) = (α⁺ , α⁻+1)
+
+These two operations commute:
+
+    suc⁺ (suc⁻ α) = suc⁻ (suc⁺ α)
+
+With regard to strict ordering, they fulfill the following laws
+
+    suc⁺ α ◁ β   α ≤ β
+    ----------   ----------
+    α ≤ β        α ◁ suc⁺ β
+
+    α ◀ suc⁻ β   α ≤ β
+    ----------   ----------
+    α ≤ β        suc⁻ α ◀ β
+
+suc⁻ can be thought of as a predecessor.
+
+Both strict partial orders are well-founded, there are no infinite chains
+
+    α₀ ▷ α₁ ▷ ...
+    β₀ ◀ β₁ ◀ ...
+
+Thus, ◁ is wellfounded in the sense of less-than and ◀ is wellfounded
+in the sense of greater-than.  The least elements of ◁ have the form
+(0,α⁻) and the greatest elements of ◀ the form (α⁺,0).
+
+For instance, the integers are included in O₂ via
+
+    ... ◀ (0,2) ◀ (0,1) ◀ (0,0) ◁ (1,0) ◁ (2,0) ◁ ...
+
+Given a universal closure ordinal Ω for the inductive and coinductive
+types of our calculus, we have two infinity elements
+
+    ∞⁺ = (Ω,0)
+    ∞⁻ = (0,Ω)
+
+The better visualization of O₂ is maybe
+
+                           ...
+
+                      (ω,0)     ...
+                   ...     ▶
+                  ◁        (ω,1)
+              (2,0)     ...
+             ◁    ▶    ◁
+         (1,0)     (2,1)   ...
+        ◁    ▶    ◁    ▶
+    (0,0)     (1,1)     (2,2)  ... (ω,ω) ...
+        ▶    ◁    ▶    ◁
+         (0,1)     (1,2)   ...
+             ▶    ◁
+              (0,2)     ...         ...
+                  ▶         (1,ω)
+                   ...
+                      (0,ω)     ...
+
+                            ...
+
+where we span an interesting area by
+
+    0 = (0,0)   least element of (◁ ∪ ▶)⁺, here, types are least developed
+    ∞⁺          greatest interesting element of ≤, here, types are smallest
+    ∞⁻          least wrt ≤ of the interesting elements, types are largest
+    (Ω,Ω)       greatest interesting element of (◁ ∪ ▶)⁺, types are maximally developed
+
+
+## Wellfounded recursion
+
+Corresponding to the two orders, ◁ and ▶, we have two well-founded
+recursion principles:
+
+    fixν : (∀i. (∀j◁i. Aʲ) → Aⁱ) → ∀i. Aⁱ
+    fixμ : (∀i. (∀j▶i. Aʲ) → Aⁱ) → ∀i. Aⁱ
+
+The first is for coinductive types like streams of natural numbers
+
+    S α = ℕ × ∀β◁α. S β
+
+    head : ∀ α. S α → ℕ
+    head α = π₁
+
+    tail : ∀ α. S α → ∀ β◁α. S β
+    tail α = π₂
+
+The function `repeat` defined by copattern matching
+
+    repeat : ℕ → ∀ α. S α
+    repeat n α .head     = n
+    repeat n α .tail β◁α = repeat n β
+
+can be defined using the fixed-point principle
+
+    repeat n = fixν λ α s → (n , s)
+
+Given sized natural numbers
+
+    N α = 1 + ∃β▶α. N β
+
+    zero : ∀α. N α
+    zero = inl ()
+
+    suc  : ∀α. N α → N (suc⁻ α)
+    suc α n = inr (α , n)
+
+Note that α is a good witness for the existential since α ▶ suc⁻ α.
+
+Case distinction on natural numbers is defined as
+
+    case : ∀ C α. C → (∀β▶α. N β → C) → N α → C
+    case C α r s = [ (λ _ → r) , (λ (β,n) → s β n) ]
+
+QUESTIONS: Same in the presheaf model?  Is it ok to use the Kripke
+function space (presheaf exponential) for N β → C ?
+
+This allows us to implement division by 2 via fixμ:
+
+    half : ∀ α. N α → N α
+    half = fixμ λ α (f : ∀γ▶α. N γ → N γ) →
+      case (N α) α (zero α) λ β▶α →
+        case (N α) β (zero α) λ γ▶β (m : N γ) →
+          let γ▶α = (γ▶β ∘ β▶α)
+              α≤γ = coe γ▶α
+          (N (α≤γ) (f γ▶α m : N γ) : N α)
+
+TODO: check this in the presheaf model!
 
 # Interpretation of the judgements
 
@@ -232,6 +375,7 @@ Judgements
 
 Rules
 
+<!--
           Δ ⊢ s
     suc   ---------
           Δ ⊢ suc s
@@ -265,7 +409,9 @@ rather, it commutes with the successor.
 But actually, rule suc-l does not hold on O₂ with _<_ defined as
 leaving the second component fixed.  We would need β' = β there.
 
+We should define (α,β) < (α',β') as α < α' × β ≤ β'.
 
+-->
 
 
 ## Size quantification
