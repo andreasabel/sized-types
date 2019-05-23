@@ -2,8 +2,9 @@
 
 open import Library
 open import Category
+open import Presheaf
 
-module Category.Properties where
+module Presheaf.Properties where
 
 module _ {o h e} {C : Category o h e} where
 
