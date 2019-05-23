@@ -5,6 +5,10 @@ open import Category
 
 module Presheaf where
 
+open Category.Category
+open Functor
+open NaturalTransformation
+
 -- Presheaves over C are contravariant functors from C to SET
 
 Presheaf : ∀ o e {o1 h1 e1} (C : Category o1 h1 e1) → Set (lsuc (o ⊔ e) ⊔ o1 ⊔ h1 ⊔ e1)

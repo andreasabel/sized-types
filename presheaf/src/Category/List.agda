@@ -13,7 +13,7 @@ open import Category
 --
 
 module PointwiseAllowExtension (AllowWk : Set) {o h e} (C : Category o h e) where
-
+  open Category.Category
   AW    = AllowWk
 
   data _⊂_ : (Γ Δ : List (C .Obj)) → Set h where
@@ -108,6 +108,8 @@ module OrderPreservingEmbedding = PointwiseAllowExtension ⊤
 -- We can embed for instance a list morphism without weakning into one with weakening.
 
 module Embedding {W W' : Set} (emb : W → W') {o h e} (C : Category o h e) where
+  open Category.Category
+  open Functor
 
   open module M  = PointwiseAllowExtension W C using (LIST; _⊂_) renaming (Eq-⊂ to _≈_)
   open module M' = PointwiseAllowExtension W' C using ()

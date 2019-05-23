@@ -11,6 +11,8 @@ module Limits
          {oi hi ei} {I : Category oi hi ei}
          {o  h  e } {C : Category o  h  e }
          (F : Functor I C) where
+  open Category.Category
+  open Functor
 
   _∘_  = C .comp
   _≈_  = C .Eq
@@ -79,6 +81,7 @@ module Limits
 
   -- A limit of a diagram is its terminal cone.
 
+  open Finality
   Limit = TerminalObject CONE
 
 

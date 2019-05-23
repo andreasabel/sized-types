@@ -6,6 +6,8 @@ open import Library
 open import Category
 open import Category.List
 
+open Category.Category
+
 -- The category  false ≤ true : Bool
 
 BOOL : Category lzero lzero lzero

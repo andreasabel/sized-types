@@ -5,6 +5,9 @@ open import Category
 
 module CAT where
 
+open Category.Category
+open Functor
+
 -- When are two functors equal?
 
 module _ {o e h} (C D : Category o e h) where

@@ -6,6 +6,10 @@ open import Presheaf
 
 module Presheaf.Properties where
 
+open NaturalTransformation
+open Initiality
+open Finality
+
 module _ {o h e} {C : Category o h e} where
 
   ⊤-presheaf-terminal : ∀{s} → Terminal (presheaf-cat s C) (⊤-presheaf _ _ C)

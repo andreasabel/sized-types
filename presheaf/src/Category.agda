@@ -29,6 +29,8 @@ record Category o h e : Set (lsuc (o ⊔ h ⊔ e)) where
     Obj  : Set o
     HomS : (A B : Obj) → Setoid h e
 
+  module EqReasoning {A B : Obj} = SetoidReasoning (HomS A B)
+
   open module HomSetoid  (A B : Obj) = Setoid (HomS A B)
     public using ()
     renaming ( Carrier       to Hom )
@@ -57,7 +59,19 @@ record Category o h e : Set (lsuc (o ⊔ h ⊔ e)) where
                  → Eq g g'
                  → Eq (comp f g) (comp f' g')
 
-open Category public
+
+  comp-congˡ  : ∀{A B C} {f f' : Hom B C} {g : Hom A B}
+               → Eq f f'
+               → Eq (comp f g) (comp f' g)
+  comp-congˡ eq = comp-cong eq reflEq
+
+  comp-congʳ  : ∀{A B C} {f : Hom B C} {g g' : Hom A B}
+               → Eq g g'
+               → Eq (comp f g) (comp f g')
+  comp-congʳ = comp-cong reflEq
+
+
+open Category
 
 -- Opposite category
 
@@ -156,7 +170,7 @@ module Finality {o h e} (C : Category o h e) where
   open TerminalObject     public
   open WeakTerminalObject public
 
-open Finality public
+open Finality
 
 
 -- Initiality and initial objects
@@ -185,7 +199,7 @@ module InitialityALT {o h e} (C : Category o h e) where
       𝟘       : C .Obj
       initial : Initial 𝟘
 
-open Initiality public
+open Initiality
 
 
 -- Functor
@@ -213,7 +227,12 @@ record Functor {o1 h1 e1} (C1 : Category o1 h1 e1)
              → C1 .Eq f f'
              → C2 .Eq (map f) (map f')
 
-open Functor public
+open Functor
+
+-- Endofunctor
+
+EndoFunctor : ∀{o h e} (C : Category o h e) → Set (o ⊔ h ⊔ e)
+EndoFunctor C = Functor C C
 
 -- Given a Functor F : C → D, the opposite functor op F : op C → op D
 -- is the same functor with arrows in both categories considered reversed.
@@ -277,7 +296,7 @@ module _ {o1 h1 e1} {C : Category o1 h1 e1}
                    → D .Eq (D .comp (transformation B) (F .map f))
                            (D .comp (G .map f) (transformation A))
 
-    open NaturalTransformation public
+    open NaturalTransformation
 
     -- The equality on natural transformations
     -- is pointwise and ignores the proof of naturality.
@@ -288,6 +307,8 @@ module _ {o1 h1 e1} {C : Category o1 h1 e1}
     nat-setoid .Setoid.isEquivalence .IsEquivalence.refl         A = D .reflEq
     nat-setoid .Setoid.isEquivalence .IsEquivalence.sym   eq     A = D .symEq   (eq A)
     nat-setoid .Setoid.isEquivalence .IsEquivalence.trans eq eq' A = D .transEq (eq A) (eq' A)
+
+  open NaturalTransformation
 
   -- Identity natural transformation
 
