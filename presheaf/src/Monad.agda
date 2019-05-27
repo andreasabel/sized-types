@@ -20,23 +20,47 @@ record Monad {o h e} (C : Category o h e) : Set (o ⊔ h ⊔ e) where
   open Functor functor public
   open Functor functor using () renaming (App to M)
 
-  -- A natural transformation  return : Id → M.
+  -- A natural transformation  η/return : Id → M.
+  -- A natural transformation  μ/join   : M ∘ M → M.
 
   field
-    return     : ∀{A} → A ⇒ M A
-    map∘return : ∀{A B} {f : A ⇒ B} → map f ∘ return ≅ return ∘ f
+    η : NaturalTransformation (idFun C) functor
+    μ : NaturalTransformation (compFun functor functor) functor
 
-  -- A natural transformation  join : M ∘ M → M.
+  open NaturalTransformation η public using () renaming
+    ( transformation to return
+    ; naturality⁻¹   to map∘return
+    )
 
-  field
-    join     : ∀{A} → M (M A) ⇒ M A
-    map∘join : ∀{A B} {f : A ⇒ B} → map f ∘ join ≅ join ∘ map (map f)
+  -- Unit:
+  -- return       : A ⇒ M A
+  -- map∘return f : map f ∘ return ≅ return ∘ f
+
+  open NaturalTransformation μ public using () renaming
+    ( transformation to join
+    ; naturality⁻¹   to map∘join
+    )
+
+  -- Multiplication:
+  -- join       : M (M A) ⇒ M A
+  -- map∘join f : map f ∘ join ≅ join ∘ map (map f)
+
+
+  -- The full types:
+  -- return     : ∀{A} → A ⇒ M A
+  -- map∘return : ∀{A B} {f : A ⇒ B} → map f ∘ return ≅ return ∘ f
+  -- join     : ∀{A} → M (M A) ⇒ M A
+  -- map∘join : ∀{A B} {f : A ⇒ B} → map f ∘ join ≅ join ∘ map (map f)
+
 
   -- Such that: return is the unit for join and join is associative.
 
   field
+    -- Outer unit.
     join∘return     : ∀{A} → join ∘ return     ≅ id (M A)             -- β law: id † ∘ return = id
+    -- Inner unit.
     join∘map-return : ∀{A} → join ∘ map return ≅ id (M A)             -- η law: return † = id
+    -- Two ways the cookie crumbles.
     join∘map-join   : ∀{A} → join ∘ map join   ≅ join ∘ join {M A}    -- assoc law
 
   -- Monadic extension.
@@ -63,7 +87,7 @@ record Monad {o h e} (C : Category o h e) : Set (o ⊔ h ⊔ e) where
     return >=> f             ≡⟨⟩
     (f †) ∘ return           ≡⟨⟩
     (join ∘ map f) ∘ return  ≈⟨ comp-assoc  ⟩
-    join ∘ (map f ∘ return)  ≈⟨ comp-congʳ map∘return ⟩
+    join ∘ (map f ∘ return)  ≈⟨ comp-congʳ (map∘return f) ⟩
     join ∘ (return ∘ f)      ≈⟨ symEq comp-assoc ⟩
     (join ∘ return) ∘ f      ≈⟨ comp-congˡ join∘return ⟩
     id _ ∘ f                 ≈⟨ comp-id-l ⟩
@@ -92,7 +116,7 @@ record Monad {o h e} (C : Category o h e) : Set (o ⊔ h ⊔ e) where
     (f †) ∘ (g †)                             ≡⟨⟩
     (join ∘ map f) ∘ (join ∘ map g)           ≈⟨ comp-assoc ⟩
     join ∘ (map f ∘ (join ∘ map g))           ≈⟨ comp-congʳ (symEq comp-assoc) ⟩
-    join ∘ ((map f ∘ join) ∘ map g)           ≈⟨ comp-congʳ (comp-congˡ map∘join) ⟩
+    join ∘ ((map f ∘ join) ∘ map g)           ≈⟨ comp-congʳ (comp-congˡ (map∘join f)) ⟩
     join ∘ ((join ∘ map (map f)) ∘ map g)     ≈⟨ comp-congʳ comp-assoc ⟩
     join ∘ (join ∘ (map (map f) ∘ map g))     ≈⟨ symEq comp-assoc ⟩
     (join ∘ join) ∘ (map (map f) ∘ map g)     ≈⟨ comp-cong (symEq join∘map-join) (symEq map-comp) ⟩
