@@ -13,6 +13,39 @@ open Category.Category C renaming
   )
 open EqReasoning
 
+
+-- Inverses: A relation between two morphisms (symmetric perspective).
+------------------------------------------------------------------------
+
+module _ {A B : Obj} where
+
+  module _ (f : Hom A B) (g : Hom B A) where
+
+    Inverses : Set _
+    Inverses = (g ∘ f) ≈ id _
+
+module _ {A : Obj} where
+
+  idInverses : Inverses (id A) (id A)
+  idInverses = comp-id-l
+
+module _ {A B C : Obj}
+  {f : Hom A B} {f⁻¹ : Hom B A} (fI : Inverses f f⁻¹)
+  {g : Hom B C} {g⁻¹ : Hom C B} (gI : Inverses g g⁻¹)
+  where
+
+  compInverses : Inverses (g ∘ f) (f⁻¹ ∘ g⁻¹)
+  compInverses = begin
+    (f⁻¹ ∘ g⁻¹) ∘ (g ∘ f) ≈⟨ comp-assoc ⟩
+    f⁻¹ ∘ (g⁻¹ ∘ (g ∘ f)) ≈⟨ comp-congʳ (symEq comp-assoc) ⟩
+    f⁻¹ ∘ ((g⁻¹ ∘ g) ∘ f) ≈⟨ comp-congʳ (comp-congˡ gI) ⟩
+    f⁻¹ ∘ (id B ∘ f)      ≈⟨ comp-congʳ comp-id-l ⟩
+    f⁻¹ ∘ f               ≈⟨ fI ⟩
+    id A ∎
+
+-- Inverses to a given morphism f.
+------------------------------------------------------------------------
+
 module _ {A B : Obj} (f : Hom A B) where
 
   IsLeftInverse : (g : Hom B A) → Set _
@@ -41,6 +74,9 @@ module _ {A B : Obj} (f : Hom A B) where
       inverse : Hom B A
       isInverse : IsInverse inverse
     open IsInverse isInverse public
+
+-- Isomorphism between objects.
+------------------------------------------------------------------------
 
 module _ (A B : Obj) where
 
@@ -85,6 +121,8 @@ module _ (open Inverse) (open Isomorphic) (open Isomorphism) where
 
   -- On inverses of a composition
 
+module _ where
+
   module _ {A B C : Obj} {f : Hom A B} {g : Hom B C}  where
 
     module _ (fLI : LeftInverse f) (open LeftInverse fLI using () renaming (leftInverse to f⁻¹))
@@ -93,26 +131,23 @@ module _ (open Inverse) (open Isomorphic) (open Isomorphism) where
 
       compLeftInverse : LeftInverse (g ∘ f)
       compLeftInverse .leftInverse   = f⁻¹ ∘ g⁻¹
-      compLeftInverse .isLeftInverse = begin
-        (f⁻¹ ∘ g⁻¹) ∘ (g ∘ f) ≈⟨ comp-assoc ⟩
-        f⁻¹ ∘ (g⁻¹ ∘ (g ∘ f)) ≈⟨ comp-congʳ (symEq comp-assoc) ⟩
-        f⁻¹ ∘ ((g⁻¹ ∘ g) ∘ f) ≈⟨ comp-congʳ (comp-congˡ (gLI .isLeftInverse)) ⟩
-        f⁻¹ ∘ (id B ∘ f)      ≈⟨ comp-congʳ comp-id-l ⟩
-        f⁻¹ ∘ f               ≈⟨ fLI .isLeftInverse ⟩
-        id A ∎
+      compLeftInverse .isLeftInverse = compInverses (fLI .isLeftInverse) (gLI .isLeftInverse)
 
-    module _ (fLI : RightInverse f) (open RightInverse fLI using () renaming (rightInverse to f⁻¹))
-             (gLI : RightInverse g) (open RightInverse gLI using () renaming (rightInverse to g⁻¹))
+    module _ (fRI : RightInverse f) (open RightInverse fRI using () renaming (rightInverse to f⁻¹))
+             (gRI : RightInverse g) (open RightInverse gRI using () renaming (rightInverse to g⁻¹))
              (open RightInverse) where
 
       compRightInverse : RightInverse (g ∘ f)
       compRightInverse .rightInverse   = f⁻¹ ∘ g⁻¹
-      compRightInverse .isRightInverse = begin
-        (g ∘ f) ∘ (f⁻¹ ∘ g⁻¹) ≈⟨ comp-assoc ⟩
-        g ∘ (f ∘ (f⁻¹ ∘ g⁻¹)) ≈⟨ comp-congʳ (symEq comp-assoc) ⟩
-        g ∘ ((f ∘ f⁻¹) ∘ g⁻¹) ≈⟨ comp-congʳ (comp-congˡ (fLI .isRightInverse)) ⟩
-        g ∘ (id B ∘ g⁻¹)      ≈⟨ comp-congʳ comp-id-l ⟩
-        g ∘ g⁻¹               ≈⟨ gLI .isRightInverse ⟩
-        id C ∎
+      compRightInverse .isRightInverse = compInverses (gRI .isRightInverse) (fRI .isRightInverse)
+
+    module _ (fI : Inverse f) (open Inverse fI using () renaming (inverse to f⁻¹))
+             (gI : Inverse g) (open Inverse gI using () renaming (inverse to g⁻¹))
+             (open Inverse) (open IsInverse) where
+
+      compInverse : Inverse (g ∘ f)
+      compInverse .inverse   = f⁻¹ ∘ g⁻¹
+      compInverse .isInverse .isLeftInverse  = compInverses (fI .isLeftInverse)  (gI .isLeftInverse)
+      compInverse .isInverse .isRightInverse = compInverses (gI .isRightInverse) (fI .isRightInverse)
 
   module _ {A B C : Obj} (f : Hom A B) (g : Hom B C) where
