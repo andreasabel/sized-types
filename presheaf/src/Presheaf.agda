@@ -137,13 +137,13 @@ module _ {i o e o1 h1 e1} {I : Set i} {C : Category o1 h1 e1}
   -- Projection from presheaf product is natural
 
   proj-presheaf : ∀ i → NaturalTransformation (Π-presheaf P) (P i)
-  proj-presheaf i .transformation A ⟨$⟩        p = p i
-  proj-presheaf i .transformation A .FEq.cong eq = eq i
-  proj-presheaf i .naturality f               eq = P i .map-cong (C .reflEq) (eq i)
+  proj-presheaf i .transformation ⟨$⟩        p = p i
+  proj-presheaf i .transformation .FEq.cong eq = eq i
+  proj-presheaf i .naturality f             eq = P i .map-cong (C .reflEq) (eq i)
 
   -- Injection into presheaf sum is natural
 
   inj-presheaf : ∀ i → NaturalTransformation (P i) (Σ-presheaf P)
-  inj-presheaf i .transformation A ._⟨$⟩_     p = i , p
-  inj-presheaf i .transformation A .FEq.cong eq = refl , eq
-  inj-presheaf i .naturality f               eq = refl , P i .map-cong (C .reflEq) eq
+  inj-presheaf i .transformation ._⟨$⟩_     p = i , p
+  inj-presheaf i .transformation .FEq.cong eq = refl , eq
+  inj-presheaf i .naturality f             eq = refl , P i .map-cong (C .reflEq) eq

@@ -289,12 +289,18 @@ module _ {o1 h1 e1} {C : Category o1 h1 e1}
 
     record NaturalTransformation : Set (o1 ⊔ h1 ⊔ e1 ⊔ o2 ⊔ h2 ⊔ e2) where
       field
-        transformation : ∀ A → D .Hom (F .App A) (G .App A)
+        transformation : ∀{A} → D .Hom (F .App A) (G .App A)
 
       field
         naturality : ∀{A B} (f : C .Hom A B)
-                   → D .Eq (D .comp (transformation B) (F .map f))
-                           (D .comp (G .map f) (transformation A))
+                   → D .Eq (D .comp transformation (F .map f))
+                           (D .comp (G .map f) transformation)
+
+      -- Naturality in the other direction
+      naturality⁻¹ :  ∀{A B} (f : C .Hom A B)
+                     → D .Eq (D .comp (G .map f) transformation)
+                             (D .comp transformation (F .map f))
+      naturality⁻¹ = λ f → D .symEq (naturality f)
 
     open NaturalTransformation
 
@@ -303,24 +309,24 @@ module _ {o1 h1 e1} {C : Category o1 h1 e1}
 
     nat-setoid : Setoid (o1 ⊔ h1 ⊔ e1 ⊔ o2 ⊔ h2 ⊔ e2) (o1 ⊔ e2)
     nat-setoid .Setoid.Carrier = NaturalTransformation
-    nat-setoid .Setoid._≈_ ϕ ψ = ∀ A → D .Eq (ϕ .transformation A) (ψ .transformation A)
-    nat-setoid .Setoid.isEquivalence .IsEquivalence.refl         A = D .reflEq
-    nat-setoid .Setoid.isEquivalence .IsEquivalence.sym   eq     A = D .symEq   (eq A)
-    nat-setoid .Setoid.isEquivalence .IsEquivalence.trans eq eq' A = D .transEq (eq A) (eq' A)
+    nat-setoid .Setoid._≈_ ϕ ψ = ∀{A} → D .Eq (ϕ .transformation {A}) (ψ .transformation {A})
+    nat-setoid .Setoid.isEquivalence .IsEquivalence.refl         = D .reflEq
+    nat-setoid .Setoid.isEquivalence .IsEquivalence.sym   eq     = D .symEq   eq
+    nat-setoid .Setoid.isEquivalence .IsEquivalence.trans eq eq' = D .transEq eq eq'
 
   open NaturalTransformation
 
-  -- Identity natural transformation
+  -- Identity natural transformation.
 
   idNat : ∀ (F : Functor C D) → NaturalTransformation F F
-  idNat F .transformation A = D .id (F .App A)
-  idNat F .naturality     f = D .transEq (D .comp-id-l) (D .symEq (D .comp-id-r))
+  idNat F .transformation {A} = D .id (F .App A)
+  idNat F .naturality     f   = D .transEq (D .comp-id-l) (D .symEq (D .comp-id-r))
 
-  -- Natural transformation compositions
+  -- Natural transformation composition.
 
   compNat : ∀ {F G H : Functor C D}
             (ϕ : NaturalTransformation G H) (ψ : NaturalTransformation F G) → NaturalTransformation F H
-  compNat {F} {G} {H} ϕ ψ .transformation A = D .comp (ϕ .transformation A) (ψ .transformation A)
+  compNat {F} {G} {H} ϕ ψ .transformation {A} = D .comp (ϕ .transformation {A}) (ψ .transformation {A})
   compNat {F} {G} {H} ϕ ψ .naturality {A = A} {B = B} f = begin
       (ϕB ∘ ψB) ∘ F .map f   ≈⟨ D .comp-assoc ⟩
       ϕB ∘ (ψB ∘ F .map f)   ≈⟨ D .comp-cong (D .reflEq) (ψ .naturality f) ⟩
@@ -331,10 +337,10 @@ module _ {o1 h1 e1} {C : Category o1 h1 e1}
     where
     open SetoidReasoning (D .HomS (F .App A) (H .App B))
     _∘_ = D .comp
-    ϕA = ϕ .transformation A
-    ϕB = ϕ .transformation B
-    ψA = ψ .transformation A
-    ψB = ψ .transformation B
+    ϕA = ϕ .transformation {A}
+    ϕB = ϕ .transformation {B}
+    ψA = ψ .transformation {A}
+    ψB = ψ .transformation {B}
 
 -- Functor categories
 
@@ -342,14 +348,14 @@ module _ {o1 h1 e1} (C : Category o1 h1 e1)
          {o2 h2 e2} (D : Category o2 h2 e2) where
 
   functor-cat : Category _ _ _ -- Category (o1 ⊔ h1 ⊔ e1 ⊔ o2 ⊔ h2 ⊔ e2) (o1 ⊔ h1 ⊔ e1 ⊔ o2 ⊔ h2 ⊔ e2) (o1 ⊔ e2)
-  functor-cat .Obj                    = Functor C D
-  functor-cat .HomS F G               = nat-setoid F G
-  functor-cat .id F                   = idNat F
-  functor-cat .comp ϕ ψ               = compNat ϕ ψ
-  functor-cat .comp-id-l            A = D .comp-id-l
-  functor-cat .comp-id-r            A = D .comp-id-r
-  functor-cat .comp-assoc           A = D .comp-assoc
-  functor-cat .comp-cong  f=f' g=g' A = D .comp-cong (f=f' A) (g=g' A)
+  functor-cat .Obj                  = Functor C D
+  functor-cat .HomS F G             = nat-setoid F G
+  functor-cat .id F                 = idNat F
+  functor-cat .comp ϕ ψ             = compNat ϕ ψ
+  functor-cat .comp-id-l            = D .comp-id-l
+  functor-cat .comp-id-r            = D .comp-id-r
+  functor-cat .comp-assoc           = D .comp-assoc
+  functor-cat .comp-cong  f=f' g=g' = D .comp-cong f=f' g=g'
 
 
 -- -}
