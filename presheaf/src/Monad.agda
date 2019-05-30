@@ -10,7 +10,7 @@ module Monad where
 record Monad {o h e} (C : Category o h e) : Set (o ⊔ h ⊔ e) where
 
   open Category.Category C -- using (id; module EqReasoning)
-    renaming (Hom to _⇒_; Eq to _≅_; comp to _∘_)
+    renaming (Hom to _⇒_; Eq to _≈_; comp to _∘_)
   open EqReasoning
 
   -- An endofunctor M on C.
@@ -34,7 +34,7 @@ record Monad {o h e} (C : Category o h e) : Set (o ⊔ h ⊔ e) where
 
   -- Unit:
   -- return       : A ⇒ M A
-  -- map∘return f : map f ∘ return ≅ return ∘ f
+  -- map∘return f : map f ∘ return ≈ return ∘ f
 
   open NaturalTransformation μ public using () renaming
     ( transformation to join
@@ -43,30 +43,33 @@ record Monad {o h e} (C : Category o h e) : Set (o ⊔ h ⊔ e) where
 
   -- Multiplication:
   -- join       : M (M A) ⇒ M A
-  -- map∘join f : map f ∘ join ≅ join ∘ map (map f)
+  -- map∘join f : map f ∘ join ≈ join ∘ map (map f)
 
 
   -- The full types:
   -- return     : ∀{A} → A ⇒ M A
-  -- map∘return : ∀{A B} {f : A ⇒ B} → map f ∘ return ≅ return ∘ f
+  -- map∘return : ∀{A B} {f : A ⇒ B} → map f ∘ return ≈ return ∘ f
   -- join     : ∀{A} → M (M A) ⇒ M A
-  -- map∘join : ∀{A B} {f : A ⇒ B} → map f ∘ join ≅ join ∘ map (map f)
+  -- map∘join : ∀{A B} {f : A ⇒ B} → map f ∘ join ≈ join ∘ map (map f)
 
 
   -- Such that: return is the unit for join and join is associative.
 
   field
     -- Outer unit.
-    join∘return     : ∀{A} → join ∘ return     ≅ id (M A)             -- β law: id † ∘ return = id
+    join∘return     : ∀{A} → join ∘ return     ≈ id (M A)             -- β law: id † ∘ return = id
     -- Inner unit.
-    join∘map-return : ∀{A} → join ∘ map return ≅ id (M A)             -- η law: return † = id
+    join∘map-return : ∀{A} → join ∘ map return ≈ id (M A)             -- η law: return † = id
     -- Two ways the cookie crumbles.
-    join∘map-join   : ∀{A} → join ∘ map join   ≅ join ∘ join {M A}    -- assoc law
+    join∘map-join   : ∀{A} → join ∘ map join   ≈ join ∘ join {M A}    -- assoc law
 
   -- Monadic extension.
 
   _† : ∀{A B} → A ⇒ M B → M A ⇒ M B
   f † = join ∘ map f
+
+  †-cong : ∀{A B} {f g : A ⇒ M B} → f ≈ g → (f †) ≈ (g †)
+  †-cong f≈g = comp-congʳ (map-cong f≈g)
 
   -- Kleisli composition.
 
@@ -82,7 +85,7 @@ record Monad {o h e} (C : Category o h e) : Set (o ⊔ h ⊔ e) where
 
   -- β: return is left unit of >=>.
 
-  beta : ∀{A B} {f : A ⇒ M B} → (return >=> f) ≅ f
+  beta : ∀{A B} {f : A ⇒ M B} → (return >=> f) ≈ f
   beta {A} {B} {f} = begin
     return >=> f             ≡⟨⟩
     (f †) ∘ return           ≡⟨⟩
@@ -95,7 +98,7 @@ record Monad {o h e} (C : Category o h e) : Set (o ⊔ h ⊔ e) where
 
   -- η: return is right unit of >=>.
 
-  eta : ∀{A B} {f : A ⇒ M B} → (f >=> return) ≅ f
+  eta : ∀{A B} {f : A ⇒ M B} → (f >=> return) ≈ f
   eta {A} {B} {f} = begin
     f >=> return             ≡⟨⟩
     (return †) ∘ f           ≡⟨⟩
@@ -105,12 +108,12 @@ record Monad {o h e} (C : Category o h e) : Set (o ⊔ h ⊔ e) where
 
   -- WRONG:
   -- map∘dagger : ∀{A B C} {f : B ⇒ M C} {g : A ⇒ M B} →
-  --   map f ∘ (g †) ≅ map (f †) ∘ g
+  --   map f ∘ (g †) ≈ map (f †) ∘ g
 
 
   dagger∘dagger : ∀{A B C} {f : B ⇒ M C} {g : A ⇒ M B} →
 
-    (f †) ∘ (g †)  ≅  ((f †) ∘ g) †
+    (f †) ∘ (g †)  ≈  ((f †) ∘ g) †
 
   dagger∘dagger {A} {B} {C} {f} {g} = begin
     (f †) ∘ (g †)                             ≡⟨⟩
@@ -130,7 +133,7 @@ record Monad {o h e} (C : Category o h e) : Set (o ⊔ h ⊔ e) where
 
   assoc : ∀{A B C D} {f : A ⇒ M B} {g} {h : C ⇒ M D} →
 
-    (f >=> g) >=> h  ≅  f >=> (g >=> h)
+    (f >=> g) >=> h  ≈  f >=> (g >=> h)
 
   assoc {A} {B} {C} {D} {f} {g} {h} = begin
     (f >=> g) >=> h        ≡⟨⟩
