@@ -2,6 +2,7 @@
 
 open import Library
 open import Category
+open import Category.Finality
 
 module Category.Limits where
 
@@ -11,13 +12,9 @@ module Limits
          {oi hi ei} {I : Category oi hi ei}
          {o  h  e } {C : Category o  h  e }
          (F : Functor I C) where
+  open Category.Category C using () renaming (Eq to _≈_; comp to _∘_)
   open Category.Category
   open Functor
-
-  _∘_  = C .comp
-  _≈_  = C .Eq
-  _≤_  = I .Hom
-  fmap = F .map
 
   -- A cone has arrows pointing from the source down to the base
 
@@ -26,7 +23,7 @@ module Limits
       Src  : C .Obj
       cone : ∀ i → C .Hom Src (F .App i)
     field
-      coh  : ∀{i j} (f : i ≤ j) → (fmap f ∘ cone i) ≈ cone j
+      coh  : ∀{i j} (f : I .Hom i j) → (F .map f ∘ cone i) ≈ cone j
 
   -- A cone morphism is a morphism between the sources
 
@@ -81,8 +78,14 @@ module Limits
 
   -- A limit of a diagram is its terminal cone.
 
-  open Finality
-  Limit = TerminalObject CONE
+  open Finality CONE public using () renaming
+    ( WeaklyTerminal     to IsWeakLimit
+    ; WeakTerminalObject to WeakLimit
+    ; Terminal           to IsLimit
+    ; TerminalObject     to Limit
+    )
+
+
 
 
 -- Dualize everything to get colimits

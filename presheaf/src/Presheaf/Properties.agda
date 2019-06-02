@@ -2,6 +2,8 @@
 
 open import Library
 open import Category
+open import Category.Finality
+open import Category.Initiality
 open import Presheaf
 
 module Presheaf.Properties where

@@ -21,7 +21,7 @@ module Function = Fun
 module FEq = Function.Equality
 
 open import Relation.Binary public using (Setoid; IsEquivalence)
-open import Relation.Binary.PropositionalEquality public using (_≡_; refl; sym; trans; subst; subst₂)
+open import Relation.Binary.PropositionalEquality public using (_≡_; refl; sym; trans; subst; subst₂; cong₂; setoid)
 module PEq = Relation.Binary.PropositionalEquality
 import Relation.Binary.Reasoning.Setoid
 module SetoidReasoning = Relation.Binary.Reasoning.Setoid
