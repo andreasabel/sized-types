@@ -10,6 +10,7 @@ import Category.Discrete
 import Category.Finality
 import Category.Initiality
 import Category.Limits
+import Category.Product
 import Category.Span
 import Category.List
 
@@ -21,5 +22,4 @@ import Presheaf.Properties
 
 import Polarities
 
-import Category.Product
 import CAT

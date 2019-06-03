@@ -23,7 +23,8 @@ open Functor
 
 module ProductNotion (A B : Obj) where
 
-  -- The diagram for the limit is simply the two objects A and B (no morphism)
+  -- The diagram for the limit is simply the two objects A and B (no morphism).
+
   -- diagram : DiscreteFunctor Bool C
   diagram = discreteFunctor Bool C λ where
     false → A
@@ -77,6 +78,9 @@ module _ {A B : Obj} (open ProductNotion A B) where
       ⟨_,_⟩ = pair span
 
 {-
+    -- Weak product should imply the congruence property, but does not seem to,
+    -- since objects do not have a setoid structure.
+
     module _ {C} {f f' : Hom C A} {g g' : Hom C B} (ef : f ≈ f') (eg : g ≈ g') where
       open Category.Category using (Eq)
 
@@ -115,8 +119,15 @@ module _ {A B : Obj} (open ProductNotion A B) where
 
     -- Permutation principle
 
-    PairComp = ∀{C D} {f : Hom C A} {g : Hom C B} {h : Hom D C} →
+    PairComp = ∀ {C D} {f : Hom C A} {g : Hom C B} {h : Hom D C} →
       ⟨ f , g ⟩ ∘ h ≈ ⟨ f ∘ h , g ∘ h ⟩
+
+    -- Congruence
+
+    PairCong = ∀ {C} {f f' : Hom C A} {g g' : Hom C B}
+      → (ef : f ≈ f')
+      → (eg : g ≈ g')
+      → ⟨ f , g ⟩ ≈ ⟨ f' , g' ⟩
 
     -- Univerality implies the other principles
 
@@ -144,6 +155,17 @@ module _ {A B : Obj} (open ProductNotion A B) where
         id _ ∘ h'                            ≈⟨ comp-id-l                 ⟩
         h'                                   ∎
 
+      pair-cong : PairCong
+      pair-cong {f = f} {f' = f'} {g = g} {g' = g'} ef eg = pair-extensionality
+        (begin
+          π₁ ∘ ⟨ f , g ⟩ ≈⟨ β₁ ⟩
+          f              ≈⟨ ef ⟩
+          f'             ∎)
+        (begin
+          π₂ ∘ ⟨ f , g ⟩ ≈⟨ β₂ ⟩
+          g              ≈⟨ eg ⟩
+          g'             ∎)
+
     module ExtensionalityConsequences (extensionality : Extensionality) where
 
       pair-extensionality : PairExtensionality
@@ -157,14 +179,14 @@ module _ {A B : Obj} (open ProductNotion A B) where
           g              ≈⟨ symEq β₂ ⟩
           π₂ ∘ ⟨ f , g ⟩ ∎)
 
-    module EtaPermuationConsequences (η : Eta) (pair-comp : PairComp) where
+    module EtaPermuationConsequences (η : Eta) (pair-comp : PairComp) (pair-cong : PairCong) where
 
       pair-extensionality : PairExtensionality
       pair-extensionality {f = f} {g = g} {h = h} e1 e2 = begin
         h                                               ≈⟨ symEq comp-id-l ⟩
         id _ ∘ h                                        ≈⟨ comp-congˡ η ⟩
         ⟨ π₁ , π₂ ⟩ ∘ h                                 ≈⟨ pair-comp ⟩
-        ⟨ π₁ ∘ h , π₂ ∘ h ⟩                             ≈⟨ {!!} ⟩
+        ⟨ π₁ ∘ h , π₂ ∘ h ⟩                             ≈⟨ pair-cong e1 e2 ⟩
         ⟨ f , g ⟩ ∎
 
 
@@ -188,6 +210,10 @@ module _ {A B : Obj} (open ProductNotion A B) where
           .coneHom   → h
           .tri false → ef
           .tri true  → eg
+
+    open UniversalityConsequences pair-extensionality public
+
+{-
 
     -- The eta-law.
 

@@ -1,4 +1,5 @@
 {-# OPTIONS --postfix-projections #-}
+{-# OPTIONS --allow-unsolved-metas #-}
 
 open import Library
 open import Category
@@ -14,7 +15,7 @@ module _ {o e h} (C D : Category o e h) where
 
   record FunEq (F G : Functor C D) : Set (o ⊔ h ⊔ e) where
     field
-      eqApp : ∀{c} → F .App c ≡ G .App c  -- Strict, or maybe just isomorphism!?
+      eqApp : ∀{c} → F .App c ≡ G .App c  -- Strict, or maybe just isomorphism!? TODO!
       eqMap : ∀{c d} (f g : C .Hom c d) (eq : C .Eq f g) → let
           f' : D .Hom (G .App c) (G .App d)
           f' = subst₂ (D .Hom) eqApp eqApp (F .map f)
